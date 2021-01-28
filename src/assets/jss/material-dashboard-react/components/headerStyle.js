@@ -13,8 +13,8 @@ import {
 
 const headerStyle = () => ({
   appBar: {
-    backgroundColor: "transparent",
-    boxShadow: "none",
+    backgroundColor: "white",
+    boxShadow: "0 2px 4px #ccc",
     borderBottom: "0",
     marginBottom: "0",
     position: "absolute",
@@ -23,7 +23,7 @@ const headerStyle = () => ({
     zIndex: "1029",
     color: grayColor[7],
     border: "0",
-    borderRadius: "3px",
+    borderRadius: "none",
     padding: "10px 0",
     transition: "all 150ms ease 0s",
     minHeight: "50px",

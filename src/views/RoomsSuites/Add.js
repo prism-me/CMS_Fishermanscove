@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function RoomSuites() {
+export default function AddRoom() {
   const classes = useStyles();
   const [room, setRoom] = useState({
     post_name: '',

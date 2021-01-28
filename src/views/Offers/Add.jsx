@@ -37,20 +37,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function Dining() {
+export default function AddOffer() {
   const classes = useStyles();
-  const [dining, setDining] = useState({
+  const [offer, setOffer] = useState({
     post_name: '',
     post_content: "<p>Detailed content goes here!</p>",
     short_description: "<p>Short description goes here!</p>",
-    category_id: -1,
+    room_type: -1,
     thumbnail:''
   })
 
   const handleInputChange = (e) => {
-    let updatedDining = { ...dining };
-    updatedDining[e.target.name] = e.target.value;
-    setDining(updatedDining);
+    let updatedOffer = { ...offer };
+    updatedOffer[e.target.name] = e.target.value;
+    setOffer(updatedOffer);
   }
 
   return (
@@ -58,7 +58,7 @@ export default function Dining() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Add Restaurant/Bar</h4>
+            <h4 className={classes.cardTitleWhite}>Add an Offer</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
@@ -69,7 +69,7 @@ export default function Dining() {
                   id="post_name"
                   name="post_name"
                   label="Name"
-                  value={dining.post_name}
+                  value={offer.post_name}
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
@@ -80,12 +80,12 @@ export default function Dining() {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl variant="outlined" fullWidth className={classes.formControl}>
-                  <InputLabel id="category_id-label">Category</InputLabel>
+                  <InputLabel id="room_type-label">Room Type</InputLabel>
                   <Select
-                    labelId="category_id-label"
-                    id="category_id"
-                    name="category_id"
-                    value={dining.category_id}
+                    labelId="room_type-label"
+                    id="room_type"
+                    name="room_type"
+                    value={offer.room_type}
                     onChange={handleInputChange}
                     label="Category"
                     fullWidth
@@ -128,7 +128,7 @@ export default function Dining() {
                 <p>Short Description</p>
                 <CKEditor
                   editor={ClassicEditor}
-                  data={dining.short_description}
+                  data={offer.short_description}
                   // config={{
                   //   toolbar: ['bold', 'italic']
                   // }}
@@ -138,7 +138,7 @@ export default function Dining() {
                   }}
                   onChange={(event, editor) => {
                     const data = editor.getData();
-                    setDining({ ...dining, short_description: data })
+                    setOffer({ ...offer, short_description: data })
                   }}
                   onBlur={(event, editor) => {
                     console.log('Blur.', editor);
@@ -152,7 +152,7 @@ export default function Dining() {
                 <p>Detailed Content</p>
                 <CKEditor
                   editor={ClassicEditor}
-                  data={dining.post_content}
+                  data={offer.post_content}
                   // config={{
                   //   toolbar: ['bold', 'italic']
                   // }}
@@ -162,7 +162,7 @@ export default function Dining() {
                   }}
                   onChange={(event, editor) => {
                     const data = editor.getData();
-                    setDining({ ...dining, post_content: data })
+                    setOffer({ ...offer, post_content: data })
                   }}
                   onBlur={(event, editor) => {
                     console.log('Blur.', editor);

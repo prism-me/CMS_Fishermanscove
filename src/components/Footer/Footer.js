@@ -49,7 +49,6 @@ export default function Footer(props) {
             >
               Fishermans Cove Resort
             </a>
-            , made with love for a better web
           </span>
         </p>
       </div>

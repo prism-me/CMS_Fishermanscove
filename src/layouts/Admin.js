@@ -29,6 +29,7 @@ const switchRoutes = (
             path={prop.layout + prop.path}
             component={prop.component}
             key={key}
+            exact={prop.exact}
           />
         );
       }
