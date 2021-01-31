@@ -10,7 +10,7 @@ class DiningList extends Component {
     offers: [],
     columns: [
       {
-        name: "avatar",
+        name: "thumbnail",
         label: "Image",
         options: {
           filter: false,

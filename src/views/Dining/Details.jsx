@@ -7,17 +7,11 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Rating from '@material-ui/lab/Rating';
-import IconButton from '@material-ui/core/IconButton';
-import LocationOn from '@material-ui/icons/LocationOn';
-import MoreHoriz from '@material-ui/icons/MoreHoriz';
-import Favorite from '@material-ui/icons/Favorite';
-import FaceGroup from '@mui-treasury/components/group/face';
 import { useWideCardMediaStyles } from '@mui-treasury/styles/cardMedia/wide';
 import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
 import { usePushingGutterStyles } from '@mui-treasury/styles/gutter/pushing';
 import API from 'utils/http';
 import { Chip } from '@material-ui/core';
-import { FaceOutlined } from '@material-ui/icons';
 import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
@@ -59,12 +53,12 @@ export const DiningDetail = React.memo(function ReviewCard() {
   const shadowStyles = useFadedShadowStyles();
   const gutterStyles = usePushingGutterStyles({ firstExcluded: true });
 
-  const [room, setRoom] = useState(null);
+  const [dining, setDining] = useState(null);
 
   useEffect(() => {
-    API.get(`/single_dining/${params.id}`).then(response => {
+    API.get(`/dining/${params.id}`).then(response => {
       if (response.status === 200) {
-        setRoom(response.data[0])
+        setDining(response.data?.category_details[0])
       }
     })
   }, [])
@@ -74,29 +68,29 @@ export const DiningDetail = React.memo(function ReviewCard() {
       <CardMedia
         classes={mediaStyles}
         image={
-          room?.avatar
+          dining?.thumbnail
           // 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80'
         }
       />
       <CardContent className={cx(shadowStyles.root, styles.content)}>
         <h3 className={styles.title}>
           {
-            room?.post_name
+            dining?.post_name
           }
         </h3>
-        <Box color={'grey.500'} display={'flex'} alignItems={'center'} mb={1}>
+        {/* <Box color={'grey.500'} display={'flex'} alignItems={'center'} mb={1}>
           <Chip
             // icon={<FaceOutlined />}
-            label={room?.room_type === 0 ? 'Room' : 'Suite'}
+            label={dining?.room_type === 0 ? 'Dining' : 'Suite'}
             clickable={false}
             size="small"
             color="primary"
           />
-        </Box>
+        </Box> */}
         {/* <Box color={'grey.500'} display={'flex'} alignItems={'center'} mb={1}>
           <Chip
             // icon={<FaceOutlined />}
-            label={room?.post_category?.category_name}
+            label={dining?.post_category?.category_name}
             clickable={false}
             size="small"
           // color="primary"
@@ -115,10 +109,10 @@ export const DiningDetail = React.memo(function ReviewCard() {
         </Box>
         {/* <Typography color={'textSecondary'} variant={'body2'}>
           {
-            room?.short_description
+            dining?.short_description
           }
         </Typography> */}
-        <div dangerouslySetInnerHTML={{__html: room?.short_description}}>
+        <div dangerouslySetInnerHTML={{__html: dining?.short_description}}>
 
         </div>
         <Box
@@ -130,7 +124,7 @@ export const DiningDetail = React.memo(function ReviewCard() {
         <Typography color={'primary'} variant="h5">
           Details
         </Typography>
-          <div dangerouslySetInnerHTML={{__html: room?.post_content}}></div>
+          <div dangerouslySetInnerHTML={{__html: dining?.post_content}}></div>
         </Box>
       </CardContent>
     </Card>

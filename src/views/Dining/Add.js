@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, Suspense, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -7,17 +7,17 @@ import InputLabel from "@material-ui/core/InputLabel";
 // import GridContainer from "components/Grid/GridContainer.js";
 // import CustomInput from "components/CustomInput/CustomInput.js";
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
+// import Paper from '@material-ui/core/Paper';
 
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-import CardAvatar from "components/Card/CardAvatar.js";
+// import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
-import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField } from "@material-ui/core";
+// import avatar from "assets/img/faces/marc.jpg";
+import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel } from "@material-ui/core";
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -36,16 +36,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 export default function DiningAdd() {
   const classes = useStyles();
   const [dining, setDining] = useState({
     post_name: '',
     post_content: "<p>Detailed content goes here!</p>",
     short_description: "<p>Short description goes here!</p>",
+    room_type: -1,
     category_id: -1,
-    thumbnail:''
+    thumbnail: '',
+    alt_text: '',
+    meta_title: '',
+    meta_description: '',
+    schema_markup: '',
+    permalink: '',
+    is_followed: true,
+    is_indexed: true
   })
+
+  const [diningAdded, setDiningAdded] = useState(false);
 
   const handleInputChange = (e) => {
     let updatedDining = { ...dining };
@@ -53,17 +62,33 @@ export default function DiningAdd() {
     setDining(updatedDining);
   }
 
+  const handleFileChange = (e) => {
+    let files = e.target.files || e.dataTransfer.files;
+    if (!files.length)
+      return;
+    createImage(files[0]);
+  }
+
+  const createImage = (file) => {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      setDining({ ...dining, thumbnail: e.target.result })
+    };
+    reader.readAsDataURL(file);
+  }
+
   return (
     <div>
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Add Restaurant/Bar</h4>
+            <h4 className={classes.cardTitleWhite}>Add Dining/Suite</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
+            <h3>General Information</h3>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <TextField
                   required
                   id="post_name"
@@ -75,8 +100,62 @@ export default function DiningAdd() {
                   onChange={handleInputChange}
                 />
               </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="alt_text"
+                  name="alt_text"
+                  label="Image Alt Text"
+                  value={dining.alt_text}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
               <Grid item xs={6} sm={6}>
-                
+                <Fragment>
+                  <input
+                    color="primary"
+                    accept="image/*"
+                    type="file"
+                    onChange={handleFileChange}
+                    id="thumbnail"
+                    name="thumbnail"
+                    style={{ display: 'none', }}
+                  />
+                  <label htmlFor="thumbnail">
+                    <Button
+                      variant="contained"
+                      component="span"
+                      className={classes.button}
+                      size="large"
+                      color="primary"
+                      style={{ margin: 0, height: '100%', }}
+                    >
+                      <Image className={classes.extendedIcon} /> Upload Featured Image
+                    </Button>
+                  </label>
+                </Fragment>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                  <InputLabel id="room_type-label">Type</InputLabel>
+                  <Select
+                    labelId="room_type-label"
+                    id="room_type"
+                    name="room_type"
+                    value={dining.room_type}
+                    onChange={handleInputChange}
+                    label="Type"
+                    fullWidth
+                  >
+                    <MenuItem value={-1}>
+                      <em>Select</em>
+                    </MenuItem>
+                    <MenuItem value={1}>Dining</MenuItem>
+                    <MenuItem value={2}>Suite</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl variant="outlined" fullWidth className={classes.formControl}>
@@ -99,30 +178,6 @@ export default function DiningAdd() {
                     <MenuItem value={4}>Full Ocean View</MenuItem>
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid item xs={6} sm={6}>
-                <Fragment>
-                  <input
-                    color="primary"
-                    accept="image/*"
-                    type="file"
-                    onChange={handleInputChange}
-                    id="thumbnail"
-                    name="thumbnail"
-                    style={{ display: 'none', }}
-                  />
-                  <label htmlFor="thumbnail">
-                    <Button
-                      variant="contained"
-                      component="span"
-                      className={classes.button}
-                      size="large"
-                      color="primary"
-                    >
-                      <Image className={classes.extendedIcon} /> Upload Featured Image
-                    </Button>
-                  </label>
-                </Fragment>
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Short Description</p>
@@ -185,6 +240,121 @@ export default function DiningAdd() {
                     console.log('Focus.', editor);
                   }}
                 />
+              </Grid>
+            </Grid>
+            <h3>SEO Information</h3>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="meta_title"
+                  name="meta_title"
+                  label="Meta Title"
+                  value={dining.meta_title}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="meta_description"
+                  name="meta_description"
+                  label="Meta Description"
+                  value={dining.meta_description}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="schema_markup"
+                  name="schema_markup"
+                  label="Schema Markup"
+                  value={dining.schema_markup}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="permalink"
+                  name="permalink"
+                  label="Permalink"
+                  value={dining.permalink}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl component="fieldset">
+                  <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={dining.is_followed} onChange={(e) => {
+                    setDining({ ...dining, is_followed: !dining.is_followed })
+                  }}>
+                    <FormControlLabel value={true} control={<Radio />} label="Follow" />
+                    <FormControlLabel value={false} control={<Radio />} label="No Follow" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl component="fieldset">
+                  <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={dining.is_indexed} onChange={(e) => {
+                    setDining({ ...dining, is_indexed: !dining.is_indexed })
+                  }}>
+                    <FormControlLabel value={true} control={<Radio />} label="Index" />
+                    <FormControlLabel value={false} control={<Radio />} label="No Index" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </CardBody>
+        </Card>
+        <Card>
+          <CardBody>
+            <h3>Dining Images</h3>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="alt_text"
+                  name="alt_text"
+                  label="Image Alt Text"
+                  value={dining.alt_text}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={6} sm={6}>
+                <Fragment>
+                  <input
+                    color="primary"
+                    accept="image/*"
+                    type="file"
+                    onChange={handleInputChange}
+                    id="thumbnail"
+                    name="thumbnail"
+                    style={{ display: 'none', }}
+                  />
+                  <label htmlFor="thumbnail">
+                    <Button
+                      variant="contained"
+                      component="span"
+                      className={classes.button}
+                      size="large"
+                      color="primary"
+                      style={{ margin: 0, height: '100%', }}
+                    >
+                      <Image className={classes.extendedIcon} /> Upload Multiple Image
+                    </Button>
+                  </label>
+                </Fragment>
               </Grid>
             </Grid>
           </CardBody>
