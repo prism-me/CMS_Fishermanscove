@@ -111,13 +111,13 @@ class LeisureList extends Component {
     return (
       <div>
         <Box marginBottom={4}>
-          <Link to="/admin/leisure/add">
+          <Link to="/admin/whats-on/add">
             <Button
               variant="contained"
               color="primary"
               startIcon={<AddOutlined />}
             >
-              Add Restaurant
+              Add Leisure Activity
           </Button>
           </Link>
         </Box>

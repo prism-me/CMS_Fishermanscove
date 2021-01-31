@@ -28,17 +28,17 @@ class DiningList extends Component {
           sort: true,
         }
       },
-      {
-        name: "room_type",
-        label: "Room Type",
-        options: {
-          filter: true,
-          sort: false,
-          customBodyRender: (val) => {
-            return val === 0 ? 'Room' : 'Suite'
-          }
-        }
-      },
+      // {
+      //   name: "room_type",
+      //   label: "Room Type",
+      //   options: {
+      //     filter: true,
+      //     sort: false,
+      //     customBodyRender: (val) => {
+      //       return val === 0 ? 'Room' : 'Suite'
+      //     }
+      //   }
+      // },
       // {
       //   name: "category_name",
       //   label: "Category",
@@ -75,7 +75,7 @@ class DiningList extends Component {
       },
       {
         name: "id",
-        label: "",
+        label: "Actions",
         options: {
           filter: false,
           sort: false,

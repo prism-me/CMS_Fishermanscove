@@ -17,7 +17,7 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField } from "@material-ui/core";
+import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel } from "@material-ui/core";
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -44,13 +44,35 @@ export default function LeisureAdd() {
     post_content: "<p>Detailed content goes here!</p>",
     short_description: "<p>Short description goes here!</p>",
     category_id: -1,
-    thumbnail:''
+    thumbnail: '',
+    alt_text: '',
+    meta_title: '',
+    meta_description: '',
+    schema_markup: '',
+    permalink: '',
+    is_followed: true,
+    is_indexed: true
   })
 
   const handleInputChange = (e) => {
     let updatedLeisure = { ...leisure };
     updatedLeisure[e.target.name] = e.target.value;
     setLeisure(updatedLeisure);
+  }
+
+  const handleFileChange = (e) => {
+    let files = e.target.files || e.dataTransfer.files;
+    if (!files.length)
+      return;
+    createImage(files[0]);
+  }
+
+  const createImage = (file) => {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      setLeisure({ ...leisure, thumbnail: e.target.result })
+    };
+    reader.readAsDataURL(file);
   }
 
   return (
@@ -62,8 +84,9 @@ export default function LeisureAdd() {
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
+            <h3>General Information</h3>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <TextField
                   required
                   id="post_name"
@@ -75,8 +98,62 @@ export default function LeisureAdd() {
                   onChange={handleInputChange}
                 />
               </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="alt_text"
+                  name="alt_text"
+                  label="Image Alt Text"
+                  value={leisure.alt_text}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
               <Grid item xs={6} sm={6}>
-                
+                <Fragment>
+                  <input
+                    color="primary"
+                    accept="image/*"
+                    type="file"
+                    onChange={handleFileChange}
+                    id="thumbnail"
+                    name="thumbnail"
+                    style={{ display: 'none', }}
+                  />
+                  <label htmlFor="thumbnail">
+                    <Button
+                      variant="contained"
+                      component="span"
+                      className={classes.button}
+                      size="large"
+                      color="primary"
+                      style={{ margin: 0, height: '100%', }}
+                    >
+                      <Image className={classes.extendedIcon} /> Upload Featured Image
+                    </Button>
+                  </label>
+                </Fragment>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                  <InputLabel id="room_type-label">Type</InputLabel>
+                  <Select
+                    labelId="room_type-label"
+                    id="room_type"
+                    name="room_type"
+                    value={leisure.room_type}
+                    onChange={handleInputChange}
+                    label="Type"
+                    fullWidth
+                  >
+                    <MenuItem value={-1}>
+                      <em>Select</em>
+                    </MenuItem>
+                    <MenuItem value={1}>Leisure</MenuItem>
+                    <MenuItem value={2}>Suite</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl variant="outlined" fullWidth className={classes.formControl}>
@@ -99,30 +176,6 @@ export default function LeisureAdd() {
                     <MenuItem value={4}>Full Ocean View</MenuItem>
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid item xs={6} sm={6}>
-                <Fragment>
-                  <input
-                    color="primary"
-                    accept="image/*"
-                    type="file"
-                    onChange={handleInputChange}
-                    id="thumbnail"
-                    name="thumbnail"
-                    style={{ display: 'none', }}
-                  />
-                  <label htmlFor="thumbnail">
-                    <Button
-                      variant="contained"
-                      component="span"
-                      className={classes.button}
-                      size="large"
-                      color="primary"
-                    >
-                      <Image className={classes.extendedIcon} /> Upload Featured Image
-                    </Button>
-                  </label>
-                </Fragment>
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Short Description</p>
@@ -185,6 +238,121 @@ export default function LeisureAdd() {
                     console.log('Focus.', editor);
                   }}
                 />
+              </Grid>
+            </Grid>
+            <h3>SEO Information</h3>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="meta_title"
+                  name="meta_title"
+                  label="Meta Title"
+                  value={leisure.meta_title}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="meta_description"
+                  name="meta_description"
+                  label="Meta Description"
+                  value={leisure.meta_description}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="schema_markup"
+                  name="schema_markup"
+                  label="Schema Markup"
+                  value={leisure.schema_markup}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="permalink"
+                  name="permalink"
+                  label="Permalink"
+                  value={leisure.permalink}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl component="fieldset">
+                  <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={leisure.is_followed} onChange={(e) => {
+                    setLeisure({ ...leisure, is_followed: !leisure.is_followed })
+                  }}>
+                    <FormControlLabel value={true} control={<Radio />} label="Follow" />
+                    <FormControlLabel value={false} control={<Radio />} label="No Follow" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl component="fieldset">
+                  <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={leisure.is_indexed} onChange={(e) => {
+                    setLeisure({ ...leisure, is_indexed: !leisure.is_indexed })
+                  }}>
+                    <FormControlLabel value={true} control={<Radio />} label="Index" />
+                    <FormControlLabel value={false} control={<Radio />} label="No Index" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </CardBody>
+        </Card>
+        <Card>
+          <CardBody>
+            <h3>Leisure Images</h3>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="alt_text"
+                  name="alt_text"
+                  label="Image Alt Text"
+                  value={leisure.alt_text}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={6} sm={6}>
+                <Fragment>
+                  <input
+                    color="primary"
+                    accept="image/*"
+                    type="file"
+                    onChange={handleInputChange}
+                    id="thumbnail"
+                    name="thumbnail"
+                    style={{ display: 'none', }}
+                  />
+                  <label htmlFor="thumbnail">
+                    <Button
+                      variant="contained"
+                      component="span"
+                      className={classes.button}
+                      size="large"
+                      color="primary"
+                      style={{ margin: 0, height: '100%', }}
+                    >
+                      <Image className={classes.extendedIcon} /> Upload Multiple Image
+                    </Button>
+                  </label>
+                </Fragment>
               </Grid>
             </Grid>
           </CardBody>

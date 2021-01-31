@@ -80,7 +80,7 @@ class WeddingList extends Component {
           filter: false,
           sort: false,
           customBodyRender: val => (
-            <Link to={`/admin/dining/${val}`} >
+            <Link to={`/admin/weddings/${val}`} >
               <VisibilityOutlined color="primary" />
             </Link>
           )
@@ -111,13 +111,13 @@ class WeddingList extends Component {
     return (
       <div>
         <Box marginBottom={4}>
-          <Link to="/admin/wedding/add">
+          <Link to="/admin/weddings/add">
             <Button
               variant="contained"
               color="primary"
               startIcon={<AddOutlined />}
             >
-              Add Restaurant
+              Add Wedding
           </Button>
           </Link>
         </Box>

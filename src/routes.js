@@ -172,7 +172,7 @@ const dashboardRoutes = [
     hide: true
   },
   {
-    path: "/spa-wellenss",
+    path: "/spa-wellness",
     name: "Spa & Wellness",
     rtlName: "ملف تعريفي للمستخدم",
     icon: SpaOutlined,
@@ -181,7 +181,7 @@ const dashboardRoutes = [
     exact: true
   },
   {
-    path: "/spa-wellenss/add",
+    path: "/spa-wellness/add",
     name: "Spa & Wellness",
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
@@ -191,7 +191,7 @@ const dashboardRoutes = [
     hide: true
   },
   {
-    path: "/spa-wellenss/:id",
+    path: "/spa-wellness/:id",
     name: "Spa & Wellness",
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
@@ -211,7 +211,7 @@ const dashboardRoutes = [
   },
   {
     path: "/whats-on/add",
-    name: "Offers",
+    name: "Leisure Activities",
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
     component: LeisureAdd,
@@ -221,7 +221,7 @@ const dashboardRoutes = [
   },
   {
     path: "/whats-on/:id",
-    name: "Offers",
+    name: "Leisure Activities",
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
     component: LeisureDetail,

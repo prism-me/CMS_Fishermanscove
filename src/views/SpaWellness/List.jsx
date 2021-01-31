@@ -111,18 +111,18 @@ class SpaWellnessList extends Component {
     return (
       <div>
         <Box marginBottom={4}>
-          <Link to="/admin/leisure/add">
+          <Link to="/admin/spa-wellness/add">
             <Button
               variant="contained"
               color="primary"
               startIcon={<AddOutlined />}
             >
-              Add Restaurant
+              Add Spa n Wellness
           </Button>
           </Link>
         </Box>
         <MUIDataTable
-          title="Leisure Activities"
+          title="Spa &amp; Wellness"
           columns={this.state.columns}
           data={this.state.rows}
           options={this.options}
