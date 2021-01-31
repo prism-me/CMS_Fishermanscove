@@ -37,9 +37,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function WeddingAdd() {
+export default function SpaWellnessAdd() {
   const classes = useStyles();
-  const [wedding, setWedding] = useState({
+  const [spaWellness, setSpaWellness] = useState({
     post_name: '',
     post_content: "<p>Detailed content goes here!</p>",
     short_description: "<p>Short description goes here!</p>",
@@ -48,9 +48,9 @@ export default function WeddingAdd() {
   })
 
   const handleInputChange = (e) => {
-    let updatedWedding = { ...wedding };
-    updatedWedding[e.target.name] = e.target.value;
-    setWedding(updatedWedding);
+    let updatedSpaWellness = { ...spaWellness };
+    updatedSpaWellness[e.target.name] = e.target.value;
+    setSpaWellness(updatedSpaWellness);
   }
 
   return (
@@ -58,7 +58,7 @@ export default function WeddingAdd() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Add Wedding Place</h4>
+            <h4 className={classes.cardTitleWhite}>Add SpaWellness Activity</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
@@ -69,7 +69,7 @@ export default function WeddingAdd() {
                   id="post_name"
                   name="post_name"
                   label="Name"
-                  value={wedding.post_name}
+                  value={spaWellness.post_name}
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
@@ -85,7 +85,7 @@ export default function WeddingAdd() {
                     labelId="category_id-label"
                     id="category_id"
                     name="category_id"
-                    value={wedding.category_id}
+                    value={spaWellness.category_id}
                     onChange={handleInputChange}
                     label="Category"
                     fullWidth
@@ -128,7 +128,7 @@ export default function WeddingAdd() {
                 <p>Short Description</p>
                 <CKEditor
                   editor={ClassicEditor}
-                  data={wedding.short_description}
+                  data={spaWellness.short_description}
                   // config={{
                   //   toolbar: ['bold', 'italic']
                   // }}
@@ -138,7 +138,7 @@ export default function WeddingAdd() {
                   }}
                   onChange={(event, editor) => {
                     const data = editor.getData();
-                    setWedding({ ...wedding, short_description: data })
+                    setSpaWellness({ ...spaWellness, short_description: data })
                   }}
                   onBlur={(event, editor) => {
                     console.log('Blur.', editor);
@@ -152,7 +152,7 @@ export default function WeddingAdd() {
                 <p>Detailed Content</p>
                 <CKEditor
                   editor={ClassicEditor}
-                  data={wedding.post_content}
+                  data={spaWellness.post_content}
                   // config={{
                   //   toolbar: ['bold', 'italic']
                   // }}
@@ -162,7 +162,7 @@ export default function WeddingAdd() {
                   }}
                   onChange={(event, editor) => {
                     const data = editor.getData();
-                    setWedding({ ...wedding, post_content: data })
+                    setSpaWellness({ ...spaWellness, post_content: data })
                   }}
                   onBlur={(event, editor) => {
                     console.log('Blur.', editor);

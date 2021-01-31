@@ -58,7 +58,7 @@ export default function LeisureAdd() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Add Restaurant/Bar</h4>
+            <h4 className={classes.cardTitleWhite}>Add Leisure Activity</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>

@@ -35,7 +35,7 @@ import NotificationsPage from "views/Notifications/Notifications.js";
 import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
 // core components/views for RTL layout
 import RTLPage from "views/RTLPage/RTLPage.js";
-import { HotelOutlined, RestaurantOutlined, CardGiftcardOutlined, SpaOutlined, ViewCarouselOutlined, FavoriteBorderOutlined, PoolOutlined } from "@material-ui/icons";
+import { HotelOutlined, RestaurantOutlined, CardGiftcardOutlined, SpaOutlined, ViewCarouselOutlined, FavoriteBorderOutlined, PoolOutlined, InsertDriveFileOutlined } from "@material-ui/icons";
 import AddOffer from "views/Offers/Add";
 import OffersList from "views/Offers/List";
 import RoomsList from "views/RoomsSuites/List";
@@ -44,6 +44,17 @@ import AddRoom from "views/RoomsSuites/Add";
 import DiningList from "views/Dining/List";
 import DiningDetail from "views/Dining/Details";
 import DiningAdd from "views/Dining/Add";
+import LeisureList from "views/Leisure/List";
+import WeddingList from "views/Wedding/List";
+import WeddingAdd from "views/Wedding/Add";
+import LeisureAdd from "views/Leisure/Add";
+import LeisureDetail from "views/Leisure/Details";
+import WeddingDetail from "views/Wedding/Details";
+import SpaWellnessList from "views/SpaWellness/List";
+import SpaWellnessAdd from "views/SpaWellness/Add";
+import PageAdd from "views/SitePages/Add";
+import PageDetail from "views/SitePages/Details";
+import PageList from "views/SitePages/List";
 
 const dashboardRoutes = [
   {
@@ -61,109 +72,198 @@ const dashboardRoutes = [
     icon: HotelOutlined,
     component: RoomsList,
     layout: "/admin",
-    exact:true
+    exact: true
   },
   {
     path: "/room-suites/add",
     component: AddRoom,
     layout: "/admin",
     hide: true,
-    exact:true
+    exact: true
   },
   {
     path: "/room-suites/:id",
     component: RoomDetail,
     layout: "/admin",
     hide: true,
-    exact:true
+    exact: true
   },
   {
     path: "/dining",
     name: "Restaurant & Bars",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: RestaurantOutlined ,
+    icon: RestaurantOutlined,
     component: DiningList,
     layout: "/admin",
-    exact:true
+    exact: true
   },
   {
     path: "/dining/add",
     component: DiningAdd,
     layout: "/admin",
-    hide:true,
-    exact:true
+    hide: true,
+    exact: true
   },
   {
     path: "/dining/:id",
     component: DiningDetail,
     layout: "/admin",
-    hide:true,
-    exact:true
+    hide: true,
+    exact: true
   },
   {
     path: "/weddings",
     name: "Weddings",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: FavoriteBorderOutlined ,
-    component: OffersList,
+    icon: FavoriteBorderOutlined,
+    component: WeddingList,
     layout: "/admin",
-    exact:true
+    exact: true
+  },
+  {
+    path: "/weddings/add",
+    name: "Weddings",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: WeddingAdd,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/weddings/:id",
+    name: "Weddings",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: WeddingDetail,
+    layout: "/admin",
+    exact: true,
+    hide: true
   },
   {
     path: "/offers",
     name: "Offers",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: CardGiftcardOutlined ,
+    icon: CardGiftcardOutlined,
     component: OffersList,
     layout: "/admin",
-    exact:true
+    exact: true
   },
   {
     path: "/offers/add",
     name: "Offers",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: CardGiftcardOutlined ,
+    icon: CardGiftcardOutlined,
     component: AddOffer,
     layout: "/admin",
-    exact:true,
-    hide:true
+    exact: true,
+    hide: true
   },
   {
     path: "/offers/:id",
     name: "Offers",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: CardGiftcardOutlined ,
+    icon: CardGiftcardOutlined,
     component: OffersList,
     layout: "/admin",
-    exact:true,
-    hide:true
+    exact: true,
+    hide: true
   },
   {
     path: "/spa-wellenss",
     name: "Spa & Wellness",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: SpaOutlined ,
-    component: DashboardPage,
+    icon: SpaOutlined,
+    component: SpaWellnessList,
     layout: "/admin",
-    exact:true
+    exact: true
+  },
+  {
+    path: "/spa-wellenss/add",
+    name: "Spa & Wellness",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: SpaWellnessAdd,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/spa-wellenss/:id",
+    name: "Spa & Wellness",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: SpaWellnessList,
+    layout: "/admin",
+    exact: true,
+    hide: true
   },
   {
     path: "/whats-on",
     name: "Leisure Activities",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: PoolOutlined ,
-    component: DashboardPage,
+    icon: PoolOutlined,
+    component: LeisureList,
     layout: "/admin",
-    exact:true
+    exact: true
+  },
+  {
+    path: "/whats-on/add",
+    name: "Offers",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: LeisureAdd,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/whats-on/:id",
+    name: "Offers",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: LeisureDetail,
+    layout: "/admin",
+    exact: true,
+    hide: true
   },
   {
     path: "/gallery",
     name: "Gallery",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: ViewCarouselOutlined ,
+    icon: ViewCarouselOutlined,
     component: DashboardPage,
     layout: "/admin",
-    exact:true
+    exact: true
+  },
+  {
+    path: "/pages",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: InsertDriveFileOutlined,
+    component: PageList,
+    layout: "/admin",
+    exact: true
+  },
+  {
+    path: "/pages/add",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: PageAdd,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/pages/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: PageDetail,
+    layout: "/admin",
+    exact: true,
+    hide: true
   },
   // {
   //   path: "/user",
