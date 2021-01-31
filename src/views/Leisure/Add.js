@@ -135,6 +135,13 @@ export default function LeisureAdd() {
                   onReady={editor => {
                     // You can store the "editor" and use when it is needed.
                     console.log('Editor is ready to use!', editor);
+                    editor.editing.view.change(writer => {
+                      writer.setStyle(
+                        "height",
+                        "150px",
+                        editor.editing.view.document.getRoot()
+                      );
+                    });
                   }}
                   onChange={(event, editor) => {
                     const data = editor.getData();
@@ -159,6 +166,13 @@ export default function LeisureAdd() {
                   onReady={editor => {
                     // You can store the "editor" and use when it is needed.
                     console.log('Editor is ready to use!', editor);
+                    editor.editing.view.change(writer => {
+                      writer.setStyle(
+                        "height",
+                        "150px",
+                        editor.editing.view.document.getRoot()
+                      );
+                    });
                   }}
                   onChange={(event, editor) => {
                     const data = editor.getData();
