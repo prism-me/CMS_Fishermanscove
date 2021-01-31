@@ -47,17 +47,17 @@ class RoomsList extends Component {
           sort: false,
         }
       },
-      {
-        name: "short_description",
-        label: "Description",
-        options: {
-          filter: true,
-          sort: false,
-          customBodyRender: val => (
-            val.length > 100 ? val.substr(0, 100) + '...' : val
-          )
-        }
-      },
+      // {
+      //   name: "short_description",
+      //   label: "Description",
+      //   options: {
+      //     filter: true,
+      //     sort: false,
+      //     customBodyRender: val => (
+      //       val.length > 100 ? val.substr(0, 100) + '...' : val
+      //     )
+      //   }
+      // },
       {
         name: "post_content",
         label: "Content",
@@ -71,7 +71,7 @@ class RoomsList extends Component {
       },
       {
         name: "id",
-        label: "",
+        label: null,
         options: {
           filter: false,
           sort: false,
@@ -92,7 +92,7 @@ class RoomsList extends Component {
   };
 
   componentDidMount() {
-    API.get('/all_rooms').then(response => {
+    API.get('/rooms').then(response => {
       let rows = response.data;
       // let rows = data.map(x=> {
       //   return {

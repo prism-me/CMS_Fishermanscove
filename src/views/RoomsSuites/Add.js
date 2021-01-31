@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, Suspense, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -7,16 +7,16 @@ import InputLabel from "@material-ui/core/InputLabel";
 // import GridContainer from "components/Grid/GridContainer.js";
 // import CustomInput from "components/CustomInput/CustomInput.js";
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
+// import Paper from '@material-ui/core/Paper';
 
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-import CardAvatar from "components/Card/CardAvatar.js";
+// import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
-import avatar from "assets/img/faces/marc.jpg";
+// import avatar from "assets/img/faces/marc.jpg";
 import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel } from "@material-ui/core";
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -50,15 +50,32 @@ export default function AddRoom() {
     meta_title: '',
     meta_description: '',
     schema_markup: '',
-    perma_link:'',
-    follow: true,
-    index: true
+    permalink: '',
+    is_followed: true,
+    is_indexed: true
   })
+
+  const [roomAdded, setRoomAdded] = useState(false);
 
   const handleInputChange = (e) => {
     let updatedRoom = { ...room };
     updatedRoom[e.target.name] = e.target.value;
     setRoom(updatedRoom);
+  }
+
+  const handleFileChange = (e) => {
+    let files = e.target.files || e.dataTransfer.files;
+    if (!files.length)
+      return;
+    createImage(files[0]);
+  }
+
+  const createImage = (file) => {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      setRoom({ ...room, thumbnail: e.target.result })
+    };
+    reader.readAsDataURL(file);
   }
 
   return (
@@ -102,7 +119,7 @@ export default function AddRoom() {
                     color="primary"
                     accept="image/*"
                     type="file"
-                    onChange={handleInputChange}
+                    onChange={handleFileChange}
                     id="thumbnail"
                     name="thumbnail"
                     style={{ display: 'none', }}
@@ -253,31 +270,11 @@ export default function AddRoom() {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl component="fieldset">
-                  <RadioGroup aria-label="follow" row defaultChecked name="follow" value={room.follow} onChange={(e) => {
-                    setRoom({ ...room, follow: !room.follow })
-                  }}>
-                    <FormControlLabel value={true} control={<Radio />} label="Follow" />
-                    <FormControlLabel value={false} control={<Radio />} label="No Follow" />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl component="fieldset">
-                  <RadioGroup aria-label="index" row defaultChecked name="index" value={room.index} onChange={(e) => {
-                    setRoom({ ...room, index: !room.index })
-                  }}>
-                    <FormControlLabel value={true} control={<Radio />} label="Index" />
-                    <FormControlLabel value={false} control={<Radio />} label="No Index" />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   id="schema_markup"
                   name="schema_markup"
-                  label="Meta Description"
+                  label="Schema Markup"
                   value={room.schema_markup}
                   variant="outlined"
                   fullWidth
@@ -287,14 +284,78 @@ export default function AddRoom() {
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
-                  id="perma_link"
-                  name="perma_link"
-                  label="Meta Description"
-                  value={room.perma_link}
+                  id="permalink"
+                  name="permalink"
+                  label="Permalink"
+                  value={room.permalink}
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
                 />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl component="fieldset">
+                  <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={room.is_followed} onChange={(e) => {
+                    setRoom({ ...room, is_followed: !room.is_followed })
+                  }}>
+                    <FormControlLabel value={true} control={<Radio />} label="Follow" />
+                    <FormControlLabel value={false} control={<Radio />} label="No Follow" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl component="fieldset">
+                  <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={room.is_indexed} onChange={(e) => {
+                    setRoom({ ...room, is_indexed: !room.is_indexed })
+                  }}>
+                    <FormControlLabel value={true} control={<Radio />} label="Index" />
+                    <FormControlLabel value={false} control={<Radio />} label="No Index" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </CardBody>
+        </Card>
+        <Card>
+          <CardBody>
+            <h3>Room Images</h3>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="alt_text"
+                  name="alt_text"
+                  label="Image Alt Text"
+                  value={room.alt_text}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={6} sm={6}>
+                <Fragment>
+                  <input
+                    color="primary"
+                    accept="image/*"
+                    type="file"
+                    onChange={handleInputChange}
+                    id="thumbnail"
+                    name="thumbnail"
+                    style={{ display: 'none', }}
+                  />
+                  <label htmlFor="thumbnail">
+                    <Button
+                      variant="contained"
+                      component="span"
+                      className={classes.button}
+                      size="large"
+                      color="primary"
+                      style={{ margin: 0, height: '100%', }}
+                    >
+                      <Image className={classes.extendedIcon} /> Upload Multiple Image
+                    </Button>
+                  </label>
+                </Fragment>
               </Grid>
             </Grid>
           </CardBody>

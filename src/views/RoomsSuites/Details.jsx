@@ -62,7 +62,7 @@ export const RoomDetail = React.memo(function ReviewCard() {
   const [room, setRoom] = useState(null);
 
   useEffect(() => {
-    API.get(`/single_post/${params.id}`).then(response => {
+    API.get(`/rooms/${params.id}`).then(response => {
       if (response.status === 200) {
         setRoom(response.data)
       }
@@ -87,7 +87,7 @@ export const RoomDetail = React.memo(function ReviewCard() {
         <Box color={'grey.500'} display={'flex'} alignItems={'center'} mb={1}>
           <Chip
             // icon={<FaceOutlined />}
-            label={room?.room_type === 0 ? 'Room' : 'Suite'}
+            label={room?.room_type === 1 ? 'Room' : 'Suite'}
             clickable={false}
             size="small"
             color="primary"
@@ -96,7 +96,7 @@ export const RoomDetail = React.memo(function ReviewCard() {
         <Box color={'grey.500'} display={'flex'} alignItems={'center'} mb={1}>
           <Chip
             // icon={<FaceOutlined />}
-            label={room?.post_category?.category_name}
+            label={room?.post_category?.[0]?.category_name}
             clickable={false}
             size="small"
           // color="primary"
