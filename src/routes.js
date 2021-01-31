@@ -35,7 +35,7 @@ import NotificationsPage from "views/Notifications/Notifications.js";
 import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
 // core components/views for RTL layout
 import RTLPage from "views/RTLPage/RTLPage.js";
-import { HotelOutlined, RestaurantOutlined, CardGiftcardOutlined, SpaOutlined, ViewCarouselOutlined } from "@material-ui/icons";
+import { HotelOutlined, RestaurantOutlined, CardGiftcardOutlined, SpaOutlined, ViewCarouselOutlined, FavoriteBorderOutlined, PoolOutlined } from "@material-ui/icons";
 import AddOffer from "views/Offers/Add";
 import OffersList from "views/Offers/List";
 import RoomsList from "views/RoomsSuites/List";
@@ -101,6 +101,15 @@ const dashboardRoutes = [
     exact:true
   },
   {
+    path: "/weddings",
+    name: "Weddings",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: FavoriteBorderOutlined ,
+    component: OffersList,
+    layout: "/admin",
+    exact:true
+  },
+  {
     path: "/offers",
     name: "Offers",
     rtlName: "ملف تعريفي للمستخدم",
@@ -134,6 +143,15 @@ const dashboardRoutes = [
     name: "Spa & Wellness",
     rtlName: "ملف تعريفي للمستخدم",
     icon: SpaOutlined ,
+    component: DashboardPage,
+    layout: "/admin",
+    exact:true
+  },
+  {
+    path: "/whats-on",
+    name: "Leisure Activities",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: PoolOutlined ,
     component: DashboardPage,
     layout: "/admin",
     exact:true
