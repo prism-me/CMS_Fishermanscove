@@ -17,7 +17,7 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField } from "@material-ui/core";
+import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel } from "@material-ui/core";
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -45,7 +45,14 @@ export default function AddRoom() {
     short_description: "<p>Short description goes here!</p>",
     room_type: -1,
     category_id: -1,
-    thumbnail:''
+    thumbnail: '',
+    alt_text: '',
+    meta_title: '',
+    meta_description: '',
+    schema_markup: '',
+    perma_link:'',
+    follow: true,
+    index: true
   })
 
   const handleInputChange = (e) => {
@@ -63,14 +70,27 @@ export default function AddRoom() {
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
+            <h3>General Information</h3>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <TextField
                   required
                   id="post_name"
                   name="post_name"
                   label="Name"
                   value={room.post_name}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="alt_text"
+                  name="alt_text"
+                  label="Image Alt Text"
+                  value={room.alt_text}
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
@@ -94,6 +114,7 @@ export default function AddRoom() {
                       className={classes.button}
                       size="large"
                       color="primary"
+                      style={{ margin: 0, height: '100%', }}
                     >
                       <Image className={classes.extendedIcon} /> Upload Featured Image
                     </Button>
@@ -202,6 +223,77 @@ export default function AddRoom() {
                   onFocus={(event, editor) => {
                     console.log('Focus.', editor);
                   }}
+                />
+              </Grid>
+            </Grid>
+            <h3>SEO Information</h3>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="meta_title"
+                  name="meta_title"
+                  label="Meta Title"
+                  value={room.meta_title}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="meta_description"
+                  name="meta_description"
+                  label="Meta Description"
+                  value={room.meta_description}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl component="fieldset">
+                  <RadioGroup aria-label="follow" row defaultChecked name="follow" value={room.follow} onChange={(e) => {
+                    setRoom({ ...room, follow: !room.follow })
+                  }}>
+                    <FormControlLabel value={true} control={<Radio />} label="Follow" />
+                    <FormControlLabel value={false} control={<Radio />} label="No Follow" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl component="fieldset">
+                  <RadioGroup aria-label="index" row defaultChecked name="index" value={room.index} onChange={(e) => {
+                    setRoom({ ...room, index: !room.index })
+                  }}>
+                    <FormControlLabel value={true} control={<Radio />} label="Index" />
+                    <FormControlLabel value={false} control={<Radio />} label="No Index" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="schema_markup"
+                  name="schema_markup"
+                  label="Meta Description"
+                  value={room.schema_markup}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="perma_link"
+                  name="perma_link"
+                  label="Meta Description"
+                  value={room.perma_link}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
                 />
               </Grid>
             </Grid>
