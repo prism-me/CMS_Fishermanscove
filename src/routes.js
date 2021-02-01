@@ -57,6 +57,7 @@ import SpaWellnessAdd from "views/SpaWellness/Add";
 import PageAdd from "views/SitePages/Add";
 import PageDetail from "views/SitePages/Details";
 import PageList from "views/SitePages/List";
+import Footer from "views/Footer/Add";
 
 const dashboardRoutes = [
   {
@@ -266,6 +267,15 @@ const dashboardRoutes = [
     layout: "/admin",
     exact: true,
     hide: true
+  },
+  {
+    path: "/footer",
+    name: "Main Footer",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: InsertDriveFileOutlined,
+    component: Footer,
+    layout: "/admin",
+    exact: true
   },
   // {
   //   path: "/user",

@@ -1,0 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Roboto:wght@400;500;700&family=Lora:ital,wght@400;500;600;700&family=Montserrat:ital,wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+// Font Family
+$oldstan: 'Old Standard TT', serif;
+$archivo: 'Archivo', sans-serif;
+$roboto: 'Roboto', sans-serif;
+$lora: 'Lora', serif;
+$mont: 'Montserrat', serif;
+
+// Colors ---------------
+$primary-color: #be8a7d;
+$secondary-color: #07585c;
+$text-color: #777;
+$heading-color: #222;
+$main-bg: #f8f8f8;
+$black: #111;
+$white: #fff;
+$nile-blue: #183254;
+$mine-shaft:#303030;
+$eden:#11595c;
+$para-color: #444444;
+
+// Responsive Variables
+$xxl: '(min-width: 1600px)';
+$xl: 'only screen and (min-width: 1200px) and (max-width: 1599px)';
+$lg: 'only screen and (min-width: 992px) and (max-width: 1199px)';
+$md: 'only screen and (min-width: 768px) and (max-width: 991px)';
+$sm: '(max-width: 767px)';
+$lsm: 'only screen and (min-width: 576px) and (max-width: 767px)';
+$xsm: '(max-width: 575px)';
+$tiny: '(max-width: 399px)';
+
+//spacing
+$v-sp-lg: 2rem;
+$v-sp-sm: 1rem;
