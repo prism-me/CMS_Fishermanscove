@@ -8,6 +8,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 // import CustomInput from "components/CustomInput/CustomInput.js";
 import Grid from '@material-ui/core/Grid';
 // import Paper from '@material-ui/core/Paper';
+import MaterialButton from '@material-ui/core/Button';
 
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
@@ -22,6 +23,7 @@ import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormContro
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
+import API from "utils/http";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,12 +40,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DiningAdd() {
   const classes = useStyles();
-  const [dining, setDining] = useState({
+  const initialObject = {
     post_name: '',
     post_content: "<p>Detailed content goes here!</p>",
     short_description: "<p>Short description goes here!</p>",
     room_type: -1,
-    category_id: -1,
+    parent_id: -1,
     thumbnail: '',
     alt_text: '',
     meta_title: '',
@@ -51,10 +53,12 @@ export default function DiningAdd() {
     schema_markup: '',
     permalink: '',
     is_followed: true,
-    is_indexed: true
-  })
+    is_indexed: true,
+    is_indexed_or_is_followed: 1
+  }
+  const [dining, setDining] = useState({...initialObject})
 
-  const [diningAdded, setDiningAdded] = useState(false);
+  const [newPostID, setNewPostID] = useState(-1);
 
   const handleInputChange = (e) => {
     let updatedDining = { ...dining };
@@ -75,6 +79,14 @@ export default function DiningAdd() {
       setDining({ ...dining, thumbnail: e.target.result })
     };
     reader.readAsDataURL(file);
+  }
+
+  const handleSubmit = () => {
+    API.post('/dining', dining).then(response => {
+      console.log(response);
+      //clear all fields
+      setDining({ ...initialObject });
+    })
   }
 
   return (
@@ -159,12 +171,12 @@ export default function DiningAdd() {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl variant="outlined" fullWidth className={classes.formControl}>
-                  <InputLabel id="category_id-label">Category</InputLabel>
+                  <InputLabel id="parent_id-label">Category</InputLabel>
                   <Select
-                    labelId="category_id-label"
-                    id="category_id"
-                    name="category_id"
-                    value={dining.category_id}
+                    labelId="parent_id-label"
+                    id="parent_id"
+                    name="parent_id"
+                    value={dining.parent_id}
                     onChange={handleInputChange}
                     label="Category"
                     fullWidth
@@ -311,6 +323,11 @@ export default function DiningAdd() {
                     <FormControlLabel value={false} control={<Radio />} label="No Index" />
                   </RadioGroup>
                 </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <MaterialButton onClick={handleSubmit} style={{ float: 'right' }} variant="contained" color="primary" size="large">
+                  Submit
+                </MaterialButton>
               </Grid>
             </Grid>
           </CardBody>

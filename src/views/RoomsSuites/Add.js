@@ -84,7 +84,6 @@ export default function AddRoom() {
 
   const handleSubmit = () => {
     API.post('/rooms', room).then(response => {
-      debugger;
       console.log(response);
       //clear all fields
       setRoom({ ...initialObject });
