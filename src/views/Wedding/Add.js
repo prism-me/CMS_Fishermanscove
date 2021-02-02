@@ -8,6 +8,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 // import CustomInput from "components/CustomInput/CustomInput.js";
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import MaterialButton from '@material-ui/core/Button';
 
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
@@ -22,6 +23,7 @@ import { MenuItem, Select, FormControl, TextField, RadioGroup, Radio, FormContro
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
+import API from "utils/http";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,11 +41,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function WeddingAdd() {
   const classes = useStyles();
-  const [wedding, setWedding] = useState({
+  const initialObject = {
     post_name: '',
     post_content: "<p>Detailed content goes here!</p>",
     short_description: "<p>Short description goes here!</p>",
-    category_id: -1,
+    room_type: -1,
+    parent_id: -1,
     thumbnail: '',
     alt_text: '',
     meta_title: '',
@@ -51,8 +54,10 @@ export default function WeddingAdd() {
     schema_markup: '',
     permalink: '',
     is_followed: true,
-    is_indexed: true
-  })
+    is_indexed: true,
+    is_indexed_or_is_followed: 1
+  }
+  const [wedding, setWedding] = useState({...initialObject})
 
   const handleInputChange = (e) => {
     let updatedWedding = { ...wedding };
@@ -73,6 +78,16 @@ export default function WeddingAdd() {
     };
     reader.readAsDataURL(file);
   }
+
+  
+  const handleSubmit = () => {
+    API.post('/wedding', wedding).then(response => {
+      console.log(response);
+      //clear all fields
+      setWedding({ ...initialObject });
+    })
+  }
+
   return (
     <div>
       <div className={classes.root}>
@@ -307,6 +322,11 @@ export default function WeddingAdd() {
                     <FormControlLabel value={false} control={<Radio />} label="No Index" />
                   </RadioGroup>
                 </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <MaterialButton onClick={handleSubmit} style={{ float: 'right' }} variant="contained" color="primary" size="large">
+                  Submit
+                </MaterialButton>
               </Grid>
             </Grid>
           </CardBody>

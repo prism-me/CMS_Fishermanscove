@@ -96,7 +96,7 @@ class WeddingList extends Component {
   };
 
   componentDidMount() {
-    API.get('/dining').then(response => {
+    API.get('/wedding').then(response => {
       let rows = response.data;
       // let rows = data.map(x=> {
       //   return {
