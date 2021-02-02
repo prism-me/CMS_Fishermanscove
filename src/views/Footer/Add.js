@@ -153,20 +153,20 @@ export default function UpdateFooter() {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <MaterialButton
-                  variant="outlined"
+                  variant="contained"
                   component="span"
                   className={classes.button}
                   size="small"
                   color="primary"
                   onClick={() => setFooterContent({ ...footerContent, second: { ...footerContent.second, links: [...footerContent.second.links, { text: '', address: '' }] } })}
                 >
-                  Add Link
+                  Add a New Link
                 </MaterialButton>
               </Grid>
               {
                 footerContent?.second?.links?.map(x => (
                   <React.Fragment>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={5}>
                       <TextField
                         required
                         id="post_name"
@@ -178,7 +178,7 @@ export default function UpdateFooter() {
                         onChange={handleInputChange}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={5}>
                       <TextField
                         required
                         id="post_name"
@@ -190,18 +190,23 @@ export default function UpdateFooter() {
                         onChange={handleInputChange}
                       />
                     </Grid>
+                    <Grid item xs={12} sm={2}>
+                      <MaterialButton color="secondary" size="small" variant="contained" style={{height:'100%'}}>
+                        Delete Link
+                      </MaterialButton>
+                    </Grid>
                   </React.Fragment>
                 ))
               }
             </Grid>
-            <h3>SEO Information</h3>
+            <h3>Third Column (Contact Us)</h3>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   id="meta_title"
                   name="meta_title"
-                  label="Meta Title"
+                  label="Phone Number"
                   value={dining.meta_title}
                   variant="outlined"
                   fullWidth
@@ -213,7 +218,7 @@ export default function UpdateFooter() {
                   required
                   id="meta_description"
                   name="meta_description"
-                  label="Meta Description"
+                  label="Email Address"
                   value={dining.meta_description}
                   variant="outlined"
                   fullWidth
@@ -225,88 +230,12 @@ export default function UpdateFooter() {
                   required
                   id="schema_markup"
                   name="schema_markup"
-                  label="Schema Markup"
+                  label="Location"
                   value={dining.schema_markup}
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="permalink"
-                  name="permalink"
-                  label="Permalink"
-                  value={dining.permalink}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl component="fieldset">
-                  <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={dining.is_followed} onChange={(e) => {
-                    setDining({ ...dining, is_followed: !dining.is_followed })
-                  }}>
-                    <FormControlLabel value={true} control={<Radio />} label="Follow" />
-                    <FormControlLabel value={false} control={<Radio />} label="No Follow" />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl component="fieldset">
-                  <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={dining.is_indexed} onChange={(e) => {
-                    setDining({ ...dining, is_indexed: !dining.is_indexed })
-                  }}>
-                    <FormControlLabel value={true} control={<Radio />} label="Index" />
-                    <FormControlLabel value={false} control={<Radio />} label="No Index" />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-            </Grid>
-          </CardBody>
-        </Card>
-        <Card>
-          <CardBody>
-            <h3>Dining Images</h3>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="alt_text"
-                  name="alt_text"
-                  label="Image Alt Text"
-                  value={dining.alt_text}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={6} sm={6}>
-                <Fragment>
-                  <input
-                    color="primary"
-                    accept="image/*"
-                    type="file"
-                    onChange={handleInputChange}
-                    id="thumbnail"
-                    name="thumbnail"
-                    style={{ display: 'none', }}
-                  />
-                  <label htmlFor="thumbnail">
-                    <Button
-                      variant="contained"
-                      component="span"
-                      className={classes.button}
-                      size="large"
-                      color="primary"
-                      style={{ margin: 0, height: '100%', }}
-                    >
-                      <Image className={classes.extendedIcon} /> Upload Multiple Image
-                    </Button>
-                  </label>
-                </Fragment>
               </Grid>
             </Grid>
           </CardBody>
