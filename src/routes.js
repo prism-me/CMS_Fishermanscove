@@ -58,6 +58,7 @@ import PageAdd from "views/SitePages/Add";
 import PageDetail from "views/SitePages/Details";
 import PageList from "views/SitePages/List";
 import Footer from "views/Footer/Add";
+import UpdateHeader from "views/Header/Add";
 
 const dashboardRoutes = [
   {
@@ -274,6 +275,15 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: InsertDriveFileOutlined,
     component: Footer,
+    layout: "/admin",
+    exact: true
+  },
+  {
+    path: "/header",
+    name: "Main Header",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: InsertDriveFileOutlined,
+    component: UpdateHeader,
     layout: "/admin",
     exact: true
   },
