@@ -18,9 +18,10 @@ import CardFooter from "components/Card/CardFooter.js";
 
 import avatar from "assets/img/faces/marc.jpg";
 import { MenuItem, Select, FormControl, TextField } from "@material-ui/core";
+import CKEditor from 'ckeditor4-react';
 
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
+// import { CKEditor } from '@ckeditor/ckeditor5-react';
+// import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -126,7 +127,7 @@ export default function PageAdd() {
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Short Description</p>
-                <CKEditor
+                {/* <CKEditor
                   editor={ClassicEditor}
                   data={leisure.short_description}
                   // config={{
@@ -146,11 +147,13 @@ export default function PageAdd() {
                   onFocus={(event, editor) => {
                     console.log('Focus.', editor);
                   }}
-                />
+                /> */}
+                <CKEditor data={leisure.short_description} onChange={(e)=> setLeisure({...leisure, short_description: e.editor.getData()})} />
+
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Detailed Content</p>
-                <CKEditor
+                {/* <CKEditor
                   editor={ClassicEditor}
                   data={leisure.post_content}
                   // config={{
@@ -170,7 +173,9 @@ export default function PageAdd() {
                   onFocus={(event, editor) => {
                     console.log('Focus.', editor);
                   }}
-                />
+                /> */}
+                <CKEditor data={leisure.post_content} onChange={(e)=> setLeisure({...leisure, post_content: e.editor.getData()})} />
+
               </Grid>
             </Grid>
           </CardBody>

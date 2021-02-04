@@ -19,9 +19,10 @@ import CardFooter from "components/Card/CardFooter.js";
 
 // import avatar from "assets/img/faces/marc.jpg";
 import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel } from "@material-ui/core";
+import CKEditor from 'ckeditor4-react';
 
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
+// import { CKEditor } from '@ckeditor/ckeditor5-react';
+// import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 // import ClassicEditor from "../../plugins/ckeditor.js";
 // import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock";
 import { Image } from "@material-ui/icons";
@@ -200,7 +201,7 @@ export default function AddRoom() {
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Short Description</p>
-                <CKEditor
+                {/* <CKEditor
                   editor={ClassicEditor}
                   data={room.short_description}
                   // config={{
@@ -227,11 +228,13 @@ export default function AddRoom() {
                   onFocus={(event, editor) => {
                     console.log('Focus.', editor);
                   }}
-                />
+                /> */}
+                <CKEditor data={room.short_description} onChange={(e)=> setRoom({...room, short_description: e.editor.getData()})} />
+
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Detailed Content</p>
-                <CKEditor
+                {/* <CKEditor
                   editor={ClassicEditor}
                   data={room.post_content}
                   config={{
@@ -263,7 +266,9 @@ export default function AddRoom() {
                   onFocus={(event, editor) => {
                     console.log('Focus.', editor);
                   }}
-                />
+                /> */}
+                <CKEditor data={room.post_content} onChange={(e)=> setRoom({...room, post_content: e.editor.getData()})} />
+
               </Grid>
             </Grid>
             <h4 className="mt-2">SEO Information</h4>
