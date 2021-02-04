@@ -222,7 +222,7 @@ export default function AddOffer() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor data={offer.short_description} onChange={(e)=> setOffer({...offer, short_description: e.editor.getData()})} />
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={offer.short_description} onChange={(e)=> setOffer({...offer, short_description: e.editor.getData()})} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
@@ -255,7 +255,7 @@ export default function AddOffer() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor data={offer.post_content} onChange={(e)=> setOffer({...offer, post_content: e.editor.getData()})} />
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={offer.post_content} onChange={(e)=> setOffer({...offer, post_content: e.editor.getData()})} />
 
               </Grid>
             </Grid>

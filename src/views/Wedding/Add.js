@@ -226,7 +226,7 @@ export default function WeddingAdd() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor data={wedding.short_description} onChange={(e)=> setWedding({...wedding, short_description: e.editor.getData()})} />
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.short_description} onChange={(e)=> setWedding({...wedding, short_description: e.editor.getData()})} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
@@ -259,7 +259,7 @@ export default function WeddingAdd() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor data={wedding.post_content} onChange={(e)=> setWedding({...wedding, post_content: e.editor.getData()})} />
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.post_content} onChange={(e)=> setWedding({...wedding, post_content: e.editor.getData()})} />
 
               </Grid>
             </Grid>

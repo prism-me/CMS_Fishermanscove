@@ -86,6 +86,13 @@ const dashboardRoutes = [
     exact: true
   },
   {
+    path: "/room-suites/edit/:id",
+    component: AddRoom,
+    layout: "/admin",
+    hide: true,
+    exact: true
+  },
+  {
     path: "/room-suites/:id",
     component: RoomDetail,
     layout: "/admin",

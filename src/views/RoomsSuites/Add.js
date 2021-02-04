@@ -1,4 +1,4 @@
-import React, { Fragment, Suspense, useState } from "react";
+import React, { Fragment, Suspense, useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -27,6 +27,7 @@ import CKEditor from 'ckeditor4-react';
 // import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock";
 import { Image } from "@material-ui/icons";
 import API from "utils/http";
+import { useParams, withRouter } from "react-router-dom";
 
 // ClassicEditor.b
 
@@ -44,8 +45,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function AddRoom() {
+export default withRouter(function AddRoom(props) {
   const classes = useStyles();
+  //check if edit or add request
+  let { id } = useParams();
+
   const initialObject = {
     post_name: '',
     post_content: "<p>Detailed content goes here!</p>",
@@ -60,11 +64,23 @@ export default function AddRoom() {
     permalink: '',
     is_followed: true,
     is_indexed: true,
-    is_indexed_or_is_followed: 1
+    is_indexed_or_is_followed: "1,1"
   };
   const [room, setRoom] = useState({ ...initialObject })
+  const [isEdit, setIsEdit] = useState(false);
 
   const [newPostID, setNewPostID] = useState(-1);
+
+  useEffect(() => {
+    if (id && id != null) {
+      setIsEdit(true);
+      API.get(`/rooms/${id}/edit`).then(response => {
+        if (response.status === 200) {
+          setRoom({ ...room, ...response?.data?.content[0] })
+        }
+      })
+    }
+  }, [])
 
   const handleInputChange = (e) => {
     let updatedRoom = { ...room };
@@ -88,11 +104,21 @@ export default function AddRoom() {
   }
 
   const handleSubmit = () => {
-    API.post('/rooms', room).then(response => {
-      console.log(response);
-      //clear all fields
-      setRoom({ ...initialObject });
-    })
+    if (isEdit) {
+      API.put(`/rooms/${id}`, room).then(response => {
+        console.log(response);
+        //clear all fields
+        setRoom({ ...initialObject });
+        props.history.push('/admin/room-suites');
+      })
+    }
+    else {
+      API.post('/rooms', room).then(response => {
+        console.log(response);
+        //clear all fields
+        setRoom({ ...initialObject });
+      })
+    }
   }
 
   return (
@@ -229,8 +255,7 @@ export default function AddRoom() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor data={room.short_description} onChange={(e)=> setRoom({...room, short_description: e.editor.getData()})} />
-
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={room.short_description} onChange={(e) => setRoom({ ...room, short_description: e.editor.getData() })} />
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Detailed Content</p>
@@ -267,7 +292,7 @@ export default function AddRoom() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor data={room.post_content} onChange={(e)=> setRoom({...room, post_content: e.editor.getData()})} />
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={room.post_content} onChange={(e) => setRoom({ ...room, post_content: e.editor.getData() })} />
 
               </Grid>
             </Grid>
@@ -402,4 +427,4 @@ export default function AddRoom() {
       </div>
     </div>
   );
-}
+})

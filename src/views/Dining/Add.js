@@ -226,7 +226,7 @@ export default function DiningAdd() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor data={dining.short_description} onChange={(e)=> setDining({...dining, short_description: e.editor.getData()})} />
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={dining.short_description} onChange={(e)=> setDining({...dining, short_description: e.editor.getData()})} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
@@ -259,7 +259,7 @@ export default function DiningAdd() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor data={dining.post_content} onChange={(e)=> setDining({...dining, post_content: e.editor.getData()})} />
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={dining.post_content} onChange={(e)=> setDining({...dining, post_content: e.editor.getData()})} />
 
               </Grid>
             </Grid>

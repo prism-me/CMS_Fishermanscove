@@ -212,7 +212,7 @@ export default function LeisureAdd() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor data={leisure.short_description} onChange={(e)=> setLeisure({...leisure, short_description: e.editor.getData()})} />
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.short_description} onChange={(e)=> setLeisure({...leisure, short_description: e.editor.getData()})} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
@@ -245,7 +245,7 @@ export default function LeisureAdd() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor data={leisure.post_content} onChange={(e)=> setLeisure({...leisure, post_content: e.editor.getData()})} />
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.post_content} onChange={(e)=> setLeisure({...leisure, post_content: e.editor.getData()})} />
 
               </Grid>
             </Grid>
