@@ -1,4 +1,4 @@
-import React, { Fragment, Suspense, useState } from "react";
+import React, { Fragment, Suspense, useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -25,6 +25,7 @@ import CKEditor from 'ckeditor4-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
 import API from "utils/http";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DiningAdd() {
   const classes = useStyles();
+
+  //check if edit or add request
+  let { id } = useParams();
+  
   const initialObject = {
     post_name: '',
     post_content: "<p>Detailed content goes here!</p>",
@@ -60,7 +65,18 @@ export default function DiningAdd() {
   const [dining, setDining] = useState({ ...initialObject })
 
   const [newPostID, setNewPostID] = useState(-1);
+  const [isEdit, setIsEdit] = useState(false);
 
+  useEffect(() => {
+    if (id && id != null) {
+      setIsEdit(true);
+      API.get(`/dining/${id}/edit`).then(response => {
+        if (response.status === 200) {
+          setDining({ ...dining, ...response?.data?.category_details?.[0] })
+        }
+      })
+    }
+  }, [])
   const handleInputChange = (e) => {
     let updatedDining = { ...dining };
     updatedDining[e.target.name] = e.target.value;

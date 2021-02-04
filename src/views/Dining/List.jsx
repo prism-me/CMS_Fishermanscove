@@ -3,7 +3,7 @@ import MUIDataTable from "mui-datatables";
 import API from 'utils/http';
 import { Avatar, Box, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { AddOutlined, VisibilityOutlined } from '@material-ui/icons';
+import { AddOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
 
 class DiningList extends Component {
   state = {
@@ -80,9 +80,14 @@ class DiningList extends Component {
           filter: false,
           sort: false,
           customBodyRender: val => (
-            <Link to={`/admin/dining/${val}`} >
-              <VisibilityOutlined color="primary" />
-            </Link>
+            <div className="d-flex nowrap">
+              <Link to={`/admin/dining/${val}`} >
+                <VisibilityOutlined color="primary" />
+              </Link>
+              <Link className="ml-2" title="Edit" to={`/admin/dining/edit/${val}`} >
+                <EditOutlined color="secondary"  />
+              </Link>
+            </div>
           )
         }
       },

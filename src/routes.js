@@ -116,6 +116,13 @@ const dashboardRoutes = [
     exact: true
   },
   {
+    path: "/dining/edit/:id",
+    component: DiningAdd,
+    layout: "/admin",
+    hide: true,
+    exact: true
+  },
+  {
     path: "/dining/:id",
     component: DiningDetail,
     layout: "/admin",
