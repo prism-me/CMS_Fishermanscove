@@ -104,7 +104,7 @@ export default withRouter(function DiningAdd(props) {
         console.log(response);
         alert("Record Updated")
         //clear all fields
-        setRoom({ ...initialObject });
+        setDining({ ...initialObject });
         props.history.push('/admin/dining');
       })
     } else {

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -26,6 +26,7 @@ import CKEditor from 'ckeditor4-react';
 import { Image } from "@material-ui/icons";
 import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
+import { ckEditorConfig } from "utils/data";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default withRouter(function WeddingAdd() {
+export default withRouter(function WeddingAdd(props) {
   const classes = useStyles();
   //check if edit or add request
   let { id } = useParams();
@@ -252,9 +253,10 @@ export default withRouter(function WeddingAdd() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.short_description} onChange={(e) => setWedding({ ...wedding, short_description: e.editor.getData() })} />
-
+                <CKEditor config={ckEditorConfig} onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} type="classic" data={wedding.short_description} onChange={(e) => setWedding({ ...wedding, short_description: e.editor.getData() })}
+                />
               </Grid>
+
               <Grid item xs={12} sm={12}>
                 <p>Detailed Content</p>
                 {/* <CKEditor

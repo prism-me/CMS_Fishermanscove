@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MUIDataTable from "mui-datatables";
 import API from 'utils/http';
 import { Avatar, Box, Button } from '@material-ui/core';
-import { AddOutlined } from '@material-ui/icons';
+import { AddOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 
 class OffersList extends Component {
@@ -58,7 +58,24 @@ class OffersList extends Component {
       //     sort: false,
       //   }
       // },
-      
+      {
+        name: "id",
+        label: null,
+        options: {
+          filter: false,
+          sort: false,
+          customBodyRender: val => (
+            <div className="d-flex nowrap">
+              <Link title="View Details" to={`/admin/offers/${val}`} >
+                <VisibilityOutlined color="primary" />
+              </Link>
+              <Link className="ml-2" title="Edit" to={`/admin/offers/edit/${val}`} >
+                <EditOutlined color="secondary"  />
+              </Link>
+            </div>
+          )
+        }
+      },
     ],
     rows: []
   }
