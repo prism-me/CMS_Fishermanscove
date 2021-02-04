@@ -149,6 +149,16 @@ const dashboardRoutes = [
     hide: true
   },
   {
+    path: "/weddings/edit/:id",
+    name: "Weddings",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: WeddingAdd,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
     path: "/weddings/:id",
     name: "Weddings",
     rtlName: "ملف تعريفي للمستخدم",

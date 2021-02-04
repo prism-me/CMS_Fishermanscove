@@ -107,6 +107,7 @@ export default withRouter(function AddRoom(props) {
     if (isEdit) {
       API.put(`/rooms/${id}`, room).then(response => {
         console.log(response);
+        alert("Record Updated")
         //clear all fields
         setRoom({ ...initialObject });
         props.history.push('/admin/room-suites');

@@ -25,7 +25,7 @@ import CKEditor from 'ckeditor4-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
 import API from "utils/http";
-import { useParams } from "react-router-dom";
+import { useParams, withRouter } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,12 +40,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function DiningAdd() {
+export default withRouter(function DiningAdd(props) {
   const classes = useStyles();
 
   //check if edit or add request
   let { id } = useParams();
-  
+
   const initialObject = {
     post_name: '',
     post_content: "<p>Detailed content goes here!</p>",
@@ -99,11 +99,21 @@ export default function DiningAdd() {
   }
 
   const handleSubmit = () => {
-    API.post('/dining', dining).then(response => {
-      console.log(response);
-      //clear all fields
-      setDining({ ...initialObject });
-    })
+    if (isEdit) {
+      API.put(`/dining/${id}`, dining).then(response => {
+        console.log(response);
+        alert("Record Updated")
+        //clear all fields
+        setRoom({ ...initialObject });
+        props.history.push('/admin/dining');
+      })
+    } else {
+      API.post('/dining', dining).then(response => {
+        console.log(response);
+        //clear all fields
+        setDining({ ...initialObject });
+      })
+    }
   }
 
   return (
@@ -191,7 +201,7 @@ export default function DiningAdd() {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl variant="outlined"
-                    size="small" fullWidth className={classes.formControl}>
+                  size="small" fullWidth className={classes.formControl}>
                   <InputLabel id="parent_id-label">Category</InputLabel>
                   <Select
                     labelId="parent_id-label"
@@ -242,7 +252,7 @@ export default function DiningAdd() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={dining.short_description} onChange={(e)=> setDining({...dining, short_description: e.editor.getData()})} />
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={dining.short_description} onChange={(e) => setDining({ ...dining, short_description: e.editor.getData() })} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
@@ -275,7 +285,7 @@ export default function DiningAdd() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={dining.post_content} onChange={(e)=> setDining({...dining, post_content: e.editor.getData()})} />
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={dining.post_content} onChange={(e) => setDining({ ...dining, post_content: e.editor.getData() })} />
 
               </Grid>
             </Grid>
@@ -410,3 +420,4 @@ export default function DiningAdd() {
     </div>
   );
 }
+)

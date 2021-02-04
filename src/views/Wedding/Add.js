@@ -25,6 +25,7 @@ import CKEditor from 'ckeditor4-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
 import API from "utils/http";
+import { useParams, withRouter } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,8 +41,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function WeddingAdd() {
+export default withRouter(function WeddingAdd() {
   const classes = useStyles();
+  //check if edit or add request
+  let { id } = useParams();
+
   const initialObject = {
     post_name: '',
     post_content: "<p>Detailed content goes here!</p>",
@@ -58,7 +62,19 @@ export default function WeddingAdd() {
     is_indexed: true,
     is_indexed_or_is_followed: 1
   }
-  const [wedding, setWedding] = useState({...initialObject})
+  const [wedding, setWedding] = useState({ ...initialObject })
+  const [isEdit, setIsEdit] = useState(false);
+
+  useEffect(() => {
+    if (id && id != null) {
+      setIsEdit(true);
+      API.get(`/wedding/${id}/edit`).then(response => {
+        if (response.status === 200) {
+          setWedding({ ...wedding, ...response?.data?.content[0] })
+        }
+      })
+    }
+  }, [])
 
   const handleInputChange = (e) => {
     let updatedWedding = { ...wedding };
@@ -80,13 +96,23 @@ export default function WeddingAdd() {
     reader.readAsDataURL(file);
   }
 
-  
+
   const handleSubmit = () => {
-    API.post('/wedding', wedding).then(response => {
-      console.log(response);
-      //clear all fields
-      setWedding({ ...initialObject });
-    })
+    if (isEdit) {
+      API.put(`/wedding/${id}`, wedding).then(response => {
+        console.log(response);
+        alert("Record Updated")
+        //clear all fields
+        setWedding({ ...initialObject });
+        props.history.push('/admin/weddings');
+      })
+    } else {
+      API.post('/wedding', wedding).then(response => {
+        console.log(response);
+        //clear all fields
+        setWedding({ ...initialObject });
+      })
+    }
   }
 
   return (
@@ -153,8 +179,8 @@ export default function WeddingAdd() {
                 </Fragment>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined" 
-                    size="small" fullWidth className={classes.formControl}>
+                <FormControl variant="outlined"
+                  size="small" fullWidth className={classes.formControl}>
                   <InputLabel id="room_type-label">Type</InputLabel>
                   <Select
                     labelId="room_type-label"
@@ -174,8 +200,8 @@ export default function WeddingAdd() {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined" 
-                    size="small" fullWidth className={classes.formControl}>
+                <FormControl variant="outlined"
+                  size="small" fullWidth className={classes.formControl}>
                   <InputLabel id="category_id-label">Category</InputLabel>
                   <Select
                     labelId="category_id-label"
@@ -226,7 +252,7 @@ export default function WeddingAdd() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.short_description} onChange={(e)=> setWedding({...wedding, short_description: e.editor.getData()})} />
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.short_description} onChange={(e) => setWedding({ ...wedding, short_description: e.editor.getData() })} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
@@ -259,7 +285,7 @@ export default function WeddingAdd() {
                     console.log('Focus.', editor);
                   }}
                 /> */}
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.post_content} onChange={(e)=> setWedding({...wedding, post_content: e.editor.getData()})} />
+                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.post_content} onChange={(e) => setWedding({ ...wedding, post_content: e.editor.getData() })} />
 
               </Grid>
             </Grid>
@@ -394,3 +420,4 @@ export default function WeddingAdd() {
     </div>
   );
 }
+)
