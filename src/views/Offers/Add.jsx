@@ -8,6 +8,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 // import CustomInput from "components/CustomInput/CustomInput.js";
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import MaterialButton from '@material-ui/core/Button';
 
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
@@ -20,8 +21,9 @@ import avatar from "assets/img/faces/marc.jpg";
 import { MenuItem, Select, FormControl, TextField, RadioGroup, Radio, FormControlLabel } from "@material-ui/core";
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
+import API from "utils/http";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AddOffer() {
   const classes = useStyles();
-  const [offer, setOffer] = useState({
+  const initialObject = {
     post_name: '',
     post_content: "<p>Detailed content goes here!</p>",
     short_description: "<p>Short description goes here!</p>",
@@ -52,7 +54,8 @@ export default function AddOffer() {
     permalink: '',
     is_followed: true,
     is_indexed: true
-  })
+  }
+  const [offer, setOffer] = useState({...initialObject})
 
   const handleInputChange = (e) => {
     let updatedOffer = { ...offer };
@@ -73,17 +76,26 @@ export default function AddOffer() {
     };
     reader.readAsDataURL(file);
   }
+  
+  const handleSubmit = () => {
+    API.post('/offer', offer).then(response => {
+      console.log(response);
+      //clear all fields
+      setOffer({ ...initialObject });
+    })
+  }
+
   return (
     <div>
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Add an Offer</h4>
+            <h4 className="mb-0">Add an Offer</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
-            <h3>General Information</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-1">General Information</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
                 <TextField
                   required
@@ -94,6 +106,7 @@ export default function AddOffer() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -106,6 +119,7 @@ export default function AddOffer() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={6} sm={6}>
@@ -134,7 +148,8 @@ export default function AddOffer() {
                 </Fragment>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                <FormControl variant="outlined" 
+                  size="small" fullWidth className={classes.formControl}>
                   <InputLabel id="room_type-label">Type</InputLabel>
                   <Select
                     labelId="room_type-label"
@@ -154,7 +169,8 @@ export default function AddOffer() {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                <FormControl variant="outlined" 
+                  size="small" fullWidth className={classes.formControl}>
                   <InputLabel id="category_id-label">Category</InputLabel>
                   <Select
                     labelId="category_id-label"
@@ -238,8 +254,8 @@ export default function AddOffer() {
                 />
               </Grid>
             </Grid>
-            <h3>SEO Information</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-2">SEO Information</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -250,6 +266,7 @@ export default function AddOffer() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -262,6 +279,7 @@ export default function AddOffer() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -274,6 +292,7 @@ export default function AddOffer() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -286,6 +305,7 @@ export default function AddOffer() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -308,13 +328,18 @@ export default function AddOffer() {
                   </RadioGroup>
                 </FormControl>
               </Grid>
+              <Grid item xs={12} sm={12}>
+                <MaterialButton onClick={handleSubmit} style={{ float: 'right' }} variant="contained" color="primary" size="large">
+                  Submit
+                </MaterialButton>
+              </Grid>
             </Grid>
           </CardBody>
         </Card>
         <Card>
           <CardBody>
             <h3>Offer Images</h3>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -325,6 +350,7 @@ export default function AddOffer() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={6} sm={6}>

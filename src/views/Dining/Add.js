@@ -21,7 +21,7 @@ import CardFooter from "components/Card/CardFooter.js";
 import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel } from "@material-ui/core";
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
 import API from "utils/http";
 
@@ -56,7 +56,7 @@ export default function DiningAdd() {
     is_indexed: true,
     is_indexed_or_is_followed: 1
   }
-  const [dining, setDining] = useState({...initialObject})
+  const [dining, setDining] = useState({ ...initialObject })
 
   const [newPostID, setNewPostID] = useState(-1);
 
@@ -94,12 +94,12 @@ export default function DiningAdd() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Add Dining/Suite</h4>
+            <h4 className="mb-0">Add Dining/Suite</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
-            <h3>General Information</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-1">General Information</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
                 <TextField
                   required
@@ -110,6 +110,7 @@ export default function DiningAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -122,6 +123,7 @@ export default function DiningAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={6} sm={6}>
@@ -150,7 +152,8 @@ export default function DiningAdd() {
                 </Fragment>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                <FormControl variant="outlined"
+                  size="small" fullWidth className={classes.formControl}>
                   <InputLabel id="room_type-label">Type</InputLabel>
                   <Select
                     labelId="room_type-label"
@@ -170,7 +173,8 @@ export default function DiningAdd() {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                <FormControl variant="outlined"
+                    size="small" fullWidth className={classes.formControl}>
                   <InputLabel id="parent_id-label">Category</InputLabel>
                   <Select
                     labelId="parent_id-label"
@@ -254,8 +258,8 @@ export default function DiningAdd() {
                 />
               </Grid>
             </Grid>
-            <h3>SEO Information</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-2">SEO Information</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -266,6 +270,7 @@ export default function DiningAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -278,6 +283,7 @@ export default function DiningAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -290,6 +296,7 @@ export default function DiningAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -302,6 +309,7 @@ export default function DiningAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -335,7 +343,7 @@ export default function DiningAdd() {
         <Card>
           <CardBody>
             <h3>Dining Images</h3>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -346,6 +354,7 @@ export default function DiningAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={6} sm={6}>

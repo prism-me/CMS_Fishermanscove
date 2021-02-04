@@ -123,7 +123,7 @@ export default function Notifications() {
   return (
     <Card>
       <CardHeader color="primary">
-        <h4 className={classes.cardTitleWhite}>Notifications</h4>
+        <h4 className="mb-0">Notifications</h4>
         <p className={classes.cardCategoryWhite}>
           Handcrafted by our friends from{" "}
           <a

@@ -25,7 +25,7 @@ import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormContro
 // import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import List from '@material-ui/core/List';
@@ -136,7 +136,6 @@ export default function UpdateHeader() {
   };
 
   const handleDrop = (ev) => {
-    debugger;
     const dragBox = headerContent.menuItems.find((box) => box.id == dragId);
     const dropBox = headerContent.menuItems.find((box) => box.id == ev.currentTarget.id);
 
@@ -161,7 +160,7 @@ export default function UpdateHeader() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Update Site Header</h4>
+            <h4 className="mb-0">Update Site Header</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           {/* <h5 className="pl-4 mt-3 mb-0" style={{ cursor: 'pointer' }} onClick={() => setOpen(!open)}>Show/Hide Preview</h5> */}
@@ -181,8 +180,8 @@ export default function UpdateHeader() {
             <FooterPreview />
           </Collapse> */}
           <CardBody className="pt-0">
-            <h3>Menu Items (Drawer Menu)</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-2">Menu Items (Drawer Menu)</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12}>
                 <MaterialButton
                   variant="contained"
@@ -196,7 +195,7 @@ export default function UpdateHeader() {
                 </MaterialButton>
               </Grid>
               <Grid item xs={12} sm={8}>
-                <Grid container spacing={3}>
+                <Grid container spacing={2}>
                   {
                     headerContent?.menuItems?.map(x => (
                       <React.Fragment>
@@ -210,6 +209,7 @@ export default function UpdateHeader() {
                             variant="outlined"
                             fullWidth
                             onChange={handleInputChange}
+                            size="small"
                           />
                         </Grid>
                         <Grid item xs={12} sm={4}>
@@ -222,6 +222,7 @@ export default function UpdateHeader() {
                             variant="outlined"
                             fullWidth
                             onChange={handleInputChange}
+                            size="small"
                           />
                         </Grid>
                         <Grid item xs={12} sm={4}>
@@ -249,8 +250,8 @@ export default function UpdateHeader() {
                 </Paper>
               </Grid>
             </Grid>
-            <h3>Header Contact Links</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-2">Header Contact Links</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -261,6 +262,7 @@ export default function UpdateHeader() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -273,6 +275,7 @@ export default function UpdateHeader() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -285,6 +288,7 @@ export default function UpdateHeader() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
             </Grid>

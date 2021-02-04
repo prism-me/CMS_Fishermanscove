@@ -148,11 +148,11 @@ const sidebarStyle = theme => ({
   itemLink: {
     width: "auto",
     transition: "all 300ms linear",
-    margin: "10px 15px 0",
+    margin: "10px 10px 0",
     borderRadius: "3px",
     position: "relative",
     display: "block",
-    padding: "10px 15px",
+    padding: "5px 15px",
     backgroundColor: "transparent",
     ...defaultFont
   },

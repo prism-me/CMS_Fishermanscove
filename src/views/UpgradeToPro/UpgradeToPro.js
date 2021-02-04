@@ -90,7 +90,7 @@ export default function UpgradeToPro() {
       <GridItem xs={12} sm={12} md={8}>
         <Card>
           <CardHeader color="info">
-            <h4 className={classes.cardTitleWhite}>
+            <h4 className="mb-0">
               Material Dashboard PRO React
             </h4>
             <p className={classes.cardCategoryWhite}>

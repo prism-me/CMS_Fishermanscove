@@ -37,7 +37,7 @@ import DashboardPage from "views/Dashboard/Dashboard.js";
 
 // core components/views for RTL layout
 // import RTLPage from "views/RTLPage/RTLPage.js";
-import { HotelOutlined, RestaurantOutlined, CardGiftcardOutlined, SpaOutlined, ViewCarouselOutlined, FavoriteBorderOutlined, PoolOutlined, InsertDriveFileOutlined } from "@material-ui/icons";
+import { HotelOutlined, RestaurantOutlined, CardGiftcardOutlined, SpaOutlined, ViewCarouselOutlined, FavoriteBorderOutlined, PoolOutlined, InsertDriveFileOutlined, PostAddOutlined, QuestionAnswerOutlined, ViewStreamOutlined, ArtTrackOutlined, HorizontalSplitOutlined } from "@material-ui/icons";
 import AddOffer from "views/Offers/Add";
 import OffersList from "views/Offers/List";
 import RoomsList from "views/RoomsSuites/List";
@@ -180,7 +180,8 @@ const dashboardRoutes = [
     icon: SpaOutlined,
     component: SpaWellnessList,
     layout: "/admin",
-    exact: true
+    exact: true,
+    hide: true
   },
   {
     path: "/spa-wellness/add",
@@ -232,15 +233,6 @@ const dashboardRoutes = [
     hide: true
   },
   {
-    path: "/gallery",
-    name: "Gallery",
-    rtlName: "ملف تعريفي للمستخدم",
-    icon: ViewCarouselOutlined,
-    component: DashboardPage,
-    layout: "/admin",
-    exact: true
-  },
-  {
     path: "/pages",
     name: "Pages",
     rtlName: "ملف تعريفي للمستخدم",
@@ -270,11 +262,11 @@ const dashboardRoutes = [
     hide: true
   },
   {
-    path: "/footer",
-    name: "Main Footer",
+    path: "/gallery",
+    name: "Gallery",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: InsertDriveFileOutlined,
-    component: Footer,
+    icon: ViewCarouselOutlined,
+    component: DashboardPage,
     layout: "/admin",
     exact: true
   },
@@ -282,7 +274,34 @@ const dashboardRoutes = [
     path: "/header",
     name: "Main Header",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: InsertDriveFileOutlined,
+    icon: ArtTrackOutlined,
+    component: UpdateHeader,
+    layout: "/admin",
+    exact: true
+  },
+  {
+    path: "/footer",
+    name: "Main Footer",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: HorizontalSplitOutlined,
+    component: Footer,
+    layout: "/admin",
+    exact: true
+  },
+  {
+    path: "/posts",
+    name: "Posts",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: PostAddOutlined,
+    component: UpdateHeader,
+    layout: "/admin",
+    exact: true
+  },
+  {
+    path: "/faq",
+    name: "F.A.Q's",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: QuestionAnswerOutlined,
     component: UpdateHeader,
     layout: "/admin",
     exact: true

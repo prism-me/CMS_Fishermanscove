@@ -46,7 +46,7 @@ class OffersList extends Component {
           filter: true,
           sort: false,
           customBodyRender: val=>(
-            val.length > 100 ? val.substr(0,100) + '...' : val
+            val?.length > 100 ? val?.substr(0,100) + '...' : val
           )
         }
       },
@@ -69,8 +69,7 @@ class OffersList extends Component {
   };
 
   componentDidMount() {
-    API.get('/premium_offers').then(response => {
-      debugger;
+    API.get('/offers').then(response => {
       let rows = response.data;
       // let rows = data.map(x=> {
       //   return {

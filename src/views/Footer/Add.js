@@ -25,7 +25,7 @@ import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormContro
 // import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import FooterPreview from "./Preview";
@@ -111,7 +111,7 @@ export default function UpdateFooter() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Update Site Footer</h4>
+            <h4 className="mb-0">Update Site Footer</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           {/* <h5 className="pl-4 mt-3 mb-0" style={{ cursor: 'pointer' }} onClick={() => setOpen(!open)}>Show/Hide Preview</h5> */}
@@ -131,8 +131,8 @@ export default function UpdateFooter() {
             <FooterPreview />
           </Collapse>
           <CardBody className="pt-0">
-            <h3>First Column (About)</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-2">First Column (About)</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
                 <TextField
                   required
@@ -146,11 +146,12 @@ export default function UpdateFooter() {
                   rows={4}
                   rowsMax={4}
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
             </Grid>
-            <h3>Second Column (Services)</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-4">Second Column (Services)</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12}>
                 <MaterialButton
                   variant="contained"
@@ -176,6 +177,7 @@ export default function UpdateFooter() {
                         variant="outlined"
                         fullWidth
                         onChange={handleInputChange}
+                        size="small"
                       />
                     </Grid>
                     <Grid item xs={12} sm={5}>
@@ -188,6 +190,7 @@ export default function UpdateFooter() {
                         variant="outlined"
                         fullWidth
                         onChange={handleInputChange}
+                        size="small"
                       />
                     </Grid>
                     <Grid item xs={12} sm={2}>
@@ -199,8 +202,8 @@ export default function UpdateFooter() {
                 ))
               }
             </Grid>
-            <h3>Third Column (Contact Us)</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-4">Third Column (Contact Us)</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -211,6 +214,7 @@ export default function UpdateFooter() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -223,6 +227,7 @@ export default function UpdateFooter() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -235,6 +240,7 @@ export default function UpdateFooter() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
             </Grid>

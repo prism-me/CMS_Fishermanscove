@@ -20,7 +20,7 @@ import avatar from "assets/img/faces/marc.jpg";
 import { MenuItem, Select, FormControl, TextField } from "@material-ui/core";
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -58,11 +58,11 @@ export default function PageAdd() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Add Page</h4>
+            <h4 className="mb-0">Add Page</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required

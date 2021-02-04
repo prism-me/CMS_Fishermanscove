@@ -21,7 +21,7 @@ import avatar from "assets/img/faces/marc.jpg";
 import { MenuItem, Select, FormControl, TextField, RadioGroup, Radio, FormControlLabel } from "@material-ui/core";
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
 import API from "utils/http";
 
@@ -93,12 +93,12 @@ export default function WeddingAdd() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Add Wedding Place</h4>
+            <h4 className="mb-0">Add Wedding Place</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
-            <h3>General Information</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-1">General Information</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
                 <TextField
                   required
@@ -109,6 +109,7 @@ export default function WeddingAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -121,6 +122,7 @@ export default function WeddingAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={6} sm={6}>
@@ -130,6 +132,7 @@ export default function WeddingAdd() {
                     accept="image/*"
                     type="file"
                     onChange={handleFileChange}
+                    size="small"
                     id="thumbnail"
                     name="thumbnail"
                     style={{ display: 'none', }}
@@ -149,7 +152,8 @@ export default function WeddingAdd() {
                 </Fragment>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                <FormControl variant="outlined" 
+                    size="small" fullWidth className={classes.formControl}>
                   <InputLabel id="room_type-label">Type</InputLabel>
                   <Select
                     labelId="room_type-label"
@@ -169,7 +173,8 @@ export default function WeddingAdd() {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                <FormControl variant="outlined" 
+                    size="small" fullWidth className={classes.formControl}>
                   <InputLabel id="category_id-label">Category</InputLabel>
                   <Select
                     labelId="category_id-label"
@@ -253,8 +258,8 @@ export default function WeddingAdd() {
                 />
               </Grid>
             </Grid>
-            <h3>SEO Information</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-2">SEO Information</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -265,6 +270,7 @@ export default function WeddingAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -277,6 +283,7 @@ export default function WeddingAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -289,6 +296,7 @@ export default function WeddingAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -301,6 +309,7 @@ export default function WeddingAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -334,7 +343,7 @@ export default function WeddingAdd() {
         <Card>
           <CardBody>
             <h3>Wedding Images</h3>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -345,6 +354,7 @@ export default function WeddingAdd() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={6} sm={6}>

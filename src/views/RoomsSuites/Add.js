@@ -21,9 +21,13 @@ import CardFooter from "components/Card/CardFooter.js";
 import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel } from "@material-ui/core";
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
+// import ClassicEditor from "../../plugins/ckeditor.js";
+// import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock";
 import { Image } from "@material-ui/icons";
 import API from "utils/http";
+
+// ClassicEditor.b
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -95,12 +99,12 @@ export default function AddRoom() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Add Room/Suite</h4>
+            <h4 className="mb-0">Add Room/Suite</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
-            <h3>General Information</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-1">General Information</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
                 <TextField
                   required
@@ -111,6 +115,7 @@ export default function AddRoom() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -123,6 +128,7 @@ export default function AddRoom() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={6} sm={6}>
@@ -143,7 +149,7 @@ export default function AddRoom() {
                       className={classes.button}
                       size="large"
                       color="primary"
-                      style={{ margin: 0, height: '55px', }}
+                      style={{ margin: 0, height: 'auto', }}
                     >
                       <Image className={classes.extendedIcon} /> Upload Featured Image
                     </Button>
@@ -151,7 +157,7 @@ export default function AddRoom() {
                 </Fragment>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                <FormControl variant="outlined" size="small" fullWidth className={classes.formControl}>
                   <InputLabel id="room_type-label">Type</InputLabel>
                   <Select
                     labelId="room_type-label"
@@ -171,7 +177,7 @@ export default function AddRoom() {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                <FormControl variant="outlined" size="small" fullWidth className={classes.formControl}>
                   <InputLabel id="parent_id-label">Category</InputLabel>
                   <Select
                     labelId="parent_id-label"
@@ -228,9 +234,14 @@ export default function AddRoom() {
                 <CKEditor
                   editor={ClassicEditor}
                   data={room.post_content}
-                  // config={{
-                  //   toolbar: ['bold', 'italic']
-                  // }}
+                  config={{
+                    codeBlock: {
+                      languages: [
+                        { language: 'css', label: 'CSS' },
+                        { language: 'html', label: 'HTML' }
+                      ]
+                    }
+                  }}
                   onReady={editor => {
                     // You can store the "editor" and use when it is needed.
                     console.log('Editor is ready to use!', editor);
@@ -255,8 +266,8 @@ export default function AddRoom() {
                 />
               </Grid>
             </Grid>
-            <h3>SEO Information</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-2">SEO Information</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -267,6 +278,7 @@ export default function AddRoom() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -279,6 +291,7 @@ export default function AddRoom() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -291,6 +304,7 @@ export default function AddRoom() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -303,6 +317,7 @@ export default function AddRoom() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -336,7 +351,7 @@ export default function AddRoom() {
         <Card>
           <CardBody>
             <h3>Room Images</h3>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -347,6 +362,7 @@ export default function AddRoom() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  size="small"
                 />
               </Grid>
               <Grid item xs={6} sm={6}>
@@ -356,6 +372,7 @@ export default function AddRoom() {
                     accept="image/*"
                     type="file"
                     onChange={handleInputChange}
+                    size="small"
                     id="thumbnail"
                     name="thumbnail"
                     style={{ display: 'none', }}
@@ -367,7 +384,7 @@ export default function AddRoom() {
                       className={classes.button}
                       size="large"
                       color="primary"
-                      style={{ margin: 0, height: '100%', }}
+                      style={{ margin: 0, height: 'auto', }}
                     >
                       <Image className={classes.extendedIcon} /> Upload Multiple Image
                     </Button>

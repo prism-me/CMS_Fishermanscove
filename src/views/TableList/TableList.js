@@ -48,7 +48,7 @@ export default function TableList() {
       <GridItem xs={12} sm={12} md={12}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Simple Table</h4>
+            <h4 className="mb-0">Simple Table</h4>
             <p className={classes.cardCategoryWhite}>
               Here is a subtitle for this table
             </p>
@@ -72,7 +72,7 @@ export default function TableList() {
       <GridItem xs={12} sm={12} md={12}>
         <Card plain>
           <CardHeader plain color="primary">
-            <h4 className={classes.cardTitleWhite}>
+            <h4 className="mb-0">
               Table on Plain Background
             </h4>
             <p className={classes.cardCategoryWhite}>

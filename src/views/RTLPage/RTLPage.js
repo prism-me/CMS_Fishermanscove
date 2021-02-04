@@ -264,7 +264,7 @@ export default function RTLPage() {
         <GridItem xs={12} sm={12} md={6}>
           <Card>
             <CardHeader color="warning">
-              <h4 className={classes.cardTitleWhite}>آمار کارکنان</h4>
+              <h4 className="mb-0">آمار کارکنان</h4>
               <p className={classes.cardCategoryWhite}>
                 کارکنان جدید از ۱۵ آبان ۱۳۹۶
               </p>
@@ -288,7 +288,7 @@ export default function RTLPage() {
         <GridItem xs={12} sm={12} md={6}>
           <Card>
             <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>اعلان ها</h4>
+              <h4 className="mb-0">اعلان ها</h4>
               <p className={classes.cardCategoryWhite}>
                 يدويا من قبل أصدقائنا من{" "}
                 <a

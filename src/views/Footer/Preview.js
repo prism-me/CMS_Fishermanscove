@@ -20,7 +20,7 @@ import CardFooter from "components/Card/CardFooter.js";
 import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel } from "@material-ui/core";
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Facebook, Image, Instagram, Twitter } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -43,7 +43,7 @@ export default function FooterPreview(props) {
 
   return (
     <CardBody>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <footer className="footer-two">
           <div className="footer-widget-area pt-30 pb-30">
             <div className="container">

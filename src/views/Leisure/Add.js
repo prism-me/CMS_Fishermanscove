@@ -20,7 +20,7 @@ import avatar from "assets/img/faces/marc.jpg";
 import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel } from "@material-ui/core";
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -80,12 +80,12 @@ export default function LeisureAdd() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Add Leisure Activity</h4>
+            <h4 className="mb-0">Add Leisure Activity</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
-            <h3>General Information</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-1">General Information</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
                 <TextField
                   required
@@ -240,8 +240,8 @@ export default function LeisureAdd() {
                 />
               </Grid>
             </Grid>
-            <h3>SEO Information</h3>
-            <Grid container spacing={3}>
+            <h4 className="mt-2">SEO Information</h4>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -316,7 +316,7 @@ export default function LeisureAdd() {
         <Card>
           <CardBody>
             <h3>Leisure Images</h3>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
