@@ -19,9 +19,10 @@ import CardFooter from "components/Card/CardFooter.js";
 
 // import avatar from "assets/img/faces/marc.jpg";
 import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel } from "@material-ui/core";
+import CKEditor from 'ckeditor4-react';
 
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
+// import { CKEditor } from '@ckeditor/ckeditor5-react';
+// import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
 import API from "utils/http";
 
@@ -197,7 +198,7 @@ export default function DiningAdd() {
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Short Description</p>
-                <CKEditor
+                {/* <CKEditor
                   editor={ClassicEditor}
                   data={dining.short_description}
                   // config={{
@@ -224,11 +225,13 @@ export default function DiningAdd() {
                   onFocus={(event, editor) => {
                     console.log('Focus.', editor);
                   }}
-                />
+                /> */}
+                <CKEditor data={dining.short_description} onChange={(e)=> setDining({...dining, short_description: e.editor.getData()})} />
+
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Detailed Content</p>
-                <CKEditor
+                {/* <CKEditor
                   editor={ClassicEditor}
                   data={dining.post_content}
                   // config={{
@@ -255,7 +258,9 @@ export default function DiningAdd() {
                   onFocus={(event, editor) => {
                     console.log('Focus.', editor);
                   }}
-                />
+                /> */}
+                <CKEditor data={dining.post_content} onChange={(e)=> setDining({...dining, post_content: e.editor.getData()})} />
+
               </Grid>
             </Grid>
             <h4 className="mt-2">SEO Information</h4>
