@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // react plugin for creating charts
 import ChartistGraph from "react-chartist";
 // @material-ui/core
@@ -38,11 +38,25 @@ import {
 } from "variables/charts.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
+import API from "utils/http";
 
 const useStyles = makeStyles(styles);
 
 export default function Dashboard() {
   const classes = useStyles();
+  const [stats, setStats] = useState({
+    contacts_count: 0,
+    offers_count:0,
+    subscribers_count:0,
+    analytics_count:12
+  })
+  useEffect(()=>{
+    API.get('/dashboard_counts').then(response=>{
+      if (response?.status === 200) {
+        setStats({...stats, ...response?.data?.data});
+      }
+    })
+  }, [])
   return (
     <div>
       <GridContainer>
@@ -52,9 +66,9 @@ export default function Dashboard() {
               <CardIcon color="warning">
                 <Icon>content_copy</Icon>
               </CardIcon>
-              <p className={classes.cardCategory}>Used Space</p>
+              <p className={classes.cardCategory}>Contacts</p>
               <h3 className={classes.cardTitle}>
-                49/50 <small>GB</small>
+                {stats.contacts_count}
               </h3>
             </CardHeader>
             <CardFooter stats>
@@ -75,8 +89,8 @@ export default function Dashboard() {
               <CardIcon color="success">
                 <Store />
               </CardIcon>
-              <p className={classes.cardCategory}>Revenue</p>
-              <h3 className={classes.cardTitle}>$34,245</h3>
+              <p className={classes.cardCategory}>Total Subscribers</p>
+              <h3 className={classes.cardTitle}>{stats.subscribers_count}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
@@ -92,8 +106,8 @@ export default function Dashboard() {
               <CardIcon color="danger">
                 <Icon>info_outline</Icon>
               </CardIcon>
-              <p className={classes.cardCategory}>Fixed Issues</p>
-              <h3 className={classes.cardTitle}>75</h3>
+              <p className={classes.cardCategory}>Active Offers</p>
+              <h3 className={classes.cardTitle}>{stats.offers_count}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
@@ -109,8 +123,8 @@ export default function Dashboard() {
               <CardIcon color="info">
                 <Accessibility />
               </CardIcon>
-              <p className={classes.cardCategory}>Followers</p>
-              <h3 className={classes.cardTitle}>+245</h3>
+              <p className={classes.cardCategory}>Analytics</p>
+              <h3 className={classes.cardTitle}>{stats.analytics_count}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
