@@ -58,7 +58,7 @@ export default function AddAboutUs() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avtar_alt: '',
+      section_avatar_alt: '',
       section_slug: 'intro'
     },
     dine: {
@@ -69,7 +69,7 @@ export default function AddAboutUs() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avtar_alt: '',
+      section_avatar_alt: '',
       section_slug: 'dine'
     },
   })
@@ -158,10 +158,10 @@ export default function AddAboutUs() {
                   <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avtar_alt"
-                      name="section_avtar_alt"
+                      id="section_avatar_alt"
+                      name="section_avatar_alt"
                       label="Image Alt Text"
-                      value={about.intro.section_avtar_alt}
+                      value={about.intro.section_avatar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "intro")}
@@ -253,10 +253,10 @@ export default function AddAboutUs() {
                   <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avtar_alt"
-                      name="section_avtar_alt"
+                      id="section_avatar_alt"
+                      name="section_avatar_alt"
                       label="Image Alt Text"
-                      value={about.dine.section_avtar_alt}
+                      value={about.dine.section_avatar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "dine")}

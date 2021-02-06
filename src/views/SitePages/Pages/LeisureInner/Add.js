@@ -58,7 +58,7 @@ export default function AddLeisureInner() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avtar_alt: '',
+      section_avatar_alt: '',
       section_slug: 'lounge'
     },
     snorkeling: {
@@ -69,7 +69,7 @@ export default function AddLeisureInner() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avtar_alt: '',
+      section_avatar_alt: '',
       section_slug: 'snorkeling'
     },
     kayaking: {
@@ -80,7 +80,7 @@ export default function AddLeisureInner() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avtar_alt: '',
+      section_avatar_alt: '',
       section_slug: 'kayaking'
     },
     marine: {
@@ -91,7 +91,7 @@ export default function AddLeisureInner() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avtar_alt: '',
+      section_avatar_alt: '',
       section_slug: 'marine'
     },
     others: {
@@ -102,7 +102,7 @@ export default function AddLeisureInner() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avtar_alt: '',
+      section_avatar_alt: '',
       section_slug: 'others'
     },
   })
@@ -194,10 +194,10 @@ export default function AddLeisureInner() {
                   <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avtar_alt"
-                      name="section_avtar_alt"
+                      id="section_avatar_alt"
+                      name="section_avatar_alt"
                       label="Image Alt Text"
-                      value={leisureInner.lounge.section_avtar_alt}
+                      value={leisureInner.lounge.section_avatar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "lounge")}
@@ -289,10 +289,10 @@ export default function AddLeisureInner() {
                   <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avtar_alt"
-                      name="section_avtar_alt"
+                      id="section_avatar_alt"
+                      name="section_avatar_alt"
                       label="Image Alt Text"
-                      value={leisureInner.kayaking.section_avtar_alt}
+                      value={leisureInner.kayaking.section_avatar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "kayaking")}
@@ -384,10 +384,10 @@ export default function AddLeisureInner() {
                   <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avtar_alt"
-                      name="section_avtar_alt"
+                      id="section_avatar_alt"
+                      name="section_avatar_alt"
                       label="Image Alt Text"
-                      value={leisureInner.snorkeling.section_avtar_alt}
+                      value={leisureInner.snorkeling.section_avatar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "snorkeling")}
@@ -479,10 +479,10 @@ export default function AddLeisureInner() {
                   <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avtar_alt"
-                      name="section_avtar_alt"
+                      id="section_avatar_alt"
+                      name="section_avatar_alt"
                       label="Image Alt Text"
-                      value={leisureInner.marine.section_avtar_alt}
+                      value={leisureInner.marine.section_avatar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "marine")}
@@ -577,10 +577,10 @@ export default function AddLeisureInner() {
                   <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avtar_alt"
-                      name="section_avtar_alt"
+                      id="section_avatar_alt"
+                      name="section_avatar_alt"
                       label="Image Alt Text"
-                      value={leisureInner.others.section_avtar_alt}
+                      value={leisureInner.others.section_avatar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "others")}
