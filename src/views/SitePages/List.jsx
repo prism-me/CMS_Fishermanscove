@@ -3,23 +3,23 @@ import MUIDataTable from "mui-datatables";
 import API from 'utils/http';
 import { Avatar, Box, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { AddOutlined, VisibilityOutlined } from '@material-ui/icons';
+import { AddOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
 
 class PageList extends Component {
   state = {
     offers: [],
     columns: [
-      {
-        name: "avatar",
-        label: "Image",
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: (val) => (
-            <Avatar alt={"Image"} src={val}></Avatar>
-          )
-        }
-      },
+      // {
+      //   name: "avatar",
+      //   label: "Image",
+      //   options: {
+      //     filter: false,
+      //     sort: false,
+      //     customBodyRender: (val) => (
+      //       <Avatar alt={"Image"} src={val}></Avatar>
+      //     )
+      //   }
+      // },
       {
         name: "post_name",
         label: "Name",
@@ -28,17 +28,17 @@ class PageList extends Component {
           sort: true,
         }
       },
-      {
-        name: "room_type",
-        label: "Room Type",
-        options: {
-          filter: true,
-          sort: false,
-          customBodyRender: (val) => {
-            return val === 0 ? 'Room' : 'Suite'
-          }
-        }
-      },
+      // {
+      //   name: "room_type",
+      //   label: "Room Type",
+      //   options: {
+      //     filter: true,
+      //     sort: false,
+      //     customBodyRender: (val) => {
+      //       return val === 0 ? 'Room' : 'Suite'
+      //     }
+      //   }
+      // },
       // {
       //   name: "category_name",
       //   label: "Category",
@@ -58,32 +58,33 @@ class PageList extends Component {
       //     )
       //   }
       // },
-      {
-        name: "post_content",
-        label: "Content",
-        options: {
-          filter: true,
-          sort: false,
-          customBodyRender: val => (
-            <code>
-              {
-                val.length > 100 ? val.substr(0, 100) + '...' : val
-              }
-            </code>
-          )
-        }
-      },
+      // {
+      //   name: "post_content",
+      //   label: "Content",
+      //   options: {
+      //     filter: true,
+      //     sort: false,
+      //     customBodyRender: val => (
+      //       <code>
+      //         {
+      //           val.length > 100 ? val.substr(0, 100) + '...' : val
+      //         }
+      //       </code>
+      //     )
+      //   }
+      // },
       {
         name: "id",
-        label: "",
+        label: "Actions",
         options: {
           filter: false,
           sort: false,
-          customBodyRender: val => (
-            <Link to={`/admin/dining/${val}`} >
-              <VisibilityOutlined color="primary" />
+          customBodyRender: (val, row) => {
+            console.log(row)
+            return <Link to={`/admin/pages/${row.tableData?.[row.rowIndex]?.post_url}/${val}`} >
+              <EditOutlined color="primary" />
             </Link>
-          )
+          }
         }
       },
     ],
@@ -96,7 +97,7 @@ class PageList extends Component {
   };
 
   componentDidMount() {
-    API.get('/dining').then(response => {
+    API.get('/pages').then(response => {
       let rows = response.data;
       // let rows = data.map(x=> {
       //   return {

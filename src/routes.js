@@ -59,6 +59,7 @@ import PageDetail from "views/SitePages/Details";
 import PageList from "views/SitePages/List";
 import Footer from "views/Footer/Add";
 import UpdateHeader from "views/Header/Add";
+import AddSustainability from "views/SitePages/Pages/Sustainability/Add";
 
 const dashboardRoutes = [
   {
@@ -271,6 +272,26 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
     component: PageAdd,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/pages/sustainability/add/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: AddSustainability,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/pages/leisure-inner/add/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: AddSustainability,
     layout: "/admin",
     exact: true,
     hide: true
