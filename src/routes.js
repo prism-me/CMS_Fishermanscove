@@ -62,6 +62,7 @@ import UpdateHeader from "views/Header/Add";
 import AddSustainability from "views/SitePages/Pages/Sustainability/Add";
 import AddLeisureInner from "views/SitePages/Pages/LeisureInner/Add";
 import AddDiningInner from "views/SitePages/Pages/DiningInner/Add";
+import AddAboutUs from "views/SitePages/Pages/About/Add";
 
 const dashboardRoutes = [
   {
@@ -304,6 +305,16 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
     component: AddDiningInner,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/pages/about-us/add/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: AddAboutUs,
     layout: "/admin",
     exact: true,
     hide: true
