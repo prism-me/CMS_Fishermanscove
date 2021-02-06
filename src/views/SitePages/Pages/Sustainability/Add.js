@@ -51,7 +51,7 @@ export default function AddSustainability() {
   const classes = useStyles();
   const [sustainability, setSustainability] = useState({
     intro: {
-      id: 3,
+      id: 0,
       section_name: '',
       section_content: "<p>Detailed content goes here!</p>",
       page_id: pageId,
@@ -102,7 +102,7 @@ export default function AddSustainability() {
         const { data } = response;
         setSustainability(
           {
-            intro: data.find(x => x.section_slug === "intro"),
+            intro: data.find(x => x.section_slug === "intro") || sustainability.intro,
             projects: data.find(x => x.section_slug === "projects") || sustainability.projects,
             pillars: data.find(x => x.section_slug === "pillars") || sustainability.pillars,
             energy: data.find(x => x.section_slug === "energy") || sustainability.energy,
@@ -135,9 +135,7 @@ export default function AddSustainability() {
   }
 
   const handleSubmit = (id, name) => {
-    debugger;
     API.put(`/add_section/${id}`, sustainability[name]).then(response => {
-      debugger;
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
