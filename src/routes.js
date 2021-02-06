@@ -60,6 +60,7 @@ import PageList from "views/SitePages/List";
 import Footer from "views/Footer/Add";
 import UpdateHeader from "views/Header/Add";
 import AddSustainability from "views/SitePages/Pages/Sustainability/Add";
+import AddLeisureInner from "views/SitePages/Pages/LeisureInner/Add";
 
 const dashboardRoutes = [
   {
@@ -291,7 +292,7 @@ const dashboardRoutes = [
     name: "Pages",
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
-    component: AddSustainability,
+    component: AddLeisureInner,
     layout: "/admin",
     exact: true,
     hide: true

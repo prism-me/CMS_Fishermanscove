@@ -46,11 +46,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function AddSustainability() {
+export default function AddLeisureInner() {
   const pageId = parseInt(useParams().id);
   const classes = useStyles();
-  const [sustainability, setSustainability] = useState({
-    intro: {
+  const [leisureInner, setLeisureInner] = useState({
+    lounge: {
       id: 0,
       section_name: '',
       section_content: "<p>Detailed content goes here!</p>",
@@ -59,9 +59,9 @@ export default function AddSustainability() {
       section_col_arr: 0,
       section_prior: 1,
       section_avtar_alt: '',
-      section_slug: 'intro'
+      section_slug: 'lounge'
     },
-    pillars: {
+    snorkeling: {
       id: 0,
       section_name: '',
       section_content: "<p>Detailed content goes here!</p>",
@@ -70,9 +70,9 @@ export default function AddSustainability() {
       section_col_arr: 0,
       section_prior: 1,
       section_avtar_alt: '',
-      section_slug: 'pillars'
+      section_slug: 'snorkeling'
     },
-    projects: {
+    kayaking: {
       id: 0,
       section_name: '',
       section_content: "<p>Detailed content goes here!</p>",
@@ -81,9 +81,9 @@ export default function AddSustainability() {
       section_col_arr: 0,
       section_prior: 1,
       section_avtar_alt: '',
-      section_slug: 'projects'
+      section_slug: 'kayaking'
     },
-    energy: {
+    marine: {
       id: 0,
       section_name: '',
       section_content: "<p>Detailed content goes here!</p>",
@@ -92,7 +92,18 @@ export default function AddSustainability() {
       section_col_arr: 0,
       section_prior: 1,
       section_avtar_alt: '',
-      section_slug: 'energy'
+      section_slug: 'marine'
+    },
+    others: {
+      id: 0,
+      section_name: '',
+      section_content: "<p>Detailed content goes here!</p>",
+      page_id: pageId,
+      section_avatar: '',
+      section_col_arr: 0,
+      section_prior: 1,
+      section_avtar_alt: '',
+      section_slug: 'others'
     },
   })
 
@@ -100,12 +111,13 @@ export default function AddSustainability() {
     API.get(`/all_sections/${pageId}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
-        setSustainability(
+        setLeisureInner(
           {
-            intro: data.find(x => x.section_slug === "intro") || sustainability.intro,
-            projects: data.find(x => x.section_slug === "projects") || sustainability.projects,
-            pillars: data.find(x => x.section_slug === "pillars") || sustainability.pillars,
-            energy: data.find(x => x.section_slug === "energy") || sustainability.energy,
+            lounge: data.find(x => x.section_slug === "lounge") || leisureInner.lounge,
+            kayaking: data.find(x => x.section_slug === "kayaking") || leisureInner.kayaking,
+            snorkeling: data.find(x => x.section_slug === "snorkeling") || leisureInner.snorkeling,
+            marine: data.find(x => x.section_slug === "marine") || leisureInner.marine,
+            others: data.find(x => x.section_slug === "others") || leisureInner.others,
           }
         )
       }
@@ -113,9 +125,9 @@ export default function AddSustainability() {
   }, [])
   const handleInputChange = (e, section) => {
     debugger;
-    let updatedSustainability = { ...sustainability };
-    updatedSustainability[section][e.target.name] = e.target.value;
-    setSustainability(updatedSustainability);
+    let updatedLeisureInner = { ...leisureInner };
+    updatedLeisureInner[section][e.target.name] = e.target.value;
+    setLeisureInner(updatedLeisureInner);
   }
 
   const handleFileChange = (e, section) => {
@@ -128,15 +140,15 @@ export default function AddSustainability() {
   const createImage = (file, section) => {
     let reader = new FileReader();
     reader.onload = (e) => {
-      let updatedSustainability = { ...sustainability };
-      updatedSustainability[section]["section_avatar"] = e.target.result;
-      setSustainability(updatedSustainability);
+      let updatedLeisureInner = { ...leisureInner };
+      updatedLeisureInner[section]["section_avatar"] = e.target.result;
+      setLeisureInner(updatedLeisureInner);
     };
     reader.readAsDataURL(file);
   }
 
   const handleSubmit = (id, name) => {
-    API.put(`/add_section/${id}`, sustainability[name]).then(response => {
+    API.put(`/add_section/${id}`, leisureInner[name]).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
@@ -148,7 +160,7 @@ export default function AddSustainability() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className="mb-0">Add Sustainability Sections</h4>
+            <h4 className="mb-0">Add LeisureInner Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
@@ -158,7 +170,7 @@ export default function AddSustainability() {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               >
-                <Typography className={classes.heading}>Intro Section</Typography>
+                <Typography className={classes.heading}>Lounge by the Pool</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
@@ -169,15 +181,15 @@ export default function AddSustainability() {
                       id="section_name"
                       name="section_name"
                       label="Section Title"
-                      value={sustainability.intro.section_name}
+                      value={leisureInner.lounge.section_name}
                       variant="outlined"
                       fullWidth
-                      onChange={(e) => handleInputChange(e, "intro")}
+                      onChange={(e) => handleInputChange(e, "lounge")}
                       size="small"
                       style={{ marginBottom: '1rem' }}
                     />
                     {/* CKEDITOR  */}
-                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.intro.section_content} onChange={(e) => setSustainability({ ...sustainability, intro: { ...sustainability.intro, section_content: e.editor.getData() } })} />
+                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.lounge.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, lounge: { ...leisureInner.lounge, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     <TextField
@@ -185,20 +197,20 @@ export default function AddSustainability() {
                       id="section_avtar_alt"
                       name="section_avtar_alt"
                       label="Image Alt Text"
-                      value={sustainability.intro.section_avtar_alt}
+                      value={leisureInner.lounge.section_avtar_alt}
                       variant="outlined"
                       fullWidth
-                      onChange={(e) => handleInputChange(e, "intro")}
+                      onChange={(e) => handleInputChange(e, "lounge")}
                       size="small"
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {sustainability.intro.section_avatar && sustainability.intro.section_avatar !== "" ?
+                        {leisureInner.lounge.section_avatar && leisureInner.lounge.section_avatar !== "" ?
                           <CardMedia
                             component="img"
                             alt=""
                             height="140"
-                            image={sustainability.intro.section_avatar}
+                            image={leisureInner.lounge.section_avatar}
                             title=""
                           />
                           :
@@ -215,12 +227,12 @@ export default function AddSustainability() {
                             color="primary"
                             accept="image/*"
                             type="file"
-                            onChange={(e) => handleFileChange(e, "intro")}
-                            id="section_avatar_intro"
-                            name="section_avatar_intro"
+                            onChange={(e) => handleFileChange(e, "lounge")}
+                            id="section_avatar_lounge"
+                            name="section_avatar_lounge"
                             style={{ display: 'none', }}
                           />
-                          <label htmlFor="section_avatar_intro" style={{ width: '100%', margin: 0 }}>
+                          <label htmlFor="section_avatar_lounge" style={{ width: '100%', margin: 0 }}>
                             <Button
                               variant="contained"
                               component="span"
@@ -237,7 +249,7 @@ export default function AddSustainability() {
                     </Card>
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(sustainability.intro.id, "intro")} size="large" color="primary" variant="contained">
+                    <MaterialButton onClick={() => handleSubmit(leisureInner.lounge.id, "lounge")} size="large" color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>
@@ -253,7 +265,7 @@ export default function AddSustainability() {
                 aria-controls="panel2a-content"
                 id="panel2a-header"
               >
-                <Typography className={classes.heading}>Projects Section</Typography>
+                <Typography className={classes.heading}>Snorkeling</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
@@ -264,15 +276,15 @@ export default function AddSustainability() {
                       id="section_name"
                       name="section_name"
                       label="Section Title"
-                      value={sustainability.projects.section_name}
+                      value={leisureInner.kayaking.section_name}
                       variant="outlined"
                       fullWidth
-                      onChange={(e) => handleInputChange(e, "projects")}
+                      onChange={(e) => handleInputChange(e, "kayaking")}
                       size="small"
                       style={{ marginBottom: '1rem' }}
                     />
                     {/* CKEDITOR  */}
-                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.projects.section_content} onChange={(e) => setSustainability({ ...sustainability, projects: { ...sustainability.projects, section_content: e.editor.getData() } })} />
+                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.kayaking.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, kayaking: { ...leisureInner.kayaking, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     <TextField
@@ -280,20 +292,20 @@ export default function AddSustainability() {
                       id="section_avtar_alt"
                       name="section_avtar_alt"
                       label="Image Alt Text"
-                      value={sustainability.projects.section_avtar_alt}
+                      value={leisureInner.kayaking.section_avtar_alt}
                       variant="outlined"
                       fullWidth
-                      onChange={(e) => handleInputChange(e, "projects")}
+                      onChange={(e) => handleInputChange(e, "kayaking")}
                       size="small"
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {sustainability.projects.section_avatar && sustainability.projects.section_avatar !== "" ?
+                        {leisureInner.kayaking.section_avatar && leisureInner.kayaking.section_avatar !== "" ?
                           <CardMedia
                             component="img"
                             alt=""
                             height="140"
-                            image={sustainability.projects.section_avatar}
+                            image={leisureInner.kayaking.section_avatar}
                             title=""
                           />
                           :
@@ -310,12 +322,12 @@ export default function AddSustainability() {
                             color="primary"
                             accept="image/*"
                             type="file"
-                            onChange={(e) => handleFileChange(e, "projects")}
-                            id="section_avatar_projects"
-                            name="section_avatar_projects"
+                            onChange={(e) => handleFileChange(e, "kayaking")}
+                            id="section_avatar_kayaking"
+                            name="section_avatar_kayaking"
                             style={{ display: 'none', }}
                           />
-                          <label htmlFor="section_avatar_projects" style={{ width: '100%', margin: 0 }}>
+                          <label htmlFor="section_avatar_kayaking" style={{ width: '100%', margin: 0 }}>
                             <Button
                               variant="contained"
                               component="span"
@@ -332,7 +344,7 @@ export default function AddSustainability() {
                     </Card>
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(sustainability.projects.id, "projects")} size="large" color="primary" variant="contained">
+                    <MaterialButton onClick={() => handleSubmit(leisureInner.kayaking.id, "kayaking")} size="large" color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>
@@ -348,7 +360,7 @@ export default function AddSustainability() {
                 aria-controls="panel3a-content"
                 id="panel3a-header"
               >
-                <Typography className={classes.heading}>Pillars Section</Typography>
+                <Typography className={classes.heading}>Kayaking</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
@@ -359,15 +371,15 @@ export default function AddSustainability() {
                       id="section_name"
                       name="section_name"
                       label="Section Title"
-                      value={sustainability.pillars.section_name}
+                      value={leisureInner.snorkeling.section_name}
                       variant="outlined"
                       fullWidth
-                      onChange={(e) => handleInputChange(e, "pillars")}
+                      onChange={(e) => handleInputChange(e, "snorkeling")}
                       size="small"
                       style={{ marginBottom: '1rem' }}
                     />
                     {/* CKEDITOR  */}
-                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.pillars.section_content} onChange={(e) => setSustainability({ ...sustainability, pillars: { ...sustainability.pillars, section_content: e.editor.getData() } })} />
+                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.snorkeling.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, snorkeling: { ...leisureInner.snorkeling, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     <TextField
@@ -375,20 +387,20 @@ export default function AddSustainability() {
                       id="section_avtar_alt"
                       name="section_avtar_alt"
                       label="Image Alt Text"
-                      value={sustainability.pillars.section_avtar_alt}
+                      value={leisureInner.snorkeling.section_avtar_alt}
                       variant="outlined"
                       fullWidth
-                      onChange={(e) => handleInputChange(e, "pillars")}
+                      onChange={(e) => handleInputChange(e, "snorkeling")}
                       size="small"
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {sustainability.pillars.section_avatar && sustainability.pillars.section_avatar !== "" ?
+                        {leisureInner.snorkeling.section_avatar && leisureInner.snorkeling.section_avatar !== "" ?
                           <CardMedia
                             component="img"
                             alt=""
                             height="140"
-                            image={sustainability.pillars.section_avatar}
+                            image={leisureInner.snorkeling.section_avatar}
                             title=""
                           />
                           :
@@ -405,12 +417,12 @@ export default function AddSustainability() {
                             color="primary"
                             accept="image/*"
                             type="file"
-                            onChange={(e) => handleFileChange(e, "pillars")}
-                            id="section_avatar_pillars"
-                            name="section_avatar_pillars"
+                            onChange={(e) => handleFileChange(e, "snorkeling")}
+                            id="section_avatar_snorkeling"
+                            name="section_avatar_snorkeling"
                             style={{ display: 'none', }}
                           />
-                          <label htmlFor="section_avatar_pillars" style={{ width: '100%', margin: 0 }}>
+                          <label htmlFor="section_avatar_snorkeling" style={{ width: '100%', margin: 0 }}>
                             <Button
                               variant="contained"
                               component="span"
@@ -427,7 +439,7 @@ export default function AddSustainability() {
                     </Card>
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(sustainability.pillars.id, "pillars")} size="large" color="primary" variant="contained">
+                    <MaterialButton onClick={() => handleSubmit(leisureInner.snorkeling.id, "snorkeling")} size="large" color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>
@@ -443,7 +455,7 @@ export default function AddSustainability() {
                 aria-controls="panel4a-content"
                 id="panel4a-header"
               >
-                <Typography className={classes.heading}>Energy Conversation Section</Typography>
+                <Typography className={classes.heading}>Discover the Marine Life</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
@@ -454,15 +466,15 @@ export default function AddSustainability() {
                       id="section_name"
                       name="section_name"
                       label="Section Title"
-                      value={sustainability.energy.section_name}
+                      value={leisureInner.marine.section_name}
                       variant="outlined"
                       fullWidth
-                      onChange={(e) => handleInputChange(e, "energy")}
+                      onChange={(e) => handleInputChange(e, "marine")}
                       size="small"
                       style={{ marginBottom: '1rem' }}
                     />
                     {/* CKEDITOR  */}
-                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.energy.section_content} onChange={(e) => setSustainability({ ...sustainability, energy: { ...sustainability.energy, section_content: e.editor.getData() } })} />
+                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.marine.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, marine: { ...leisureInner.marine, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     <TextField
@@ -470,20 +482,20 @@ export default function AddSustainability() {
                       id="section_avtar_alt"
                       name="section_avtar_alt"
                       label="Image Alt Text"
-                      value={sustainability.energy.section_avtar_alt}
+                      value={leisureInner.marine.section_avtar_alt}
                       variant="outlined"
                       fullWidth
-                      onChange={(e) => handleInputChange(e, "energy")}
+                      onChange={(e) => handleInputChange(e, "marine")}
                       size="small"
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {sustainability.energy.section_avatar && sustainability.energy.section_avatar !== "" ?
+                        {leisureInner.marine.section_avatar && leisureInner.marine.section_avatar !== "" ?
                           <CardMedia
                             component="img"
                             alt=""
                             height="140"
-                            image={sustainability.energy.section_avatar}
+                            image={leisureInner.marine.section_avatar}
                             title=""
                           />
                           :
@@ -500,12 +512,12 @@ export default function AddSustainability() {
                             color="primary"
                             accept="image/*"
                             type="file"
-                            onChange={(e) => handleFileChange(e, "energy")}
-                            id="section_avatar_energy"
-                            name="section_avatar_energy"
+                            onChange={(e) => handleFileChange(e, "marine")}
+                            id="section_avatar_marine"
+                            name="section_avatar_marine"
                             style={{ display: 'none', }}
                           />
-                          <label htmlFor="section_avatar_energy" style={{ width: '100%', margin: 0 }}>
+                          <label htmlFor="section_avatar_marine" style={{ width: '100%', margin: 0 }}>
                             <Button
                               variant="contained"
                               component="span"
@@ -522,7 +534,105 @@ export default function AddSustainability() {
                     </Card>
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(sustainability.energy.id, "energy")} size="large" color="primary" variant="contained">
+                    <MaterialButton onClick={() => handleSubmit(leisureInner.marine.id, "marine")} size="large" color="primary" variant="contained">
+                      Update Section
+                    </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+
+
+
+            {/* ****************** */}
+            {/* SECTION 5 */}
+            {/* ****************** */}
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel5a-content"
+                id="panel5a-header"
+              >
+                <Typography className={classes.heading}>Others</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={9}>
+                    {/* SECTION TITLE */}
+                    <TextField
+                      required
+                      id="section_name"
+                      name="section_name"
+                      label="Section Title"
+                      value={leisureInner.others.section_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "others")}
+                      size="small"
+                      style={{ marginBottom: '1rem' }}
+                    />
+                    {/* CKEDITOR  */}
+                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.others.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, others: { ...leisureInner.others, section_content: e.editor.getData() } })} />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <TextField
+                      required
+                      id="section_avtar_alt"
+                      name="section_avtar_alt"
+                      label="Image Alt Text"
+                      value={leisureInner.others.section_avtar_alt}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "others")}
+                      size="small"
+                    />
+                    <Card className={classes.root}>
+                      <CardActionArea>
+                        {leisureInner.others.section_avatar && leisureInner.others.section_avatar !== "" ?
+                          <CardMedia
+                            component="img"
+                            alt=""
+                            height="140"
+                            image={leisureInner.others.section_avatar}
+                            title=""
+                          />
+                          :
+                          <CardContent>
+                            <Typography variant="body2" component="h2">
+                              Please add an Image
+                          </Typography>
+                          </CardContent>
+                        }
+                      </CardActionArea>
+                      <CardActions>
+                        <Fragment>
+                          <input
+                            color="primary"
+                            accept="image/*"
+                            type="file"
+                            onChange={(e) => handleFileChange(e, "others")}
+                            id="section_avatar_others"
+                            name="section_avatar_others"
+                            style={{ display: 'none', }}
+                          />
+                          <label htmlFor="section_avatar_others" style={{ width: '100%', margin: 0 }}>
+                            <Button
+                              variant="contained"
+                              component="span"
+                              className={classes.button}
+                              size="large"
+                              color="primary"
+                              fullWidth
+                            >
+                              <Image className={classes.extendedIcon} /> Upload Section Image
+                        </Button>
+                          </label>
+                        </Fragment>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={() => handleSubmit(leisureInner.marine.id, "marine")} size="large" color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>
