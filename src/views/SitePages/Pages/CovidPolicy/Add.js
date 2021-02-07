@@ -46,10 +46,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function AddPrivacyPolicy() {
+export default function AddCovidPolicy() {
   const pageId = parseInt(useParams().id);
   const classes = useStyles();
-  const [privacyPolicy, setPrivacyPolicy] = useState({
+  const [covidPolicy, setCovidPolicy] = useState({
     intro: {
       id: 0,
       section_name: '',
@@ -67,9 +67,9 @@ export default function AddPrivacyPolicy() {
     API.get(`/all_sections/${pageId}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
-        setPrivacyPolicy(
+        setCovidPolicy(
           {
-            intro: data.find(x => x.section_slug === "intro") || privacyPolicy.intro,
+            intro: data.find(x => x.section_slug === "intro") || covidPolicy.intro,
           }
         )
       }
@@ -77,13 +77,13 @@ export default function AddPrivacyPolicy() {
   }, [])
   const handleInputChange = (e, section) => {
     debugger;
-    let updatedDiningInner = { ...privacyPolicy };
+    let updatedDiningInner = { ...covidPolicy };
     updatedDiningInner[section][e.target.name] = e.target.value;
-    setPrivacyPolicy(updatedDiningInner);
+    setCovidPolicy(updatedDiningInner);
   }
 
   const handleSubmit = (id, name) => {
-    API.put(`/add_section/${id}`, privacyPolicy[name]).then(response => {
+    API.put(`/add_section/${id}`, covidPolicy[name]).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
@@ -116,7 +116,7 @@ export default function AddPrivacyPolicy() {
                       id="section_name"
                       name="section_name"
                       label="Section Title"
-                      value={privacyPolicy.intro.section_name}
+                      value={covidPolicy.intro.section_name}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "intro")}
@@ -124,10 +124,10 @@ export default function AddPrivacyPolicy() {
                       style={{ marginBottom: '1rem' }}
                     />
                     {/* CKEDITOR  */}
-                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={privacyPolicy.intro.section_content} onChange={(e) => setPrivacyPolicy({ ...privacyPolicy, intro: { ...privacyPolicy.intro, section_content: e.editor.getData() } })} />
+                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={covidPolicy.intro.section_content} onChange={(e) => setCovidPolicy({ ...covidPolicy, intro: { ...covidPolicy.intro, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(privacyPolicy.intro.id, "intro")} size="large" color="primary" variant="contained">
+                    <MaterialButton onClick={() => handleSubmit(covidPolicy.intro.id, "intro")} size="large" color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>
