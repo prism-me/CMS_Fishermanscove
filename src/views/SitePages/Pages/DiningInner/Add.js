@@ -31,6 +31,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
+import FAQSection from "../Common/FAQSection";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,6 +84,17 @@ export default function AddDiningInner() {
       section_avatar_alt: '',
       section_slug: 'dress'
     },
+    faq: {
+      id: 0,
+      section_name: '',
+      section_content: [],
+      page_id: pageId,
+      section_avatar: '',
+      section_col_arr: 0,
+      section_prior: 1,
+      section_avatar_alt: '',
+      section_slug: 'faq'
+    },
   })
 
   useEffect(() => {
@@ -94,13 +106,14 @@ export default function AddDiningInner() {
             intro: data.find(x => x.section_slug === "intro") || diningInner.intro,
             dress: data.find(x => x.section_slug === "dress") || diningInner.dress,
             timings: data.find(x => x.section_slug === "timings") || diningInner.timings,
+            faq: data.find(x => x.section_slug === "faq") || diningInner.faq,
           }
         )
       }
     })
   }, [])
   const handleInputChange = (e, section) => {
-     
+
     let updatedDiningInner = { ...diningInner };
     updatedDiningInner[section][e.target.name] = e.target.value;
     setDiningInner(updatedDiningInner);
@@ -122,6 +135,23 @@ export default function AddDiningInner() {
     };
     reader.readAsDataURL(file);
   }
+
+  //faq section methods
+  const removeQuestion = (id) => {
+    setDiningInner({ ...diningInner, faq: { ...diningInner.faq, section_content: diningInner.faq.section_content.filter(x => x.id !== id) } })
+  }
+
+  const handleQuestionChange = (e, section, index) => {
+    let section_content = [...diningInner.faq.section_content];
+    section_content[index].question = e.target.value;
+    setDiningInner({ ...diningInner, faq: { ...diningInner.faq, section_content } })
+  }
+  const handleAnswerChange = (data, section, index) => {
+    let section_content = [...diningInner.faq.section_content];
+    section_content[index].answer = data;
+    setDiningInner({ ...diningInner, faq: { ...diningInner.faq, section_content } })
+  }
+  //end faq section methods
 
   const handleSubmit = (id, name) => {
     API.put(`/add_section/${id}`, diningInner[name]).then(response => {
@@ -416,6 +446,45 @@ export default function AddDiningInner() {
                   </Grid> */}
                   <Grid item xs={12} sm={12}>
                     <MaterialButton onClick={() => handleSubmit(diningInner.timings.id, "timings")} size="large" color="primary" variant="contained">
+                      Update Section
+                    </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>F.A.Q's</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <MaterialButton
+                      variant="outlined"
+                      component="span"
+                      className={classes.button}
+                      size="small"
+                      color="primary"
+                      onClick={() => setDiningInner({ ...diningInner, faq: { ...diningInner.faq, section_content: [...diningInner.faq.section_content, { id: diningInner.faq.section_content?.length + 1, question: '', answer: '' }] } })}
+                    >
+                      Add a New Link
+                    </MaterialButton>
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    {/*FAQ ITEM*/}
+                    <FAQSection
+                      removeQuestion={removeQuestion}
+                      section_content={diningInner.faq.section_content}
+                      handleQuestionChange={handleQuestionChange}
+                      handleAnswerChange={handleAnswerChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={() => handleSubmit(diningInner.faq.id, "faq")} size="large" color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>

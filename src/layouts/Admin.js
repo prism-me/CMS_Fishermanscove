@@ -18,6 +18,10 @@ import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logo-fisher.png";
 
+import ClipLoader from "react-spinners/BounceLoader";
+import { connect } from "react-redux";
+
+
 let ps;
 
 const switchRoutes = (
@@ -41,7 +45,8 @@ const switchRoutes = (
 
 const useStyles = makeStyles(styles);
 
-export default function Admin({ ...rest }) {
+function Admin({ ...rest }) {
+  console.log(rest)
   // styles
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
@@ -94,7 +99,11 @@ export default function Admin({ ...rest }) {
     };
   }, [mainPanel]);
   return (
-    <div className={classes.wrapper}>
+    <div className={classes.wrapper} style={{ position: 'relative' }}>
+      <div className={`${rest.showSpinner ? "d-flex": "d-none"} vw-100 vh-100 flex-column text-center align-items-center justify-content-center`} style={{ position: 'absolute', zIndex:99999, background: 'rgba(255,255,255,0.6)' }}>
+        <ClipLoader color={'#04abc1'} loading={true} size={80} />
+      </div>
+
       <Sidebar
         routes={routes}
         logoText={"Fishermans Cove Resort"}
@@ -117,8 +126,8 @@ export default function Admin({ ...rest }) {
             <div className={classes.container}>{switchRoutes}</div>
           </div>
         ) : (
-          <div className={classes.map}>{switchRoutes}</div>
-        )}
+            <div className={classes.map}>{switchRoutes}</div>
+          )}
         {getRoute() ? <Footer /> : null}
         {/* <FixedPlugin
           handleImageClick={handleImageClick}
@@ -132,3 +141,17 @@ export default function Admin({ ...rest }) {
     </div>
   );
 }
+
+
+const mapStateToProps = (state) => {
+  return {
+      showSpinner: state?.globalReducer?.showSpinner,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+      
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Admin);

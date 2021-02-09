@@ -94,6 +94,7 @@ export default function AddWedding() {
     setWedding(updatedDiningInner);
   }
 
+  //faq section methods
   const removeQuestion = (id) => {
     setWedding({ ...wedding, faq: { ...wedding.faq, section_content: wedding.faq.section_content.filter(x => x.id !== id) } })
   }
@@ -108,7 +109,8 @@ export default function AddWedding() {
     section_content[index].answer = data;
     setWedding({ ...wedding, faq: { ...wedding.faq, section_content } })
   }
-
+  //end faq section methods
+  
   const handleSubmit = (id, name) => {
     API.put(`/add_section/${id}`, wedding[name]).then(response => {
       if (response.status === 200) {
