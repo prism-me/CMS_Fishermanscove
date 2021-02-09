@@ -154,7 +154,7 @@ export default function UpdateFooter() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <MaterialButton
-                  variant="contained"
+                  variant="outlined"
                   component="span"
                   className={classes.button}
                   size="small"
@@ -194,7 +194,7 @@ export default function UpdateFooter() {
                       />
                     </Grid>
                     <Grid item xs={12} sm={2}>
-                      <MaterialButton color="secondary" size="small" variant="contained" style={{height:'100%'}}>
+                      <MaterialButton color="secondary" size="small" variant="outlined" style={{ height: '100%' }}>
                         Delete Link
                       </MaterialButton>
                     </Grid>
@@ -242,6 +242,11 @@ export default function UpdateFooter() {
                   onChange={handleInputChange}
                   size="small"
                 />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <MaterialButton onClick={() => alert("Implementation Pending")} size="large" color="primary" variant="contained">
+                  Update Footer
+                </MaterialButton>
               </Grid>
             </Grid>
           </CardBody>

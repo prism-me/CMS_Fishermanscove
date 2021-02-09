@@ -184,7 +184,7 @@ export default function UpdateHeader() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <MaterialButton
-                  variant="contained"
+                  variant="outlined"
                   component="span"
                   className={classes.button}
                   size="small"
@@ -290,6 +290,11 @@ export default function UpdateHeader() {
                   onChange={handleInputChange}
                   size="small"
                 />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <MaterialButton onClick={() => alert("Implementation Pending")} size="large" color="primary" variant="contained">
+                  Update Header
+                </MaterialButton>
               </Grid>
             </Grid>
           </CardBody>

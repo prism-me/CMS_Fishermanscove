@@ -67,6 +67,7 @@ import AddSpaWellness from "views/SitePages/Pages/SpaWellness/Add";
 import AddPrivacyPolicy from "views/SitePages/Pages/PrivacyPolicy/Add";
 import AddCovidPolicy from "views/SitePages/Pages/CovidPolicy/Add";
 import AddCancellationPolicy from "views/SitePages/Pages/CancellationPolicy/Add";
+import AddWedding from "views/SitePages/Pages/Wedding/Add";
 
 const dashboardRoutes = [
   {
@@ -359,6 +360,16 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
     component: AddCancellationPolicy,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/pages/wedding/add/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: AddWedding,
     layout: "/admin",
     exact: true,
     hide: true

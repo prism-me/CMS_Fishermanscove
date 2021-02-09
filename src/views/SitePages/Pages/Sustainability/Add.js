@@ -58,7 +58,7 @@ export default function AddSustainability() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avatar_alt: '',
+      section_avtar_alt: '',
       section_slug: 'intro'
     },
     pillars: {
@@ -69,7 +69,7 @@ export default function AddSustainability() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avatar_alt: '',
+      section_avtar_alt: '',
       section_slug: 'pillars'
     },
     projects: {
@@ -80,7 +80,7 @@ export default function AddSustainability() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avatar_alt: '',
+      section_avtar_alt: '',
       section_slug: 'projects'
     },
     energy: {
@@ -91,7 +91,7 @@ export default function AddSustainability() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avatar_alt: '',
+      section_avtar_alt: '',
       section_slug: 'energy'
     },
   })
@@ -112,7 +112,6 @@ export default function AddSustainability() {
     })
   }, [])
   const handleInputChange = (e, section) => {
-    debugger;
     let updatedSustainability = { ...sustainability };
     updatedSustainability[section][e.target.name] = e.target.value;
     setSustainability(updatedSustainability);
@@ -182,10 +181,10 @@ export default function AddSustainability() {
                   <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avatar_alt"
-                      name="section_avatar_alt"
+                      id="section_avtar_alt_intro"
+                      name="section_avtar_alt"
                       label="Image Alt Text"
-                      value={sustainability.intro.section_avatar_alt}
+                      value={sustainability.intro.section_avtar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "intro")}
@@ -277,10 +276,10 @@ export default function AddSustainability() {
                   <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avatar_alt"
-                      name="section_avatar_alt"
+                      id="section_avtar_alt_projects"
+                      name="section_avtar_alt"
                       label="Image Alt Text"
-                      value={sustainability.projects.section_avatar_alt}
+                      value={sustainability.projects.section_avtar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "projects")}
@@ -372,10 +371,10 @@ export default function AddSustainability() {
                   <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avatar_alt"
-                      name="section_avatar_alt"
+                      id="section_avtar_alt_pillars"
+                      name="section_avtar_alt"
                       label="Image Alt Text"
-                      value={sustainability.pillars.section_avatar_alt}
+                      value={sustainability.pillars.section_avtar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "pillars")}
@@ -467,10 +466,10 @@ export default function AddSustainability() {
                   <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avatar_alt"
-                      name="section_avatar_alt"
+                      id="section_avtar_alt_energy"
+                      name="section_avtar_alt"
                       label="Image Alt Text"
-                      value={sustainability.energy.section_avatar_alt}
+                      value={sustainability.energy.section_avtar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "energy")}
