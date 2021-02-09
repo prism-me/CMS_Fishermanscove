@@ -77,7 +77,7 @@ export default function AddSpaWellness() {
     })
   }, [])
   const handleInputChange = (e, section) => {
-    debugger;
+     
     let updatedDiningInner = { ...spaWellness };
     updatedDiningInner[section][e.target.name] = e.target.value;
     setSpaWellness(updatedDiningInner);

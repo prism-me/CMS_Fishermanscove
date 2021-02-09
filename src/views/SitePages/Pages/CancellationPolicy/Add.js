@@ -76,7 +76,7 @@ export default function AddCancellationPolicy() {
     })
   }, [])
   const handleInputChange = (e, section) => {
-    debugger;
+     
     let updatedDiningInner = { ...cancellationPolicy };
     updatedDiningInner[section][e.target.name] = e.target.value;
     setCancellationPolicy(updatedDiningInner);

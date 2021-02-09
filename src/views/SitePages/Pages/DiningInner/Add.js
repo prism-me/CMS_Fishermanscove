@@ -100,7 +100,7 @@ export default function AddDiningInner() {
     })
   }, [])
   const handleInputChange = (e, section) => {
-    debugger;
+     
     let updatedDiningInner = { ...diningInner };
     updatedDiningInner[section][e.target.name] = e.target.value;
     setDiningInner(updatedDiningInner);

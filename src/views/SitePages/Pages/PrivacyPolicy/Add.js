@@ -76,7 +76,7 @@ export default function AddPrivacyPolicy() {
     })
   }, [])
   const handleInputChange = (e, section) => {
-    debugger;
+     
     let updatedDiningInner = { ...privacyPolicy };
     updatedDiningInner[section][e.target.name] = e.target.value;
     setPrivacyPolicy(updatedDiningInner);

@@ -23,7 +23,7 @@ import CKEditor from 'ckeditor4-react';
 
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
-import { Image } from "@material-ui/icons";
+import { Delete, DeleteOutlined, Image } from "@material-ui/icons";
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -31,6 +31,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
+import FAQSection from "../Common/FAQSection";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,6 +62,17 @@ export default function AddWedding() {
       section_avatar_alt: '',
       section_slug: 'intro'
     },
+    faq: {
+      id: 0,
+      section_name: '',
+      section_content: [],
+      page_id: pageId,
+      section_avatar: '',
+      section_col_arr: 0,
+      section_prior: 1,
+      section_avatar_alt: '',
+      section_slug: 'faq'
+    },
   })
 
   useEffect(() => {
@@ -70,16 +82,31 @@ export default function AddWedding() {
         setWedding(
           {
             intro: data.find(x => x.section_slug === "intro") || wedding.intro,
+            faq: data.find(x => x.section_slug === "faq") || wedding.faq,
           }
         )
       }
     })
   }, [])
   const handleInputChange = (e, section) => {
-    debugger;
     let updatedDiningInner = { ...wedding };
     updatedDiningInner[section][e.target.name] = e.target.value;
     setWedding(updatedDiningInner);
+  }
+
+  const removeQuestion = (id) => {
+    setWedding({ ...wedding, faq: { ...wedding.faq, section_content: wedding.faq.section_content.filter(x => x.id !== id) } })
+  }
+
+  const handleQuestionChange = (e, section, index) => {
+    let section_content = [...wedding.faq.section_content];
+    section_content[index].question = e.target.value;
+    setWedding({ ...wedding, faq: { ...wedding.faq, section_content } })
+  }
+  const handleAnswerChange = (data, section, index) => {
+    let section_content = [...wedding.faq.section_content];
+    section_content[index].answer = data;
+    setWedding({ ...wedding, faq: { ...wedding.faq, section_content } })
   }
 
   const handleSubmit = (id, name) => {
@@ -128,6 +155,48 @@ export default function AddWedding() {
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     <MaterialButton onClick={() => handleSubmit(wedding.intro.id, "intro")} size="large" color="primary" variant="contained">
+                      Update Section
+                    </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            {/* ******************* */}
+            {/* SECTION 2 */}
+            {/* ******************* */}
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>F.A.Q's</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <MaterialButton
+                      variant="outlined"
+                      component="span"
+                      className={classes.button}
+                      size="small"
+                      color="primary"
+                      onClick={() => setWedding({ ...wedding, faq: { ...wedding.faq, section_content: [...wedding.faq.section_content, { id: wedding.faq.section_content?.length + 1, question: '', answer: '' }] } })}
+                    >
+                      Add a New Link
+                    </MaterialButton>
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    {/*FAQ ITEM*/}
+                    <FAQSection
+                      removeQuestion={removeQuestion}
+                      section_content={wedding.faq.section_content}
+                      handleQuestionChange={handleQuestionChange}
+                      handleAnswerChange={handleAnswerChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={() => handleSubmit(wedding.faq.id, "faq")} size="large" color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>

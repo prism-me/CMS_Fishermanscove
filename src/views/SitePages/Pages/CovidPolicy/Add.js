@@ -76,7 +76,7 @@ export default function AddCovidPolicy() {
     })
   }, [])
   const handleInputChange = (e, section) => {
-    debugger;
+     
     let updatedDiningInner = { ...covidPolicy };
     updatedDiningInner[section][e.target.name] = e.target.value;
     setCovidPolicy(updatedDiningInner);

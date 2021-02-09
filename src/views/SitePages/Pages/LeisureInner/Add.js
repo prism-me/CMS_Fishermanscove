@@ -124,7 +124,7 @@ export default function AddLeisureInner() {
     })
   }, [])
   const handleInputChange = (e, section) => {
-    debugger;
+     
     let updatedLeisureInner = { ...leisureInner };
     updatedLeisureInner[section][e.target.name] = e.target.value;
     setLeisureInner(updatedLeisureInner);

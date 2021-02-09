@@ -88,7 +88,7 @@ export default function AddAboutUs() {
     })
   }, [])
   const handleInputChange = (e, section) => {
-    debugger;
+     
     let updatedDiningInner = { ...about };
     updatedDiningInner[section][e.target.name] = e.target.value;
     setAbout(updatedDiningInner);
