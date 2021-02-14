@@ -52,6 +52,7 @@ export default withRouter(function WeddingAdd(props) {
     thumbnail: '',
     alt_text: '',
     meta_title: '',
+    category_id: -1,
     meta_description: '',
     schema_markup: '',
     permalink: '',
@@ -141,12 +142,22 @@ export default withRouter(function WeddingAdd(props) {
 
   const handleMultipleSubmit = () => {
     let imagesFormData = new FormData();
-    weddingImages.forEach(x=> {
-      imagesFormData.append("images[]", x)
-    })
+    weddingImages.forEach(x => {
+      console.log(x);
+      imagesFormData.append("images[]", JSON.stringify(x))
+    });
+
+    // just for testing
+    for (var pair of imagesFormData.entries()) {
+      console.log(pair[0] + ', ' + pair[1]);
+    }
+
     axios.post(`https://fishermanscove-resort.com/fmcr/public/api/multiple_upload`, imagesFormData, {
       headers: {
         'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
+      },
+      onUploadProgress: (progressEvent) => {
+        console.log('progress', Math.round((progressEvent.loaded * 100) / progressEvent.total))
       }
     }).then(response => {
       console.log(response);
@@ -369,86 +380,89 @@ export default withRouter(function WeddingAdd(props) {
         {/* MULTIPLE IMAGES UPLOAD SECTION START */}
         <Card>
           <CardBody>
-            <h3>Wedding Images</h3>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12}>
-                <Fragment>
-                  <input
-                    color="primary"
-                    accept="image/*"
-                    type="file"
-                    multiple
-                    onChange={handleMultipleFileChange}
-                    id="thumbnailMultiple"
-                    name="thumbnailMultiple"
-                    style={{ display: 'none', }}
-                  />
-                  <label htmlFor="thumbnailMultiple">
-                    <Button
-                      variant="contained"
-                      component="span"
-                      className={classes.button}
-                      size="large"
-                      color="primary"
-                      style={{ margin: 0, height: '100%', }}
-                    >
-                      <Image className={classes.extendedIcon} /> Select Multiple Images
-                    </Button>
-                  </label>
-                </Fragment>
-              </Grid>
-              {
-                weddingImages?.map((x, i) => (
-                  <Fragment>
-                    <Grid item xs={12} sm={2}>
-                      <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <TextField
-                        required
-                        id={`alt_tag${i}`}
-                        name="alt_tag"
-                        label="Image Alt Text"
-                        value={x.alt_tag}
-                        variant="outlined"
-                        fullWidth
-                        onChange={(e) => handleImageAltChange(e, i)}
-                        size="small"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <FormControl component="fieldset">
-                        <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
-                          setWeddingImages(weddingImages.map((y, ind) => {
-                            if (ind === i) {
-                              return { ...y, is360: !y.is360 }
-                            } else {
-                              return y
-                            }
-                          }))
-                        }}>
-                          <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
-                          <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
-                        </RadioGroup>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={2}>
-                      <MaterialButton variant="outlined" color="secondary" onClick={() => setWeddingImages([...weddingImages.filter((z, index) => index !== i)])}>
-                        <DeleteOutlined />
-                      </MaterialButton>
-                    </Grid>
-                  </Fragment>
-                ))
-              }
-              {
-                weddingImages.length > 0 &&
+            <form type="post" encType="multipart/form-data">
+
+              <h3>Wedding Images</h3>
+              <Grid container spacing={2}>
                 <Grid item xs={12} sm={12}>
-                  <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
-                    Upload/Update Images
-                  </MaterialButton>
+                  <Fragment>
+                    <input
+                      color="primary"
+                      accept="image/*"
+                      type="file"
+                      multiple
+                      onChange={handleMultipleFileChange}
+                      id="thumbnailMultiple"
+                      name="thumbnailMultiple"
+                      style={{ display: 'none', }}
+                    />
+                    <label htmlFor="thumbnailMultiple">
+                      <Button
+                        variant="contained"
+                        component="span"
+                        className={classes.button}
+                        size="large"
+                        color="primary"
+                        style={{ margin: 0, height: '100%', }}
+                      >
+                        <Image className={classes.extendedIcon} /> Select Multiple Images
+                    </Button>
+                    </label>
+                  </Fragment>
                 </Grid>
-              }
-            </Grid>
+                {
+                  weddingImages?.map((x, i) => (
+                    <>
+                      <Grid item xs={12} sm={2}>
+                        <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          required
+                          id={`alt_tag${i}`}
+                          name="alt_tag"
+                          label="Image Alt Text"
+                          value={x.alt_tag}
+                          variant="outlined"
+                          fullWidth
+                          onChange={(e) => handleImageAltChange(e, i)}
+                          size="small"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <FormControl component="fieldset">
+                          <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
+                            setWeddingImages(weddingImages.map((y, ind) => {
+                              if (ind === i) {
+                                return { ...y, is360: !y.is360 }
+                              } else {
+                                return y
+                              }
+                            }))
+                          }}>
+                            <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
+                            <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
+                          </RadioGroup>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12} sm={2}>
+                        <MaterialButton variant="outlined" color="secondary" onClick={() => setWeddingImages([...weddingImages.filter((z, index) => index !== i)])}>
+                          <DeleteOutlined />
+                        </MaterialButton>
+                      </Grid>
+                    </>
+                  ))
+                }
+                {
+                  weddingImages.length > 0 &&
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
+                      Upload/Update Images
+                  </MaterialButton>
+                  </Grid>
+                }
+              </Grid>
+            </form>
           </CardBody>
         </Card>
         {/* MULTIPLE IMAGES UPLOAD SECTION END */}

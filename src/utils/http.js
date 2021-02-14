@@ -8,12 +8,17 @@ const API = axios.create({
 });
 
 API.interceptors.request.use((request) => {
-  store.dispatch({ type: "SHOW_SPINNER" })
   if (request) {
+    store.dispatch({ type: "SHOW_SPINNER" });
     //perform the manipulation here and change the request object
     // alert("request called")
   }
-  return request;
+  return {
+    ...request,
+    onUploadProgress: function(progressEvent){
+      console.log(Math.round( (progressEvent.loaded * 100) / progressEvent.total ))
+    }
+  };
 }, (error) => {
   console.log("interceptor request ERROR", error)
   store.dispatch({ type: "HIDE_SPINNER" })
