@@ -144,7 +144,8 @@ export default withRouter(function WeddingAdd(props) {
     let imagesFormData = new FormData();
     weddingImages.forEach(x => {
       console.log(x);
-      imagesFormData.append("images[]", JSON.stringify(x))
+      imagesFormData.append("images[]", x.avatar);
+      imagesFormData.append("data[]", JSON.stringify(x))
     });
 
     // just for testing
