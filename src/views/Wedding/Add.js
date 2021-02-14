@@ -61,6 +61,7 @@ export default withRouter(function WeddingAdd(props) {
   const [wedding, setWedding] = useState({ ...initialObject });
   const [weddingImages, setWeddingImages] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
+  const [post_id, setPostId] = useState(0);
 
   useEffect(() => {
     if (id && id != null) {
@@ -95,15 +96,13 @@ export default withRouter(function WeddingAdd(props) {
 
   const handleMultipleFileChange = (e) => {
     let files = e.target.files || e.dataTransfer.files;
-    debugger;
     if (!files.length) return;
     let imagesObject = [];
 
     Object.entries(files).map((x, i) => {
-      debugger;
       return imagesObject.push({
         avatar: x[1],
-        post_id: id,
+        post_id,
         alt_tag: '',
         is360: false
       });
@@ -123,6 +122,7 @@ export default withRouter(function WeddingAdd(props) {
         console.log(response);
         if (response.status === 200) {
           alert("Record Updated");
+          setPostId(response.data?.post_id)
           setWedding({ ...initialObject }); //resetting the form
           props.history.push('/admin/weddings');
         }
