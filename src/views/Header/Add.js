@@ -36,6 +36,11 @@ import Divider from '@material-ui/core/Divider';
 import InboxIcon from '@material-ui/icons/Inbox';
 import DraftsIcon from '@material-ui/icons/Drafts';
 
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Typography from '@material-ui/core/Typography';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -51,28 +56,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UpdateHeader() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const [dining, setDining] = useState({
-    post_name: '',
-    post_content: "<p>Detailed content goes here!</p>",
-    short_description: "<p>Short description goes here!</p>",
-    room_type: -1,
-    category_id: -1,
-    thumbnail: '',
-    alt_text: '',
-    meta_title: '',
-    meta_description: '',
-    schema_markup: '',
-    permalink: '',
-    is_followed: true,
-    is_indexed: true
-  })
+  // const [open, setOpen] = React.useState(false);
   const [dragId, setDragId] = useState();
 
   const [headerContent, setHeaderContent] = useState({
-    first: {
-      description: ''
-    },
     menuItems: [
       {
         id: 1,
@@ -93,23 +80,24 @@ export default function UpdateHeader() {
         order: 3
       },
     ],
-    third: {
+    contact: {
       phone: '',
       email: '',
       address: ''
-    },
-    social: {
-      facebook: '',
-      twitter: '',
-      instagram: ''
     }
   })
 
 
-  const handleInputChange = (e) => {
-    let updatedDining = { ...dining };
-    updatedDining[e.target.name] = e.target.value;
-    setDining(updatedDining);
+  const handleMenuItemChange = (e, index) => {
+    let updatedItems = [...headerContent.menuItems];
+    updatedItems[index][e.target.name] = e.target.value;
+    setHeaderContent({ ...headerContent, menuItems: updatedItems });
+  }
+
+  const handleContactItemChange = (e) => {
+    let updatedContact = { ...headerContent.contact };
+    updatedContact[e.target.name] = e.target.value;
+    setHeaderContent({ ...headerContent, contact: updatedContact });
   }
 
   const handleFileChange = (e) => {
@@ -120,15 +108,11 @@ export default function UpdateHeader() {
   }
 
   const createImage = (file) => {
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      setDining({ ...dining, thumbnail: e.target.result })
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function ListItemLink(props) {
-    return <ListItem button component="a" {...props} />;
+    // let reader = new FileReader();
+    // reader.onload = (e) => {
+    //   setDining({ ...dining, thumbnail: e.target.result })
+    // };
+    // reader.readAsDataURL(file);
   }
 
   const handleDrag = (ev) => {
@@ -161,142 +145,152 @@ export default function UpdateHeader() {
         <Card>
           <CardHeader color="primary">
             <h4 className="mb-0">Update Site Header</h4>
-            {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
-          {/* <h5 className="pl-4 mt-3 mb-0" style={{ cursor: 'pointer' }} onClick={() => setOpen(!open)}>Show/Hide Preview</h5> */}
-
-          {/* <MaterialButton
-            variant="outlined"
-            component="span"
-            className="m-3"
-            size="small"
-            color="primary"
-            style={{ width: '150px' }}
-            onClick={() => setOpen(!open)}
-          >
-            Show/Hide Preview
-          </MaterialButton> */}
-          {/* <Collapse in={open} timeout="auto" unmountOnExit>
-            <FooterPreview />
-          </Collapse> */}
-          <CardBody className="pt-0">
-            <h4 className="mt-2">Menu Items (Drawer Menu)</h4>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <MaterialButton
-                  variant="outlined"
-                  component="span"
-                  className={classes.button}
-                  size="small"
-                  color="primary"
-                  onClick={() => setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', id: headerContent.menuItems + 1, order: headerContent.menuItems + 1 }] })}
-                >
-                  Add a New Link
-                </MaterialButton>
-              </Grid>
-              <Grid item xs={12} sm={8}>
+          <CardBody className="">
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography className={classes.heading}>Menu Items (Drawer Menu)</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {/* <h4 className="mt-2"></h4> */}
                 <Grid container spacing={2}>
-                  {
-                    headerContent?.menuItems?.map(x => (
-                      <React.Fragment>
-                        <Grid item xs={12} sm={4}>
-                          <TextField
-                            required
-                            id="post_name"
-                            name="post_name"
-                            label="Link Text"
-                            value={x.text}
-                            variant="outlined"
-                            fullWidth
-                            onChange={handleInputChange}
-                            size="small"
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                          <TextField
-                            required
-                            id="post_name"
-                            name="post_name"
-                            label="Link Address"
-                            value={x.address}
-                            variant="outlined"
-                            fullWidth
-                            onChange={handleInputChange}
-                            size="small"
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                          <MaterialButton color="secondary" size="small" variant="outlined" style={{ height: '100%' }}>
-                            Delete Link
-                      </MaterialButton>
-                        </Grid>
-                      </React.Fragment>
-                    ))
-                  }
+                  {/* <Grid item xs={12}>
+                  </Grid> */}
+                  <Grid item xs={12} sm={8}>
+                    <MaterialButton
+                      variant="outlined"
+                      component="span"
+                      className={"mb-3"}
+                      // size="small"
+                      color="primary"
+                      onClick={() => setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', id: headerContent.menuItems + 1, order: headerContent.menuItems + 1 }] })}
+                    >
+                      Add a New Link
+                  </MaterialButton>
+                    <Grid container spacing={2}>
+                      {
+                        headerContent?.menuItems?.sort((a, b) => a.order - b.order).map((x, index) => (
+                          <React.Fragment>
+                            <Grid item xs={12} sm={4}>
+                              <TextField
+                                required
+                                id={`text${x.id}`}
+                                name="text"
+                                label="Link Text"
+                                value={x.text}
+                                variant="outlined"
+                                fullWidth
+                                onChange={(e) => handleMenuItemChange(e, index)}
+                                size="small"
+                              />
+                            </Grid>
+                            <Grid item xs={12} sm={4}>
+                              <TextField
+                                required
+                                id={`address${x.id}`}
+                                name="address"
+                                label="Link Address"
+                                value={x.address}
+                                variant="outlined"
+                                fullWidth
+                                onChange={(e) => handleMenuItemChange(e, index)}
+                                size="small"
+                              />
+                            </Grid>
+                            <Grid item xs={12} sm={4}>
+                              <MaterialButton onClick={() => setHeaderContent({ ...headerContent, menuItems: headerContent.menuItems.filter(z => z.id !== x.id) })} color="secondary" size="small" variant="outlined" style={{ height: '100%' }}>
+                                Delete Link
+                              </MaterialButton>
+                            </Grid>
+                          </React.Fragment>
+                        ))
+                      }
+                      <Grid item xs={12}>
+                        <MaterialButton onClick={() => alert("Implementation Pending")} color="primary" variant="contained">
+                          Update Section
+                        </MaterialButton>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <p>Drag and Drop the items to Re-Arrange the order</p>
+                    <Paper>
+                      <List component="nav" aria-label="main mailbox folders" draggable={false} >
+                        {
+                          headerContent?.menuItems?.sort((a, b) => a.order - b.order).map(x => (
+                            <ListItem style={{ borderBottom: '1px solid #ddd', zIndex: 9999 }} button id={x.id} draggable onDragStart={handleDrag} onDrop={handleDrop} onDragOver={(ev) => ev.preventDefault()} >
+                              <ListItemText primary={x.text} />
+                            </ListItem>
+                          ))
+                        }
+                      </List>
+                    </Paper>
+                  </Grid>
                 </Grid>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <p>Drag and Drop the items to Re-Arrange the order</p>
-                <Paper>
-                  <List component="nav" aria-label="main mailbox folders">
-                    {
-                      headerContent?.menuItems?.sort((a, b) => a.order - b.order).map(x => (
-                        <ListItem style={{ borderBottom: '1px solid #ddd' }} button id={x.id} draggable onDragStart={handleDrag} onDrop={handleDrop} onDragOver={(ev) => ev.preventDefault()} >
-                          <ListItemText primary={x.text} />
-                        </ListItem>
-                      ))
-                    }
-                  </List>
-                </Paper>
-              </Grid>
-            </Grid>
-            <h4 className="mt-2">Header Contact Links</h4>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="meta_title"
-                  name="meta_title"
-                  label="Phone Number"
-                  value={dining.meta_title}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="meta_description"
-                  name="meta_description"
-                  label="Email Address"
-                  value={dining.meta_description}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="schema_markup"
-                  name="schema_markup"
-                  label="Location"
-                  value={dining.schema_markup}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <MaterialButton onClick={() => alert("Implementation Pending")} size="large" color="primary" variant="contained">
-                  Update Header
-                </MaterialButton>
-              </Grid>
-            </Grid>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>Header Contact Links</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {/* <h4 className="mt-2"></h4> */}
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      required
+                      id="phone"
+                      name="phone"
+                      label="Phone Number"
+                      value={headerContent.contact.phone}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleContactItemChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      required
+                      id="email"
+                      name="email"
+                      label="Email Address"
+                      value={headerContent.contact.email}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleContactItemChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      required
+                      id="address"
+                      name="address"
+                      label="Location"
+                      value={headerContent.contact.address}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleContactItemChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={() => alert("Implementation Pending")} color="primary" variant="contained">
+                      Update Section
+                    </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
           </CardBody>
         </Card>
       </div>

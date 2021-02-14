@@ -68,6 +68,8 @@ import AddPrivacyPolicy from "views/SitePages/Pages/PrivacyPolicy/Add";
 import AddCovidPolicy from "views/SitePages/Pages/CovidPolicy/Add";
 import AddCancellationPolicy from "views/SitePages/Pages/CancellationPolicy/Add";
 import AddWedding from "views/SitePages/Pages/Wedding/Add";
+import AddAboutSeychelles from "views/SitePages/Pages/AboutSeychelles/Add";
+import FAQList from "views/FAQ/List";
 
 const dashboardRoutes = [
   {
@@ -375,6 +377,16 @@ const dashboardRoutes = [
     hide: true
   },
   {
+    path: "/pages/about-seychelles/add/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: AddAboutSeychelles,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
     path: "/pages/:id",
     name: "Pages",
     rtlName: "ملف تعريفي للمستخدم",
@@ -425,7 +437,7 @@ const dashboardRoutes = [
     name: "F.A.Q's",
     rtlName: "ملف تعريفي للمستخدم",
     icon: QuestionAnswerOutlined,
-    component: UpdateHeader,
+    component: FAQList,
     layout: "/admin",
     exact: true
   },

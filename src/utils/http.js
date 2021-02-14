@@ -16,6 +16,7 @@ API.interceptors.request.use((request) => {
   return request;
 }, (error) => {
   console.log("interceptor request ERROR", error)
+  store.dispatch({ type: "HIDE_SPINNER" })
 
   return Promise.reject(error.message);
 });
@@ -30,6 +31,8 @@ API.interceptors.response.use((response) => {
   return response;
 }, (error) => {
   console.log("interceptor response ERROR", error)
+  store.dispatch({ type: "HIDE_SPINNER" })
+
   if (error.response.status === 401) {
     // history.replace("/authentication/logout");
   }

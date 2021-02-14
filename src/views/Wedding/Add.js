@@ -2,10 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
-// core components
-// import GridItem from "components/Grid/GridItem.js";
-// import GridContainer from "components/Grid/GridContainer.js";
-// import CustomInput from "components/CustomInput/CustomInput.js";
+
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import MaterialButton from '@material-ui/core/Button';
@@ -18,12 +15,10 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField, RadioGroup, Radio, FormControlLabel } from "@material-ui/core";
+import { MenuItem, Select, FormControl, TextField, RadioGroup, Radio, FormControlLabel, Avatar } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 
-// import { CKEditor } from '@ckeditor/ckeditor5-react';
-// import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
-import { Image } from "@material-ui/icons";
+import { DeleteOutlined, Image } from "@material-ui/icons";
 import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
 import { ckEditorConfig } from "utils/data";
@@ -63,7 +58,8 @@ export default withRouter(function WeddingAdd(props) {
     is_indexed: true,
     is_indexed_or_is_followed: 1
   }
-  const [wedding, setWedding] = useState({ ...initialObject })
+  const [wedding, setWedding] = useState({ ...initialObject });
+  const [weddingImages, setWeddingImages] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
@@ -71,7 +67,7 @@ export default withRouter(function WeddingAdd(props) {
       setIsEdit(true);
       API.get(`/wedding/${id}/edit`).then(response => {
         if (response.status === 200) {
-          setWedding({ ...wedding, ...response?.data?.content[0] })
+          setWedding({ ...wedding, ...response?.data?.category_details[0] })
         }
       })
     }
@@ -97,23 +93,70 @@ export default withRouter(function WeddingAdd(props) {
     reader.readAsDataURL(file);
   }
 
+  const handleMultipleFileChange = (e) => {
+    let files = e.target.files || e.dataTransfer.files;
+    debugger;
+    if (!files.length) return;
+    let imagesObject = [];
+
+    Object.entries(files).map((x, i) => {
+      debugger;
+      return imagesObject.push({
+        avatar: x[1],
+        post_id: id,
+        alt_tag: '',
+        is360: false
+      });
+    })
+    setWeddingImages([...weddingImages, ...imagesObject])
+  }
+
+  const handleImageAltChange = (e, index) => {
+    let updatedWeddingImages = [...weddingImages];
+    updatedWeddingImages[index].alt_tag = e.target.value;
+    setWeddingImages(updatedWeddingImages)
+  }
 
   const handleSubmit = () => {
     if (isEdit) {
       API.put(`/wedding/${id}`, wedding).then(response => {
         console.log(response);
-        alert("Record Updated")
-        //clear all fields
-        setWedding({ ...initialObject });
-        props.history.push('/admin/weddings');
-      })
+        if (response.status === 200) {
+          alert("Record Updated");
+          setWedding({ ...initialObject }); //resetting the form
+          props.history.push('/admin/weddings');
+        }
+      }).catch(err => alert("Something went wrong"));
     } else {
       API.post('/wedding', wedding).then(response => {
         console.log(response);
-        //clear all fields
-        setWedding({ ...initialObject });
-      })
+        if (response.status === 200) {
+          alert("Record Updated");
+          setWedding({ ...initialObject });
+        }
+      }).catch(err => alert("Something went wrong."))
     }
+  }
+
+  const handleMultipleSubmit = () => {
+    let imagesFormData = new FormData();
+    weddingImages.forEach(x=> {
+      imagesFormData.append("images", x)
+    })
+    API.post(`/multiple_upload`, imagesFormData, {
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
+      }
+    }).then(response => {
+      console.log(response);
+      debugger;
+      if (response.status === 200) {
+        alert("Files Uploaded");
+        setWeddingImages([]);
+        props.history.push('/admin/weddings');
+      }
+    }).catch(err => alert("Something went wrong"));
+
   }
 
   return (
@@ -225,68 +268,13 @@ export default withRouter(function WeddingAdd(props) {
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Short Description</p>
-                {/* <CKEditor
-                  editor={ClassicEditor}
-                  data={wedding.short_description}
-                  // config={{
-                  //   toolbar: ['bold', 'italic']
-                  // }}
-                  onReady={editor => {
-                    // You can store the "editor" and use when it is needed.
-                    console.log('Editor is ready to use!', editor);
-                    editor.editing.view.change(writer => {
-                      writer.setStyle(
-                        "height",
-                        "150px",
-                        editor.editing.view.document.getRoot()
-                      );
-                    });
-                  }}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setWedding({ ...wedding, short_description: data })
-                  }}
-                  onBlur={(event, editor) => {
-                    console.log('Blur.', editor);
-                  }}
-                  onFocus={(event, editor) => {
-                    console.log('Focus.', editor);
-                  }}
-                /> */}
                 <CKEditor config={ckEditorConfig} onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} type="classic" data={wedding.short_description} onChange={(e) => setWedding({ ...wedding, short_description: e.editor.getData() })}
                 />
               </Grid>
 
               <Grid item xs={12} sm={12}>
                 <p>Detailed Content</p>
-                {/* <CKEditor
-                  editor={ClassicEditor}
-                  data={wedding.post_content}
-                  // config={{
-                  //   toolbar: ['bold', 'italic']
-                  // }}
-                  onReady={editor => {
-                    // You can store the "editor" and use when it is needed.
-                    console.log('Editor is ready to use!', editor);
-                    editor.editing.view.change(writer => {
-                      writer.setStyle(
-                        "height",
-                        "150px",
-                        editor.editing.view.document.getRoot()
-                      );
-                    });
-                  }}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setWedding({ ...wedding, post_content: data })
-                  }}
-                  onBlur={(event, editor) => {
-                    console.log('Blur.', editor);
-                  }}
-                  onFocus={(event, editor) => {
-                    console.log('Focus.', editor);
-                  }}
-                /> */}
+
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.post_content} onChange={(e) => setWedding({ ...wedding, post_content: e.editor.getData() })} />
 
               </Grid>
@@ -309,6 +297,19 @@ export default withRouter(function WeddingAdd(props) {
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
+                  id="permalink"
+                  name="permalink"
+                  label="Permalink"
+                  value={wedding.permalink}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  required
                   id="meta_description"
                   name="meta_description"
                   label="Meta Description"
@@ -319,7 +320,7 @@ export default withRouter(function WeddingAdd(props) {
                   size="small"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <TextField
                   required
                   id="schema_markup"
@@ -328,19 +329,9 @@ export default withRouter(function WeddingAdd(props) {
                   value={wedding.schema_markup}
                   variant="outlined"
                   fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="permalink"
-                  name="permalink"
-                  label="Permalink"
-                  value={wedding.permalink}
-                  variant="outlined"
-                  fullWidth
+                  multiline
+                  rows={4}
+                  rowsMax={4}
                   onChange={handleInputChange}
                   size="small"
                 />
@@ -373,35 +364,25 @@ export default withRouter(function WeddingAdd(props) {
             </Grid>
           </CardBody>
         </Card>
+
+        {/* MULTIPLE IMAGES UPLOAD SECTION START */}
         <Card>
           <CardBody>
             <h3>Wedding Images</h3>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="alt_text"
-                  name="alt_text"
-                  label="Image Alt Text"
-                  value={wedding.alt_text}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={6} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <Fragment>
                   <input
                     color="primary"
                     accept="image/*"
                     type="file"
-                    onChange={handleInputChange}
-                    id="thumbnail"
-                    name="thumbnail"
+                    multiple
+                    onChange={handleMultipleFileChange}
+                    id="thumbnailMultiple"
+                    name="thumbnailMultiple"
                     style={{ display: 'none', }}
                   />
-                  <label htmlFor="thumbnail">
+                  <label htmlFor="thumbnailMultiple">
                     <Button
                       variant="contained"
                       component="span"
@@ -410,14 +391,66 @@ export default withRouter(function WeddingAdd(props) {
                       color="primary"
                       style={{ margin: 0, height: '100%', }}
                     >
-                      <Image className={classes.extendedIcon} /> Upload Multiple Image
+                      <Image className={classes.extendedIcon} /> Select Multiple Images
                     </Button>
                   </label>
                 </Fragment>
               </Grid>
+              {
+                weddingImages?.map((x, i) => (
+                  <Fragment>
+                    <Grid item xs={12} sm={2}>
+                      <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        required
+                        id={`alt_tag${i}`}
+                        name="alt_tag"
+                        label="Image Alt Text"
+                        value={x.alt_tag}
+                        variant="outlined"
+                        fullWidth
+                        onChange={(e) => handleImageAltChange(e, i)}
+                        size="small"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <FormControl component="fieldset">
+                        <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
+                          setWeddingImages(weddingImages.map((y, ind) => {
+                            if (ind === i) {
+                              return { ...y, is360: !y.is360 }
+                            } else {
+                              return y
+                            }
+                          }))
+                        }}>
+                          <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
+                          <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
+                        </RadioGroup>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                      <MaterialButton variant="outlined" color="secondary" onClick={() => setWeddingImages([...weddingImages.filter((z, index) => index !== i)])}>
+                        <DeleteOutlined />
+                      </MaterialButton>
+                    </Grid>
+                  </Fragment>
+                ))
+              }
+              {
+                weddingImages.length > 0 &&
+                <Grid item xs={12} sm={12}>
+                  <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
+                    Upload/Update Images
+                  </MaterialButton>
+                </Grid>
+              }
             </Grid>
           </CardBody>
         </Card>
+        {/* MULTIPLE IMAGES UPLOAD SECTION END */}
       </div>
     </div>
   );

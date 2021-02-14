@@ -59,7 +59,7 @@ export default function AddDiningInner() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avatar_alt: '',
+      section_avtar_alt: '',
       section_slug: 'intro'
     },
     timings: {
@@ -70,7 +70,7 @@ export default function AddDiningInner() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avatar_alt: '',
+      section_avtar_alt: '',
       section_slug: 'timings'
     },
     dress: {
@@ -81,7 +81,7 @@ export default function AddDiningInner() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avatar_alt: '',
+      section_avtar_alt: '',
       section_slug: 'dress'
     },
     faq: {
@@ -92,7 +92,7 @@ export default function AddDiningInner() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avatar_alt: '',
+      section_avtar_alt: '',
       section_slug: 'faq'
     },
   })
@@ -200,10 +200,10 @@ export default function AddDiningInner() {
                   <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avatar_alt"
-                      name="section_avatar_alt"
+                      id="section_avtar_alt"
+                      name="section_avtar_alt"
                       label="Image Alt Text"
-                      value={diningInner.intro.section_avatar_alt}
+                      value={diningInner.intro.section_avtar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "intro")}
@@ -295,10 +295,10 @@ export default function AddDiningInner() {
                   {/* <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avatar_alt"
-                      name="section_avatar_alt"
+                      id="section_avtar_alt"
+                      name="section_avtar_alt"
                       label="Image Alt Text"
-                      value={diningInner.dress.section_avatar_alt}
+                      value={diningInner.dress.section_avtar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "dress")}
@@ -390,10 +390,10 @@ export default function AddDiningInner() {
                   {/* <Grid item xs={12} sm={3}>
                     <TextField
                       required
-                      id="section_avatar_alt"
-                      name="section_avatar_alt"
+                      id="section_avtar_alt"
+                      name="section_avtar_alt"
                       label="Image Alt Text"
-                      value={diningInner.timings.section_avatar_alt}
+                      value={diningInner.timings.section_avtar_alt}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "timings")}

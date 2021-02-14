@@ -46,10 +46,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function AddCovidPolicy() {
+export default function AddAboutSeychelles() {
   const pageId = parseInt(useParams().id);
   const classes = useStyles();
-  const [covidPolicy, setCovidPolicy] = useState({
+  const [aboutSeychelles, setAboutSeychelles] = useState({
     intro: {
       id: 0,
       section_name: '',
@@ -67,9 +67,9 @@ export default function AddCovidPolicy() {
     API.get(`/all_sections/${pageId}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
-        setCovidPolicy(
+        setAboutSeychelles(
           {
-            intro: data.find(x => x.section_slug === "intro") || covidPolicy.intro,
+            intro: data.find(x => x.section_slug === "intro") || aboutSeychelles.intro,
           }
         )
       }
@@ -77,13 +77,30 @@ export default function AddCovidPolicy() {
   }, [])
   const handleInputChange = (e, section) => {
      
-    let updatedDiningInner = { ...covidPolicy };
+    let updatedDiningInner = { ...aboutSeychelles };
     updatedDiningInner[section][e.target.name] = e.target.value;
-    setCovidPolicy(updatedDiningInner);
+    setAboutSeychelles(updatedDiningInner);
+  }
+
+  const handleFileChange = (e, section) => {
+    let files = e.target.files || e.dataTransfer.files;
+    if (!files.length)
+      return;
+    createImage(files[0], section);
+  }
+
+  const createImage = (file, section) => {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      let updatedDiningInner = { ...aboutSeychelles };
+      updatedDiningInner[section]["section_avatar"] = e.target.result;
+      setAboutSeychelles(updatedDiningInner);
+    };
+    reader.readAsDataURL(file);
   }
 
   const handleSubmit = (id, name) => {
-    API.put(`/add_section/${id}`, covidPolicy[name]).then(response => {
+    API.put(`/add_section/${id}`, aboutSeychelles[name]).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
@@ -95,7 +112,7 @@ export default function AddCovidPolicy() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className="mb-0">Add Privacy Policy</h4>
+            <h4 className="mb-0">Add About Seychelles Information</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
@@ -109,14 +126,14 @@ export default function AddCovidPolicy() {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12}>
+                  <Grid item xs={12} sm={9}>
                     {/* SECTION TITLE */}
                     <TextField
                       required
                       id="section_name"
                       name="section_name"
                       label="Section Title"
-                      value={covidPolicy.intro.section_name}
+                      value={aboutSeychelles.intro.section_name}
                       variant="outlined"
                       fullWidth
                       onChange={(e) => handleInputChange(e, "intro")}
@@ -124,16 +141,74 @@ export default function AddCovidPolicy() {
                       style={{ marginBottom: '1rem' }}
                     />
                     {/* CKEDITOR  */}
-                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={covidPolicy.intro.section_content} onChange={(e) => setCovidPolicy({ ...covidPolicy, intro: { ...covidPolicy.intro, section_content: e.editor.getData() } })} />
+                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={aboutSeychelles.intro.section_content} onChange={(e) => setAboutSeychelles({ ...aboutSeychelles, intro: { ...aboutSeychelles.intro, section_content: e.editor.getData() } })} />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <TextField
+                      required
+                      id="section_avtar_alt"
+                      name="section_avtar_alt"
+                      label="Image Alt Text"
+                      value={aboutSeychelles.intro.section_avtar_alt}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "intro")}
+                      size="small"
+                    />
+                    <Card className={classes.root}>
+                      <CardActionArea>
+                        {aboutSeychelles.intro.section_avatar && aboutSeychelles.intro.section_avatar !== "" ?
+                          <CardMedia
+                            component="img"
+                            alt=""
+                            height="140"
+                            image={aboutSeychelles.intro.section_avatar}
+                            title=""
+                          />
+                          :
+                          <CardContent>
+                            <Typography variant="body2" component="h2">
+                              Please add an Image
+                          </Typography>
+                          </CardContent>
+                        }
+                      </CardActionArea>
+                      <CardActions>
+                        <Fragment>
+                          <input
+                            color="primary"
+                            accept="image/*"
+                            type="file"
+                            onChange={(e) => handleFileChange(e, "intro")}
+                            id="section_avatar_intro"
+                            name="section_avatar_intro"
+                            style={{ display: 'none', }}
+                          />
+                          <label htmlFor="section_avatar_intro" style={{ width: '100%', margin: 0 }}>
+                            <Button
+                              variant="contained"
+                              component="span"
+                              className={classes.button}
+                              size="large"
+                              color="primary"
+                              fullWidth
+                            >
+                              <Image className={classes.extendedIcon} /> Upload Section Image
+                        </Button>
+                          </label>
+                        </Fragment>
+                      </CardActions>
+                    </Card>
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(covidPolicy.intro.id, "intro")} size="large" color="primary" variant="contained">
+                    <MaterialButton onClick={() => handleSubmit(aboutSeychelles.intro.id, "intro")} size="large" color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
+
           </CardBody>
         </Card>
       </div>

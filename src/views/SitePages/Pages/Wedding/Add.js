@@ -59,7 +59,7 @@ export default function AddWedding() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avatar_alt: '',
+      section_avtar_alt: '',
       section_slug: 'intro'
     },
     faq: {
@@ -70,7 +70,7 @@ export default function AddWedding() {
       section_avatar: '',
       section_col_arr: 0,
       section_prior: 1,
-      section_avatar_alt: '',
+      section_avtar_alt: '',
       section_slug: 'faq'
     },
   })

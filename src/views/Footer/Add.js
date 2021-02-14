@@ -30,6 +30,11 @@ import { Image } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import FooterPreview from "./Preview";
 
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Typography from '@material-ui/core/Typography';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -68,6 +73,7 @@ export default function UpdateFooter() {
     },
     second: {
       links: [{
+        id: 1,
         text: 'About Us',
         address: '/about us'
       }]
@@ -85,10 +91,16 @@ export default function UpdateFooter() {
   })
 
 
-  const handleInputChange = (e) => {
-    let updatedDining = { ...dining };
-    updatedDining[e.target.name] = e.target.value;
-    setDining(updatedDining);
+  const handleInputChange = (e, section) => {
+    let updatedFooterContent = { ...footerContent };
+    updatedFooterContent[section][e.target.name] = e.target.value;
+    setFooterContent(updatedFooterContent);
+  }
+
+  const handleLinkChange = (e, index, section) => {
+    let updatedFooterContent = { ...footerContent };
+    updatedFooterContent[section].links[index][e.target.name] = e.target.value;
+    setFooterContent(updatedFooterContent);
   }
 
   const handleFileChange = (e) => {
@@ -112,143 +124,169 @@ export default function UpdateFooter() {
         <Card>
           <CardHeader color="primary">
             <h4 className="mb-0">Update Site Footer</h4>
-            {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
-          {/* <h5 className="pl-4 mt-3 mb-0" style={{ cursor: 'pointer' }} onClick={() => setOpen(!open)}>Show/Hide Preview</h5> */}
 
-          <MaterialButton
-            variant="outlined"
-            component="span"
-            className="m-3"
-            size="small"
-            color="primary"
-            style={{ width: '150px' }}
-            onClick={() => setOpen(!open)}
-          >
-            Show/Hide Preview
-          </MaterialButton>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <FooterPreview />
-          </Collapse>
-          <CardBody className="pt-0">
-            <h4 className="mt-2">First Column (About)</h4>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  required
-                  id="post_name"
-                  name="post_name"
-                  label="About Description"
-                  value={dining.post_name}
-                  variant="outlined"
-                  fullWidth
-                  multiline
-                  rows={4}
-                  rowsMax={4}
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-            </Grid>
-            <h4 className="mt-4">Second Column (Services)</h4>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <MaterialButton
-                  variant="outlined"
-                  component="span"
-                  className={classes.button}
-                  size="small"
-                  color="primary"
-                  onClick={() => setFooterContent({ ...footerContent, second: { ...footerContent.second, links: [...footerContent.second.links, { text: '', address: '' }] } })}
-                >
-                  Add a New Link
-                </MaterialButton>
-              </Grid>
-              {
-                footerContent?.second?.links?.map(x => (
-                  <React.Fragment>
-                    <Grid item xs={12} sm={5}>
-                      <TextField
-                        required
-                        id="post_name"
-                        name="post_name"
-                        label="Link Text"
-                        value={x.text}
-                        variant="outlined"
-                        fullWidth
-                        onChange={handleInputChange}
-                        size="small"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={5}>
-                      <TextField
-                        required
-                        id="post_name"
-                        name="post_name"
-                        label="Link Address"
-                        value={x.address}
-                        variant="outlined"
-                        fullWidth
-                        onChange={handleInputChange}
-                        size="small"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={2}>
-                      <MaterialButton color="secondary" size="small" variant="outlined" style={{ height: '100%' }}>
-                        Delete Link
-                      </MaterialButton>
-                    </Grid>
-                  </React.Fragment>
-                ))
-              }
-            </Grid>
-            <h4 className="mt-4">Third Column (Contact Us)</h4>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="meta_title"
-                  name="meta_title"
-                  label="Phone Number"
-                  value={dining.meta_title}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="meta_description"
-                  name="meta_description"
-                  label="Email Address"
-                  value={dining.meta_description}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="schema_markup"
-                  name="schema_markup"
-                  label="Location"
-                  value={dining.schema_markup}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <MaterialButton onClick={() => alert("Implementation Pending")} size="large" color="primary" variant="contained">
-                  Update Footer
-                </MaterialButton>
-              </Grid>
-            </Grid>
+          <CardBody className="">
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography className={classes.heading}>First Column - About</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {/* <h4 className="mt-2">First Column (About)</h4> */}
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="description"
+                      name="description"
+                      label="About Description"
+                      value={footerContent.first.description}
+                      variant="outlined"
+                      fullWidth
+                      multiline
+                      rows={4}
+                      rowsMax={4}
+                      onChange={(e) => handleInputChange(e, 'first')}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={() => alert("Implementation Pending")} color="primary" variant="contained">
+                      Update Section
+                  </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>Second Column - Services</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {/* <h4 className="mt-4"></h4> */}
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <MaterialButton
+                      variant="outlined"
+                      component="span"
+                      className={classes.button}
+                      size="small"
+                      color="primary"
+                      onClick={() => setFooterContent({ ...footerContent, second: { ...footerContent.second, links: [...footerContent.second.links, { id: footerContent.second.links.length + 1, text: '', address: '' }] } })}
+                    >
+                      Add a New Link
+                    </MaterialButton>
+                  </Grid>
+                  {
+                    footerContent?.second?.links?.map((x, index) => (
+                      <React.Fragment>
+                        <Grid item xs={12} sm={5}>
+                          <TextField
+                            required
+                            id={`text${x.id}`}
+                            name="text"
+                            label="Link Text"
+                            value={x.text}
+                            variant="outlined"
+                            fullWidth
+                            onChange={(e) => handleLinkChange(e, index, 'second')}
+                            size="small"
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={5}>
+                          <TextField
+                            required
+                            id={`address${x.id}`}
+                            name="address"
+                            label="Link Address"
+                            value={x.address}
+                            variant="outlined"
+                            fullWidth
+                            onChange={(e) => handleLinkChange(e, index, 'second')}
+                            size="small"
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <MaterialButton onClick={() => setFooterContent({ ...footerContent, second: { ...footerContent.second, links: footerContent.second.links.filter(z => z.id !== x.id) } })} color="secondary" size="small" variant="outlined" style={{ height: '100%' }}>
+                            Delete Link
+                          </MaterialButton>
+                        </Grid>
+                      </React.Fragment>
+                    ))
+                  }
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={() => alert("Implementation Pending")} color="primary" variant="contained">
+                      Update Section
+                  </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel3a-content"
+                id="panel3a-header"
+              >
+                <Typography className={classes.heading}>Third Column - Contact Us</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={4}>
+                    <TextField
+                      required
+                      id="phone"
+                      name="phone"
+                      label="Phone Number"
+                      value={footerContent.third.phone}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, 'third')}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <TextField
+                      required
+                      id="email"
+                      name="email"
+                      label="Email Address"
+                      value={footerContent.third.email}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, 'third')}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <TextField
+                      required
+                      id="address"
+                      name="address"
+                      label="Location"
+                      value={footerContent.third.address}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, 'third')}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={() => alert("Implementation Pending")} color="primary" variant="contained">
+                      Update Section
+                    </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
           </CardBody>
         </Card>
       </div>

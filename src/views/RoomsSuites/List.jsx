@@ -78,10 +78,10 @@ class RoomsList extends Component {
           customBodyRender: val => (
             <div className="d-flex nowrap">
               <Link title="View Details" to={`/admin/room-suites/${val}`} >
-                <VisibilityOutlined color="primary" />
+                <VisibilityOutlined fontSize="small" color="primary" />
               </Link>
               <Link className="ml-2" title="Edit" to={`/admin/room-suites/edit/${val}`} >
-                <EditOutlined color="secondary"  />
+                <EditOutlined fontSize="small" color="secondary"  />
               </Link>
             </div>
           )
