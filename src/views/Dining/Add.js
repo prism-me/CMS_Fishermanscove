@@ -18,12 +18,12 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 // import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel } from "@material-ui/core";
+import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel, Avatar } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
-import { Image } from "@material-ui/icons";
+import { DeleteOutlined, Image } from "@material-ui/icons";
 import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
 
@@ -64,8 +64,9 @@ export default withRouter(function DiningAdd(props) {
   }
   const [dining, setDining] = useState({ ...initialObject })
 
-  const [newPostID, setNewPostID] = useState(-1);
+  const [diningImages, setDiningImages] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
+  const [post_id, setPostId] = useState(-1);
 
   useEffect(() => {
     if (id && id != null) {
@@ -98,20 +99,67 @@ export default withRouter(function DiningAdd(props) {
     reader.readAsDataURL(file);
   }
 
+  const handleMultipleFileChange = (e) => {
+    let files = e.target.files || e.dataTransfer.files;
+    if (!files.length) return;
+    let imagesObject = [];
+
+    Object.entries(files).map((x, i) => {
+      return imagesObject.push({
+        avatar: x[1],
+        post_id,
+        alt_tag: '',
+        is360: false
+      });
+    })
+    setDiningImages([...diningImages, ...imagesObject])
+  }
+
+  const handleImageAltChange = (e, index) => {
+    let updatedDiningImages = [...diningImages];
+    updatedDiningImages[index].alt_tag = e.target.value;
+    setDiningImages(updatedDiningImages)
+  }
+
+  const handleMultipleSubmit = () => {
+    let imagesFormData = new FormData();
+    diningImages.forEach(x => {
+      imagesFormData.append("images", x)
+    })
+    API.post(`/multiple_upload`, imagesFormData, {
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
+      }
+    }).then(response => {
+      console.log(response);
+      debugger;
+      if (response.status === 200) {
+        alert("Files Uploaded");
+        setDiningImages([]);
+        props.history.push('/admin/weddings');
+      }
+    }).catch(err => alert("Something went wrong"));
+
+  }
+
   const handleSubmit = () => {
     if (isEdit) {
       API.put(`/dining/${id}`, dining).then(response => {
         console.log(response);
-        alert("Record Updated")
-        //clear all fields
-        setDining({ ...initialObject });
-        props.history.push('/admin/dining');
+        if (response.status === 200) { 
+          alert("Record Updated");
+          setDining({ ...initialObject }); //clear all fields
+          props.history.push('/admin/dining');
+        }
       })
     } else {
       API.post('/dining', dining).then(response => {
         console.log(response);
-        //clear all fields
-        setDining({ ...initialObject });
+        if (response.status === 200) {
+          setPostId(response.data?.post_id);
+          alert("Record Updated");
+          setDining({ ...initialObject });
+        }
       })
     }
   }
@@ -307,6 +355,19 @@ export default withRouter(function DiningAdd(props) {
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
+                  id="permalink"
+                  name="permalink"
+                  label="Permalink"
+                  value={dining.permalink}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  required
                   id="meta_description"
                   name="meta_description"
                   label="Meta Description"
@@ -317,7 +378,7 @@ export default withRouter(function DiningAdd(props) {
                   size="small"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <TextField
                   required
                   id="schema_markup"
@@ -326,19 +387,9 @@ export default withRouter(function DiningAdd(props) {
                   value={dining.schema_markup}
                   variant="outlined"
                   fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="permalink"
-                  name="permalink"
-                  label="Permalink"
-                  value={dining.permalink}
-                  variant="outlined"
-                  fullWidth
+                  multiline
+                  rows={4}
+                  rowsMax={4}
                   onChange={handleInputChange}
                   size="small"
                 />
@@ -375,31 +426,19 @@ export default withRouter(function DiningAdd(props) {
           <CardBody>
             <h3>Dining Images</h3>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="alt_text"
-                  name="alt_text"
-                  label="Image Alt Text"
-                  value={dining.alt_text}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={6} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <Fragment>
                   <input
                     color="primary"
                     accept="image/*"
                     type="file"
-                    onChange={handleInputChange}
-                    id="thumbnail"
-                    name="thumbnail"
+                    multiple
+                    onChange={handleMultipleFileChange}
+                    id="thumbnailMultiple"
+                    name="thumbnailMultiple"
                     style={{ display: 'none', }}
                   />
-                  <label htmlFor="thumbnail">
+                  <label htmlFor="thumbnailMultiple">
                     <Button
                       variant="contained"
                       component="span"
@@ -408,11 +447,62 @@ export default withRouter(function DiningAdd(props) {
                       color="primary"
                       style={{ margin: 0, height: '100%', }}
                     >
-                      <Image className={classes.extendedIcon} /> Upload Multiple Image
+                      <Image className={classes.extendedIcon} /> Select Multiple Images
                     </Button>
                   </label>
                 </Fragment>
               </Grid>
+              {
+                diningImages?.map((x, i) => (
+                  <Fragment>
+                    <Grid item xs={12} sm={2}>
+                      <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        required
+                        id={`alt_tag${i}`}
+                        name="alt_tag"
+                        label="Image Alt Text"
+                        value={x.alt_tag}
+                        variant="outlined"
+                        fullWidth
+                        onChange={(e) => handleImageAltChange(e, i)}
+                        size="small"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <FormControl component="fieldset">
+                        <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
+                          setDiningImages(diningImages.map((y, ind) => {
+                            if (ind === i) {
+                              return { ...y, is360: !y.is360 }
+                            } else {
+                              return y
+                            }
+                          }))
+                        }}>
+                          <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
+                          <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
+                        </RadioGroup>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                      <MaterialButton variant="outlined" color="secondary" onClick={() => setDiningImages([...diningImages.filter((z, index) => index !== i)])}>
+                        <DeleteOutlined />
+                      </MaterialButton>
+                    </Grid>
+                  </Fragment>
+                ))
+              }
+              {
+                diningImages.length > 0 &&
+                <Grid item xs={12} sm={12}>
+                  <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
+                    Upload/Update Images
+                  </MaterialButton>
+                </Grid>
+              }
             </Grid>
           </CardBody>
         </Card>

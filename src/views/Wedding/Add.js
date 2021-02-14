@@ -61,7 +61,7 @@ export default withRouter(function WeddingAdd(props) {
   const [wedding, setWedding] = useState({ ...initialObject });
   const [weddingImages, setWeddingImages] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-  const [post_id, setPostId] = useState(0);
+  const [post_id, setPostId] = useState(-1);
 
   useEffect(() => {
     if (id && id != null) {
@@ -122,7 +122,6 @@ export default withRouter(function WeddingAdd(props) {
         console.log(response);
         if (response.status === 200) {
           alert("Record Updated");
-          setPostId(response.data?.post_id)
           setWedding({ ...initialObject }); //resetting the form
           props.history.push('/admin/weddings');
         }
@@ -132,6 +131,7 @@ export default withRouter(function WeddingAdd(props) {
         console.log(response);
         if (response.status === 200) {
           alert("Record Updated");
+          setPostId(response.data?.post_id);
           setWedding({ ...initialObject });
         }
       }).catch(err => alert("Something went wrong."))
