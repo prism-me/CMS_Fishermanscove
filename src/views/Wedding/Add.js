@@ -141,7 +141,7 @@ export default withRouter(function WeddingAdd(props) {
   const handleMultipleSubmit = () => {
     let imagesFormData = new FormData();
     weddingImages.forEach(x=> {
-      imagesFormData.append("images", x)
+      imagesFormData.append("images[]", x)
     })
     API.post(`/multiple_upload`, imagesFormData, {
       headers: {
