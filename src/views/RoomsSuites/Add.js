@@ -306,6 +306,19 @@ export default withRouter(function AddRoom(props) {
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
+                  id="permalink"
+                  name="permalink"
+                  label="Permalink"
+                  value={room.permalink}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  required
                   id="meta_description"
                   name="meta_description"
                   label="Meta Description"
@@ -316,7 +329,7 @@ export default withRouter(function AddRoom(props) {
                   size="small"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <TextField
                   required
                   id="schema_markup"
@@ -325,19 +338,9 @@ export default withRouter(function AddRoom(props) {
                   value={room.schema_markup}
                   variant="outlined"
                   fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="permalink"
-                  name="permalink"
-                  label="Permalink"
-                  value={room.permalink}
-                  variant="outlined"
-                  fullWidth
+                  multiline
+                  rows={4}
+                  rowsMax={4}
                   onChange={handleInputChange}
                   size="small"
                 />
