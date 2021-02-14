@@ -127,53 +127,11 @@ export default function PageAdd() {
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Short Description</p>
-                {/* <CKEditor
-                  editor={ClassicEditor}
-                  data={leisure.short_description}
-                  // config={{
-                  //   toolbar: ['bold', 'italic']
-                  // }}
-                  onReady={editor => {
-                    // You can store the "editor" and use when it is needed.
-                    console.log('Editor is ready to use!', editor);
-                  }}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setLeisure({ ...leisure, short_description: data })
-                  }}
-                  onBlur={(event, editor) => {
-                    console.log('Blur.', editor);
-                  }}
-                  onFocus={(event, editor) => {
-                    console.log('Focus.', editor);
-                  }}
-                /> */}
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.short_description} onChange={(e)=> setLeisure({...leisure, short_description: e.editor.getData()})} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Detailed Content</p>
-                {/* <CKEditor
-                  editor={ClassicEditor}
-                  data={leisure.post_content}
-                  // config={{
-                  //   toolbar: ['bold', 'italic']
-                  // }}
-                  onReady={editor => {
-                    // You can store the "editor" and use when it is needed.
-                    console.log('Editor is ready to use!', editor);
-                  }}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setLeisure({ ...leisure, post_content: data })
-                  }}
-                  onBlur={(event, editor) => {
-                    console.log('Blur.', editor);
-                  }}
-                  onFocus={(event, editor) => {
-                    console.log('Focus.', editor);
-                  }}
-                /> */}
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.post_content} onChange={(e)=> setLeisure({...leisure, post_content: e.editor.getData()})} />
 
               </Grid>

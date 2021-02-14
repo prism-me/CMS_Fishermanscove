@@ -18,14 +18,14 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 // import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel } from "@material-ui/core";
+import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel, Avatar } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 // import ClassicEditor from "../../plugins/ckeditor.js";
 // import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock";
-import { Image } from "@material-ui/icons";
+import { DeleteOutlined, Image } from "@material-ui/icons";
 import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
 
@@ -67,13 +67,15 @@ export default withRouter(function AddRoom(props) {
     is_indexed_or_is_followed: "1,1"
   };
   const [room, setRoom] = useState({ ...initialObject })
-  const [isEdit, setIsEdit] = useState(false);
 
-  const [newPostID, setNewPostID] = useState(-1);
+  const [roomImages, setRoomImages] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+  const [post_id, setPostId] = useState(-1);
 
   useEffect(() => {
     if (id && id != null) {
       setIsEdit(true);
+      setPostId(id);
       API.get(`/rooms/${id}/edit`).then(response => {
         if (response.status === 200) {
           setRoom({ ...room, ...response?.data?.content[0] })
@@ -103,21 +105,70 @@ export default withRouter(function AddRoom(props) {
     reader.readAsDataURL(file);
   }
 
+
+  const handleMultipleFileChange = (e) => {
+    let files = e.target.files || e.dataTransfer.files;
+    if (!files.length) return;
+    let imagesObject = [];
+
+    Object.entries(files).map((x, i) => {
+      return imagesObject.push({
+        avatar: x[1],
+        post_id,
+        alt_tag: '',
+        is360: false
+      });
+    })
+    setRoomImages([...roomImages, ...imagesObject])
+  }
+
+  const handleImageAltChange = (e, index) => {
+    let updatedRoomImages = [...roomImages];
+    updatedRoomImages[index].alt_tag = e.target.value;
+    setRoomImages(updatedRoomImages)
+  }
+
+  const handleMultipleSubmit = () => {
+    let imagesFormData = new FormData();
+    roomImages.forEach(x => {
+      imagesFormData.append("images", x)
+    })
+    API.post(`/multiple_upload`, imagesFormData, {
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
+      }
+    }).then(response => {
+      console.log(response);
+      debugger;
+      if (response.status === 200) {
+        alert("Files Uploaded");
+        setRoomImages([]);
+        props.history.push('/admin/weddings');
+      }
+    }).catch(err => alert("Something went wrong"));
+
+  }
+
+
   const handleSubmit = () => {
     if (isEdit) {
       API.put(`/rooms/${id}`, room).then(response => {
         console.log(response);
-        alert("Record Updated")
-        //clear all fields
-        setRoom({ ...initialObject });
-        props.history.push('/admin/room-suites');
+        if (response.status === 200) {
+          alert("Record Updated")
+          setRoom({ ...initialObject }); //clear all fields
+          props.history.push('/admin/room-suites');
+        }
       })
     }
     else {
       API.post('/rooms', room).then(response => {
         console.log(response);
-        //clear all fields
-        setRoom({ ...initialObject });
+        if (response.status === 200) {
+          setPostId(response.data?.post_id);
+          alert('Record Updated');
+          setRoom({ ...initialObject });
+        }
       })
     }
   }
@@ -228,71 +279,11 @@ export default withRouter(function AddRoom(props) {
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Short Description</p>
-                {/* <CKEditor
-                  editor={ClassicEditor}
-                  data={room.short_description}
-                  // config={{
-                  //   toolbar: ['bold', 'italic']
-                  // }}
-                  onReady={editor => {
-                    // You can store the "editor" and use when it is needed.
-                    console.log('Editor is ready to use!', editor);
-                    editor.editing.view.change(writer => {
-                      writer.setStyle(
-                        "height",
-                        "150px",
-                        editor.editing.view.document.getRoot()
-                      );
-                    });
-                  }}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setRoom({ ...room, short_description: data })
-                  }}
-                  onBlur={(event, editor) => {
-                    console.log('Blur.', editor);
-                  }}
-                  onFocus={(event, editor) => {
-                    console.log('Focus.', editor);
-                  }}
-                /> */}
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={room.short_description} onChange={(e) => setRoom({ ...room, short_description: e.editor.getData() })} />
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Detailed Content</p>
-                {/* <CKEditor
-                  editor={ClassicEditor}
-                  data={room.post_content}
-                  config={{
-                    codeBlock: {
-                      languages: [
-                        { language: 'css', label: 'CSS' },
-                        { language: 'html', label: 'HTML' }
-                      ]
-                    }
-                  }}
-                  onReady={editor => {
-                    // You can store the "editor" and use when it is needed.
-                    console.log('Editor is ready to use!', editor);
-                    editor.editing.view.change(writer => {
-                      writer.setStyle(
-                        "height",
-                        "150px",
-                        editor.editing.view.document.getRoot()
-                      );
-                    });
-                  }}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setRoom({ ...room, post_content: data })
-                  }}
-                  onBlur={(event, editor) => {
-                    console.log('Blur.', editor);
-                  }}
-                  onFocus={(event, editor) => {
-                    console.log('Focus.', editor);
-                  }}
-                /> */}
+
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={room.post_content} onChange={(e) => setRoom({ ...room, post_content: e.editor.getData() })} />
 
               </Grid>
@@ -383,45 +374,87 @@ export default withRouter(function AddRoom(props) {
           <CardBody>
             <h3>Room Images</h3>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="alt_text"
-                  name="alt_text"
-                  label="Image Alt Text"
-                  value={room.alt_text}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={6} sm={6}>
-                <Fragment>
-                  <input
-                    color="primary"
-                    accept="image/*"
-                    type="file"
-                    onChange={handleInputChange}
-                    size="small"
-                    id="thumbnail"
-                    name="thumbnail"
-                    style={{ display: 'none', }}
-                  />
-                  <label htmlFor="thumbnail">
-                    <Button
-                      variant="contained"
-                      component="span"
-                      className={classes.button}
-                      size="large"
+              <Grid item xs={12} sm={12}>
+                {roomImages.length < 1 &&
+                  <Fragment>
+                    <input
                       color="primary"
-                      style={{ margin: 0, height: 'auto', }}
-                    >
-                      <Image className={classes.extendedIcon} /> Upload Multiple Image
+                      accept="image/*"
+                      type="file"
+                      multiple
+                      onChange={handleMultipleFileChange}
+                      id="thumbnailMultiple"
+                      name="thumbnailMultiple"
+                      style={{ display: 'none', }}
+                      disabled={post_id > 0 ? false : true}
+                    />
+                    <label htmlFor="thumbnailMultiple">
+                      <Button
+                        variant="contained"
+                        component="span"
+                        className={classes.button}
+                        size="large"
+                        disabled={post_id > 0 ? false : true}
+                        color="primary"
+                        style={{ margin: 0, height: '100%', }}
+                      >
+                        <Image className={classes.extendedIcon} /> Select Multiple Images
                     </Button>
-                  </label>
-                </Fragment>
+                    </label>
+                  </Fragment>
+                }
               </Grid>
+              {
+                roomImages?.map((x, i) => (
+                  <Fragment>
+                    <Grid item xs={12} sm={2}>
+                      <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        required
+                        id={`alt_tag${i}`}
+                        name="alt_tag"
+                        label="Image Alt Text"
+                        value={x.alt_tag}
+                        variant="outlined"
+                        fullWidth
+                        onChange={(e) => handleImageAltChange(e, i)}
+                        size="small"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <FormControl component="fieldset">
+                        <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
+                          setRoomImages(roomImages.map((y, ind) => {
+                            if (ind === i) {
+                              return { ...y, is360: !y.is360 }
+                            } else {
+                              return y
+                            }
+                          }))
+                        }}>
+                          <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
+                          <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
+                        </RadioGroup>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                      <MaterialButton variant="outlined" color="secondary" onClick={() => setRoomImages([...roomImages.filter((z, index) => index !== i)])}>
+                        <DeleteOutlined />
+                      </MaterialButton>
+                    </Grid>
+                  </Fragment>
+                ))
+              }
+              {
+                roomImages.length > 0 &&
+                <Grid item xs={12} sm={12}>
+                  <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
+                    Upload/Update Images
+                  </MaterialButton>
+                </Grid>
+              }
             </Grid>
           </CardBody>
         </Card>

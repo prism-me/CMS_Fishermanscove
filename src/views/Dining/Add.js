@@ -60,7 +60,7 @@ export default withRouter(function DiningAdd(props) {
     permalink: '',
     is_followed: true,
     is_indexed: true,
-    is_indexed_or_is_followed: 1
+    is_indexed_or_is_followed: '1,1'
   }
   const [dining, setDining] = useState({ ...initialObject })
 
@@ -272,67 +272,11 @@ export default withRouter(function DiningAdd(props) {
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Short Description</p>
-                {/* <CKEditor
-                  editor={ClassicEditor}
-                  data={dining.short_description}
-                  // config={{
-                  //   toolbar: ['bold', 'italic']
-                  // }}
-                  onReady={editor => {
-                    // You can store the "editor" and use when it is needed.
-                    console.log('Editor is ready to use!', editor);
-                    editor.editing.view.change(writer => {
-                      writer.setStyle(
-                        "height",
-                        "150px",
-                        editor.editing.view.document.getRoot()
-                      );
-                    });
-                  }}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setDining({ ...dining, short_description: data })
-                  }}
-                  onBlur={(event, editor) => {
-                    console.log('Blur.', editor);
-                  }}
-                  onFocus={(event, editor) => {
-                    console.log('Focus.', editor);
-                  }}
-                /> */}
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={dining.short_description} onChange={(e) => setDining({ ...dining, short_description: e.editor.getData() })} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Detailed Content</p>
-                {/* <CKEditor
-                  editor={ClassicEditor}
-                  data={dining.post_content}
-                  // config={{
-                  //   toolbar: ['bold', 'italic']
-                  // }}
-                  onReady={editor => {
-                    // You can store the "editor" and use when it is needed.
-                    console.log('Editor is ready to use!', editor);
-                    editor.editing.view.change(writer => {
-                      writer.setStyle(
-                        "height",
-                        "150px",
-                        editor.editing.view.document.getRoot()
-                      );
-                    });
-                  }}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setDining({ ...dining, post_content: data })
-                  }}
-                  onBlur={(event, editor) => {
-                    console.log('Blur.', editor);
-                  }}
-                  onFocus={(event, editor) => {
-                    console.log('Focus.', editor);
-                  }}
-                /> */}
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={dining.post_content} onChange={(e) => setDining({ ...dining, post_content: e.editor.getData() })} />
 
               </Grid>

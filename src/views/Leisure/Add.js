@@ -17,12 +17,12 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel } from "@material-ui/core";
+import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel, Avatar } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
-import { Image } from "@material-ui/icons";
+import { Image, DeleteOutlined } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,8 +52,12 @@ export default function LeisureAdd() {
     schema_markup: '',
     permalink: '',
     is_followed: true,
-    is_indexed: true
+    is_indexed_or_is_followed: true
   })
+
+  const [diningImages, setDiningImages] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+  const [post_id, setPostId] = useState(-1);
 
   const handleInputChange = (e) => {
     let updatedLeisure = { ...leisure };
@@ -184,67 +188,11 @@ export default function LeisureAdd() {
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Short Description</p>
-                {/* <CKEditor
-                  editor={ClassicEditor}
-                  data={leisure.short_description}
-                  // config={{
-                  //   toolbar: ['bold', 'italic']
-                  // }}
-                  onReady={editor => {
-                    // You can store the "editor" and use when it is needed.
-                    console.log('Editor is ready to use!', editor);
-                    editor.editing.view.change(writer => {
-                      writer.setStyle(
-                        "height",
-                        "150px",
-                        editor.editing.view.document.getRoot()
-                      );
-                    });
-                  }}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setLeisure({ ...leisure, short_description: data })
-                  }}
-                  onBlur={(event, editor) => {
-                    console.log('Blur.', editor);
-                  }}
-                  onFocus={(event, editor) => {
-                    console.log('Focus.', editor);
-                  }}
-                /> */}
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.short_description} onChange={(e)=> setLeisure({...leisure, short_description: e.editor.getData()})} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Detailed Content</p>
-                {/* <CKEditor
-                  editor={ClassicEditor}
-                  data={leisure.post_content}
-                  // config={{
-                  //   toolbar: ['bold', 'italic']
-                  // }}
-                  onReady={editor => {
-                    // You can store the "editor" and use when it is needed.
-                    console.log('Editor is ready to use!', editor);
-                    editor.editing.view.change(writer => {
-                      writer.setStyle(
-                        "height",
-                        "150px",
-                        editor.editing.view.document.getRoot()
-                      );
-                    });
-                  }}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setLeisure({ ...leisure, post_content: data })
-                  }}
-                  onBlur={(event, editor) => {
-                    console.log('Blur.', editor);
-                  }}
-                  onFocus={(event, editor) => {
-                    console.log('Focus.', editor);
-                  }}
-                /> */}
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.post_content} onChange={(e)=> setLeisure({...leisure, post_content: e.editor.getData()})} />
 
               </Grid>

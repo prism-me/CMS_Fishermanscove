@@ -46,7 +46,6 @@ const switchRoutes = (
 const useStyles = makeStyles(styles);
 
 function Admin({ ...rest }) {
-  console.log(rest)
   // styles
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
