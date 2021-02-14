@@ -22,6 +22,7 @@ import { DeleteOutlined, Image } from "@material-ui/icons";
 import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
 import { ckEditorConfig } from "utils/data";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -143,7 +144,7 @@ export default withRouter(function WeddingAdd(props) {
     weddingImages.forEach(x=> {
       imagesFormData.append("images[]", x)
     })
-    API.post(`/multiple_upload`, imagesFormData, {
+    axios.post(`https://fishermanscove-resort.com/fmcr/public/api/multiple_upload`, imagesFormData, {
       headers: {
         'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
       }
