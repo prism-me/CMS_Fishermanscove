@@ -40,6 +40,7 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
+import API from "utils/http";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,35 +58,16 @@ const useStyles = makeStyles((theme) => ({
 export default function UpdateHeader() {
   const classes = useStyles();
   // const [open, setOpen] = React.useState(false);
-  const [dragId, setDragId] = useState();
-
-  const [headerContent, setHeaderContent] = useState({
-    menuItems: [
-      {
-        id: 1,
-        text: 'About Us',
-        address: '/about-us',
-        order: 1
-      },
-      {
-        id: 2,
-        text: 'Rooms & Suites',
-        address: '/room-suites',
-        order: 2
-      },
-      {
-        id: 3,
-        text: 'Dining',
-        address: '/dining',
-        order: 3
-      },
-    ],
+  const initialObject = {
+    menuItems: [],
     contact: {
       phone: '',
       email: '',
       address: ''
     }
-  })
+  }
+  const [dragId, setDragId] = useState();
+  const [headerContent, setHeaderContent] = useState({ ...initialObject })
 
 
   const handleMenuItemChange = (e, index) => {
@@ -139,6 +121,20 @@ export default function UpdateHeader() {
     setHeaderContent({ ...headerContent, menuItems: updatedMenuItems });
   };
 
+  const handleSubmit = (section) => {
+    API.post(`/widget`, {
+      widget_name: section,
+      items: headerContent[section]
+    }).then(response => {
+      console.log(response);
+      debugger;
+      if (response.status === 200) {
+        alert(response.data.message);
+        setHeaderContent({ ...initialObject }); //resetting the form
+      }
+    }).catch(err => alert("Something went wrong"));
+  }
+
   return (
     <div>
       <div className={classes.root}>
@@ -167,7 +163,7 @@ export default function UpdateHeader() {
                       className={"mb-3"}
                       // size="small"
                       color="primary"
-                      onClick={() => setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', id: headerContent.menuItems + 1, order: headerContent.menuItems + 1 }] })}
+                      onClick={() => setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', id: headerContent.menuItems + 1, order: headerContent.menuItems.length + 1 }] })}
                     >
                       Add a New Link
                   </MaterialButton>
@@ -210,7 +206,7 @@ export default function UpdateHeader() {
                         ))
                       }
                       <Grid item xs={12}>
-                        <MaterialButton onClick={() => alert("Implementation Pending")} color="primary" variant="contained">
+                        <MaterialButton disabled={headerContent.menuItems?.length < 1} onClick={() => handleSubmit("menuItems")} color="primary" variant="contained">
                           Update Section
                         </MaterialButton>
                       </Grid>
@@ -218,17 +214,23 @@ export default function UpdateHeader() {
                   </Grid>
                   <Grid item xs={12} sm={4}>
                     <p>Drag and Drop the items to Re-Arrange the order</p>
-                    <Paper>
-                      <List component="nav" aria-label="main mailbox folders" draggable={false} >
-                        {
-                          headerContent?.menuItems?.sort((a, b) => a.order - b.order).map(x => (
-                            <ListItem style={{ borderBottom: '1px solid #ddd', zIndex: 9999 }} button id={x.id} draggable onDragStart={handleDrag} onDrop={handleDrop} onDragOver={(ev) => ev.preventDefault()} >
-                              <ListItemText primary={x.text} />
-                            </ListItem>
-                          ))
-                        }
-                      </List>
-                    </Paper>
+                    {
+                      headerContent.menuItems?.length > 0 ?
+
+                        <Paper>
+                          <List component="nav" aria-label="main mailbox folders">
+                            {
+                              headerContent?.menuItems?.sort((a, b) => a.order - b.order).map(x => (
+                                <ListItem style={{ borderBottom: '1px solid #ddd', zIndex: 9999 }} button id={x.id} draggable onDragStart={handleDrag} onDrop={handleDrop} onDragOver={(ev) => ev.preventDefault()} >
+                                  <ListItemText primary={x.text} />
+                                </ListItem>
+                              ))
+                            }
+                          </List>
+                        </Paper>
+                        :
+                        <em>No items added yet</em>
+                    }
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -284,7 +286,7 @@ export default function UpdateHeader() {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => alert("Implementation Pending")} color="primary" variant="contained">
+                    <MaterialButton onClick={() => handleSubmit("contacts")} color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>

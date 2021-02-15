@@ -34,6 +34,7 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
+import API from "utils/http";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,33 +51,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UpdateFooter() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const [dining, setDining] = useState({
-    post_name: '',
-    post_content: "<p>Detailed content goes here!</p>",
-    short_description: "<p>Short description goes here!</p>",
-    room_type: -1,
-    category_id: -1,
-    thumbnail: '',
-    alt_text: '',
-    meta_title: '',
-    meta_description: '',
-    schema_markup: '',
-    permalink: '',
-    is_followed: true,
-    is_indexed: true
-  })
-
-  const [footerContent, setFooterContent] = useState({
+  // const [open, setOpen] = React.useState(false);
+  const initialObject = {
     first: {
       description: ''
     },
     second: {
-      links: [{
-        id: 1,
-        text: 'About Us',
-        address: '/about us'
-      }]
+      links: []
     },
     third: {
       phone: '',
@@ -88,8 +69,9 @@ export default function UpdateFooter() {
       twitter: '',
       instagram: ''
     }
-  })
+  }
 
+  const [footerContent, setFooterContent] = useState({...initialObject})
 
   const handleInputChange = (e, section) => {
     let updatedFooterContent = { ...footerContent };
@@ -103,19 +85,33 @@ export default function UpdateFooter() {
     setFooterContent(updatedFooterContent);
   }
 
-  const handleFileChange = (e) => {
-    let files = e.target.files || e.dataTransfer.files;
-    if (!files.length)
-      return;
-    createImage(files[0]);
-  }
+  // const handleFileChange = (e) => {
+  //   let files = e.target.files || e.dataTransfer.files;
+  //   if (!files.length)
+  //     return;
+  //   createImage(files[0]);
+  // }
 
-  const createImage = (file) => {
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      setDining({ ...dining, thumbnail: e.target.result })
-    };
-    reader.readAsDataURL(file);
+  // const createImage = (file) => {
+  //   let reader = new FileReader();
+  //   reader.onload = (e) => {
+  //     setDining({ ...dining, thumbnail: e.target.result })
+  //   };
+  //   reader.readAsDataURL(file);
+  // }
+  
+  const handleSubmit = (section) => {
+    API.post(`/widget`, {
+      widget_name: section,
+      items: footerContent[section]
+    }).then(response => {
+      console.log(response);
+      debugger;
+      if (response.status === 200) {
+        alert(response.data.message);
+        setFooterContent({ ...initialObject }); //resetting the form
+      }
+    }).catch(err => alert("Something went wrong"));
   }
 
   return (
@@ -155,7 +151,7 @@ export default function UpdateFooter() {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => alert("Implementation Pending")} color="primary" variant="contained">
+                    <MaterialButton onClick={() => handleSubmit("first")} color="primary" variant="contained">
                       Update Section
                   </MaterialButton>
                   </Grid>
@@ -223,7 +219,7 @@ export default function UpdateFooter() {
                     ))
                   }
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => alert("Implementation Pending")} color="primary" variant="contained">
+                    <MaterialButton disabled={footerContent.second.links < 1} onClick={() => handleSubmit("second")} color="primary" variant="contained">
                       Update Section
                   </MaterialButton>
                   </Grid>
@@ -280,7 +276,7 @@ export default function UpdateFooter() {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => alert("Implementation Pending")} color="primary" variant="contained">
+                    <MaterialButton onClick={() => handleSubmit("third")} color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>

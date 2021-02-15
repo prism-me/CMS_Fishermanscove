@@ -61,6 +61,17 @@ export default function AddAboutSeychelles() {
       section_avtar_alt: '',
       section_slug: 'intro'
     },
+    features: {
+      id: 0,
+      section_name: '',
+      section_content: [],
+      page_id: pageId,
+      section_avatar: '',
+      section_col_arr: 0,
+      section_prior: 1,
+      section_avtar_alt: '',
+      section_slug: 'features'
+    }
   })
 
   useEffect(() => {
@@ -70,13 +81,14 @@ export default function AddAboutSeychelles() {
         setAboutSeychelles(
           {
             intro: data.find(x => x.section_slug === "intro") || aboutSeychelles.intro,
+            features: data.find(x => x.section_slug === "features") || aboutSeychelles.features,
           }
         )
       }
     })
   }, [])
   const handleInputChange = (e, section) => {
-     
+
     let updatedDiningInner = { ...aboutSeychelles };
     updatedDiningInner[section][e.target.name] = e.target.value;
     setAboutSeychelles(updatedDiningInner);
@@ -97,6 +109,12 @@ export default function AddAboutSeychelles() {
       setAboutSeychelles(updatedDiningInner);
     };
     reader.readAsDataURL(file);
+  }
+
+  const handleLinkChange = (e, index, section) => {
+    let updatedAboutSeychelles = { ...aboutSeychelles };
+    updatedAboutSeychelles[section].section_content[index][e.target.name] = e.target.value;
+    setAboutSeychelles(updatedAboutSeychelles);
   }
 
   const handleSubmit = (id, name) => {
@@ -208,7 +226,80 @@ export default function AddAboutSeychelles() {
                 </Grid>
               </AccordionDetails>
             </Accordion>
-
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>Features</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {/* <h4 className="mt-4"></h4> */}
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <MaterialButton
+                      variant="outlined"
+                      component="span"
+                      className={classes.button}
+                      size="small"
+                      color="primary"
+                      onClick={() => setAboutSeychelles({ ...aboutSeychelles, features: { ...aboutSeychelles.features, section_content: [...aboutSeychelles.features.section_content, { id: aboutSeychelles.features.section_content.length + 1, title: '', description: '' }] } })}
+                    >
+                      Add a New Link
+                    </MaterialButton>
+                  </Grid>
+                  {
+                    aboutSeychelles?.features?.section_content?.map((x, index) => (
+                      <React.Fragment>
+                        <Grid item xs={12} sm={4}>
+                          <TextField
+                            required
+                            id={`title${x.id}`}
+                            name="title"
+                            label="Link Text"
+                            value={x.title}
+                            variant="outlined"
+                            fullWidth
+                            multiline
+                            rows={2}
+                            rowsMax={2}
+                            onChange={(e) => handleLinkChange(e, index, 'features')}
+                            size="small"
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <TextField
+                            required
+                            id={`description${x.id}`}
+                            name="description"
+                            label="Short Description"
+                            value={x.description}
+                            variant="outlined"
+                            fullWidth
+                            multiline
+                            rows={2}
+                            rowsMax={2}
+                            onChange={(e) => handleLinkChange(e, index, 'features')}
+                            size="small"
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <MaterialButton onClick={() => setAboutSeychelles({ ...aboutSeychelles, features: { ...aboutSeychelles.features, section_content: aboutSeychelles.features.section_content.filter(z => z.id !== x.id) } })} color="secondary" size="small" variant="outlined" style={{ height: '100%' }}>
+                            Delete Link
+                          </MaterialButton>
+                        </Grid>
+                      </React.Fragment>
+                    ))
+                  }
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton disabled={aboutSeychelles.features.section_content < 1} onClick={() => handleSubmit(aboutSeychelles.features.id, "features")} color="primary" variant="contained">
+                      Update Section
+                  </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
           </CardBody>
         </Card>
       </div>

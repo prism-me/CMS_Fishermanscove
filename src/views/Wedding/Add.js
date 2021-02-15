@@ -148,11 +148,6 @@ export default withRouter(function WeddingAdd(props) {
       imagesFormData.append("data[]", JSON.stringify(x))
     });
 
-    // just for testing
-    for (var pair of imagesFormData.entries()) {
-      console.log(pair[0] + ', ' + pair[1]);
-    }
-
     axios.post(`https://fishermanscove-resort.com/fmcr/public/api/multiple_upload`, imagesFormData, {
       headers: {
         'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
@@ -161,8 +156,6 @@ export default withRouter(function WeddingAdd(props) {
         console.log('progress', Math.round((progressEvent.loaded * 100) / progressEvent.total))
       }
     }).then(response => {
-      console.log(response);
-      debugger;
       if (response.status === 200) {
         alert("Files Uploaded");
         setWeddingImages([]);
