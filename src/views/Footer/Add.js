@@ -105,8 +105,6 @@ export default function UpdateFooter() {
       widget_name: section,
       items: footerContent[section]
     }).then(response => {
-      console.log(response);
-      debugger;
       if (response.status === 200) {
         alert(response.data.message);
         setFooterContent({ ...initialObject }); //resetting the form

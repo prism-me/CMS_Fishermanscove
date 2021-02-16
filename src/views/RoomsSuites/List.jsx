@@ -3,7 +3,7 @@ import MUIDataTable from "mui-datatables";
 import API from 'utils/http';
 import { Avatar, Box, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { AddOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
+import { AddOutlined, DeleteOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
 
 class RoomsList extends Component {
   state = {
@@ -71,17 +71,20 @@ class RoomsList extends Component {
       },
       {
         name: "id",
-        label: null,
+        label: "Actions",
         options: {
           filter: false,
           sort: false,
           customBodyRender: val => (
             <div className="d-flex nowrap">
-              <Link title="View Details" to={`/admin/room-suites/${val}`} >
-                <VisibilityOutlined fontSize="small" color="primary" />
+              <Link title="View Details" title="Details" to={`/admin/room-suites/${val}`} >
+                <VisibilityOutlined fontSize="small" color="action" />
               </Link>
               <Link className="ml-2" title="Edit" to={`/admin/room-suites/edit/${val}`} >
-                <EditOutlined fontSize="small" color="secondary"  />
+                <EditOutlined fontSize="small" color="primary"  />
+              </Link>
+              <Link className="ml-2" title="Delete" to={`#`} onClick={()=> this.handleDelete(val)} >
+                <DeleteOutlined fontSize="small" color="secondary"  />
               </Link>
             </div>
           )
@@ -106,6 +109,14 @@ class RoomsList extends Component {
       // })
       this.setState({ rows })
     })
+  }
+
+  handleDelete = (id) => {
+    API.delete(`/rooms/${id}`).then(response => {
+      if (response.status === 200) {
+        alert("Room deleted successfully !");
+      }
+    }).catch(err => console.log(err))
   }
 
   render() {

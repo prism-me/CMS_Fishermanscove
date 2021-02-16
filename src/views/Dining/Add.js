@@ -131,8 +131,6 @@ export default withRouter(function DiningAdd(props) {
         'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
       }
     }).then(response => {
-      console.log(response);
-      debugger;
       if (response.status === 200) {
         alert("Files Uploaded");
         setDiningImages([]);

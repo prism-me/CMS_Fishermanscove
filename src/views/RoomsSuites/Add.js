@@ -138,8 +138,6 @@ export default withRouter(function AddRoom(props) {
         'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
       }
     }).then(response => {
-      console.log(response);
-      debugger;
       if (response.status === 200) {
         alert("Files Uploaded");
         setRoomImages([]);
@@ -168,6 +166,7 @@ export default withRouter(function AddRoom(props) {
           setPostId(response.data?.post_id);
           alert('Record Updated');
           setRoom({ ...initialObject });
+          props.history.push('/admin/room-suites');
         }
       })
     }

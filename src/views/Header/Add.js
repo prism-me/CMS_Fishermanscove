@@ -126,8 +126,6 @@ export default function UpdateHeader() {
       widget_name: section,
       items: headerContent[section]
     }).then(response => {
-      console.log(response);
-      debugger;
       if (response.status === 200) {
         alert(response.data.message);
         setHeaderContent({ ...initialObject }); //resetting the form

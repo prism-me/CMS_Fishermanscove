@@ -68,6 +68,7 @@ export default withRouter(function WeddingAdd(props) {
   useEffect(() => {
     if (id && id != null) {
       setIsEdit(true);
+      setPostId(id);
       API.get(`/wedding/${id}/edit`).then(response => {
         if (response.status === 200) {
           setWedding({ ...wedding, ...response?.data?.category_details[0] })
@@ -148,7 +149,7 @@ export default withRouter(function WeddingAdd(props) {
       imagesFormData.append("data[]", JSON.stringify(x))
     });
 
-    axios.post(`https://fishermanscove-resort.com/fmcr/public/api/multiple_upload`, imagesFormData, {
+    API.post(`/multiple_upload`, imagesFormData, {
       headers: {
         'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
       },

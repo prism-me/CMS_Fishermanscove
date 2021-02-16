@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 export default function AddAboutSeychelles() {
   const pageId = parseInt(useParams().id);
   const classes = useStyles();
-  const [aboutSeychelles, setAboutSeychelles] = useState({
+  const initialObject = {
     intro: {
       id: 0,
       section_name: '',
@@ -63,7 +63,7 @@ export default function AddAboutSeychelles() {
     },
     features: {
       id: 0,
-      section_name: '',
+      section_name: 'features list',
       section_content: [],
       page_id: pageId,
       section_avatar: '',
@@ -72,7 +72,8 @@ export default function AddAboutSeychelles() {
       section_avtar_alt: '',
       section_slug: 'features'
     }
-  })
+  }
+  const [aboutSeychelles, setAboutSeychelles] = useState({ ...initialObject })
 
   useEffect(() => {
     API.get(`/all_sections/${pageId}`).then(response => {
@@ -80,8 +81,8 @@ export default function AddAboutSeychelles() {
         const { data } = response;
         setAboutSeychelles(
           {
-            intro: data.find(x => x.section_slug === "intro") || aboutSeychelles.intro,
-            features: data.find(x => x.section_slug === "features") || aboutSeychelles.features,
+            intro: data.find(x => x.section_slug === "intro") || initialObject.intro,
+            features: initialObject.features,
           }
         )
       }
@@ -116,9 +117,18 @@ export default function AddAboutSeychelles() {
     updatedAboutSeychelles[section].section_content[index][e.target.name] = e.target.value;
     setAboutSeychelles(updatedAboutSeychelles);
   }
+  const addNewLink = () => {
+    let updatedAboutSeychelles = { ...aboutSeychelles };
+    updatedAboutSeychelles.features.section_content.push({ id: aboutSeychelles.features.section_content?.length + 1, title: '', description: '' });
+    setAboutSeychelles(updatedAboutSeychelles);
+  }
 
   const handleSubmit = (id, name) => {
-    API.put(`/add_section/${id}`, aboutSeychelles[name]).then(response => {
+    API.put(`/add_section/${id}`, JSON.stringify(aboutSeychelles[name]), {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    } ).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
@@ -244,7 +254,7 @@ export default function AddAboutSeychelles() {
                       className={classes.button}
                       size="small"
                       color="primary"
-                      onClick={() => setAboutSeychelles({ ...aboutSeychelles, features: { ...aboutSeychelles.features, section_content: [...aboutSeychelles.features.section_content, { id: aboutSeychelles.features.section_content.length + 1, title: '', description: '' }] } })}
+                      onClick={() => addNewLink()}
                     >
                       Add a New Link
                     </MaterialButton>
