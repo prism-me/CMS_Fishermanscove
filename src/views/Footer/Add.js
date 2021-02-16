@@ -71,7 +71,7 @@ export default function UpdateFooter() {
     }
   }
 
-  const [footerContent, setFooterContent] = useState({...initialObject})
+  const [footerContent, setFooterContent] = useState({ ...initialObject })
 
   const handleInputChange = (e, section) => {
     let updatedFooterContent = { ...footerContent };
@@ -99,9 +99,10 @@ export default function UpdateFooter() {
   //   };
   //   reader.readAsDataURL(file);
   // }
-  
+
   const handleSubmit = (section) => {
     API.post(`/widget`, {
+      widget_type: 'footer',
       widget_name: section,
       items: footerContent[section]
     }).then(response => {

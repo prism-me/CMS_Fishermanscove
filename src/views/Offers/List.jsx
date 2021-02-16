@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import MUIDataTable from "mui-datatables";
 import API from 'utils/http';
 import { Avatar, Box, Button } from '@material-ui/core';
-import { AddOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
+import { AddOutlined, EditOutlined, ListOutlined, VisibilityOutlined } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
+import CategoryDialog from './CategoryDialog';
 
 class OffersList extends Component {
   state = {
+    isCategoryFormOpen: false,
     offers: [],
     columns: [
       {
@@ -15,7 +17,7 @@ class OffersList extends Component {
         options: {
           filter: false,
           sort: false,
-          customBodyRender:(val) => (
+          customBodyRender: (val) => (
             <Avatar alt={"Image"} src={val}></Avatar>
           )
         }
@@ -45,8 +47,8 @@ class OffersList extends Component {
         options: {
           filter: true,
           sort: false,
-          customBodyRender: val=>(
-            val?.length > 100 ? val?.substr(0,100) + '...' : val
+          customBodyRender: val => (
+            val?.length > 100 ? val?.substr(0, 100) + '...' : val
           )
         }
       },
@@ -70,7 +72,7 @@ class OffersList extends Component {
                 <VisibilityOutlined color="primary" />
               </Link>
               <Link className="ml-2" title="Edit" to={`/admin/offers/edit/${val}`} >
-                <EditOutlined color="secondary"  />
+                <EditOutlined color="secondary" />
               </Link>
             </div>
           )
@@ -88,16 +90,25 @@ class OffersList extends Component {
   componentDidMount() {
     API.get('/offers').then(response => {
       let rows = response.data;
-      // let rows = data.map(x=> {
-      //   return {
-
-      //   }
-      // })
       this.setState({ rows })
+    })
+  }
+  handleCategorySubmit = (name) => {
+    if (!name || name === "") {
+      alert("Please enter category name");
+      return;
+    }
+    API.post('/offer-category', { name }).then(response => {
+      if (response?.status === 200) {
+        alert(response.data?.message)
+      }
+    }).catch(err=> {
+      alert("Something went wrong.");
     })
   }
 
   render() {
+    const { isCategoryFormOpen } = this.state
     return (
       <div>
         <Box marginBottom={4}>
@@ -106,10 +117,20 @@ class OffersList extends Component {
               variant="contained"
               color="primary"
               startIcon={<AddOutlined />}
+              disableElevation
             >
               Add Offer
-          </Button>
+            </Button>
           </Link>
+          <Button
+            variant="outlined"
+            className="ml-3"
+            color="primary"
+            startIcon={<ListOutlined />}
+            onClick={() => this.setState({ isCategoryFormOpen: true })}
+          >
+            Add Offer Category
+          </Button>
         </Box>
         <MUIDataTable
           title="Premium Offers List"
@@ -117,6 +138,9 @@ class OffersList extends Component {
           data={this.state.rows}
           options={this.options}
         />
+        {
+          isCategoryFormOpen && <CategoryDialog open={isCategoryFormOpen} handleClose={() => this.setState({ isCategoryFormOpen: false })} handleCategorySubmit={this.handleCategorySubmit} />
+        }
       </div>
     );
   }

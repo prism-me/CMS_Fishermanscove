@@ -123,6 +123,7 @@ export default function UpdateHeader() {
 
   const handleSubmit = (section) => {
     API.post(`/widget`, {
+      widget_type: 'header',
       widget_name: section,
       items: headerContent[section]
     }).then(response => {
@@ -161,7 +162,7 @@ export default function UpdateHeader() {
                       className={"mb-3"}
                       // size="small"
                       color="primary"
-                      onClick={() => setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', id: headerContent.menuItems + 1, order: headerContent.menuItems.length + 1 }] })}
+                      onClick={() => setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', id: headerContent.menuItems.length + 1, order: headerContent.menuItems.length + 1 }] })}
                     >
                       Add a New Link
                   </MaterialButton>
