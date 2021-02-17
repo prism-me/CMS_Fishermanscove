@@ -3,7 +3,7 @@ import MUIDataTable from "mui-datatables";
 import API from 'utils/http';
 import { Avatar, Box, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { AddOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
+import { AddOutlined, DeleteOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
 
 class WeddingList extends Component {
   state = {
@@ -15,8 +15,8 @@ class WeddingList extends Component {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: (val) => (
-            <Avatar alt={"Image"} src={val}></Avatar>
+          customBodyRender: (val, row) => (
+            <Avatar alt={row.tableData[row.rowIndex][1]?.toUpperCase() } src={val}></Avatar>
           )
         }
       },
@@ -28,17 +28,17 @@ class WeddingList extends Component {
           sort: true,
         }
       },
-      {
-        name: "room_type",
-        label: "Room Type",
-        options: {
-          filter: true,
-          sort: false,
-          customBodyRender: (val) => {
-            return val === 0 ? 'Room' : 'Suite'
-          }
-        }
-      },
+      // {
+      //   name: "room_type",
+      //   label: "Room Type",
+      //   options: {
+      //     filter: true,
+      //     sort: false,
+      //     customBodyRender: (val) => {
+      //       return val === 0 ? 'Room' : 'Suite'
+      //     }
+      //   }
+      // },
       // {
       //   name: "category_name",
       //   label: "Category",
@@ -75,17 +75,20 @@ class WeddingList extends Component {
       },
       {
         name: "id",
-        label: "",
+        label: "Actions",
         options: {
           filter: false,
           sort: false,
           customBodyRender: val => (
             <div className="d-flex nowrap">
               <Link to={`/admin/weddings/${val}`} >
-                <VisibilityOutlined color="primary" />
+                <VisibilityOutlined fontSize="small" color="action" />
               </Link>
               <Link className="ml-2" title="Edit" to={`/admin/weddings/edit/${val}`} >
-                <EditOutlined color="secondary" />
+                <EditOutlined fontSize="small" color="primary" />
+              </Link>
+              <Link className="ml-2" title="Delete" to={`#`} onClick={() => this.handleDelete(val)} >
+                <DeleteOutlined fontSize="small" color="secondary" />
               </Link>
             </div>
           )
@@ -103,13 +106,18 @@ class WeddingList extends Component {
   componentDidMount() {
     API.get('/wedding').then(response => {
       let rows = response.data;
-      // let rows = data.map(x=> {
-      //   return {
-
-      //   }
-      // })
       this.setState({ rows })
     })
+  }
+
+  handleDelete = (id) => {
+    if (window.confirm('Are you sure you want to delete this ?')) {
+      API.delete(`/wedding/${id}`).then(response => {
+        if (response.status === 200) {
+          alert("Wedding Item deleted successfully !");
+        }
+      }).catch(err => console.log(err))
+    }
   }
 
   render() {

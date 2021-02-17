@@ -70,6 +70,8 @@ import AddCancellationPolicy from "views/SitePages/Pages/CancellationPolicy/Add"
 import AddWedding from "views/SitePages/Pages/Wedding/Add";
 import AddAboutSeychelles from "views/SitePages/Pages/AboutSeychelles/Add";
 import FAQList from "views/FAQ/List";
+import GalleryList from "views/Gallery/List";
+import AddGallery from "views/Gallery/Add";
 
 const dashboardRoutes = [
   {
@@ -209,6 +211,36 @@ const dashboardRoutes = [
     hide: true
   },
   {
+    path: "/gallery",
+    name: "Gallery",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: ViewCarouselOutlined,
+    component: GalleryList,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/gallery/add",
+    name: "Gallery",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: ViewCarouselOutlined,
+    component: AddGallery,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/gallery/:id",
+    name: "Gallery",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: ViewCarouselOutlined,
+    component: GalleryList,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
     path: "/spa-wellness",
     name: "Spa & Wellness",
     rtlName: "ملف تعريفي للمستخدم",
@@ -245,7 +277,8 @@ const dashboardRoutes = [
     icon: PoolOutlined,
     component: LeisureList,
     layout: "/admin",
-    exact: true
+    exact: true,
+    hide: true
   },
   {
     path: "/whats-on/add",
@@ -396,15 +429,15 @@ const dashboardRoutes = [
     exact: true,
     hide: true
   },
-  {
-    path: "/gallery",
-    name: "Gallery",
-    rtlName: "ملف تعريفي للمستخدم",
-    icon: ViewCarouselOutlined,
-    component: DashboardPage,
-    layout: "/admin",
-    exact: true
-  },
+  // {
+  //   path: "/gallery",
+  //   name: "Gallery",
+  //   rtlName: "ملف تعريفي للمستخدم",
+  //   icon: ViewCarouselOutlined,
+  //   component: DashboardPage,
+  //   layout: "/admin",
+  //   exact: true
+  // },
   {
     path: "/header",
     name: "Main Header",

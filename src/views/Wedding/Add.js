@@ -229,7 +229,7 @@ export default withRouter(function WeddingAdd(props) {
                   </label>
                 </Fragment>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <FormControl variant="outlined"
                   size="small" fullWidth className={classes.formControl}>
                   <InputLabel id="room_type-label">Type</InputLabel>
@@ -272,7 +272,7 @@ export default withRouter(function WeddingAdd(props) {
                     <MenuItem value={4}>Full Ocean View</MenuItem>
                   </Select>
                 </FormControl>
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} sm={12}>
                 <p>Short Description</p>
                 <CKEditor config={ckEditorConfig} onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} type="classic" data={wedding.short_description} onChange={(e) => setWedding({ ...wedding, short_description: e.editor.getData() })}

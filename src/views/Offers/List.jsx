@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MUIDataTable from "mui-datatables";
 import API from 'utils/http';
 import { Avatar, Box, Button } from '@material-ui/core';
-import { AddOutlined, EditOutlined, ListOutlined, VisibilityOutlined } from '@material-ui/icons';
+import { AddOutlined, DeleteOutlined, EditOutlined, ListOutlined, VisibilityOutlined } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import CategoryDialog from './CategoryDialog';
 
@@ -62,17 +62,20 @@ class OffersList extends Component {
       // },
       {
         name: "id",
-        label: null,
+        label: "Actions",
         options: {
           filter: false,
           sort: false,
           customBodyRender: val => (
             <div className="d-flex nowrap">
               <Link title="View Details" to={`/admin/offers/${val}`} >
-                <VisibilityOutlined color="primary" />
+                <VisibilityOutlined fontSize="small" color="action" />
               </Link>
               <Link className="ml-2" title="Edit" to={`/admin/offers/edit/${val}`} >
-                <EditOutlined color="secondary" />
+                <EditOutlined fontSize="small" color="primary" />
+              </Link>
+              <Link className="ml-2" title="Delete" to={`#`} onClick={() => this.handleDelete(val)} >
+                <DeleteOutlined fontSize="small" color="secondary" />
               </Link>
             </div>
           )
@@ -98,13 +101,23 @@ class OffersList extends Component {
       alert("Please enter category name");
       return;
     }
-    API.post('/offer-category', { name }).then(response => {
+    API.post('/offer-categories/offer', { name }).then(response => {
       if (response?.status === 200) {
         alert(response.data?.message)
       }
     }).catch(err=> {
       alert("Something went wrong.");
     })
+  }
+
+  handleDelete = (id) => {
+    if (window.confirm('Are you sure you want to delete this ?')) {
+      API.delete(`/offers/${id}`).then(response => {
+        if (response.status === 200) {
+          alert("Offer deleted successfully !");
+        }
+      }).catch(err => console.log(err))
+    }
   }
 
   render() {

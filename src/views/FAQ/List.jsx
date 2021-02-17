@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AccordionContext, Card } from 'react-bootstrap';
 import Accordion from 'react-bootstrap/Accordion';
+import API from 'utils/http';
 
 
 function ContextAwareToggle({ children, eventKey, callback }) {
@@ -25,7 +26,9 @@ function ContextAwareToggle({ children, eventKey, callback }) {
 
 const FAQList = (props) => {
 
-  const faqList = [
+  const [faqList, setFaqList] = useState([]);
+
+  const faqListw = [
     //sunset
     {
       id: 17,
@@ -141,45 +144,60 @@ const FAQList = (props) => {
     },
 
   ];
-  // const [currentIndex, setIndex] = useState(0);
 
-  // const setCurrentIndex = (index) => {
-  //   setIndex(index);
-  // }
+  useEffect(() => {
+    API.get('/faqs').then(response => {
+      if (response.status === 200) {
+        // let data = response.data.map(x => {
+        //   return {
+        //     page_id: x.page_id,
+        //     page_name: x.post_name,
+        //     section_content: JSON.parse(x.section_content)
+        //   }
+        // })
+        // debugger;
+        setFaqList(response.data)
+      }
+    }).catch(err => {
+      alert("Something went wrong")
+    })
+  }, [])
 
   return (
     <div className="faq-section-block my-3 my-sm-5">
       <div className="container">
         <h3 className="text-center main-title mb-3">Frequently Asked Questions (F.A.Q's)</h3>
-        <Accordion>
-          {
-            faqList?.map((x, i) => (
-              <>
-                {
-                  faqList[i]?.id !== faqList[i - 1]?.id ? <><h5 className="my-3">
-                    {x.id}
-                  </h5><hr /></>
-                    :
-                    null
-                }
-                <Card>
-                  <Accordion.Toggle as={Card.Header} eventKey={`${i}`} style={{ cursor: 'pointer' }} >
-                    <ContextAwareToggle eventKey={`${i}`} >
-                      {x.question}
-                    </ContextAwareToggle>
-                  </Accordion.Toggle>
-                  <Accordion.Collapse eventKey={`${i}`}>
-                    <Card.Body>
-                      <p>{x.answer}</p>
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              </>
-            ))
-          }
-        </Accordion>
+        {
+          faqList?.map((faq, i) => (
+            <div key={faq.id}>
+              {
+                <h5 className="my-3">
+                  {faq.post_name}
+                </h5>
+              }
+              {
+                JSON.parse(faq.section_content).map(x => (
+                  <Accordion key={x.id}>
+                    <Card>
+                      <Accordion.Toggle as={Card.Header} eventKey={`${i}`} style={{ cursor: 'pointer' }} >
+                        <ContextAwareToggle eventKey={`${i}`} >
+                          {x.question}
+                        </ContextAwareToggle>
+                      </Accordion.Toggle>
+                      <Accordion.Collapse eventKey={`${i}`}>
+                        <Card.Body>
+                          <div dangerouslySetInnerHTML={{__html:x.answer}}></div>
+                        </Card.Body>
+                      </Accordion.Collapse>
+                    </Card>
+                  </Accordion>
+                ))
+              }
+            </div>
+          ))
+        }
       </div>
-    </div>
+    </div >
   );
 }
 

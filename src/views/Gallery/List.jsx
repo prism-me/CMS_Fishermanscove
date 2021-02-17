@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import MUIDataTable from "mui-datatables";
 import API from 'utils/http';
 import { Avatar, Box, Button } from '@material-ui/core';
+import { AddOutlined, DeleteOutlined, EditOutlined, ListOutlined, VisibilityOutlined } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
-import { AddOutlined, DeleteOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
+import CategoryDialog from './CategoryDialog';
 
-class RoomsList extends Component {
+class GalleryList extends Component {
   state = {
+    isCategoryFormOpen: false,
     offers: [],
     columns: [
       {
@@ -15,8 +17,8 @@ class RoomsList extends Component {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: (val, row) => (
-            <Avatar alt={row.tableData[row.rowIndex][1]?.toUpperCase() } src={val}></Avatar>
+          customBodyRender: (val) => (
+            <Avatar alt={"Image"} src={val}></Avatar>
           )
         }
       },
@@ -35,42 +37,29 @@ class RoomsList extends Component {
           filter: true,
           sort: false,
           customBodyRender: (val) => {
-            return val === 1 ? <span className="badge badge-primary">Room</span> : <span className="badge badge-warning">Suite</span>  //1 for room, 2 for suite
+            return val === 0 ? 'Room' : 'Suite'
           }
         }
       },
       {
-        name: "category_name",
-        label: "Category",
-        options: {
-          filter: true,
-          sort: false,
-        }
-      },
-      // {
-      //   name: "short_description",
-      //   label: "Description",
-      //   options: {
-      //     filter: true,
-      //     sort: false,
-      //     customBodyRender: val => (
-      //       val.length > 100 ? val.substr(0, 100) + '...' : val
-      //     )
-      //   }
-      // },
-      {
-        name: "post_content",
-        label: "Content",
+        name: "short_description",
+        label: "Description",
         options: {
           filter: true,
           sort: false,
           customBodyRender: val => (
-            <code>
-              {val?.length > 100 ? val?.substr(0, 100) + '...' : val}
-            </code>
+            val?.length > 100 ? val?.substr(0, 100) + '...' : val
           )
         }
       },
+      // {
+      //   name: "post_content",
+      //   label: "Content",
+      //   options: {
+      //     filter: true,
+      //     sort: false,
+      //   }
+      // },
       {
         name: "id",
         label: "Actions",
@@ -79,10 +68,10 @@ class RoomsList extends Component {
           sort: false,
           customBodyRender: val => (
             <div className="d-flex nowrap">
-              <Link title="View Details" title="Details" to={`/admin/room-suites/${val}`} >
+              <Link title="View Details" to={`/admin/gallery/${val}`} >
                 <VisibilityOutlined fontSize="small" color="action" />
               </Link>
-              <Link className="ml-2" title="Edit" to={`/admin/room-suites/edit/${val}`} >
+              <Link className="ml-2" title="Edit" to={`/admin/gallery/edit/${val}`} >
                 <EditOutlined fontSize="small" color="primary" />
               </Link>
               <Link className="ml-2" title="Delete" to={`#`} onClick={() => this.handleDelete(val)} >
@@ -102,46 +91,72 @@ class RoomsList extends Component {
   };
 
   componentDidMount() {
-    API.get('/rooms').then(response => {
+    API.get('/offers').then(response => {
       let rows = response.data;
       this.setState({ rows })
+    })
+  }
+  handleCategorySubmit = (name) => {
+    if (!name || name === "") {
+      alert("Please enter category name");
+      return;
+    }
+    API.post('/offer-category', { name }).then(response => {
+      if (response?.status === 200) {
+        alert(response.data?.message)
+      }
+    }).catch(err=> {
+      alert("Something went wrong.");
     })
   }
 
   handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this ?')) {
-      API.delete(`/rooms/${id}`).then(response => {
+      API.delete(`/offers/${id}`).then(response => {
         if (response.status === 200) {
-          alert("Room deleted successfully !");
+          alert("Offer deleted successfully !");
         }
       }).catch(err => console.log(err))
     }
   }
 
   render() {
+    const { isCategoryFormOpen } = this.state
     return (
       <div>
         <Box marginBottom={4}>
-          <Link to="/admin/room-suites/add">
+          <Link to="/admin/gallery/add">
             <Button
               variant="contained"
               color="primary"
               startIcon={<AddOutlined />}
+              disableElevation
             >
-              Add Room
-          </Button>
+              Add Gallery Images
+            </Button>
           </Link>
+          <Button
+            variant="outlined"
+            className="ml-3"
+            color="primary"
+            startIcon={<ListOutlined />}
+            onClick={() => this.setState({ isCategoryFormOpen: true })}
+          >
+            Add Gallery Category
+          </Button>
         </Box>
         <MUIDataTable
-          title="Rooms &amp; Suites"
+          title="Gallery List"
           columns={this.state.columns}
           data={this.state.rows}
           options={this.options}
-          loading
         />
+        {
+          isCategoryFormOpen && <CategoryDialog open={isCategoryFormOpen} handleClose={() => this.setState({ isCategoryFormOpen: false })} handleCategorySubmit={this.handleCategorySubmit} />
+        }
       </div>
     );
   }
 }
 
-export default RoomsList;
+export default GalleryList;

@@ -64,7 +64,7 @@ export default withRouter(function AddRoom(props) {
     permalink: '',
     is_followed: true,
     is_indexed: true,
-    is_indexed_or_is_followed: "1,1"
+    is_indexed_or_is_followed: "0,0"
   };
   const [room, setRoom] = useState({ ...initialObject })
 
@@ -149,8 +149,10 @@ export default withRouter(function AddRoom(props) {
 
 
   const handleSubmit = () => {
+    let finalRoom = room;
+    finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed},${finalRoom.is_followed}`
     if (isEdit) {
-      API.put(`/rooms/${id}`, room).then(response => {
+      API.put(`/rooms/${id}`, finalRoom).then(response => {
         console.log(response);
         if (response.status === 200) {
           alert("Record Updated")

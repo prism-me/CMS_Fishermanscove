@@ -141,17 +141,20 @@ export default withRouter(function DiningAdd(props) {
   }
 
   const handleSubmit = () => {
+    let finalDining = dining;
+    finalDining.is_indexed_or_is_followed = `${finalDining.is_indexed},${finalDining.is_followed}`
+
     if (isEdit) {
-      API.put(`/dining/${id}`, dining).then(response => {
+      API.put(`/dining/${id}`, finalDining).then(response => {
         console.log(response);
-        if (response.status === 200) { 
-          alert("Record Updated");
+        if (response.status === 200) {
+          alert("Restaurant/Bar Added");
           setDining({ ...initialObject }); //clear all fields
           props.history.push('/admin/dining');
         }
       })
     } else {
-      API.post('/dining', dining).then(response => {
+      API.post('/dining', finalDining).then(response => {
         console.log(response);
         if (response.status === 200) {
           setPostId(response.data?.post_id);
@@ -369,30 +372,35 @@ export default withRouter(function DiningAdd(props) {
             <h3>Dining Images</h3>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
-                <Fragment>
-                  <input
-                    color="primary"
-                    accept="image/*"
-                    type="file"
-                    multiple
-                    onChange={handleMultipleFileChange}
-                    id="thumbnailMultiple"
-                    name="thumbnailMultiple"
-                    style={{ display: 'none', }}
-                  />
-                  <label htmlFor="thumbnailMultiple">
-                    <Button
-                      variant="contained"
-                      component="span"
-                      className={classes.button}
-                      size="large"
+                {diningImages.length < 1 &&
+
+                  <Fragment>
+                    <input
                       color="primary"
-                      style={{ margin: 0, height: '100%', }}
-                    >
-                      <Image className={classes.extendedIcon} /> Select Multiple Images
+                      accept="image/*"
+                      type="file"
+                      multiple
+                      onChange={handleMultipleFileChange}
+                      id="thumbnailMultiple"
+                      name="thumbnailMultiple"
+                      disabled={post_id > 0 ? false : true}
+                      style={{ display: 'none', }}
+                    />
+                    <label htmlFor="thumbnailMultiple">
+                      <Button
+                        variant="contained"
+                        component="span"
+                        className={classes.button}
+                        size="large"
+                        color="primary"
+                        disabled={post_id > 0 ? false : true}
+                        style={{ margin: 0, height: '100%', }}
+                      >
+                        <Image className={classes.extendedIcon} /> Select Multiple Images
                     </Button>
-                  </label>
-                </Fragment>
+                    </label>
+                  </Fragment>
+                }
               </Grid>
               {
                 diningImages?.map((x, i) => (

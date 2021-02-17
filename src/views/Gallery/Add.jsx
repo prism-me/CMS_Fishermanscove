@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function AddOffer(props) {
+export default function AddGallery(props) {
   const classes = useStyles();
   //check if edit or add request
   let { id } = useParams();
@@ -164,7 +164,7 @@ export default function AddOffer(props) {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className="mb-0">Add an Offer</h4>
+            <h4 className="mb-0">Add Gallery Images</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
@@ -370,7 +370,7 @@ export default function AddOffer(props) {
           <CardBody>
             <form type="post" encType="multipart/form-data">
 
-              <h3>Offer Images</h3>
+              <h3>Gallery Images</h3>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={12}>
                   <Fragment>
