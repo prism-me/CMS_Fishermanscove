@@ -80,7 +80,6 @@ class PageList extends Component {
           filter: false,
           sort: false,
           customBodyRender: (val, row) => {
-            console.log(row)
             return <Link to={`/admin/pages/${row.tableData?.[row.rowIndex]?.route}/add/${val}`} >
               {/* <EditOutlined color="primary" /> */}
               <Button size="small" color="primary" variant="outlined">

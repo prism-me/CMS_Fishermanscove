@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 
 export default function FAQSection(props) {
     return (
-        props.section_content?.map((x, i) => (
+        props.section_content?.length > 0 && JSON.parse(props.section_content)?.map((x, i) => (
             <div className="mb-3 p-2" style={{ boxShadow: '0 0 4px #dadada', position: 'relative' }}>
                 <MaterialButton
                     onClick={() => props.removeQuestion(x.id)}
