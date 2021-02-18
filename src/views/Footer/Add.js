@@ -1,4 +1,4 @@
-import React, { Fragment, Suspense, useState } from "react";
+import React, { Fragment, Suspense, useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -72,6 +72,20 @@ export default function UpdateFooter() {
   }
 
   const [footerContent, setFooterContent] = useState({ ...initialObject })
+
+  useEffect(() => {
+    API.get('/get_widgets/footer').then(response => {
+      if (response.status === 200) {
+        const { data } = response;
+        setFooterContent({
+          first: JSON.parse(data.find(x=> x.widget_name === "first").items) || initialObject.first,
+          second: JSON.parse(data.find(x=> x.widget_name === "second").items) || initialObject.second,
+          third: JSON.parse(data.find(x=> x.widget_name === "third").items) || initialObject.third,
+          social: JSON.parse(data.find(x=> x.widget_name === "social").items) || initialObject.social,
+        })
+      }
+    })
+  }, [])
 
   const handleInputChange = (e, section) => {
     let updatedFooterContent = { ...footerContent };

@@ -61,7 +61,7 @@ export default withRouter(function AddRoom(props) {
     meta_title: '',
     meta_description: '',
     schema_markup: '',
-    permalink: '',
+    post_url: '',
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: "0,0"
@@ -100,7 +100,14 @@ export default withRouter(function AddRoom(props) {
   const createImage = (file) => {
     let reader = new FileReader();
     reader.onload = (e) => {
-      setRoom({ ...room, thumbnail: e.target.result })
+      setRoom({ ...room, thumbnail: e.target.result });
+      if (isEdit) {
+        API.patch(`update_upload/${post_id}/rooms-suites`, {
+          thumbnail: e.target.result
+        }).then(response => {
+          console.log(response)
+        })
+      }
     };
     reader.readAsDataURL(file);
   }
@@ -231,10 +238,14 @@ export default withRouter(function AddRoom(props) {
                       color="primary"
                       style={{ margin: 0, height: 'auto', }}
                     >
-                      <Image className={classes.extendedIcon} /> Upload Featured Image
+                      <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
                     </Button>
                   </label>
                 </Fragment>
+                {
+                  isEdit &&
+                  <Avatar src={room.thumbnail} alt={room.alt_text} className="float-left mr-4" />
+                }
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl variant="outlined" size="small" fullWidth className={classes.formControl}>
@@ -307,10 +318,10 @@ export default withRouter(function AddRoom(props) {
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
-                  id="permalink"
-                  name="permalink"
+                  id="post_url"
+                  name="post_url"
                   label="Permalink"
-                  value={room.permalink}
+                  value={room.post_url}
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}

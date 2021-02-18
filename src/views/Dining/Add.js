@@ -57,7 +57,7 @@ export default withRouter(function DiningAdd(props) {
     meta_title: '',
     meta_description: '',
     schema_markup: '',
-    permalink: '',
+    post_url: '',
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: '1,1'
@@ -71,6 +71,7 @@ export default withRouter(function DiningAdd(props) {
   useEffect(() => {
     if (id && id != null) {
       setIsEdit(true);
+      setPostId(id);
       API.get(`/dining/${id}/edit`).then(response => {
         if (response.status === 200) {
           setDining({ ...dining, ...response?.data?.category_details?.[0] })
@@ -94,7 +95,14 @@ export default withRouter(function DiningAdd(props) {
   const createImage = (file) => {
     let reader = new FileReader();
     reader.onload = (e) => {
-      setDining({ ...dining, thumbnail: e.target.result })
+      setDining({ ...dining, thumbnail: e.target.result });
+      if (isEdit) {
+        API.patch(`update_upload/${post_id}/dining`, {
+          thumbnail: e.target.result
+        }).then(response => {
+          console.log(response)
+        })
+      }
     };
     reader.readAsDataURL(file);
   }
@@ -148,7 +156,7 @@ export default withRouter(function DiningAdd(props) {
       API.put(`/dining/${id}`, finalDining).then(response => {
         console.log(response);
         if (response.status === 200) {
-          alert("Restaurant/Bar Added");
+          alert("Record Updated");
           setDining({ ...initialObject }); //clear all fields
           props.history.push('/admin/dining');
         }
@@ -158,7 +166,7 @@ export default withRouter(function DiningAdd(props) {
         console.log(response);
         if (response.status === 200) {
           setPostId(response.data?.post_id);
-          alert("Record Updated");
+          alert("Restaurant/Bar Added");
           setDining({ ...initialObject });
         }
       })
@@ -226,6 +234,10 @@ export default withRouter(function DiningAdd(props) {
                     </Button>
                   </label>
                 </Fragment>
+                {
+                  isEdit &&
+                  <Avatar src={dining.thumbnail} alt={dining.alt_text} className="float-left mr-4" />
+                }
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl variant="outlined"
@@ -300,10 +312,10 @@ export default withRouter(function DiningAdd(props) {
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
-                  id="permalink"
-                  name="permalink"
+                  id="post_url"
+                  name="post_url"
                   label="Permalink"
-                  value={dining.permalink}
+                  value={dining.post_url}
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}

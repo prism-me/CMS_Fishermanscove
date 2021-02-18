@@ -1,4 +1,4 @@
-import React, { Fragment, Suspense, useState } from "react";
+import React, { Fragment, Suspense, useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -69,6 +69,17 @@ export default function UpdateHeader() {
   const [dragId, setDragId] = useState();
   const [headerContent, setHeaderContent] = useState({ ...initialObject })
 
+  useEffect(() => {
+    API.get('/get_widgets/header').then(response => {
+      if (response.status === 200) {
+        const { data } = response;
+        setHeaderContent({
+          menuItems: JSON.parse(data.find(x => x.widget_name === "menuItems").items) || initialObject.menuItems,
+          contact: JSON.parse(data.find(x => x.widget_name === "contact").items) || initialObject.contact,
+        })
+      }
+    })
+  }, [])
 
   const handleMenuItemChange = (e, index) => {
     let updatedItems = [...headerContent.menuItems];
@@ -285,7 +296,7 @@ export default function UpdateHeader() {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit("contacts")} color="primary" variant="contained">
+                    <MaterialButton onClick={() => handleSubmit("contact")} color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>
