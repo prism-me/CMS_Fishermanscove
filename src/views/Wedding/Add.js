@@ -196,6 +196,49 @@ export default withRouter(function WeddingAdd(props) {
                   size="small"
                 />
               </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="alt_text"
+                  name="alt_text"
+                  label="Image Alt Text"
+                  value={wedding.alt_text}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={6} sm={6}>
+                <Fragment>
+                  <input
+                    color="primary"
+                    accept="image/*"
+                    type="file"
+                    onChange={handleFileChange}
+                    size="small"
+                    id="thumbnail"
+                    name="thumbnail"
+                    style={{ display: 'none', }}
+                  />
+                  <label htmlFor="thumbnail">
+                    <Button
+                      variant="contained"
+                      component="span"
+                      className={classes.button}
+                      size="large"
+                      color="primary"
+                      style={{ margin: 0, height: '100%', }}
+                    >
+                      <Image className={classes.extendedIcon} /> Upload Featured Image
+                    </Button>
+                  </label>
+                </Fragment>
+                {
+                  isEdit &&
+                  <Avatar src={dining.thumbnail} alt={dining.alt_text} className="float-left mr-4" />
+                }
+              </Grid>
               <Grid item xs={12} sm={12}>
                 <h4>Short Description</h4>
                 <CKEditor config={ckEditorConfig} onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} type="classic" data={wedding.short_description} onChange={(e) => setWedding({ ...wedding, short_description: e.editor.getData() })}
@@ -208,90 +251,13 @@ export default withRouter(function WeddingAdd(props) {
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.post_content} onChange={(e) => setWedding({ ...wedding, post_content: e.editor.getData() })} />
 
               </Grid>
-            </Grid>
-            {/* <h4 className="mt-2">SEO Information</h4> */}
-            {/* <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="meta_title"
-                  name="meta_title"
-                  label="Meta Title"
-                  value={wedding.meta_title}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="post_url"
-                  name="post_url"
-                  label="Permalink"
-                  value={wedding.post_url}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  required
-                  id="meta_description"
-                  name="meta_description"
-                  label="Meta Description"
-                  value={wedding.meta_description}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  required
-                  id="schema_markup"
-                  name="schema_markup"
-                  label="Schema Markup"
-                  value={wedding.schema_markup}
-                  variant="outlined"
-                  fullWidth
-                  multiline
-                  rows={4}
-                  rowsMax={4}
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl component="fieldset">
-                  <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={wedding.is_followed} onChange={(e) => {
-                    setWedding({ ...wedding, is_followed: !wedding.is_followed })
-                  }}>
-                    <FormControlLabel value={true} control={<Radio />} label="Follow" />
-                    <FormControlLabel value={false} control={<Radio />} label="No Follow" />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl component="fieldset">
-                  <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={wedding.is_indexed} onChange={(e) => {
-                    setWedding({ ...wedding, is_indexed: !wedding.is_indexed })
-                  }}>
-                    <FormControlLabel value={true} control={<Radio />} label="Index" />
-                    <FormControlLabel value={false} control={<Radio />} label="No Index" />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
               <Grid item xs={12} sm={12}>
                 <MaterialButton onClick={handleSubmit} style={{ float: 'right' }} variant="contained" color="primary" size="large">
                   Submit
                 </MaterialButton>
               </Grid>
-            </Grid> */}
+            </Grid>
+
           </CardBody>
         </Card>
 

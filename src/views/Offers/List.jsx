@@ -116,7 +116,14 @@ class OffersList extends Component {
         if (response.status === 200) {
           alert("Offer deleted successfully !");
         }
-      }).catch(err => console.log(err))
+      })
+      .then(()=>{
+        API.get('/offers').then(response => {
+          let rows = response.data;
+          this.setState({ rows })
+        })
+      })
+      .catch(err => console.log(err))
     }
   }
 
