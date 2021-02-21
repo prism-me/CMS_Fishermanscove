@@ -236,7 +236,7 @@ export default withRouter(function WeddingAdd(props) {
                 </Fragment>
                 {
                   isEdit &&
-                  <Avatar src={dining.thumbnail} alt={dining.alt_text} className="float-left mr-4" />
+                  <Avatar src={wedding.thumbnail} alt={wedding.alt_text} className="float-left mr-4" />
                 }
               </Grid>
               <Grid item xs={12} sm={12}>
