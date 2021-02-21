@@ -143,6 +143,7 @@ export default withRouter(function WeddingAdd(props) {
           alert("Record Updated");
           setPostId(response.data?.post_id);
           setWedding({ ...initialObject });
+          props.history.push('/admin/weddings');
         }
       }).catch(err => alert("Something went wrong."))
     }
@@ -262,7 +263,7 @@ export default withRouter(function WeddingAdd(props) {
         </Card>
 
         {/* MULTIPLE IMAGES UPLOAD SECTION START */}
-        <Card>
+        {/* <Card>
           <CardBody>
             <form type="post" encType="multipart/form-data">
 
@@ -353,7 +354,7 @@ export default withRouter(function WeddingAdd(props) {
               </Grid>
             </form>
           </CardBody>
-        </Card>
+        </Card> */}
         {/* MULTIPLE IMAGES UPLOAD SECTION END */}
       </div>
     </div>
