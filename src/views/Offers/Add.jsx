@@ -373,30 +373,35 @@ export default function AddOffer(props) {
               <h3>Offer Images</h3>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={12}>
-                  <Fragment>
-                    <input
-                      color="primary"
-                      accept="image/*"
-                      type="file"
-                      multiple
-                      onChange={handleMultipleFileChange}
-                      id="thumbnailMultiple"
-                      name="thumbnailMultiple"
-                      style={{ display: 'none', }}
-                    />
-                    <label htmlFor="thumbnailMultiple">
-                      <Button
-                        variant="contained"
-                        component="span"
-                        className={classes.button}
-                        size="large"
+                  {offerImages.length < 1 &&
+
+                    <Fragment>
+                      <input
                         color="primary"
-                        style={{ margin: 0, height: '100%', }}
-                      >
-                        <Image className={classes.extendedIcon} /> Select Multiple Images
+                        accept="image/*"
+                        type="file"
+                        multiple
+                        onChange={handleMultipleFileChange}
+                        id="thumbnailMultiple"
+                        name="thumbnailMultiple"
+                        disabled={post_id > 0 ? false : true}
+                        style={{ display: 'none', }}
+                      />
+                      <label htmlFor="thumbnailMultiple">
+                        <Button
+                          variant="contained"
+                          component="span"
+                          className={classes.button}
+                          size="large"
+                          color="primary"
+                          disabled={post_id > 0 ? false : true}
+                          style={{ margin: 0, height: '100%', }}
+                        >
+                          <Image className={classes.extendedIcon} /> Select Multiple Images
                     </Button>
-                    </label>
-                  </Fragment>
+                      </label>
+                    </Fragment>
+                  }
                 </Grid>
                 {
                   offerImages?.map((x, i) => (

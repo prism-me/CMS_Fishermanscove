@@ -74,18 +74,26 @@ export default function UpdateFooter() {
   const [footerContent, setFooterContent] = useState({ ...initialObject })
 
   useEffect(() => {
+    getFooterData();
+  }, [])
+
+  const getFooterData = () => {
     API.get('/get_widgets/footer').then(response => {
       if (response.status === 200) {
         const { data } = response;
+        const first = data.find(x => x.widget_name === "first");
+        const second = data.find(x => x.widget_name === "second");
+        const third = data.find(x => x.widget_name === "third");
+        const social = data.find(x => x.widget_name === "social");
         setFooterContent({
-          first: JSON.parse(data.find(x=> x.widget_name === "first").items) || initialObject.first,
-          second: JSON.parse(data.find(x=> x.widget_name === "second").items) || initialObject.second,
-          third: JSON.parse(data.find(x=> x.widget_name === "third").items) || initialObject.third,
-          social: JSON.parse(data.find(x=> x.widget_name === "social").items) || initialObject.social,
+          first: first ? JSON.parse(first.items) : initialObject.first,
+          second: second ? JSON.parse(second.items) : initialObject.second,
+          third: third ? JSON.parse(third.items) : initialObject.third,
+          social: social ? JSON.parse(social.items) : initialObject.social,
         })
       }
     })
-  }, [])
+  }
 
   const handleInputChange = (e, section) => {
     let updatedFooterContent = { ...footerContent };
@@ -122,7 +130,7 @@ export default function UpdateFooter() {
     }).then(response => {
       if (response.status === 200) {
         alert(response.data.message);
-        setFooterContent({ ...initialObject }); //resetting the form
+        // setFooterContent({ ...initialObject }); //resetting the form
       }
     }).catch(err => alert("Something went wrong"));
   }

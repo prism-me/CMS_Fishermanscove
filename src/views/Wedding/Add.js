@@ -55,7 +55,7 @@ export default withRouter(function WeddingAdd(props) {
     category_id: -1,
     meta_description: '',
     schema_markup: '',
-    permalink: '',
+    post_url: '',
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: 1
@@ -92,7 +92,14 @@ export default withRouter(function WeddingAdd(props) {
   const createImage = (file) => {
     let reader = new FileReader();
     reader.onload = (e) => {
-      setWedding({ ...wedding, thumbnail: e.target.result })
+      setWedding({ ...wedding, thumbnail: e.target.result });
+      if (isEdit) {
+        API.patch(`update_upload/${post_id}/wedding`, {
+          thumbnail: e.target.result
+        }).then(response => {
+          console.log(response)
+        })
+      }
     };
     reader.readAsDataURL(file);
   }
@@ -172,7 +179,6 @@ export default withRouter(function WeddingAdd(props) {
         <Card>
           <CardHeader color="primary">
             <h4 className="mb-0">Add Wedding Place</h4>
-            {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
             <h4 className="mt-1">General Information</h4>
@@ -190,104 +196,21 @@ export default withRouter(function WeddingAdd(props) {
                   size="small"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="alt_text"
-                  name="alt_text"
-                  label="Image Alt Text"
-                  value={wedding.alt_text}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={6} sm={6}>
-                <Fragment>
-                  <input
-                    color="primary"
-                    accept="image/*"
-                    type="file"
-                    onChange={handleFileChange}
-                    size="small"
-                    id="thumbnail"
-                    name="thumbnail"
-                    style={{ display: 'none', }}
-                  />
-                  <label htmlFor="thumbnail">
-                    <Button
-                      variant="contained"
-                      component="span"
-                      className={classes.button}
-                      size="large"
-                      color="primary"
-                      style={{ margin: 0, height: '100%', }}
-                    >
-                      <Image className={classes.extendedIcon} /> Upload Featured Image
-                    </Button>
-                  </label>
-                </Fragment>
-              </Grid>
-              {/* <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined"
-                  size="small" fullWidth className={classes.formControl}>
-                  <InputLabel id="room_type-label">Type</InputLabel>
-                  <Select
-                    labelId="room_type-label"
-                    id="room_type"
-                    name="room_type"
-                    value={wedding.room_type}
-                    onChange={handleInputChange}
-                    label="Type"
-                    fullWidth
-                  >
-                    <MenuItem value={-1}>
-                      <em>Select</em>
-                    </MenuItem>
-                    <MenuItem value={1}>Wedding</MenuItem>
-                    <MenuItem value={2}>Suite</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined"
-                  size="small" fullWidth className={classes.formControl}>
-                  <InputLabel id="category_id-label">Category</InputLabel>
-                  <Select
-                    labelId="category_id-label"
-                    id="category_id"
-                    name="category_id"
-                    value={wedding.category_id}
-                    onChange={handleInputChange}
-                    label="Category"
-                    fullWidth
-                  >
-                    <MenuItem value={-1}>
-                      <em>Select</em>
-                    </MenuItem>
-                    <MenuItem value={1}>Family</MenuItem>
-                    <MenuItem value={2}>Deluxe</MenuItem>
-                    <MenuItem value={3}>Partial Ocean View</MenuItem>
-                    <MenuItem value={4}>Full Ocean View</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid> */}
               <Grid item xs={12} sm={12}>
-                <p>Short Description</p>
+                <h4>Short Description</h4>
                 <CKEditor config={ckEditorConfig} onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} type="classic" data={wedding.short_description} onChange={(e) => setWedding({ ...wedding, short_description: e.editor.getData() })}
                 />
               </Grid>
 
               <Grid item xs={12} sm={12}>
-                <p>Detailed Content</p>
+                <h4>Detailed Content</h4>
 
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.post_content} onChange={(e) => setWedding({ ...wedding, post_content: e.editor.getData() })} />
 
               </Grid>
             </Grid>
-            <h4 className="mt-2">SEO Information</h4>
-            <Grid container spacing={2}>
+            {/* <h4 className="mt-2">SEO Information</h4> */}
+            {/* <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -304,10 +227,10 @@ export default withRouter(function WeddingAdd(props) {
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
-                  id="permalink"
-                  name="permalink"
+                  id="post_url"
+                  name="post_url"
                   label="Permalink"
-                  value={wedding.permalink}
+                  value={wedding.post_url}
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
@@ -368,7 +291,7 @@ export default withRouter(function WeddingAdd(props) {
                   Submit
                 </MaterialButton>
               </Grid>
-            </Grid>
+            </Grid> */}
           </CardBody>
         </Card>
 
@@ -380,30 +303,35 @@ export default withRouter(function WeddingAdd(props) {
               <h3>Wedding Images</h3>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={12}>
-                  <Fragment>
-                    <input
-                      color="primary"
-                      accept="image/*"
-                      type="file"
-                      multiple
-                      onChange={handleMultipleFileChange}
-                      id="thumbnailMultiple"
-                      name="thumbnailMultiple"
-                      style={{ display: 'none', }}
-                    />
-                    <label htmlFor="thumbnailMultiple">
-                      <Button
-                        variant="contained"
-                        component="span"
-                        className={classes.button}
-                        size="large"
+                  {weddingImages.length < 1 &&
+
+                    <Fragment>
+                      <input
                         color="primary"
-                        style={{ margin: 0, height: '100%', }}
-                      >
-                        <Image className={classes.extendedIcon} /> Select Multiple Images
+                        accept="image/*"
+                        type="file"
+                        multiple
+                        onChange={handleMultipleFileChange}
+                        id="thumbnailMultiple"
+                        name="thumbnailMultiple"
+                        disabled={post_id > 0 ? false : true}
+                        style={{ display: 'none', }}
+                      />
+                      <label htmlFor="thumbnailMultiple">
+                        <Button
+                          variant="contained"
+                          component="span"
+                          className={classes.button}
+                          size="large"
+                          color="primary"
+                          disabled={post_id > 0 ? false : true}
+                          style={{ margin: 0, height: '100%', }}
+                        >
+                          <Image className={classes.extendedIcon} /> Select Multiple Images
                     </Button>
-                    </label>
-                  </Fragment>
+                      </label>
+                    </Fragment>
+                  }
                 </Grid>
                 {
                   weddingImages?.map((x, i) => (

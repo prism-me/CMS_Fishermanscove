@@ -19,6 +19,7 @@ import CardFooter from "components/Card/CardFooter.js";
 
 // import avatar from "assets/img/faces/marc.jpg";
 import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel, Collapse, Paper } from "@material-ui/core";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 // import Accordion from '@material-ui/core/Accordion';
 // import AccordionSummary from '@material-ui/core/AccordionSummary';
 // import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -68,16 +69,23 @@ export default function UpdateHeader() {
   }
   const [dragId, setDragId] = useState();
   const [headerContent, setHeaderContent] = useState({ ...initialObject })
+  const [pages, setPages] = useState([])
 
   useEffect(() => {
     API.get('/get_widgets/header').then(response => {
       if (response.status === 200) {
         const { data } = response;
+        // debugger;
         setHeaderContent({
-          menuItems: JSON.parse(data.find(x => x.widget_name === "menuItems").items) || initialObject.menuItems,
-          contact: JSON.parse(data.find(x => x.widget_name === "contact").items) || initialObject.contact,
+          menuItems: data.find(x => x.widget_name === "menuItems") ? JSON.parse(data.find(x => x.widget_name === "menuItems")?.items) : initialObject.menuItems,
+          contact: data.find(x => x.widget_name === "contact") ? JSON.parse(data.find(x => x.widget_name === "contact")?.items) : initialObject.contact,
         })
       }
+    }).then(() => {
+      API.get('/pages').then(response => {
+        setPages(response.data)
+      })
+
     })
   }, [])
 
@@ -180,9 +188,9 @@ export default function UpdateHeader() {
                     <Grid container spacing={2}>
                       {
                         headerContent?.menuItems?.sort((a, b) => a.order - b.order).map((x, index) => (
-                          <React.Fragment>
+                          <React.Fragment key={x.id}>
                             <Grid item xs={12} sm={4}>
-                              <TextField
+                              {/* <TextField
                                 required
                                 id={`text${x.id}`}
                                 name="text"
@@ -192,6 +200,17 @@ export default function UpdateHeader() {
                                 fullWidth
                                 onChange={(e) => handleMenuItemChange(e, index)}
                                 size="small"
+                              /> */}
+                              <Autocomplete
+                                id={`text${x.id}`}
+                                name="text"
+                                options={pages}
+                                size="small"
+                                value={pages.find(p => p.post_name === x.text)}
+                                onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue.post_name, name: 'text' } }, index)}
+                                getOptionLabel={(option) => option.post_name}
+                                // style={{ width: 300 }}
+                                renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
                               />
                             </Grid>
                             <Grid item xs={12} sm={4}>
@@ -231,7 +250,7 @@ export default function UpdateHeader() {
                           <List component="nav" aria-label="main mailbox folders">
                             {
                               headerContent?.menuItems?.sort((a, b) => a.order - b.order).map(x => (
-                                <ListItem style={{ borderBottom: '1px solid #ddd', zIndex: 9999 }} button id={x.id} draggable onDragStart={handleDrag} onDrop={handleDrop} onDragOver={(ev) => ev.preventDefault()} >
+                                <ListItem key={x.text} style={{ borderBottom: '1px solid #ddd', zIndex: 9999 }} button id={x.id} draggable onDragStart={handleDrag} onDrop={handleDrop} onDragOver={(ev) => ev.preventDefault()} >
                                   <ListItemText primary={x.text} />
                                 </ListItem>
                               ))
