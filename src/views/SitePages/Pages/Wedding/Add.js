@@ -79,10 +79,15 @@ export default function AddWedding() {
     API.get(`/all_sections/${pageId}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
+        const intro = data.find(x => x.section_slug === "intro")
+        const faq = data.find(x => x.section_slug === "faq")
+        if (faq && faq.section_content) {
+          faq.section_content = JSON.parse(faq.section_content);
+        }
         setWedding(
           {
-            intro: data.find(x => x.section_slug === "intro") || wedding.intro,
-            faq: data.find(x => x.section_slug === "faq") || wedding.faq,
+            intro: intro || wedding.intro,
+            faq: faq || wedding.faq,
           }
         )
       }
