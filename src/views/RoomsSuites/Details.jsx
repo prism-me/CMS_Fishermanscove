@@ -7,20 +7,27 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Rating from '@material-ui/lab/Rating';
-import IconButton from '@material-ui/core/IconButton';
-import LocationOn from '@material-ui/icons/LocationOn';
-import MoreHoriz from '@material-ui/icons/MoreHoriz';
-import Favorite from '@material-ui/icons/Favorite';
-import FaceGroup from '@mui-treasury/components/group/face';
+// import IconButton from '@material-ui/core/IconButton';
+// import LocationOn from '@material-ui/icons/LocationOn';
+// import MoreHoriz from '@material-ui/icons/MoreHoriz';
+// import Favorite from '@material-ui/icons/Favorite';
+// import FaceGroup from '@mui-treasury/components/group/face';
 import { useWideCardMediaStyles } from '@mui-treasury/styles/cardMedia/wide';
 import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
 import { usePushingGutterStyles } from '@mui-treasury/styles/gutter/pushing';
 import API from 'utils/http';
 import { Chip } from '@material-ui/core';
-import { FaceOutlined } from '@material-ui/icons';
+
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
+import IconButton from '@material-ui/core/IconButton';
+import InfoIcon from '@material-ui/icons/Info';
+
+// import { FaceOutlined } from '@material-ui/icons';
 import { useParams } from 'react-router-dom';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     overflow: 'initial',
     maxWidth: '75%',
@@ -50,16 +57,56 @@ const useStyles = makeStyles(() => ({
     marginRight: 4,
     fontSize: 18,
   },
+  imagesWrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.paper,
+  },
+  gridList: {
+    flexWrap: 'nowrap',
+    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+    transform: 'translateZ(0)',
+  },
+  title: {
+    color: theme.palette.primary.light,
+  },
+  titleBar: {
+    background:
+      'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+  },
+  icon: {
+    color: 'rgba(255, 255, 255, 0.54)',
+  },
 }));
 
 export const RoomDetail = React.memo(function ReviewCard() {
   let params = useParams();
   const styles = useStyles();
+  const classes = useStyles();
   const mediaStyles = useWideCardMediaStyles();
   const shadowStyles = useFadedShadowStyles();
   const gutterStyles = usePushingGutterStyles({ firstExcluded: true });
 
   const [room, setRoom] = useState(null);
+  const [tileData, setTileData] = useState([
+    {
+      img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+      title: 'Junior suite',
+      author: ''
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+      title: 'Deluxe suite',
+      author: ''
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+      title: 'Luxury Room',
+      author: ''
+    },
+  ]);
 
   useEffect(() => {
     API.get(`/rooms/${params.id}`).then(response => {
@@ -74,8 +121,8 @@ export const RoomDetail = React.memo(function ReviewCard() {
       <CardMedia
         classes={mediaStyles}
         image={
-          // room?.thumbnail
-          'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80'
+          room?.thumbnail
+          // 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80'
         }
       />
       <CardContent className={cx(shadowStyles.root, styles.content)}>
@@ -118,19 +165,40 @@ export const RoomDetail = React.memo(function ReviewCard() {
             room?.short_description
           }
         </Typography> */}
-        <div dangerouslySetInnerHTML={{__html: room?.short_description}}>
+        <div dangerouslySetInnerHTML={{ __html: room?.short_description }}>
 
         </div>
         <Box
           mt={2}
-          // display={'flex'}
-          // justifyContent={'space-between'}
-          // alignItems={'center'}
+        // display={'flex'}
+        // justifyContent={'space-between'}
+        // alignItems={'center'}
         >
-        <Typography color={'primary'} variant="h5">
-          Details
+          <Typography color={'primary'} variant="h5">
+            Details
         </Typography>
-          <div dangerouslySetInnerHTML={{__html: room?.post_content}}></div>
+          <div dangerouslySetInnerHTML={{ __html: room?.post_content }}></div>
+        </Box>
+
+        <Box mt={4}>
+          <div className={classes.imagesWrapper}>
+            <GridList className={classes.gridList} cols={2.5}>
+              {tileData.map((tile) => (
+                <GridListTile key={tile.img}>
+                  <img src={tile.img} alt={tile.title} />
+                  <GridListTileBar
+                    title={tile.title}
+                    // subtitle={<span>by: {tile.author}</span>}
+                    actionIcon={
+                      <IconButton aria-label={`info about ${tile.title}`} className={classes.icon}>
+                        <InfoIcon />
+                      </IconButton>
+                    }
+                  />
+                </GridListTile>
+              ))}
+            </GridList>
+          </div>
         </Box>
       </CardContent>
     </Card>
