@@ -146,9 +146,9 @@ export default withRouter(function AddRoom(props) {
       }
     }).then(response => {
       if (response.status === 200) {
-        alert("Files Uploaded");
+        alert("Images uploaded successfully");
         setRoomImages([]);
-        props.history.push('/admin/weddings');
+        props.history.push('/admin/room-suites');
       }
     }).catch(err => alert("Something went wrong"));
 
@@ -169,7 +169,7 @@ export default withRouter(function AddRoom(props) {
       })
     }
     else {
-      API.post('/rooms', room).then(response => {
+      API.post('/rooms', finalRoom).then(response => {
         console.log(response);
         if (response.status === 200) {
           setPostId(response.data?.post_id);
@@ -234,7 +234,7 @@ export default withRouter(function AddRoom(props) {
                       variant="contained"
                       component="span"
                       className={classes.button}
-                      size="large"
+                      // size="sm"
                       color="primary"
                       style={{ margin: 0, height: 'auto', }}
                     >
@@ -385,94 +385,97 @@ export default withRouter(function AddRoom(props) {
             </Grid>
           </CardBody>
         </Card>
-        <Card>
-          <CardBody>
-            <h3>Room Images</h3>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12}>
-                {roomImages.length < 1 &&
-                  <Fragment>
-                    <input
-                      color="primary"
-                      accept="image/*"
-                      type="file"
-                      multiple
-                      onChange={handleMultipleFileChange}
-                      id="thumbnailMultiple"
-                      name="thumbnailMultiple"
-                      style={{ display: 'none', }}
-                      disabled={post_id > 0 ? false : true}
-                    />
-                    <label htmlFor="thumbnailMultiple">
-                      <Button
-                        variant="contained"
-                        component="span"
-                        className={classes.button}
-                        size="large"
-                        disabled={post_id > 0 ? false : true}
+        {isEdit &&
+          <Card>
+            <CardBody>
+              <h3>Room Images</h3>
+              <p><em>Please select multiple images and fill out the alt_text for each image.</em></p>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={12}>
+                  {roomImages.length < 1 &&
+                    <Fragment>
+                      <input
                         color="primary"
-                        style={{ margin: 0, height: '100%', }}
-                      >
-                        <Image className={classes.extendedIcon} /> Select Multiple Images
+                        accept="image/*"
+                        type="file"
+                        multiple
+                        onChange={handleMultipleFileChange}
+                        id="thumbnailMultiple"
+                        name="thumbnailMultiple"
+                        style={{ display: 'none', }}
+                        disabled={post_id > 0 ? false : true}
+                      />
+                      <label htmlFor="thumbnailMultiple">
+                        <Button
+                          variant="contained"
+                          component="span"
+                          className={classes.button}
+                          size="large"
+                          disabled={post_id > 0 ? false : true}
+                          color="primary"
+                          style={{ margin: 0, height: '100%', }}
+                        >
+                          <Image className={classes.extendedIcon} /> Select Multiple Images
                     </Button>
-                    </label>
-                  </Fragment>
+                      </label>
+                    </Fragment>
+                  }
+                </Grid>
+                {
+                  roomImages?.map((x, i) => (
+                    <Fragment>
+                      <Grid item xs={12} sm={2}>
+                        <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          required
+                          id={`alt_tag${i}`}
+                          name="alt_tag"
+                          label="Image Alt Text"
+                          value={x.alt_tag}
+                          variant="outlined"
+                          fullWidth
+                          onChange={(e) => handleImageAltChange(e, i)}
+                          size="small"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <FormControl component="fieldset">
+                          <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
+                            setRoomImages(roomImages.map((y, ind) => {
+                              if (ind === i) {
+                                return { ...y, is360: !y.is360 }
+                              } else {
+                                return y
+                              }
+                            }))
+                          }}>
+                            <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
+                            <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
+                          </RadioGroup>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12} sm={2}>
+                        <MaterialButton variant="outlined" color="secondary" onClick={() => setRoomImages([...roomImages.filter((z, index) => index !== i)])}>
+                          <DeleteOutlined />
+                        </MaterialButton>
+                      </Grid>
+                    </Fragment>
+                  ))
+                }
+                {
+                  roomImages.length > 0 &&
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
+                      Upload/Update Images
+                  </MaterialButton>
+                  </Grid>
                 }
               </Grid>
-              {
-                roomImages?.map((x, i) => (
-                  <Fragment>
-                    <Grid item xs={12} sm={2}>
-                      <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <TextField
-                        required
-                        id={`alt_tag${i}`}
-                        name="alt_tag"
-                        label="Image Alt Text"
-                        value={x.alt_tag}
-                        variant="outlined"
-                        fullWidth
-                        onChange={(e) => handleImageAltChange(e, i)}
-                        size="small"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <FormControl component="fieldset">
-                        <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
-                          setRoomImages(roomImages.map((y, ind) => {
-                            if (ind === i) {
-                              return { ...y, is360: !y.is360 }
-                            } else {
-                              return y
-                            }
-                          }))
-                        }}>
-                          <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
-                          <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
-                        </RadioGroup>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={2}>
-                      <MaterialButton variant="outlined" color="secondary" onClick={() => setRoomImages([...roomImages.filter((z, index) => index !== i)])}>
-                        <DeleteOutlined />
-                      </MaterialButton>
-                    </Grid>
-                  </Fragment>
-                ))
-              }
-              {
-                roomImages.length > 0 &&
-                <Grid item xs={12} sm={12}>
-                  <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
-                    Upload/Update Images
-                  </MaterialButton>
-                </Grid>
-              }
-            </Grid>
-          </CardBody>
-        </Card>
+            </CardBody>
+          </Card>
+        }
       </div>
     </div>
   );

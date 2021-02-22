@@ -201,6 +201,16 @@ const dashboardRoutes = [
     hide: true
   },
   {
+    path: "/offers/edit/:id",
+    name: "Offers",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: AddOffer,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
     path: "/offers/:id",
     name: "Offers",
     rtlName: "ملف تعريفي للمستخدم",
@@ -463,7 +473,8 @@ const dashboardRoutes = [
     icon: PostAddOutlined,
     component: UpdateHeader,
     layout: "/admin",
-    exact: true
+    exact: true,
+    hide:true
   },
   {
     path: "/faq",

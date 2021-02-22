@@ -10,7 +10,7 @@ class WeddingList extends Component {
     offers: [],
     columns: [
       {
-        name: "avatar",
+        name: "thumbnail",
         label: "Image",
         options: {
           filter: false,
@@ -116,7 +116,14 @@ class WeddingList extends Component {
         if (response.status === 200) {
           alert("Wedding Item deleted successfully !");
         }
-      }).catch(err => console.log(err))
+      })
+      .then(()=>{
+        API.get('/wedding').then(response => {
+          let rows = response.data;
+          this.setState({ rows })
+        })
+      })
+      .catch(err => console.log(err))
     }
   }
 

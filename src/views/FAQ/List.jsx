@@ -1,3 +1,4 @@
+import { Button, Typography } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { AccordionContext, Card } from 'react-bootstrap';
 import Accordion from 'react-bootstrap/Accordion';
@@ -164,16 +165,22 @@ const FAQList = (props) => {
   }, [])
 
   return (
-    <div className="faq-section-block my-3 my-sm-5">
+    <div className="faq-section-block my-3 my-sm-4">
       <div className="container">
         <h3 className="text-center main-title mb-3">Frequently Asked Questions (F.A.Q's)</h3>
+        
         {
           faqList?.map((faq, i) => (
             <div key={faq.id}>
               {
-                <h5 className="my-3">
-                  {faq.post_name}
-                </h5>
+                <div className="d-flex justify-content-between align-items-center">
+                  <h5 className="my-3">
+                    {faq.post_name}
+                  </h5>
+                  {/* <Button variant="contained" color="primary" size="small" onClick={() => props.history.push('/')}>
+                    Add/Update FAQ
+                  </Button> */}
+                </div>
               }
               {
                 JSON.parse(faq.section_content).map(x => (
@@ -186,7 +193,7 @@ const FAQList = (props) => {
                       </Accordion.Toggle>
                       <Accordion.Collapse eventKey={`${i}`}>
                         <Card.Body>
-                          <div dangerouslySetInnerHTML={{__html:x.answer}}></div>
+                          <div dangerouslySetInnerHTML={{ __html: x.answer }}></div>
                         </Card.Body>
                       </Accordion.Collapse>
                     </Card>

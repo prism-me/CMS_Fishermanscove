@@ -58,7 +58,9 @@ export default withRouter(function WeddingAdd(props) {
     post_url: '',
     is_followed: true,
     is_indexed: true,
-    is_indexed_or_is_followed: 1
+    is_indexed_or_is_followed: "1,1",
+    img_directory: "wedding"
+
   }
   const [wedding, setWedding] = useState({ ...initialObject });
   const [weddingImages, setWeddingImages] = useState([]);
@@ -71,7 +73,7 @@ export default withRouter(function WeddingAdd(props) {
       setPostId(id);
       API.get(`/wedding/${id}/edit`).then(response => {
         if (response.status === 200) {
-          setWedding({ ...wedding, ...response?.data?.category_details[0] })
+          setWedding({ ...wedding, ...response?.data?.wedding_details })
         }
       })
     }
@@ -127,22 +129,24 @@ export default withRouter(function WeddingAdd(props) {
   }
 
   const handleSubmit = () => {
+    let finalWedding = wedding;
+    finalWedding.is_indexed_or_is_followed = `${finalWedding.is_indexed},${finalWedding.is_followed}`
     if (isEdit) {
-      API.put(`/wedding/${id}`, wedding).then(response => {
+      API.put(`/wedding/${id}`, finalWedding).then(response => {
         console.log(response);
         if (response.status === 200) {
           alert("Record Updated");
-          setWedding({ ...initialObject }); //resetting the form
+          // setWedding({ ...initialObject }); //resetting the form
           props.history.push('/admin/weddings');
         }
       }).catch(err => alert("Something went wrong"));
     } else {
-      API.post('/wedding', wedding).then(response => {
+      API.post('/wedding', finalWedding).then(response => {
         console.log(response);
         if (response.status === 200) {
           alert("Record Updated");
           setPostId(response.data?.post_id);
-          setWedding({ ...initialObject });
+          // setWedding({ ...initialObject });
           props.history.push('/admin/weddings');
         }
       }).catch(err => alert("Something went wrong."))

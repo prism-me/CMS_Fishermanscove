@@ -56,12 +56,15 @@ export default function AddOffer(props) {
     meta_title: '',
     meta_description: '',
     schema_markup: '',
-    permalink: '',
+    post_url: '',
     is_followed: true,
-    is_indexed: true
+    is_indexed: true,
+    is_indexed_or_is_followed: "1,1",
+    img_directory: "offers"
   }
   const [offer, setOffer] = useState({ ...initialObject })
   const [offerImages, setOfferImages] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [post_id, setPostId] = useState(-1);
 
@@ -73,8 +76,13 @@ export default function AddOffer(props) {
         if (response.status === 200) {
           setOffer({ ...offer, ...response?.data?.category_details[0] })
         }
-      })
+      });
     }
+    API.get('/offer_categories/offers').then(response => {
+      if (response?.status === 200) {
+        setCategories(response.data)
+      }
+    });
   }, [])
 
   const handleInputChange = (e) => {
@@ -92,7 +100,14 @@ export default function AddOffer(props) {
   const createImage = (file) => {
     let reader = new FileReader();
     reader.onload = (e) => {
-      setOffer({ ...offer, thumbnail: e.target.result })
+      setOffer({ ...offer, thumbnail: e.target.result });
+      if (isEdit) {
+        API.patch(`update_upload/${post_id}/offers`, {
+          thumbnail: e.target.result
+        }).then(response => {
+          console.log(response)
+        })
+      }
     };
     reader.readAsDataURL(file);
   }
@@ -139,20 +154,24 @@ export default function AddOffer(props) {
   }
 
   const handleSubmit = () => {
+    let finalOffer = offer;
+    finalOffer.is_indexed_or_is_followed = `${finalOffer.is_indexed},${finalOffer.is_followed}`;
+
     if (isEdit) {
-      API.put(`/offers/${id}`, offer).then(response => {
+      API.put(`/offers/${id}`, finalOffer).then(response => {
         if (response.status === 200) {
           alert("Record Added");
-          setOffer({ ...initialObject }); //resetting the form
+          // setOffer({ ...initialObject }); //resetting the form
           props.history.push('/admin/offers');
         }
       }).catch(err => alert("Something went wrong"));
     } else {
-      API.post('/offers', offer).then(response => {
+      API.post('/offers', finalOffer).then(response => {
         if (response.status === 200) {
           alert("Record Updated");
           setPostId(response.data?.post_id);
-          setOffer({ ...initialObject });
+          // setOffer({ ...initialObject });
+          props.history.push('/admin/offers');
         }
       }).catch(err => alert("Something went wrong."))
     }
@@ -220,28 +239,11 @@ export default function AddOffer(props) {
                     </Button>
                   </label>
                 </Fragment>
+                {
+                  isEdit &&
+                  <Avatar src={offer.thumbnail} alt={offer.alt_text} className="float-left mr-4" />
+                }
               </Grid>
-              {/* <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined"
-                  size="small" fullWidth className={classes.formControl}>
-                  <InputLabel id="room_type-label">Type</InputLabel>
-                  <Select
-                    labelId="room_type-label"
-                    id="room_type"
-                    name="room_type"
-                    value={offer.room_type}
-                    onChange={handleInputChange}
-                    label="Type"
-                    fullWidth
-                  >
-                    <MenuItem value={-1}>
-                      <em>Select</em>
-                    </MenuItem>
-                    <MenuItem value={1}>Offer</MenuItem>
-                    <MenuItem value={2}>Suite</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid> */}
               <Grid item xs={12} sm={6}>
                 <FormControl variant="outlined"
                   size="small" fullWidth className={classes.formControl}>
@@ -258,10 +260,11 @@ export default function AddOffer(props) {
                     <MenuItem value={-1}>
                       <em>Select</em>
                     </MenuItem>
-                    <MenuItem value={1}>Family</MenuItem>
-                    <MenuItem value={2}>Deluxe</MenuItem>
-                    <MenuItem value={3}>Partial Ocean View</MenuItem>
-                    <MenuItem value={4}>Full Ocean View</MenuItem>
+                    {
+                      categories?.map(x => (
+                        <MenuItem value={x.id}>{x.category_name}</MenuItem>
+                      ))
+                    }
                   </Select>
                 </FormControl>
               </Grid>
@@ -297,10 +300,10 @@ export default function AddOffer(props) {
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
-                  id="permalink"
-                  name="permalink"
+                  id="post_url"
+                  name="post_url"
                   label="Permalink"
-                  value={offer.permalink}
+                  value={offer.post_url}
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
@@ -366,98 +369,100 @@ export default function AddOffer(props) {
         </Card>
 
         {/* MULTIPLE IMAGES UPLOAD SECTION START */}
-        <Card>
-          <CardBody>
-            <form type="post" encType="multipart/form-data">
+        {isEdit &&
+          <Card>
+            <CardBody>
+              <form type="post" encType="multipart/form-data">
 
-              <h3>Offer Images</h3>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={12}>
-                  {offerImages.length < 1 &&
+                <h3>Offer Images</h3>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    {offerImages.length < 1 &&
 
-                    <Fragment>
-                      <input
-                        color="primary"
-                        accept="image/*"
-                        type="file"
-                        multiple
-                        onChange={handleMultipleFileChange}
-                        id="thumbnailMultiple"
-                        name="thumbnailMultiple"
-                        disabled={post_id > 0 ? false : true}
-                        style={{ display: 'none', }}
-                      />
-                      <label htmlFor="thumbnailMultiple">
-                        <Button
-                          variant="contained"
-                          component="span"
-                          className={classes.button}
-                          size="large"
+                      <Fragment>
+                        <input
                           color="primary"
+                          accept="image/*"
+                          type="file"
+                          multiple
+                          onChange={handleMultipleFileChange}
+                          id="thumbnailMultiple"
+                          name="thumbnailMultiple"
                           disabled={post_id > 0 ? false : true}
-                          style={{ margin: 0, height: '100%', }}
-                        >
-                          <Image className={classes.extendedIcon} /> Select Multiple Images
+                          style={{ display: 'none', }}
+                        />
+                        <label htmlFor="thumbnailMultiple">
+                          <Button
+                            variant="contained"
+                            component="span"
+                            className={classes.button}
+                            size="large"
+                            color="primary"
+                            disabled={post_id > 0 ? false : true}
+                            style={{ margin: 0, height: '100%', }}
+                          >
+                            <Image className={classes.extendedIcon} /> Select Multiple Images
                     </Button>
-                      </label>
-                    </Fragment>
+                        </label>
+                      </Fragment>
+                    }
+                  </Grid>
+                  {
+                    offerImages?.map((x, i) => (
+                      <>
+                        <Grid item xs={12} sm={2}>
+                          <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                          <TextField
+                            required
+                            id={`alt_tag${i}`}
+                            name="alt_tag"
+                            label="Image Alt Text"
+                            value={x.alt_tag}
+                            variant="outlined"
+                            fullWidth
+                            onChange={(e) => handleImageAltChange(e, i)}
+                            size="small"
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                          <FormControl component="fieldset">
+                            <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
+                              setOfferImages(offerImages.map((y, ind) => {
+                                if (ind === i) {
+                                  return { ...y, is360: !y.is360 }
+                                } else {
+                                  return y
+                                }
+                              }))
+                            }}>
+                              <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
+                              <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
+                            </RadioGroup>
+                          </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <MaterialButton variant="outlined" color="secondary" onClick={() => setOfferImages([...offerImages.filter((z, index) => index !== i)])}>
+                            <DeleteOutlined />
+                          </MaterialButton>
+                        </Grid>
+                      </>
+                    ))
+                  }
+                  {
+                    offerImages.length > 0 &&
+                    <Grid item xs={12} sm={12}>
+                      <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
+                        Upload/Update Images
+                  </MaterialButton>
+                    </Grid>
                   }
                 </Grid>
-                {
-                  offerImages?.map((x, i) => (
-                    <>
-                      <Grid item xs={12} sm={2}>
-                        <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
-                      </Grid>
-                      <Grid item xs={12} sm={4}>
-                        <TextField
-                          required
-                          id={`alt_tag${i}`}
-                          name="alt_tag"
-                          label="Image Alt Text"
-                          value={x.alt_tag}
-                          variant="outlined"
-                          fullWidth
-                          onChange={(e) => handleImageAltChange(e, i)}
-                          size="small"
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={4}>
-                        <FormControl component="fieldset">
-                          <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
-                            setOfferImages(offerImages.map((y, ind) => {
-                              if (ind === i) {
-                                return { ...y, is360: !y.is360 }
-                              } else {
-                                return y
-                              }
-                            }))
-                          }}>
-                            <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
-                            <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
-                          </RadioGroup>
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={12} sm={2}>
-                        <MaterialButton variant="outlined" color="secondary" onClick={() => setOfferImages([...offerImages.filter((z, index) => index !== i)])}>
-                          <DeleteOutlined />
-                        </MaterialButton>
-                      </Grid>
-                    </>
-                  ))
-                }
-                {
-                  offerImages.length > 0 &&
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
-                      Upload/Update Images
-                  </MaterialButton>
-                  </Grid>
-                }
-              </Grid>
-            </form>
-          </CardBody>
-        </Card>
+              </form>
+            </CardBody>
+          </Card>
+        }
         {/* MULTIPLE IMAGES UPLOAD SECTION END */}
 
       </div>

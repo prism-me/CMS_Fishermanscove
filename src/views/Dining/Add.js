@@ -168,6 +168,7 @@ export default withRouter(function DiningAdd(props) {
           setPostId(response.data?.post_id);
           alert("Restaurant/Bar Added");
           setDining({ ...initialObject });
+          props.history.push('/admin/dining');
         }
       })
     }
@@ -379,95 +380,97 @@ export default withRouter(function DiningAdd(props) {
             </Grid>
           </CardBody>
         </Card>
-        <Card>
-          <CardBody>
-            <h3>Dining Images</h3>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12}>
-                {diningImages.length < 1 &&
+        {isEdit &&
+          <Card>
+            <CardBody>
+              <h3>Dining Images</h3>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={12}>
+                  {diningImages.length < 1 &&
 
-                  <Fragment>
-                    <input
-                      color="primary"
-                      accept="image/*"
-                      type="file"
-                      multiple
-                      onChange={handleMultipleFileChange}
-                      id="thumbnailMultiple"
-                      name="thumbnailMultiple"
-                      disabled={post_id > 0 ? false : true}
-                      style={{ display: 'none', }}
-                    />
-                    <label htmlFor="thumbnailMultiple">
-                      <Button
-                        variant="contained"
-                        component="span"
-                        className={classes.button}
-                        size="large"
+                    <Fragment>
+                      <input
                         color="primary"
+                        accept="image/*"
+                        type="file"
+                        multiple
+                        onChange={handleMultipleFileChange}
+                        id="thumbnailMultiple"
+                        name="thumbnailMultiple"
                         disabled={post_id > 0 ? false : true}
-                        style={{ margin: 0, height: '100%', }}
-                      >
-                        <Image className={classes.extendedIcon} /> Select Multiple Images
+                        style={{ display: 'none', }}
+                      />
+                      <label htmlFor="thumbnailMultiple">
+                        <Button
+                          variant="contained"
+                          component="span"
+                          className={classes.button}
+                          size="large"
+                          color="primary"
+                          disabled={post_id > 0 ? false : true}
+                          style={{ margin: 0, height: '100%', }}
+                        >
+                          <Image className={classes.extendedIcon} /> Select Multiple Images
                     </Button>
-                    </label>
-                  </Fragment>
+                      </label>
+                    </Fragment>
+                  }
+                </Grid>
+                {
+                  diningImages?.map((x, i) => (
+                    <Fragment>
+                      <Grid item xs={12} sm={2}>
+                        <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          required
+                          id={`alt_tag${i}`}
+                          name="alt_tag"
+                          label="Image Alt Text"
+                          value={x.alt_tag}
+                          variant="outlined"
+                          fullWidth
+                          onChange={(e) => handleImageAltChange(e, i)}
+                          size="small"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <FormControl component="fieldset">
+                          <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
+                            setDiningImages(diningImages.map((y, ind) => {
+                              if (ind === i) {
+                                return { ...y, is360: !y.is360 }
+                              } else {
+                                return y
+                              }
+                            }))
+                          }}>
+                            <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
+                            <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
+                          </RadioGroup>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12} sm={2}>
+                        <MaterialButton variant="outlined" color="secondary" onClick={() => setDiningImages([...diningImages.filter((z, index) => index !== i)])}>
+                          <DeleteOutlined />
+                        </MaterialButton>
+                      </Grid>
+                    </Fragment>
+                  ))
+                }
+                {
+                  diningImages.length > 0 &&
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
+                      Upload/Update Images
+                  </MaterialButton>
+                  </Grid>
                 }
               </Grid>
-              {
-                diningImages?.map((x, i) => (
-                  <Fragment>
-                    <Grid item xs={12} sm={2}>
-                      <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <TextField
-                        required
-                        id={`alt_tag${i}`}
-                        name="alt_tag"
-                        label="Image Alt Text"
-                        value={x.alt_tag}
-                        variant="outlined"
-                        fullWidth
-                        onChange={(e) => handleImageAltChange(e, i)}
-                        size="small"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <FormControl component="fieldset">
-                        <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
-                          setDiningImages(diningImages.map((y, ind) => {
-                            if (ind === i) {
-                              return { ...y, is360: !y.is360 }
-                            } else {
-                              return y
-                            }
-                          }))
-                        }}>
-                          <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
-                          <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
-                        </RadioGroup>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={2}>
-                      <MaterialButton variant="outlined" color="secondary" onClick={() => setDiningImages([...diningImages.filter((z, index) => index !== i)])}>
-                        <DeleteOutlined />
-                      </MaterialButton>
-                    </Grid>
-                  </Fragment>
-                ))
-              }
-              {
-                diningImages.length > 0 &&
-                <Grid item xs={12} sm={12}>
-                  <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
-                    Upload/Update Images
-                  </MaterialButton>
-                </Grid>
-              }
-            </Grid>
-          </CardBody>
-        </Card>
+            </CardBody>
+          </Card>
+        }
       </div>
     </div>
   );

@@ -61,6 +61,8 @@ export default function UpdateHeader() {
   // const [open, setOpen] = React.useState(false);
   const initialObject = {
     menuItems: [],
+    menuId: null,
+    contactId: null,
     contact: {
       phone: '',
       email: '',
@@ -76,9 +78,13 @@ export default function UpdateHeader() {
       if (response.status === 200) {
         const { data } = response;
         // debugger;
+        const menuItems = data.find(x => x.widget_name === "menuItems");
+        const contact = data.find(x => x.widget_name === "contact");
         setHeaderContent({
-          menuItems: data.find(x => x.widget_name === "menuItems") ? JSON.parse(data.find(x => x.widget_name === "menuItems")?.items) : initialObject.menuItems,
-          contact: data.find(x => x.widget_name === "contact") ? JSON.parse(data.find(x => x.widget_name === "contact")?.items) : initialObject.contact,
+          menuItems: menuItems ? JSON.parse(menuItems?.items) : initialObject.menuItems,
+          menuId: menuItems ? menuItems.id : initialObject.menuId,
+          contact: contact ? JSON.parse(contact?.items) : initialObject.contact,
+          contactId: contact ? contact.id : initialObject.contactId,
         })
       }
     }).then(() => {
@@ -121,17 +127,17 @@ export default function UpdateHeader() {
   };
 
   const handleDrop = (ev) => {
-    const dragBox = headerContent.menuItems.find((box) => box.id == dragId);
-    const dropBox = headerContent.menuItems.find((box) => box.id == ev.currentTarget.id);
+    const dragBox = headerContent.menuItems.find((box) => box.temp_id == dragId);
+    const dropBox = headerContent.menuItems.find((box) => box.temp_id == ev.currentTarget.id);
 
     const dragBoxOrder = dragBox.order;
     const dropBoxOrder = dropBox.order;
 
     const updatedMenuItems = headerContent.menuItems.map((box) => {
-      if (box.id == dragId) {
+      if (box.temp_id == dragId) {
         box.order = dropBoxOrder;
       }
-      if (box.id == ev.currentTarget.id) {
+      if (box.temp_id == ev.currentTarget.id) {
         box.order = dragBoxOrder;
       }
       return box;
@@ -141,14 +147,15 @@ export default function UpdateHeader() {
   };
 
   const handleSubmit = (section) => {
-    API.post(`/widget`, {
+    let id = section === "menuItems" ? headerContent.menuId : headerContent.contactId;
+    API[id ? "put" : "post"](id ? `/widget/${id}` : `/widget`, {
       widget_type: 'header',
       widget_name: section,
       items: headerContent[section]
     }).then(response => {
       if (response.status === 200) {
         alert(response.data.message);
-        setHeaderContent({ ...initialObject }); //resetting the form
+        // setHeaderContent({ ...initialObject }); //resetting the form
       }
     }).catch(err => alert("Something went wrong"));
   }
@@ -181,14 +188,14 @@ export default function UpdateHeader() {
                       className={"mb-3"}
                       // size="small"
                       color="primary"
-                      onClick={() => setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', id: headerContent.menuItems.length + 1, order: headerContent.menuItems.length + 1 }] })}
+                      onClick={() => setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', temp_id: headerContent.menuItems.length + 1, order: headerContent.menuItems.length + 1 }] })}
                     >
                       Add a New Link
                   </MaterialButton>
                     <Grid container spacing={2}>
                       {
                         headerContent?.menuItems?.sort((a, b) => a.order - b.order).map((x, index) => (
-                          <React.Fragment key={x.id}>
+                          <React.Fragment key={x.temp_id}>
                             <Grid item xs={12} sm={4}>
                               {/* <TextField
                                 required
@@ -201,22 +208,25 @@ export default function UpdateHeader() {
                                 onChange={(e) => handleMenuItemChange(e, index)}
                                 size="small"
                               /> */}
-                              <Autocomplete
-                                id={`text${x.id}`}
-                                name="text"
-                                options={pages}
-                                size="small"
-                                value={pages.find(p => p.post_name === x.text)}
-                                onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue.post_name, name: 'text' } }, index)}
-                                getOptionLabel={(option) => option.post_name}
-                                // style={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
-                              />
+                              {
+                                pages?.length > 0 &&
+                                <Autocomplete
+                                  id={`text${x.temp_id}`}
+                                  name="text"
+                                  options={pages}
+                                  size="small"
+                                  value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase())}
+                                  onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue.post_name, name: 'text' } }, index)}
+                                  getOptionLabel={(option) => option.post_name}
+                                  // style={{ width: 300 }}
+                                  renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
+                                />
+                              }
                             </Grid>
                             <Grid item xs={12} sm={4}>
                               <TextField
                                 required
-                                id={`address${x.id}`}
+                                id={`address${x.temp_id}`}
                                 name="address"
                                 label="Link Address"
                                 value={x.address}
@@ -227,7 +237,7 @@ export default function UpdateHeader() {
                               />
                             </Grid>
                             <Grid item xs={12} sm={4}>
-                              <MaterialButton onClick={() => setHeaderContent({ ...headerContent, menuItems: headerContent.menuItems.filter(z => z.id !== x.id) })} color="secondary" size="small" variant="outlined" style={{ height: '100%' }}>
+                              <MaterialButton onClick={() => setHeaderContent({ ...headerContent, menuItems: headerContent.menuItems.filter(z => z.temp_id !== x.temp_id) })} color="secondary" size="small" variant="outlined" style={{ height: '100%' }}>
                                 Delete Link
                               </MaterialButton>
                             </Grid>
@@ -250,7 +260,7 @@ export default function UpdateHeader() {
                           <List component="nav" aria-label="main mailbox folders">
                             {
                               headerContent?.menuItems?.sort((a, b) => a.order - b.order).map(x => (
-                                <ListItem key={x.text} style={{ borderBottom: '1px solid #ddd', zIndex: 9999 }} button id={x.id} draggable onDragStart={handleDrag} onDrop={handleDrop} onDragOver={(ev) => ev.preventDefault()} >
+                                <ListItem key={x.text} style={{ borderBottom: '1px solid #ddd', zIndex: 9999 }} button id={x.temp_id} draggable onDragStart={handleDrag} onDrop={handleDrop} onDragOver={(ev) => ev.preventDefault()} >
                                   <ListItemText primary={x.text} />
                                 </ListItem>
                               ))

@@ -96,14 +96,15 @@ class OffersList extends Component {
       this.setState({ rows })
     })
   }
-  handleCategorySubmit = (name) => {
-    if (!name || name === "") {
+  handleCategorySubmit = (category_name) => {
+    if (!category_name || category_name === "") {
       alert("Please enter category name");
       return;
     }
-    API.post('/offer-categories/offer', { name }).then(response => {
+    API.post('/offer_categories/offers', { category_name }).then(response => {
       if (response?.status === 200) {
-        alert(response.data?.message)
+        alert(response.data?.message);
+        this.setState({isCategoryFormOpen: false})
       }
     }).catch(err=> {
       alert("Something went wrong.");

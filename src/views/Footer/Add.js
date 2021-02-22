@@ -86,10 +86,10 @@ export default function UpdateFooter() {
         const third = data.find(x => x.widget_name === "third");
         const social = data.find(x => x.widget_name === "social");
         setFooterContent({
-          first: first ? JSON.parse(first.items) : initialObject.first,
-          second: second ? JSON.parse(second.items) : initialObject.second,
-          third: third ? JSON.parse(third.items) : initialObject.third,
-          social: social ? JSON.parse(social.items) : initialObject.social,
+          first: first ? { id: first.id, ...JSON.parse(first.items) } : initialObject.first,
+          second: second ? { id: second.id, ...JSON.parse(second.items) } : initialObject.second,
+          third: third ? { id: third.id, ...JSON.parse(third.items) } : initialObject.third,
+          social: social ? { id: social.id, ...JSON.parse(social.items) } : initialObject.social,
         })
       }
     })
@@ -123,7 +123,7 @@ export default function UpdateFooter() {
   // }
 
   const handleSubmit = (section) => {
-    API.post(`/widget`, {
+    API[footerContent[section]?.id ? "put" : "post"](footerContent[section]?.id ? `/widget/${footerContent[section]?.id}` : `/widget`, {
       widget_type: 'footer',
       widget_name: section,
       items: footerContent[section]
