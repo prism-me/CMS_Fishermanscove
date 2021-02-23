@@ -229,7 +229,7 @@ const dashboardRoutes = [
     component: GalleryList,
     layout: "/admin",
     exact: true,
-    hide: true
+    // hide: true
   },
   {
     path: "/gallery/add",

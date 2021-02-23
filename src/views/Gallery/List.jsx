@@ -1,94 +1,46 @@
 import React, { Component } from 'react';
-import MUIDataTable from "mui-datatables";
 import API from 'utils/http';
-import { Avatar, Box, Button } from '@material-ui/core';
-import { AddOutlined, DeleteOutlined, EditOutlined, ListOutlined, VisibilityOutlined } from '@material-ui/icons';
-import { Link } from 'react-router-dom';
-import CategoryDialog from './CategoryDialog';
+import { DropzoneArea } from 'material-ui-dropzone';
+import { Box } from '@material-ui/core';
+import { CloudUploadOutlined } from '@material-ui/icons';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import IconButton from '@material-ui/core/IconButton';
+import InfoIcon from '@material-ui/icons/Info';
 
 class GalleryList extends Component {
   state = {
-    isCategoryFormOpen: false,
-    offers: [],
-    columns: [
+    currentFiles: [],
+    tileData: [
       {
-        name: "thumbnail",
-        label: "Image",
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: (val) => (
-            <Avatar alt={"Image"} src={val}></Avatar>
-          )
-        }
+        img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+        title: 'Junior suite',
+        author: ''
       },
       {
-        name: "post_name",
-        label: "Name",
-        options: {
-          filter: true,
-          sort: true,
-        }
+        img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+        title: 'Deluxe suite',
+        author: ''
       },
       {
-        name: "room_type",
-        label: "Room Type",
-        options: {
-          filter: true,
-          sort: false,
-          customBodyRender: (val) => {
-            return val === 0 ? 'Room' : 'Suite'
-          }
-        }
+        img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+        title: 'Luxury Room',
+        author: ''
       },
       {
-        name: "short_description",
-        label: "Description",
-        options: {
-          filter: true,
-          sort: false,
-          customBodyRender: val => (
-            val?.length > 100 ? val?.substr(0, 100) + '...' : val
-          )
-        }
+        img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+        title: 'Luxury Room',
+        author: ''
       },
-      // {
-      //   name: "post_content",
-      //   label: "Content",
-      //   options: {
-      //     filter: true,
-      //     sort: false,
-      //   }
-      // },
       {
-        name: "id",
-        label: "Actions",
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: val => (
-            <div className="d-flex nowrap">
-              <Link title="View Details" to={`/admin/gallery/${val}`} >
-                <VisibilityOutlined fontSize="small" color="action" />
-              </Link>
-              <Link className="ml-2" title="Edit" to={`/admin/gallery/edit/${val}`} >
-                <EditOutlined fontSize="small" color="primary" />
-              </Link>
-              <Link className="ml-2" title="Delete" to={`#`} onClick={() => this.handleDelete(val)} >
-                <DeleteOutlined fontSize="small" color="secondary" />
-              </Link>
-            </div>
-          )
-        }
+        img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+        title: 'Luxury Room',
+        author: ''
       },
-    ],
-    rows: []
+    ]
   }
-
-  options = {
-    filterType: "checkbox",
-    responsive: "vertical",
-  };
 
   componentDidMount() {
     API.get('/offers').then(response => {
@@ -105,7 +57,7 @@ class GalleryList extends Component {
       if (response?.status === 200) {
         alert(response.data?.message)
       }
-    }).catch(err=> {
+    }).catch(err => {
       alert("Something went wrong.");
     })
   }
@@ -120,40 +72,49 @@ class GalleryList extends Component {
     }
   }
 
+  handleFileDrop = (files) => {
+    let currentFiles = [...this.state.currentFiles, ...files];
+    this.setState({ currentFiles })
+  }
+
   render() {
-    const { isCategoryFormOpen } = this.state
     return (
       <div>
         <Box marginBottom={4}>
-          <Link to="/admin/gallery/add">
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddOutlined />}
-              disableElevation
-            >
-              Add Gallery Images
-            </Button>
-          </Link>
-          <Button
-            variant="outlined"
-            className="ml-3"
-            color="primary"
-            startIcon={<ListOutlined />}
-            onClick={() => this.setState({ isCategoryFormOpen: true })}
-          >
-            Add Gallery Category
-          </Button>
+          <DropzoneArea
+            // showPreviews={true}
+            Icon={CloudUploadOutlined}
+            showAlerts={false}
+            acceptedFiles={['image/*']}
+            filesLimit={15}
+            showPreviewsInDropzone={true}
+            showFileNamesInPreview={true}
+            onDrop={this.handleFileDrop}
+            // useChipsForPreview
+            dropzoneText="Drag and Drop Images here or simply click here"
+            previewGridProps={{ container: { spacing: 1, direction: 'row', wrap: 'nowrap', style: { overflowX: 'auto', padding: '1rem' } }, item: { xs: 3 } }}
+            // previewChipProps={}
+            previewText="Selected files"
+          />
         </Box>
-        <MUIDataTable
-          title="Gallery List"
-          columns={this.state.columns}
-          data={this.state.rows}
-          options={this.options}
-        />
-        {
-          isCategoryFormOpen && <CategoryDialog open={isCategoryFormOpen} handleClose={() => this.setState({ isCategoryFormOpen: false })} handleCategorySubmit={this.handleCategorySubmit} />
-        }
+        <Box>
+          <GridList cellHeight={200} className="" spacing={10}>
+            {this.state.tileData.map((tile) => (
+              <GridListTile cols={0.5} key={tile.img}>
+                <img src={tile.img} alt={tile.title} />
+                <GridListTileBar
+                  title={tile.title}
+                  subtitle={<span>by: {tile.author}</span>}
+                  actionIcon={
+                    <IconButton aria-label={`info about ${tile.title}`} className="">
+                      <InfoIcon style={{color:'rgba(255,255,255,0.6)'}} />
+                    </IconButton>
+                  }
+                />
+              </GridListTile>
+            ))}
+          </GridList>
+        </Box>
       </div>
     );
   }
