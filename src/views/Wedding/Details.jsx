@@ -11,10 +11,16 @@ import { useWideCardMediaStyles } from '@mui-treasury/styles/cardMedia/wide';
 import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
 import { usePushingGutterStyles } from '@mui-treasury/styles/gutter/pushing';
 import API from 'utils/http';
-import { Chip } from '@material-ui/core';
+// import { Chip } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 
-const useStyles = makeStyles(() => ({
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
+import IconButton from '@material-ui/core/IconButton';
+import InfoIcon from '@material-ui/icons/Info';
+
+const useStyles = makeStyles((theme) => ({
   root: {
     overflow: 'initial',
     maxWidth: '75%',
@@ -44,21 +50,61 @@ const useStyles = makeStyles(() => ({
     marginRight: 4,
     fontSize: 18,
   },
+  imagesWrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.paper,
+  },
+  gridList: {
+    flexWrap: 'nowrap',
+    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+    transform: 'translateZ(0)',
+  },
+  title: {
+    color: theme.palette.primary.light,
+  },
+  titleBar: {
+    background:
+      'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+  },
+  icon: {
+    color: 'rgba(255, 255, 255, 0.54)',
+  },
 }));
 
 export const WeddingDetail = React.memo(function ReviewCard() {
   let params = useParams();
   const styles = useStyles();
+  const classes = useStyles();
   const mediaStyles = useWideCardMediaStyles();
   const shadowStyles = useFadedShadowStyles();
   const gutterStyles = usePushingGutterStyles({ firstExcluded: true });
 
-  const [room, setRoom] = useState(null);
+  const [wedding, setWedding] = useState(null);
+  const [tileData, setTileData] = useState([
+    {
+      img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+      title: 'Junior suite',
+      author: ''
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+      title: 'Deluxe suite',
+      author: ''
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+      title: 'Luxury Room',
+      author: ''
+    },
+  ]);
 
   useEffect(() => {
-    API.get(`/single_dining/${params.id}`).then(response => {
+    API.get(`/wedding/${params.id}`).then(response => {
       if (response.status === 200) {
-        setRoom(response.data[0])
+        setWedding(response.data?.category_details[0])
       }
     })
   }, [])
@@ -68,29 +114,29 @@ export const WeddingDetail = React.memo(function ReviewCard() {
       <CardMedia
         classes={mediaStyles}
         image={
-          room?.avatar
+          wedding?.thumbnail
           // 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80'
         }
       />
       <CardContent className={cx(shadowStyles.root, styles.content)}>
         <h3 className={styles.title}>
           {
-            room?.post_name
+            wedding?.post_name
           }
         </h3>
         <Box color={'grey.500'} display={'flex'} alignItems={'center'} mb={1}>
-          <Chip
+          {/* <Chip
             // icon={<FaceOutlined />}
-            label={room?.room_type === 0 ? 'Room' : 'Suite'}
+            label={wedding?.room_type === 0 ? 'Wedding' : 'Suite'}
             clickable={false}
             size="small"
             color="primary"
-          />
+          /> */}
         </Box>
         {/* <Box color={'grey.500'} display={'flex'} alignItems={'center'} mb={1}>
           <Chip
             // icon={<FaceOutlined />}
-            label={room?.post_category?.category_name}
+            label={wedding?.post_category?.category_name}
             clickable={false}
             size="small"
           // color="primary"
@@ -109,22 +155,43 @@ export const WeddingDetail = React.memo(function ReviewCard() {
         </Box>
         {/* <Typography color={'textSecondary'} variant={'body2'}>
           {
-            room?.short_description
+            wedding?.short_description
           }
         </Typography> */}
-        <div dangerouslySetInnerHTML={{__html: room?.short_description}}>
+        <div dangerouslySetInnerHTML={{ __html: wedding?.short_description }}>
 
         </div>
         <Box
           mt={2}
-          // display={'flex'}
-          // justifyContent={'space-between'}
-          // alignItems={'center'}
+        // display={'flex'}
+        // justifyContent={'space-between'}
+        // alignItems={'center'}
         >
-        <Typography color={'primary'} variant="h5">
-          Details
+          <Typography color={'primary'} variant="h5">
+            Details
         </Typography>
-          <div dangerouslySetInnerHTML={{__html: room?.post_content}}></div>
+          <div dangerouslySetInnerHTML={{ __html: wedding?.post_content }}></div>
+        </Box>
+
+        <Box mt={4}>
+          <div className={classes.imagesWrapper}>
+            <GridList className={classes.gridList} cols={2.5}>
+              {tileData.map((tile) => (
+                <GridListTile key={tile.img}>
+                  <img src={tile.img} alt={tile.title} />
+                  <GridListTileBar
+                    title={tile.title}
+                    // subtitle={<span>by: {tile.author}</span>}
+                    actionIcon={
+                      <IconButton aria-label={`info about ${tile.title}`} className={classes.icon}>
+                        <InfoIcon />
+                      </IconButton>
+                    }
+                  />
+                </GridListTile>
+              ))}
+            </GridList>
+          </div>
         </Box>
       </CardContent>
     </Card>

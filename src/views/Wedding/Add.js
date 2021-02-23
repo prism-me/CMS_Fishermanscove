@@ -1,28 +1,23 @@
 import React, { Fragment, useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
 
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import MaterialButton from '@material-ui/core/Button';
 
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
-
-import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField, RadioGroup, Radio, FormControlLabel, Avatar } from "@material-ui/core";
+import { TextField, Avatar } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 
-import { DeleteOutlined, Image } from "@material-ui/icons";
+import { Image } from "@material-ui/icons";
 import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
 import { ckEditorConfig } from "utils/data";
-import axios from "axios";
+
+const website_url = "http://fishermanscove-resort.com/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -84,6 +79,7 @@ export default withRouter(function WeddingAdd(props) {
     updatedWedding[e.target.name] = e.target.value;
     setWedding(updatedWedding);
   }
+
   const handleFileChange = (e) => {
     let files = e.target.files || e.dataTransfer.files;
     if (!files.length)
@@ -104,28 +100,6 @@ export default withRouter(function WeddingAdd(props) {
       }
     };
     reader.readAsDataURL(file);
-  }
-
-  const handleMultipleFileChange = (e) => {
-    let files = e.target.files || e.dataTransfer.files;
-    if (!files.length) return;
-    let imagesObject = [];
-
-    Object.entries(files).map((x, i) => {
-      return imagesObject.push({
-        avatar: x[1],
-        post_id,
-        alt_tag: '',
-        is360: false
-      });
-    })
-    setWeddingImages([...weddingImages, ...imagesObject])
-  }
-
-  const handleImageAltChange = (e, index) => {
-    let updatedWeddingImages = [...weddingImages];
-    updatedWeddingImages[index].alt_tag = e.target.value;
-    setWeddingImages(updatedWeddingImages)
   }
 
   const handleSubmit = () => {
@@ -187,62 +161,78 @@ export default withRouter(function WeddingAdd(props) {
           </CardHeader>
           <CardBody>
             <h4 className="mt-1">General Information</h4>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  required
-                  id="post_name"
-                  name="post_name"
-                  label="Name"
-                  value={wedding.post_name}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="alt_text"
-                  name="alt_text"
-                  label="Image Alt Text"
-                  value={wedding.alt_text}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={6} sm={6}>
-                <Fragment>
-                  <input
-                    color="primary"
-                    accept="image/*"
-                    type="file"
-                    onChange={handleFileChange}
-                    size="small"
-                    id="thumbnail"
-                    name="thumbnail"
-                    style={{ display: 'none', }}
-                  />
-                  <label htmlFor="thumbnail">
-                    <Button
-                      variant="contained"
-                      component="span"
-                      className={classes.button}
-                      size="large"
-                      color="primary"
-                      style={{ margin: 0, height: '100%', }}
-                    >
-                      <Image className={classes.extendedIcon} /> Upload Featured Image
+            <Grid container spacing={2} style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid item xs={12} sm={7} >
+                <Grid container spacing={5}>
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="post_name"
+                      name="post_name"
+                      label="Name"
+                      value={wedding.post_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={7}>
+                    <TextField
+                      required
+                      id="alt_text"
+                      name="alt_text"
+                      label="Image Alt Text"
+                      value={wedding.alt_text}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={6} sm={5}>
+                    <Fragment>
+                      <input
+                        color="primary"
+                        accept="image/*"
+                        type="file"
+                        onChange={handleFileChange}
+                        fullWidth
+                        id="thumbnail"
+                        name="thumbnail"
+                        style={{ display: 'none', width: '100%' }}
+                      />
+                      <label htmlFor="thumbnail" style={{ width: '100%', height: '100%', margin: 0 }}>
+                        <Button
+                          variant="contained"
+                          component="span"
+                          className={classes.button}
+                          size="sm"
+                          fullWidth
+                          disableElevation={true}
+                          color="primary"
+                          style={{ margin: 0, height: '100%', width: '100%' }}
+                        >
+                          <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
                     </Button>
-                  </label>
-                </Fragment>
-                {
-                  isEdit &&
-                  <Avatar src={wedding.thumbnail} alt={wedding.alt_text} className="float-left mr-4" />
-                }
+                      </label>
+                    </Fragment>
+                    {
+                      isEdit &&
+                      <Avatar src={wedding.thumbnail} alt={wedding.alt_text} className="float-left mr-4" />
+                    }
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} sm={5}>
+                <div className="thumbnail-preview-wrapper img-thumbnail">
+                  {
+                    wedding.thumbnail && wedding.thumbnail !== "" ?
+                      <img src={wedding.thumbnail} alt={wedding.alt_text || ""} />
+                      :
+                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                  }
+                </div>
               </Grid>
               <Grid item xs={12} sm={12}>
                 <h4>Short Description</h4>

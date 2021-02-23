@@ -257,26 +257,6 @@ export default withRouter(function DiningAdd(props) {
                       <Avatar src={dining.thumbnail} alt={dining.alt_text} className="float-left mr-4" />
                     }
                   </Grid>
-                  {/* <Grid item xs={12} sm={12}>
-                    <FormControl variant="outlined" size="small" fullWidth className={classes.formControl}>
-                      <InputLabel id="room_type-label">Type</InputLabel>
-                      <Select
-                        labelId="room_type-label"
-                        id="room_type"
-                        name="room_type"
-                        value={dining.room_type}
-                        onChange={handleInputChange}
-                        label="Type"
-                        fullWidth
-                      >
-                        <MenuItem value={-1}>
-                          <em>Select</em>
-                        </MenuItem>
-                        <MenuItem value={1}>Room</MenuItem>
-                        <MenuItem value={2}>Suite</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid> */}
                 </Grid>
               </Grid>
               <Grid item xs={12} sm={5}>
