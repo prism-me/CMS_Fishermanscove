@@ -11,10 +11,18 @@ import { useWideCardMediaStyles } from '@mui-treasury/styles/cardMedia/wide';
 import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
 import { usePushingGutterStyles } from '@mui-treasury/styles/gutter/pushing';
 import API from 'utils/http';
-import { Chip } from '@material-ui/core';
+// import { Chip } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 
-const useStyles = makeStyles(() => ({
+
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
+import IconButton from '@material-ui/core/IconButton';
+import InfoIcon from '@material-ui/icons/Info';
+
+
+const useStyles = makeStyles((theme) => ({
   root: {
     overflow: 'initial',
     maxWidth: '75%',
@@ -44,17 +52,56 @@ const useStyles = makeStyles(() => ({
     marginRight: 4,
     fontSize: 18,
   },
+  imagesWrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.paper,
+  },
+  gridList: {
+    flexWrap: 'nowrap',
+    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+    transform: 'translateZ(0)',
+  },
+  title: {
+    color: theme.palette.primary.light,
+  },
+  titleBar: {
+    background:
+      'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+  },
+  icon: {
+    color: 'rgba(255, 255, 255, 0.54)',
+  },
 }));
 
 export const DiningDetail = React.memo(function ReviewCard() {
   let params = useParams();
   const styles = useStyles();
+  const classes = useStyles();
   const mediaStyles = useWideCardMediaStyles();
   const shadowStyles = useFadedShadowStyles();
   const gutterStyles = usePushingGutterStyles({ firstExcluded: true });
 
   const [dining, setDining] = useState(null);
-
+  const [tileData, setTileData] = useState([
+    {
+      img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+      title: 'Junior suite',
+      author: ''
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+      title: 'Deluxe suite',
+      author: ''
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
+      title: 'Luxury Room',
+      author: ''
+    },
+  ]);
   useEffect(() => {
     API.get(`/dining/${params.id}`).then(response => {
       if (response.status === 200) {
@@ -125,6 +172,27 @@ export const DiningDetail = React.memo(function ReviewCard() {
           Details
         </Typography>
           <div dangerouslySetInnerHTML={{__html: dining?.post_content}}></div>
+        </Box>
+
+        <Box mt={4}>
+          <div className={classes.imagesWrapper}>
+            <GridList className={classes.gridList} cols={2.5}>
+              {tileData.map((tile) => (
+                <GridListTile key={tile.img}>
+                  <img src={tile.img} alt={tile.title} />
+                  <GridListTileBar
+                    title={tile.title}
+                    // subtitle={<span>by: {tile.author}</span>}
+                    actionIcon={
+                      <IconButton aria-label={`info about ${tile.title}`} className={classes.icon}>
+                        <InfoIcon />
+                      </IconButton>
+                    }
+                  />
+                </GridListTile>
+              ))}
+            </GridList>
+          </div>
         </Box>
       </CardContent>
     </Card>
