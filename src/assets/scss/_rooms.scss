@@ -10,3 +10,16 @@
         object-fit: cover;
     }
 }
+
+.thumbnail-preview-wrapper-small{
+    width: 100%;
+    // overflow: hidden;
+    max-height: 150px;
+    min-height: 150px;
+    height: 150px;
+    img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}

@@ -1,29 +1,17 @@
 import React, { Fragment, useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
 // core components
-// import GridItem from "components/Grid/GridItem.js";
-// import GridContainer from "components/Grid/GridContainer.js";
-// import CustomInput from "components/CustomInput/CustomInput.js";
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 
 import MaterialButton from "@material-ui/core/Button";
-import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
 
-import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 
-// import { CKEditor } from '@ckeditor/ckeditor5-react';
-// import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
-import { Delete, DeleteOutlined, Image } from "@material-ui/icons";
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -32,6 +20,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
 import FAQSection from "../Common/FAQSection";
+
+const website_url = "http://fishermanscove-resort.com/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,6 +63,13 @@ export default function AddWedding() {
       section_avtar_alt: '',
       section_slug: 'faq'
     },
+  });
+
+  const [seoInfo, setSeoInfo] = useState({
+    meta_title: '',
+    meta_description: '',
+    route: website_url,
+    schema_markup: ''
   })
 
   useEffect(() => {
@@ -93,10 +90,27 @@ export default function AddWedding() {
       }
     })
   }, [])
+
   const handleInputChange = (e, section) => {
-    let updatedDiningInner = { ...wedding };
-    updatedDiningInner[section][e.target.name] = e.target.value;
-    setWedding(updatedDiningInner);
+    let updatedWedding = { ...wedding };
+    updatedWedding[section][e.target.name] = e.target.value;
+    setWedding(updatedWedding);
+  }
+
+  const handleSEOInputChange = (e) => {
+    debugger;
+    let updatedSeoInfo = { ...seoInfo };
+    updatedSeoInfo[e.target.name] = e.target.value;
+    setSeoInfo(updatedSeoInfo);
+  }
+
+  const handleRouteChange = (e) => {
+    let updatedSeoInfo = { ...seoInfo };
+    let splitValues = e.target.value.split(website_url);
+    let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
+    updatedValue = updatedValue.replace(/--/g, '-')
+    updatedSeoInfo[e.target.name] = website_url + updatedValue;
+    setSeoInfo(updatedSeoInfo);
   }
 
   //faq section methods
@@ -115,7 +129,15 @@ export default function AddWedding() {
     setWedding({ ...wedding, faq: { ...wedding.faq, section_content } })
   }
   //end faq section methods
-  
+
+  const handleSEOSubmit = () => {
+    API.put(`/path-to-wedding`, seoInfo).then(response => {
+      if (response.status === 200) {
+        alert("Section updated successfully !");
+      }
+    }).catch(err => console.log(err))
+  }
+
   const handleSubmit = (id, name) => {
     API.put(`/add_section/${id}`, wedding[name]).then(response => {
       if (response.status === 200) {
@@ -170,6 +192,102 @@ export default function AddWedding() {
             </Accordion>
             {/* ******************* */}
             {/* SECTION 2 */}
+            {/* ******************* */}
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>SEO Information</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      required
+                      id="meta_title"
+                      name="meta_title"
+                      label="Meta Title"
+                      value={seoInfo.meta_title}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      required
+                      id="route"
+                      name="route"
+                      label="Permalink"
+                      value={seoInfo.route}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleRouteChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="meta_description"
+                      name="meta_description"
+                      label="Meta Description"
+                      value={seoInfo.meta_description}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="schema_markup"
+                      name="schema_markup"
+                      label="Schema Markup"
+                      value={seoInfo.schema_markup}
+                      variant="outlined"
+                      fullWidth
+                      multiline
+                      rows={4}
+                      rowsMax={4}
+                      onChange={handleSEOInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  {/* <Grid item xs={12} sm={6}>
+                    <FormControl component="fieldset">
+                      <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={seoInfo.is_followed} onChange={(e) => {
+                        setDining({ ...dining, is_followed: !seoInfo.is_followed })
+                      }}>
+                        <FormControlLabel value={true} control={<Radio />} label="Follow" />
+                        <FormControlLabel value={false} control={<Radio />} label="No Follow" />
+                      </RadioGroup>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl component="fieldset">
+                      <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={seoInfo.is_indexed} onChange={(e) => {
+                        setDining({ ...dining, is_indexed: !seoInfo.is_indexed })
+                      }}>
+                        <FormControlLabel value={true} control={<Radio />} label="Index" />
+                        <FormControlLabel value={false} control={<Radio />} label="No Index" />
+                      </RadioGroup>
+                    </FormControl>
+                  </Grid> */}
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
+                      Update Section
+                    </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            {/* ******************* */}
+            {/* SECTION 3 */}
             {/* ******************* */}
             <Accordion>
               <AccordionSummary

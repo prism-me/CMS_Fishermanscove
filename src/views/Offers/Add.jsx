@@ -202,7 +202,7 @@ export default function AddOffer(props) {
           <CardBody>
             <h4 className="mt-1">General Information</h4>
             <Grid container spacing={2} style={{ display: 'flex', alignItems: 'center' }}>
-              <Grid item xs={12} sm={7} >
+              <Grid item xs={12} sm={7}>
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={12}>
                     <TextField
@@ -217,7 +217,7 @@ export default function AddOffer(props) {
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={7}>
+                  <Grid item xs={12} sm={12}>
                     <TextField
                       required
                       id="alt_text"
@@ -230,7 +230,7 @@ export default function AddOffer(props) {
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={6} sm={5}>
+                  {/* <Grid item xs={6} sm={5}>
                     <Fragment>
                       <input
                         color="primary"
@@ -254,14 +254,10 @@ export default function AddOffer(props) {
                           style={{ margin: 0, height: '100%', width: '100%' }}
                         >
                           <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
-                    </Button>
+                        </Button>
                       </label>
                     </Fragment>
-                    {
-                      isEdit &&
-                      <Avatar src={offer.thumbnail} alt={offer.alt_text} className="float-left mr-4" />
-                    }
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={12} sm={12}>
                     <FormControl variant="outlined"
                       size="small" fullWidth className={classes.formControl}>
@@ -289,7 +285,7 @@ export default function AddOffer(props) {
                 </Grid>
               </Grid>
               <Grid item xs={12} sm={5}>
-                <div className="thumbnail-preview-wrapper img-thumbnail">
+                <div className="thumbnail-preview-wrapper-small img-thumbnail">
                   {
                     offer.thumbnail && offer.thumbnail !== "" ?
                       <img src={offer.thumbnail} alt={offer.alt_text || ""} />
@@ -297,6 +293,32 @@ export default function AddOffer(props) {
                       <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                   }
                 </div>
+                <Fragment>
+                  <input
+                    color="primary"
+                    accept="image/*"
+                    type="file"
+                    onChange={handleFileChange}
+                    fullWidth
+                    id="thumbnail"
+                    name="thumbnail"
+                    style={{ display: 'none', width: '100%', }}
+                  />
+                  <label htmlFor="thumbnail" style={{ width: '100%', height: '100%', margin: 0, marginTop: '.15rem' }}>
+                    <Button
+                      variant="contained"
+                      component="span"
+                      className={classes.button}
+                      // size="sm"
+                      fullWidth
+                      disableElevation={true}
+                      color="primary"
+                      style={{ margin: 0, height: '100%', width: '100%' }}
+                    >
+                      <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
+                    </Button>
+                  </label>
+                </Fragment>
               </Grid>
 
               <Grid item xs={12} sm={12}>
