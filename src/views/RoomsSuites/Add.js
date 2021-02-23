@@ -31,6 +31,8 @@ import { useParams, withRouter } from "react-router-dom";
 
 // ClassicEditor.b
 
+const website_url = "http://fishermanscove-resort.com/";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -62,6 +64,7 @@ export default withRouter(function AddRoom(props) {
     meta_description: '',
     schema_markup: '',
     post_url: '',
+    route: website_url,
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: "0,0"
@@ -69,6 +72,7 @@ export default withRouter(function AddRoom(props) {
   const [room, setRoom] = useState({ ...initialObject })
 
   const [roomImages, setRoomImages] = useState([]);
+  const [maskedRoute, setMaskedRoute] = useState(website_url);
   const [isEdit, setIsEdit] = useState(false);
   const [post_id, setPostId] = useState(-1);
 
@@ -87,6 +91,15 @@ export default withRouter(function AddRoom(props) {
   const handleInputChange = (e) => {
     let updatedRoom = { ...room };
     updatedRoom[e.target.name] = e.target.value;
+    setRoom(updatedRoom);
+  }
+
+  const handleRouteChange = (e) => {
+    let updatedRoom = { ...room };
+    let splitValues = e.target.value.split(website_url);
+    let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
+    updatedValue = updatedValue.replace(/--/g, '-')
+    updatedRoom[e.target.name] = website_url + updatedValue;
     setRoom(updatedRoom);
   }
 
@@ -182,301 +195,308 @@ export default withRouter(function AddRoom(props) {
   }
 
   return (
-    <div>
-      <div className={classes.root}>
-        <Card>
-          <CardHeader color="primary">
-            <h4 className="mb-0">Add Room/Suite</h4>
-            {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
-          </CardHeader>
-          <CardBody>
-            <h4 className="mt-1">General Information</h4>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  required
-                  id="post_name"
-                  name="post_name"
-                  label="Name"
-                  value={room.post_name}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="alt_text"
-                  name="alt_text"
-                  label="Image Alt Text"
-                  value={room.alt_text}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={6} sm={6}>
-                <Fragment>
-                  <input
-                    color="primary"
-                    accept="image/*"
-                    type="file"
-                    onChange={handleFileChange}
-                    id="thumbnail"
-                    name="thumbnail"
-                    style={{ display: 'none', }}
+    <div className={classes.root}>
+      <Card>
+        <CardHeader color="primary">
+          <h4 className="mb-0">Add Room/Suite</h4>
+          {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+        </CardHeader>
+        <CardBody>
+          <h4 className="mt-1">General Information</h4>
+          <Grid container spacing={2} style={{ display: 'flex', alignItems: 'center' }}>
+            <Grid item xs={12} sm={7} >
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    required
+                    id="post_name"
+                    name="post_name"
+                    label="Name"
+                    value={room.post_name}
+                    variant="outlined"
+                    fullWidth
+                    onChange={handleInputChange}
+                    size="small"
                   />
-                  <label htmlFor="thumbnail">
-                    <Button
-                      variant="contained"
-                      component="span"
-                      className={classes.button}
-                      // size="sm"
+                </Grid>
+                <Grid item xs={12} sm={7}>
+                  <TextField
+                    required
+                    id="alt_text"
+                    name="alt_text"
+                    label="Image Alt Text"
+                    value={room.alt_text}
+                    variant="outlined"
+                    fullWidth
+                    onChange={handleInputChange}
+                    size="small"
+                  />
+                </Grid>
+                <Grid item xs={6} sm={5}>
+                  <Fragment>
+                    <input
                       color="primary"
-                      style={{ margin: 0, height: 'auto', }}
-                    >
-                      <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
+                      accept="image/*"
+                      type="file"
+                      onChange={handleFileChange}
+                      fullWidth
+                      id="thumbnail"
+                      name="thumbnail"
+                      style={{ display: 'none', width: '100%' }}
+                    />
+                    <label htmlFor="thumbnail" style={{ width: '100%', height: '100%', margin: 0 }}>
+                      <Button
+                        variant="contained"
+                        component="span"
+                        className={classes.button}
+                        size="sm"
+                        fullWidth
+                        disableElevation={true}
+                        color="primary"
+                        style={{ margin: 0, height: '100%', width: '100%' }}
+                      >
+                        <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
                     </Button>
-                  </label>
-                </Fragment>
-                {
-                  isEdit &&
-                  <Avatar src={room.thumbnail} alt={room.alt_text} className="float-left mr-4" />
-                }
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined" size="small" fullWidth className={classes.formControl}>
-                  <InputLabel id="room_type-label">Type</InputLabel>
-                  <Select
-                    labelId="room_type-label"
-                    id="room_type"
-                    name="room_type"
-                    value={room.room_type}
-                    onChange={handleInputChange}
-                    label="Type"
+                    </label>
+                  </Fragment>
+                  {
+                    isEdit &&
+                    <Avatar src={room.thumbnail} alt={room.alt_text} className="float-left mr-4" />
+                  }
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <FormControl variant="outlined" size="small" fullWidth className={classes.formControl}>
+                    <InputLabel id="room_type-label">Type</InputLabel>
+                    <Select
+                      labelId="room_type-label"
+                      id="room_type"
+                      name="room_type"
+                      value={room.room_type}
+                      onChange={handleInputChange}
+                      label="Type"
+                      fullWidth
+                    >
+                      <MenuItem value={-1}>
+                        <em>Select</em>
+                      </MenuItem>
+                      <MenuItem value={1}>Room</MenuItem>
+                      <MenuItem value={2}>Suite</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    required
+                    id="post_url"
+                    name="post_url"
+                    label="Synesis Link"
+                    value={room.post_url}
+                    variant="outlined"
                     fullWidth
-                  >
-                    <MenuItem value={-1}>
-                      <em>Select</em>
-                    </MenuItem>
-                    <MenuItem value={1}>Room</MenuItem>
-                    <MenuItem value={2}>Suite</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined" size="small" fullWidth className={classes.formControl}>
-                  <InputLabel id="parent_id-label">Category</InputLabel>
-                  <Select
-                    labelId="parent_id-label"
-                    id="parent_id"
-                    name="parent_id"
-                    value={room.parent_id}
                     onChange={handleInputChange}
-                    label="Category"
-                    fullWidth
-                  >
-                    <MenuItem value={-1}>
-                      <em>Select</em>
-                    </MenuItem>
-                    <MenuItem value={1}>Family</MenuItem>
-                    <MenuItem value={2}>Deluxe</MenuItem>
-                    <MenuItem value={3}>Partial Ocean View</MenuItem>
-                    <MenuItem value={4}>Full Ocean View</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <p>Short Description</p>
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={room.short_description} onChange={(e) => setRoom({ ...room, short_description: e.editor.getData() })} />
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <p>Detailed Content</p>
-
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={room.post_content} onChange={(e) => setRoom({ ...room, post_content: e.editor.getData() })} />
+                    size="small"
+                  />
+                </Grid>
 
               </Grid>
             </Grid>
-            <h4 className="mt-2">SEO Information</h4>
+            <Grid item xs={12} sm={5}>
+              <div className="thumbnail-preview-wrapper img-thumbnail">
+                {
+                  room.thumbnail && room.thumbnail !== "" ?
+                  <img src={room.thumbnail} alt={room.alt_text || ""} />
+                  :
+                  <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                }
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <p>Short Description</p>
+              <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={room.short_description} onChange={(e) => setRoom({ ...room, short_description: e.editor.getData() })} />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <p>Detailed Content</p>
+
+              <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={room.post_content} onChange={(e) => setRoom({ ...room, post_content: e.editor.getData() })} />
+
+            </Grid>
+          </Grid>
+          <h4 className="mt-2">SEO Information</h4>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                required
+                id="meta_title"
+                name="meta_title"
+                label="Meta Title"
+                value={room.meta_title}
+                variant="outlined"
+                fullWidth
+                onChange={handleInputChange}
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                required
+                id="route"
+                name="route"
+                label="Permalink"
+                value={room.route}
+                variant="outlined"
+                fullWidth
+                onChange={handleRouteChange}
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <TextField
+                required
+                id="meta_description"
+                name="meta_description"
+                label="Meta Description"
+                value={room.meta_description}
+                variant="outlined"
+                fullWidth
+                onChange={handleInputChange}
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <TextField
+                required
+                id="schema_markup"
+                name="schema_markup"
+                label="Schema Markup"
+                value={room.schema_markup}
+                variant="outlined"
+                fullWidth
+                multiline
+                rows={4}
+                rowsMax={4}
+                onChange={handleInputChange}
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl component="fieldset">
+                <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={room.is_followed} onChange={(e) => {
+                  setRoom({ ...room, is_followed: !room.is_followed })
+                }}>
+                  <FormControlLabel value={true} control={<Radio />} label="Follow" />
+                  <FormControlLabel value={false} control={<Radio />} label="No Follow" />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl component="fieldset">
+                <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={room.is_indexed} onChange={(e) => {
+                  setRoom({ ...room, is_indexed: !room.is_indexed })
+                }}>
+                  <FormControlLabel value={true} control={<Radio />} label="Index" />
+                  <FormControlLabel value={false} control={<Radio />} label="No Index" />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <MaterialButton onClick={handleSubmit} style={{ float: 'right' }} variant="contained" color="primary" size="large">
+                Submit
+              </MaterialButton>
+            </Grid>
+          </Grid>
+        </CardBody>
+      </Card>
+      {isEdit &&
+        <Card>
+          <CardBody>
+            <h3>Room Images</h3>
+            <p><em>Please select multiple images and fill out the alt_text for each image.</em></p>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="meta_title"
-                  name="meta_title"
-                  label="Meta Title"
-                  value={room.meta_title}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="post_url"
-                  name="post_url"
-                  label="Permalink"
-                  value={room.post_url}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
               <Grid item xs={12} sm={12}>
-                <TextField
-                  required
-                  id="meta_description"
-                  name="meta_description"
-                  label="Meta Description"
-                  value={room.meta_description}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
+                {roomImages.length < 1 &&
+                  <Fragment>
+                    <input
+                      color="primary"
+                      accept="image/*"
+                      type="file"
+                      multiple
+                      onChange={handleMultipleFileChange}
+                      id="thumbnailMultiple"
+                      name="thumbnailMultiple"
+                      style={{ display: 'none', }}
+                      disabled={post_id > 0 ? false : true}
+                    />
+                    <label htmlFor="thumbnailMultiple">
+                      <Button
+                        variant="contained"
+                        component="span"
+                        className={classes.button}
+                        size="large"
+                        disabled={post_id > 0 ? false : true}
+                        color="primary"
+                        style={{ margin: 0, height: '100%', }}
+                      >
+                        <Image className={classes.extendedIcon} /> Select Multiple Images
+                    </Button>
+                    </label>
+                  </Fragment>
+                }
               </Grid>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  required
-                  id="schema_markup"
-                  name="schema_markup"
-                  label="Schema Markup"
-                  value={room.schema_markup}
-                  variant="outlined"
-                  fullWidth
-                  multiline
-                  rows={4}
-                  rowsMax={4}
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl component="fieldset">
-                  <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={room.is_followed} onChange={(e) => {
-                    setRoom({ ...room, is_followed: !room.is_followed })
-                  }}>
-                    <FormControlLabel value={true} control={<Radio />} label="Follow" />
-                    <FormControlLabel value={false} control={<Radio />} label="No Follow" />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl component="fieldset">
-                  <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={room.is_indexed} onChange={(e) => {
-                    setRoom({ ...room, is_indexed: !room.is_indexed })
-                  }}>
-                    <FormControlLabel value={true} control={<Radio />} label="Index" />
-                    <FormControlLabel value={false} control={<Radio />} label="No Index" />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <MaterialButton onClick={handleSubmit} style={{ float: 'right' }} variant="contained" color="primary" size="large">
-                  Submit
-                </MaterialButton>
-              </Grid>
+              {
+                roomImages?.map((x, i) => (
+                  <Fragment>
+                    <Grid item xs={12} sm={2}>
+                      <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        required
+                        id={`alt_tag${i}`}
+                        name="alt_tag"
+                        label="Image Alt Text"
+                        value={x.alt_tag}
+                        variant="outlined"
+                        fullWidth
+                        onChange={(e) => handleImageAltChange(e, i)}
+                        size="small"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <FormControl component="fieldset">
+                        <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
+                          setRoomImages(roomImages.map((y, ind) => {
+                            if (ind === i) {
+                              return { ...y, is360: !y.is360 }
+                            } else {
+                              return y
+                            }
+                          }))
+                        }}>
+                          <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
+                          <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
+                        </RadioGroup>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                      <MaterialButton variant="outlined" color="secondary" onClick={() => setRoomImages([...roomImages.filter((z, index) => index !== i)])}>
+                        <DeleteOutlined />
+                      </MaterialButton>
+                    </Grid>
+                  </Fragment>
+                ))
+              }
+              {
+                roomImages.length > 0 &&
+                <Grid item xs={12} sm={12}>
+                  <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
+                    Upload/Update Images
+                  </MaterialButton>
+                </Grid>
+              }
             </Grid>
           </CardBody>
         </Card>
-        {isEdit &&
-          <Card>
-            <CardBody>
-              <h3>Room Images</h3>
-              <p><em>Please select multiple images and fill out the alt_text for each image.</em></p>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={12}>
-                  {roomImages.length < 1 &&
-                    <Fragment>
-                      <input
-                        color="primary"
-                        accept="image/*"
-                        type="file"
-                        multiple
-                        onChange={handleMultipleFileChange}
-                        id="thumbnailMultiple"
-                        name="thumbnailMultiple"
-                        style={{ display: 'none', }}
-                        disabled={post_id > 0 ? false : true}
-                      />
-                      <label htmlFor="thumbnailMultiple">
-                        <Button
-                          variant="contained"
-                          component="span"
-                          className={classes.button}
-                          size="large"
-                          disabled={post_id > 0 ? false : true}
-                          color="primary"
-                          style={{ margin: 0, height: '100%', }}
-                        >
-                          <Image className={classes.extendedIcon} /> Select Multiple Images
-                    </Button>
-                      </label>
-                    </Fragment>
-                  }
-                </Grid>
-                {
-                  roomImages?.map((x, i) => (
-                    <Fragment>
-                      <Grid item xs={12} sm={2}>
-                        <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
-                      </Grid>
-                      <Grid item xs={12} sm={4}>
-                        <TextField
-                          required
-                          id={`alt_tag${i}`}
-                          name="alt_tag"
-                          label="Image Alt Text"
-                          value={x.alt_tag}
-                          variant="outlined"
-                          fullWidth
-                          onChange={(e) => handleImageAltChange(e, i)}
-                          size="small"
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={4}>
-                        <FormControl component="fieldset">
-                          <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
-                            setRoomImages(roomImages.map((y, ind) => {
-                              if (ind === i) {
-                                return { ...y, is360: !y.is360 }
-                              } else {
-                                return y
-                              }
-                            }))
-                          }}>
-                            <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
-                            <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
-                          </RadioGroup>
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={12} sm={2}>
-                        <MaterialButton variant="outlined" color="secondary" onClick={() => setRoomImages([...roomImages.filter((z, index) => index !== i)])}>
-                          <DeleteOutlined />
-                        </MaterialButton>
-                      </Grid>
-                    </Fragment>
-                  ))
-                }
-                {
-                  roomImages.length > 0 &&
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
-                      Upload/Update Images
-                  </MaterialButton>
-                  </Grid>
-                }
-              </Grid>
-            </CardBody>
-          </Card>
-        }
-      </div>
+      }
     </div>
   );
 })
