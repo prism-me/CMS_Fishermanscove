@@ -42,6 +42,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import API from "utils/http";
+import { func } from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,33 +73,53 @@ export default function UpdateHeader() {
   const [dragId, setDragId] = useState();
   const [headerContent, setHeaderContent] = useState({ ...initialObject })
   const [pages, setPages] = useState([])
+  const [pagesFilter, setPagesFilter] = useState([])
 
   useEffect(() => {
-    API.get('/get_widgets/header').then(response => {
-      if (response.status === 200) {
-        const { data } = response;
-        // debugger;
-        const menuItems = data.find(x => x.widget_name === "menuItems");
-        const contact = data.find(x => x.widget_name === "contact");
-        setHeaderContent({
-          menuItems: menuItems ? JSON.parse(menuItems?.items) : initialObject.menuItems,
-          menuId: menuItems ? menuItems.id : initialObject.menuId,
-          contact: contact ? JSON.parse(contact?.items) : initialObject.contact,
-          contactId: contact ? contact.id : initialObject.contactId,
-        })
-      }
-    }).then(() => {
-      API.get('/pages').then(response => {
-        setPages(response.data)
-      })
+    async function getData() {
 
-    })
+      let menuItems = await getWidgetData();
+
+      API.get('/pages').then(response => {
+        setPages(response.data);
+        let filteredArray = response.data?.filter(function (array_el) {
+          return menuItems.filter(function (menuItems_el) {
+            return menuItems_el.text == array_el.post_name;
+          }).length == 0
+        });
+        setPagesFilter(filteredArray)
+        // })
+
+      })
+    }
+    getData();
   }, [])
+
+  const getWidgetData = async () => {
+    const response = await API.get('/get_widgets/header');
+    if (response.status === 200) {
+      const { data } = response;
+      // debugger;
+      const menuItems = data.find(x => x.widget_name === "menuItems");
+      const contact = data.find(x => x.widget_name === "contact");
+      setHeaderContent({
+        menuItems: menuItems ? JSON.parse(menuItems?.items) : initialObject.menuItems,
+        menuId: menuItems ? menuItems.id : initialObject.menuId,
+        contact: contact ? JSON.parse(contact?.items) : initialObject.contact,
+        contactId: contact ? contact.id : initialObject.contactId,
+      })
+      return menuItems ? JSON.parse(menuItems?.items) : initialObject.menuItems;
+    } else {
+      return [];
+    }
+    // });
+  }
 
   const handleMenuItemChange = (e, index) => {
     let updatedItems = [...headerContent.menuItems];
     updatedItems[index][e.target.name] = e.target.value;
     setHeaderContent({ ...headerContent, menuItems: updatedItems });
+    setPagesFilter(pagesFilter.filter(x => x.post_name !== e.target.value))
   }
 
   const handleContactItemChange = (e) => {
@@ -147,14 +168,16 @@ export default function UpdateHeader() {
   };
 
   const handleSubmit = (section) => {
-    let id = section === "menuItems" ? headerContent.menuId : headerContent.contactId;
+    let updatedHeaderContent = { ...headerContent, menuItems: headerContent.menuItems.filter(x => x.text !== "") };
+    let id = section === "menuItems" ? updatedHeaderContent.menuId : updatedHeaderContent.contactId;
     API[id ? "put" : "post"](id ? `/widget/${id}` : `/widget`, {
       widget_type: 'header',
       widget_name: section,
-      items: headerContent[section]
+      items: updatedHeaderContent[section]
     }).then(response => {
       if (response.status === 200) {
         alert(response.data.message);
+        window.location.reload();
         // setHeaderContent({ ...initialObject }); //resetting the form
       }
     }).catch(err => alert("Something went wrong"));
@@ -191,35 +214,24 @@ export default function UpdateHeader() {
                       onClick={() => setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', temp_id: headerContent.menuItems.length + 1, order: headerContent.menuItems.length + 1 }] })}
                     >
                       Add a New Link
-                  </MaterialButton>
+                    </MaterialButton>
                     <Grid container spacing={2}>
                       {
                         headerContent?.menuItems?.sort((a, b) => a.order - b.order).map((x, index) => (
                           <React.Fragment key={x.temp_id}>
                             <Grid item xs={12} sm={4}>
-                              {/* <TextField
-                                required
-                                id={`text${x.id}`}
-                                name="text"
-                                label="Link Text"
-                                value={x.text}
-                                variant="outlined"
-                                fullWidth
-                                onChange={(e) => handleMenuItemChange(e, index)}
-                                size="small"
-                              /> */}
                               {
                                 pages?.length > 0 &&
                                 <Autocomplete
                                   id={`text${x.temp_id}`}
                                   name="text"
-                                  options={pages}
+                                  options={pagesFilter}
                                   size="small"
-                                  value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase())}
-                                  onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue.post_name, name: 'text' } }, index)}
+                                  value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase()) || { post_name: "" }}
+                                  onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, index)}
                                   getOptionLabel={(option) => option.post_name}
                                   // style={{ width: 300 }}
-                                  renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
+                                  renderInput={(params) => <TextField required {...params} label="Select Link Text" variant="outlined" />}
                                 />
                               }
                             </Grid>
@@ -228,7 +240,7 @@ export default function UpdateHeader() {
                                 required
                                 id={`address${x.temp_id}`}
                                 name="address"
-                                label="Link Address"
+                                label="URL"
                                 value={x.address}
                                 variant="outlined"
                                 fullWidth
@@ -250,6 +262,7 @@ export default function UpdateHeader() {
                         </MaterialButton>
                       </Grid>
                     </Grid>
+
                   </Grid>
                   <Grid item xs={12} sm={4}>
                     <p>Drag and Drop the items to Re-Arrange the order</p>
