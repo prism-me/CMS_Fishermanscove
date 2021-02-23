@@ -72,6 +72,7 @@ import AddAboutSeychelles from "views/SitePages/Pages/AboutSeychelles/Add";
 import FAQList from "views/FAQ/List";
 import GalleryList from "views/Gallery/List";
 import AddGallery from "views/Gallery/Add";
+import OfferDetail from "views/Offers/Details";
 
 const dashboardRoutes = [
   {
@@ -215,7 +216,7 @@ const dashboardRoutes = [
     name: "Offers",
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
-    component: OffersList,
+    component: OfferDetail,
     layout: "/admin",
     exact: true,
     hide: true

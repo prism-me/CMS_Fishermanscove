@@ -27,6 +27,8 @@ import { DeleteOutlined, Image } from "@material-ui/icons";
 import API from "utils/http";
 import { useParams } from "react-router-dom";
 
+const website_url = "http://fishermanscove-resort.com/";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -57,6 +59,7 @@ export default function AddOffer(props) {
     meta_description: '',
     schema_markup: '',
     post_url: '',
+    route: website_url,
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: "1,1",
@@ -90,6 +93,16 @@ export default function AddOffer(props) {
     updatedOffer[e.target.name] = e.target.value;
     setOffer(updatedOffer);
   }
+
+  const handleRouteChange = (e) => {
+    let updatedOffer = { ...offer };
+    let splitValues = e.target.value.split(website_url);
+    let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
+    updatedValue = updatedValue.replace(/--/g, '-')
+    updatedOffer[e.target.name] = website_url + updatedValue;
+    setOffer(updatedOffer);
+  }
+
   const handleFileChange = (e) => {
     let files = e.target.files || e.dataTransfer.files;
     if (!files.length)
@@ -188,86 +201,104 @@ export default function AddOffer(props) {
           </CardHeader>
           <CardBody>
             <h4 className="mt-1">General Information</h4>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  required
-                  id="post_name"
-                  name="post_name"
-                  label="Name"
-                  value={offer.post_name}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="alt_text"
-                  name="alt_text"
-                  label="Image Alt Text"
-                  value={offer.alt_text}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={6} sm={6}>
-                <Fragment>
-                  <input
-                    color="primary"
-                    accept="image/*"
-                    type="file"
-                    onChange={handleFileChange}
-                    id="thumbnail"
-                    name="thumbnail"
-                    style={{ display: 'none', }}
-                  />
-                  <label htmlFor="thumbnail">
-                    <Button
-                      variant="contained"
-                      component="span"
-                      className={classes.button}
-                      size="large"
-                      color="primary"
-                      style={{ margin: 0, height: '100%', }}
-                    >
-                      <Image className={classes.extendedIcon} /> Upload Featured Image
+            <Grid container spacing={2} style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid item xs={12} sm={7} >
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="post_name"
+                      name="post_name"
+                      label="Name"
+                      value={offer.post_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={7}>
+                    <TextField
+                      required
+                      id="alt_text"
+                      name="alt_text"
+                      label="Image Alt Text"
+                      value={offer.alt_text}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={6} sm={5}>
+                    <Fragment>
+                      <input
+                        color="primary"
+                        accept="image/*"
+                        type="file"
+                        onChange={handleFileChange}
+                        fullWidth
+                        id="thumbnail"
+                        name="thumbnail"
+                        style={{ display: 'none', width: '100%' }}
+                      />
+                      <label htmlFor="thumbnail" style={{ width: '100%', height: '100%', margin: 0 }}>
+                        <Button
+                          variant="contained"
+                          component="span"
+                          className={classes.button}
+                          size="sm"
+                          fullWidth
+                          disableElevation={true}
+                          color="primary"
+                          style={{ margin: 0, height: '100%', width: '100%' }}
+                        >
+                          <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
                     </Button>
-                  </label>
-                </Fragment>
-                {
-                  isEdit &&
-                  <Avatar src={offer.thumbnail} alt={offer.alt_text} className="float-left mr-4" />
-                }
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl variant="outlined"
-                  size="small" fullWidth className={classes.formControl}>
-                  <InputLabel id="category_id-label">Category</InputLabel>
-                  <Select
-                    labelId="category_id-label"
-                    id="category_id"
-                    name="category_id"
-                    value={offer.category_id}
-                    onChange={handleInputChange}
-                    label="Category"
-                    fullWidth
-                  >
-                    <MenuItem value={-1}>
-                      <em>Select</em>
-                    </MenuItem>
+                      </label>
+                    </Fragment>
                     {
-                      categories?.map(x => (
-                        <MenuItem value={x.id}>{x.category_name}</MenuItem>
-                      ))
+                      isEdit &&
+                      <Avatar src={offer.thumbnail} alt={offer.alt_text} className="float-left mr-4" />
                     }
-                  </Select>
-                </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <FormControl variant="outlined"
+                      size="small" fullWidth className={classes.formControl}>
+                      <InputLabel id="category_id-label">Category</InputLabel>
+                      <Select
+                        labelId="category_id-label"
+                        id="category_id"
+                        name="category_id"
+                        value={offer.category_id}
+                        onChange={handleInputChange}
+                        label="Category"
+                        fullWidth
+                      >
+                        <MenuItem value={-1}>
+                          <em>Select</em>
+                        </MenuItem>
+                        {
+                          categories?.map(x => (
+                            <MenuItem value={x.id}>{x.category_name}</MenuItem>
+                          ))
+                        }
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
               </Grid>
+              <Grid item xs={12} sm={5}>
+                <div className="thumbnail-preview-wrapper img-thumbnail">
+                  {
+                    offer.thumbnail && offer.thumbnail !== "" ?
+                      <img src={offer.thumbnail} alt={offer.alt_text || ""} />
+                      :
+                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                  }
+                </div>
+              </Grid>
+
               <Grid item xs={12} sm={12}>
                 <hr />
                 <h4>Short Description</h4>
@@ -300,13 +331,13 @@ export default function AddOffer(props) {
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
-                  id="post_url"
-                  name="post_url"
+                  id="route"
+                  name="route"
                   label="Permalink"
-                  value={offer.post_url}
+                  value={offer.route}
                   variant="outlined"
                   fullWidth
-                  onChange={handleInputChange}
+                  onChange={handleRouteChange}
                   size="small"
                 />
               </Grid>
