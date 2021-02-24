@@ -46,15 +46,23 @@ export default function Dashboard() {
   const classes = useStyles();
   const [stats, setStats] = useState({
     contacts_count: 0,
-    offers_count:0,
-    subscribers_count:0,
-    analytics_count:12
-  })
-  useEffect(()=>{
-    API.get('/dashboard_counts').then(response=>{
+    offers_count: 0,
+    subscribers_count: 0,
+    analytics_count: 12
+  });
+  const [recents, setRecents] = useState([]);
+
+  useEffect(() => {
+    API.get('/dashboard_counts').then(response => {
       if (response?.status === 200) {
-        setStats({...stats, ...response?.data?.data});
+        setStats({ ...stats, ...response?.data?.data });
       }
+    }).then(() => {
+      API.get('/recent_adds').then(response => {
+        if (response?.status === 200) {
+          setRecents(response.data)
+        }
+      })
     })
   }, [])
   return (
@@ -135,7 +143,7 @@ export default function Dashboard() {
           </Card>
         </GridItem>
       </GridContainer>
-      <GridContainer>
+      <GridContainer style={{display: 'none'}}>
         <GridItem xs={12} sm={12} md={4}>
           <Card chart>
             <CardHeader color="success">
@@ -213,7 +221,7 @@ export default function Dashboard() {
         <GridItem xs={12} sm={12} md={6}>
           <CustomTabs
             title="Tasks:"
-            headerColor="primary"
+            headerColor="success"
             tabs={[
               {
                 tabName: "Bugs",
@@ -253,23 +261,40 @@ export default function Dashboard() {
         </GridItem>
         <GridItem xs={12} sm={12} md={6}>
           <Card>
-            <CardHeader color="warning">
-              <h4 className="mb-0">Employees Stats</h4>
+            <CardHeader color="info">
+              <h4 className="mb-0">Recent Activity</h4>
               <p className={classes.cardCategoryWhite}>
-                New employees on 15th September, 2016
+                List of recent activitiies on CMS
               </p>
             </CardHeader>
             <CardBody>
-              <Table
-                tableHeaderColor="warning"
-                tableHead={["ID", "Name", "Salary", "Country"]}
-                tableData={[
-                  ["1", "Dakota Rice", "$36,738", "Niger"],
-                  ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                  ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
-                  ["4", "Philip Chaney", "$38,735", "Korea, South"]
-                ]}
-              />
+              <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
+                <p style={{ marginBottom: 0, width: '33.3%' }}>
+                  <b>Activity</b>
+                </p>
+                <p style={{ marginBottom: 0, width: '33.3%' }}>
+                  <b>Date</b>
+                </p>
+                <p style={{ marginBottom: 0, width: '33.3%' }}>
+                  <b>Time</b>
+                </p>
+              </div>
+              <hr />
+              {
+                recents?.map(x => (
+                  <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
+                    <p style={{ width: '33.3%' }}>
+                      {x.post_name}
+                    </p>
+                    <p style={{ width: '33.3%' }}>
+                      {new Date(x.updated_at).toLocaleDateString()}
+                    </p>
+                    <p style={{ width: '33.3%' }}>
+                      {new Date(x.updated_at).toLocaleTimeString()}
+                    </p>
+                  </div>
+                ))
+              }
             </CardBody>
           </Card>
         </GridItem>

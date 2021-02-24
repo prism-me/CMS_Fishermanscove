@@ -177,7 +177,7 @@ export default withRouter(function WeddingAdd(props) {
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={7}>
+                  <Grid item xs={12} sm={12}>
                     <TextField
                       required
                       id="alt_text"
@@ -190,42 +190,10 @@ export default withRouter(function WeddingAdd(props) {
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={6} sm={5}>
-                    <Fragment>
-                      <input
-                        color="primary"
-                        accept="image/*"
-                        type="file"
-                        onChange={handleFileChange}
-                        fullWidth
-                        id="thumbnail"
-                        name="thumbnail"
-                        style={{ display: 'none', width: '100%' }}
-                      />
-                      <label htmlFor="thumbnail" style={{ width: '100%', height: '100%', margin: 0 }}>
-                        <Button
-                          variant="contained"
-                          component="span"
-                          className={classes.button}
-                          size="sm"
-                          fullWidth
-                          disableElevation={true}
-                          color="primary"
-                          style={{ margin: 0, height: '100%', width: '100%' }}
-                        >
-                          <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
-                    </Button>
-                      </label>
-                    </Fragment>
-                    {
-                      isEdit &&
-                      <Avatar src={wedding.thumbnail} alt={wedding.alt_text} className="float-left mr-4" />
-                    }
-                  </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12} sm={5}>
-                <div className="thumbnail-preview-wrapper img-thumbnail">
+                <div className="thumbnail-preview-wrapper-small img-thumbnail">
                   {
                     wedding.thumbnail && wedding.thumbnail !== "" ?
                       <img src={wedding.thumbnail} alt={wedding.alt_text || ""} />
@@ -233,14 +201,43 @@ export default withRouter(function WeddingAdd(props) {
                       <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                   }
                 </div>
+                <Fragment>
+                  <input
+                    color="primary"
+                    accept="image/*"
+                    type="file"
+                    onChange={handleFileChange}
+                    fullWidth
+                    id="thumbnail"
+                    name="thumbnail"
+                    style={{ display: 'none', width: '100%' }}
+                  />
+                  <label htmlFor="thumbnail" style={{ width: '100%', height: '100%', margin: 0, marginTop: '.5rem' }}>
+                    <Button
+                      variant="contained"
+                      component="span"
+                      className={classes.button}
+                      // size="sm"
+                      fullWidth
+                      disableElevation={true}
+                      color="primary"
+                      style={{ margin: 0, height: '100%', width: '100%' }}
+                    >
+                      <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
+                    </Button>
+                  </label>
+                </Fragment>
               </Grid>
               <Grid item xs={12} sm={12}>
+                <hr />
+
                 <h4>Short Description</h4>
                 <CKEditor config={ckEditorConfig} onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} type="classic" data={wedding.short_description} onChange={(e) => setWedding({ ...wedding, short_description: e.editor.getData() })}
                 />
               </Grid>
 
               <Grid item xs={12} sm={12}>
+                <hr />
                 <h4>Detailed Content</h4>
 
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.post_content} onChange={(e) => setWedding({ ...wedding, post_content: e.editor.getData() })} />

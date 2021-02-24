@@ -38,7 +38,7 @@ API.interceptors.response.use((response) => {
   console.log("interceptor response ERROR", error)
   store.dispatch({ type: "HIDE_SPINNER" })
 
-  if (error.response.status === 401) {
+  if (error.response?.status === 401) {
     // history.replace("/authentication/logout");
   }
   return Promise.reject(error.message);

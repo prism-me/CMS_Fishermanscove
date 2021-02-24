@@ -202,7 +202,7 @@ export default withRouter(function AddRoom(props) {
           {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
         </CardHeader>
         <CardBody>
-          <h4 className="mt-1">General Information</h4>
+          <h4 className="mt-3">General Information</h4>
           <Grid container spacing={2} style={{ display: 'flex', alignItems: 'center' }}>
             <Grid item xs={12} sm={7} >
               <Grid container spacing={3}>
@@ -218,51 +218,6 @@ export default withRouter(function AddRoom(props) {
                     onChange={handleInputChange}
                     size="small"
                   />
-                </Grid>
-                <Grid item xs={12} sm={7}>
-                  <TextField
-                    required
-                    id="alt_text"
-                    name="alt_text"
-                    label="Image Alt Text"
-                    value={room.alt_text}
-                    variant="outlined"
-                    fullWidth
-                    onChange={handleInputChange}
-                    size="small"
-                  />
-                </Grid>
-                <Grid item xs={6} sm={5}>
-                  <Fragment>
-                    <input
-                      color="primary"
-                      accept="image/*"
-                      type="file"
-                      onChange={handleFileChange}
-                      fullWidth
-                      id="thumbnail"
-                      name="thumbnail"
-                      style={{ display: 'none', width: '100%' }}
-                    />
-                    <label htmlFor="thumbnail" style={{ width: '100%', height: '100%', margin: 0 }}>
-                      <Button
-                        variant="contained"
-                        component="span"
-                        className={classes.button}
-                        size="sm"
-                        fullWidth
-                        disableElevation={true}
-                        color="primary"
-                        style={{ margin: 0, height: '100%', width: '100%' }}
-                      >
-                        <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
-                    </Button>
-                    </label>
-                  </Fragment>
-                  {
-                    isEdit &&
-                    <Avatar src={room.thumbnail} alt={room.alt_text} className="float-left mr-4" />
-                  }
                 </Grid>
                 <Grid item xs={12} sm={12}>
                   <FormControl variant="outlined" size="small" fullWidth className={classes.formControl}>
@@ -297,6 +252,19 @@ export default withRouter(function AddRoom(props) {
                     size="small"
                   />
                 </Grid>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    required
+                    id="alt_text"
+                    name="alt_text"
+                    label="Image Alt Text"
+                    value={room.alt_text}
+                    variant="outlined"
+                    fullWidth
+                    onChange={handleInputChange}
+                    size="small"
+                  />
+                </Grid>
 
               </Grid>
             </Grid>
@@ -304,23 +272,53 @@ export default withRouter(function AddRoom(props) {
               <div className="thumbnail-preview-wrapper img-thumbnail">
                 {
                   room.thumbnail && room.thumbnail !== "" ?
-                  <img src={room.thumbnail} alt={room.alt_text || ""} />
-                  :
-                  <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                    <img src={room.thumbnail} alt={room.alt_text || ""} />
+                    :
+                    <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                 }
               </div>
+              <Fragment>
+                <input
+                  color="primary"
+                  accept="image/*"
+                  type="file"
+                  onChange={handleFileChange}
+                  fullWidth
+                  id="thumbnail"
+                  name="thumbnail"
+                  style={{ display: 'none', width: '100%' }}
+                />
+                <label htmlFor="thumbnail" style={{ width: '100%', height: '100%', margin: 0, marginTop: '.5rem' }}>
+                  <Button
+                    variant="contained"
+                    component="span"
+                    className={classes.button}
+                    // size="sm"
+                    fullWidth
+                    disableElevation={true}
+                    color="primary"
+                    style={{ margin: 0, height: '100%', width: '100%' }}
+                  >
+                    <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
+                    </Button>
+                </label>
+              </Fragment>
             </Grid>
             <Grid item xs={12} sm={12}>
-              <p>Short Description</p>
+              <hr />
+              <h4>Short Description</h4>
               <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={room.short_description} onChange={(e) => setRoom({ ...room, short_description: e.editor.getData() })} />
             </Grid>
             <Grid item xs={12} sm={12}>
-              <p>Detailed Content</p>
+              <hr />
+              <h4>Detailed Content</h4>
 
               <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={room.post_content} onChange={(e) => setRoom({ ...room, post_content: e.editor.getData() })} />
 
             </Grid>
           </Grid>
+          <hr />
+
           <h4 className="mt-2">SEO Information</h4>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
