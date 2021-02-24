@@ -91,6 +91,24 @@ class GalleryList extends Component {
     this.setState({ currentFiles: updatedFiles })
   }
 
+  handleMultipleSubmit = () => {
+    let imagesFormData = new FormData();
+    this.state.currentFiles.forEach(x => {
+      imagesFormData.append("images[]", x.image);
+      imagesFormData.append("data[]", JSON.stringify(x))
+    })
+    API.post(`/multiple_upload`, imagesFormData, {
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
+      }
+    }).then(response => {
+      if (response.status === 200) {
+        alert("Files Uploaded");
+        // this.setState({currentFiles: []})
+      }
+    }).catch(err => alert("Something went wrong"));
+
+  }
 
   render() {
     return (
@@ -172,9 +190,9 @@ class GalleryList extends Component {
                     {
                       this.state.currentFiles.length > 0 &&
                       <Grid item xs={12} sm={12}>
-                        <Button variant="contained" size="large" color="primary" style={{ float: 'right', marginTop: '1rem' }} >
+                        <Button variant="contained" size="large" color="primary" onClick={this.handleMultipleSubmit} style={{ float: 'right', marginTop: '1rem' }} >
                           Upload New Images
-                  </Button>
+                        </Button>
                       </Grid>
                     }
                   </Grid>
