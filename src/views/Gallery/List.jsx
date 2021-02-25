@@ -43,26 +43,6 @@ class GalleryList extends Component {
     ]
   }
 
-  componentDidMount() {
-    API.get('/offers').then(response => {
-      let rows = response.data;
-      this.setState({ rows })
-    })
-  }
-  handleCategorySubmit = (name) => {
-    if (!name || name === "") {
-      alert("Please enter category name");
-      return;
-    }
-    API.post('/offer-category', { name }).then(response => {
-      if (response?.status === 200) {
-        alert(response.data?.message)
-      }
-    }).catch(err => {
-      alert("Something went wrong.");
-    })
-  }
-
   handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this ?')) {
       API.delete(`/offers/${id}`).then(response => {
@@ -118,7 +98,7 @@ class GalleryList extends Component {
         <Box marginBottom={4}>
           <DropzoneArea
             // showPreviews={true}
-            dropzoneClass="dropzone-wrapper"
+            dropzoneClass="dropzone-wrapper-small"
             Icon={CloudUploadOutlined}
             showAlerts={false}
             acceptedFiles={['image/*']}

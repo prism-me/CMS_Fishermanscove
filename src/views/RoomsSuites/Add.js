@@ -18,7 +18,7 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 // import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel, Avatar } from "@material-ui/core";
+import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel, Avatar, Typography } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -30,6 +30,17 @@ import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
 
 // ClassicEditor.b
+
+
+import FormGroup from '@material-ui/core/FormGroup';
+import Checkbox from '@material-ui/core/Checkbox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import Favorite from '@material-ui/icons/Favorite';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import GalleryDialog from "views/Common/GalleryDialog";
+
+
 
 const website_url = "http://fishermanscove-resort.com/";
 
@@ -67,7 +78,8 @@ export default withRouter(function AddRoom(props) {
     route: website_url,
     is_followed: true,
     is_indexed: true,
-    is_indexed_or_is_followed: "0,0"
+    is_indexed_or_is_followed: "0,0",
+    images_list: []
   };
   const [room, setRoom] = useState({ ...initialObject })
 
@@ -75,6 +87,13 @@ export default withRouter(function AddRoom(props) {
   const [maskedRoute, setMaskedRoute] = useState(website_url);
   const [isEdit, setIsEdit] = useState(false);
   const [post_id, setPostId] = useState(-1);
+
+  const [imagesData, setImagesData] = useState([])
+  const [selectedImages, setSelectedImages] = useState([])
+  const [showGallery, setShowGallery] = useState(false)
+  const [isSingle, setIsSingle] = useState(false)
+  const [renderPreviews, setRenderPreviews] = useState(false)
+  const [thumbnailPreview, setThumbnailPreview] = useState('')
 
   useEffect(() => {
     if (id && id != null) {
@@ -86,7 +105,16 @@ export default withRouter(function AddRoom(props) {
         }
       })
     }
+    getGalleryImages();
   }, [])
+
+  const getGalleryImages = () => {
+    API.get(`/uploads`).then(response => {
+      if (response.status === 200) {
+        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
+      }
+    })
+  }
 
   const handleInputChange = (e) => {
     let updatedRoom = { ...room };
@@ -167,10 +195,54 @@ export default withRouter(function AddRoom(props) {
 
   }
 
+  const handleImageSelect = (e, index) => {
+    if (e.target.checked) {
+      if (isSingle && thumbnailPreview !== "") {
+        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+        return;
+      } else {
+        if (isSingle) {
+          setRoom({ ...room, thumbnail: imagesData[index].id })
+          setThumbnailPreview(imagesData[index].avatar)
+        } else {
+          setSelectedImages([...selectedImages, imagesData[index].id]);
+        }
+        let imagesDataUpdated = imagesData.map((x, i) => {
+          if (i === index) {
+            return {
+              ...x,
+              isChecked: true
+            }
+          } else {
+            return x
+          }
+        });
+        setImagesData(imagesDataUpdated);
+      }
+    } else {
+      if (isSingle) {
+        setRoom({ ...room, thumbnail: "" })
+        setThumbnailPreview("")
+      }else{
+        setSelectedImages(selectedImages.filter(x => x !== imagesData[index].id));
+      }
+      setImagesData(imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: false
+          }
+        } else {
+          return x
+        }
+      }));
+    }
+  }
 
   const handleSubmit = () => {
     let finalRoom = room;
-    finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed},${finalRoom.is_followed}`
+    finalRoom.images_list = JSON.stringify(selectedImages);
+    finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed},${finalRoom.is_followed}`;
     if (isEdit) {
       API.put(`/rooms/${id}`, finalRoom).then(response => {
         console.log(response);
@@ -271,14 +343,20 @@ export default withRouter(function AddRoom(props) {
             <Grid item xs={12} sm={5}>
               <div className="thumbnail-preview-wrapper img-thumbnail">
                 {
-                  room.thumbnail && room.thumbnail !== "" ?
-                    <img src={room.thumbnail} alt={room.alt_text || ""} />
+                  !isEdit ?
+                    thumbnailPreview && thumbnailPreview !== "" ?
+                      <img src={thumbnailPreview} alt={room.alt_text || ""} />
+                      :
+                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                     :
-                    <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                    room.thumbnail && room.thumbnail !== "" ?
+                      <img src={room.thumbnail} alt={room.alt_text || ""} />
+                      :
+                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                 }
               </div>
               <Fragment>
-                <input
+                {/* <input
                   color="primary"
                   accept="image/*"
                   type="file"
@@ -300,8 +378,21 @@ export default withRouter(function AddRoom(props) {
                     style={{ margin: 0, height: '100%', width: '100%' }}
                   >
                     <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
-                    </Button>
-                </label>
+                  </Button>
+                </label> */}
+                <MaterialButton
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Image />}
+                  className="mt-1"
+                  fullWidth
+                  onClick={() => {
+                    setIsSingle(true);
+                    setShowGallery(true);
+                  }}
+                >
+                  {isEdit ? 'Change' : 'Upload'} Featured Image
+                </MaterialButton>
               </Fragment>
             </Grid>
             <Grid item xs={12} sm={12}>
@@ -396,105 +487,60 @@ export default withRouter(function AddRoom(props) {
                 </RadioGroup>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={12}>
+            {/* <Grid item xs={12} sm={12}>
               <MaterialButton onClick={handleSubmit} style={{ float: 'right' }} variant="contained" color="primary" size="large">
                 Submit
               </MaterialButton>
-            </Grid>
+            </Grid> */}
           </Grid>
         </CardBody>
       </Card>
-      {isEdit &&
-        <Card>
-          <CardBody>
-            <h3>Room Images</h3>
-            <p><em>Please select multiple images and fill out the alt_text for each image.</em></p>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12}>
-                {roomImages.length < 1 &&
-                  <Fragment>
-                    <input
-                      color="primary"
-                      accept="image/*"
-                      type="file"
-                      multiple
-                      onChange={handleMultipleFileChange}
-                      id="thumbnailMultiple"
-                      name="thumbnailMultiple"
-                      style={{ display: 'none', }}
-                      disabled={post_id > 0 ? false : true}
-                    />
-                    <label htmlFor="thumbnailMultiple">
-                      <Button
-                        variant="contained"
-                        component="span"
-                        className={classes.button}
-                        size="large"
-                        disabled={post_id > 0 ? false : true}
-                        color="primary"
-                        style={{ margin: 0, height: '100%', }}
-                      >
-                        <Image className={classes.extendedIcon} /> Select Multiple Images
-                    </Button>
-                    </label>
-                  </Fragment>
-                }
-              </Grid>
-              {
-                roomImages?.map((x, i) => (
-                  <Fragment>
-                    <Grid item xs={12} sm={2}>
-                      <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <TextField
-                        required
-                        id={`alt_tag${i}`}
-                        name="alt_tag"
-                        label="Image Alt Text"
-                        value={x.alt_tag}
-                        variant="outlined"
-                        fullWidth
-                        onChange={(e) => handleImageAltChange(e, i)}
-                        size="small"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <FormControl component="fieldset">
-                        <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
-                          setRoomImages(roomImages.map((y, ind) => {
-                            if (ind === i) {
-                              return { ...y, is360: !y.is360 }
-                            } else {
-                              return y
-                            }
-                          }))
-                        }}>
-                          <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
-                          <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
-                        </RadioGroup>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={2}>
-                      <MaterialButton variant="outlined" color="secondary" onClick={() => setRoomImages([...roomImages.filter((z, index) => index !== i)])}>
-                        <DeleteOutlined />
-                      </MaterialButton>
-                    </Grid>
-                  </Fragment>
-                ))
-              }
-              {
-                roomImages.length > 0 &&
-                <Grid item xs={12} sm={12}>
-                  <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
-                    Upload/Update Images
-                  </MaterialButton>
-                </Grid>
-              }
+      {/* {isEdit && */}
+      <Card>
+        <CardBody>
+          <h3>Room Images</h3>
+          <p><em>Please select images from gallery.</em></p>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={12}>
+              <MaterialButton variant="outlined" color="primary" onClick={() => { setRenderPreviews(false); setIsSingle(false); setShowGallery(true) }}>
+                Select Gallery Images
+              </MaterialButton>
             </Grid>
-          </CardBody>
-        </Card>
-      }
+            {
+              renderPreviews && imagesData?.filter(function (array_el) {
+                return selectedImages.filter(function (menuItems_el) {
+                  return menuItems_el == array_el.id;
+                }).length !== 0
+              })?.map(x => (
+                <Grid item xs={12} sm={2}>
+                  <div style={{ height: '120px' }}>
+                    <img width="100%" src={x.avatar} className="img-thumbnail" alt="" style={{ height: '90%', objectFit: 'cover' }} />
+                    <p style={{ fontSize: '12px' }} className="text-center">
+                      {x.alt_tag}
+                    </p>
+                  </div>
+                </Grid>
+              ))
+            }
+            <div className="clearfix clear-fix"></div>
+            {/* GALLERY DIALOG BOX START */}
+            <GalleryDialog isSingle={isSingle} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
+              setShowGallery(false);
+              setRenderPreviews(true);
+            }} refreshGallery={getGalleryImages} data={imagesData} />
+            {/* GALLERY DIALOG BOX END */}
+          </Grid>
+        </CardBody>
+      </Card>
+
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={12}>
+          <MaterialButton onClick={handleSubmit} style={{ float: 'right' }} variant="contained" color="primary" size="large">
+            Submit
+          </MaterialButton>
+        </Grid>
+      </Grid>
+      {/* } */}
     </div>
   );
 })
