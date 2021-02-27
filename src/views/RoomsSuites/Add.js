@@ -32,17 +32,15 @@ import { useParams, withRouter } from "react-router-dom";
 // ClassicEditor.b
 
 
-import FormGroup from '@material-ui/core/FormGroup';
-import Checkbox from '@material-ui/core/Checkbox';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import Favorite from '@material-ui/icons/Favorite';
-import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+// import FormGroup from '@material-ui/core/FormGroup';
+// import Checkbox from '@material-ui/core/Checkbox';
+// import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+// import CheckBoxIcon from '@material-ui/icons/CheckBox';
+// import Favorite from '@material-ui/icons/Favorite';
+// import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import GalleryDialog from "views/Common/GalleryDialog";
 
-
-
-const website_url = "http://fishermanscove-resort.com/";
+const website_url = "http://fishermanscove-resort.com/rooms-inner/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -89,6 +87,7 @@ export default withRouter(function AddRoom(props) {
   const [post_id, setPostId] = useState(-1);
 
   const [imagesData, setImagesData] = useState([])
+  const [uploadsPreview, setUploadsPreview] = useState(null)
   const [selectedImages, setSelectedImages] = useState([])
   const [showGallery, setShowGallery] = useState(false)
   const [isSingle, setIsSingle] = useState(false)
@@ -102,6 +101,7 @@ export default withRouter(function AddRoom(props) {
       API.get(`/rooms/${id}/edit`).then(response => {
         if (response.status === 200) {
           setRoom({ ...room, ...response?.data?.content[0] })
+          setUploadsPreview(response.data?.uploads)
         }
       })
     }
@@ -349,37 +349,14 @@ export default withRouter(function AddRoom(props) {
                       :
                       <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                     :
-                    room.thumbnail && room.thumbnail !== "" ?
-                      <img src={room.thumbnail} alt={room.alt_text || ""} />
+                    typeof(room.thumbnail) === typeof(0) ?
+                    // room.thumbnail && room.thumbnail !== "" ?
+                      <img src={thumbnailPreview} alt={room.alt_text || ""} />
                       :
-                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                      <img src={room.thumbnail} alt={room.alt_text || ""} />
                 }
               </div>
               <Fragment>
-                {/* <input
-                  color="primary"
-                  accept="image/*"
-                  type="file"
-                  onChange={handleFileChange}
-                  fullWidth
-                  id="thumbnail"
-                  name="thumbnail"
-                  style={{ display: 'none', width: '100%' }}
-                />
-                <label htmlFor="thumbnail" style={{ width: '100%', height: '100%', margin: 0, marginTop: '.5rem' }}>
-                  <Button
-                    variant="contained"
-                    component="span"
-                    className={classes.button}
-                    // size="sm"
-                    fullWidth
-                    disableElevation={true}
-                    color="primary"
-                    style={{ margin: 0, height: '100%', width: '100%' }}
-                  >
-                    <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
-                  </Button>
-                </label> */}
                 <MaterialButton
                   variant="contained"
                   color="primary"
@@ -512,6 +489,18 @@ export default withRouter(function AddRoom(props) {
                   return menuItems_el == array_el.id;
                 }).length !== 0
               })?.map(x => (
+                <Grid item xs={12} sm={2}>
+                  <div style={{ height: '120px' }}>
+                    <img width="100%" src={x.avatar} className="img-thumbnail" alt="" style={{ height: '90%', objectFit: 'cover' }} />
+                    <p style={{ fontSize: '12px' }} className="text-center">
+                      {x.alt_tag}
+                    </p>
+                  </div>
+                </Grid>
+              ))
+            }
+            {
+              uploadsPreview && uploadsPreview?.map(x => (
                 <Grid item xs={12} sm={2}>
                   <div style={{ height: '120px' }}>
                     <img width="100%" src={x.avatar} className="img-thumbnail" alt="" style={{ height: '90%', objectFit: 'cover' }} />

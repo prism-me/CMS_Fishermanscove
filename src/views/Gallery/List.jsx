@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import API from 'utils/http';
 import { DropzoneArea } from 'material-ui-dropzone';
 import { Avatar, Box, Card, FormControl, FormControlLabel, Grid, Radio, RadioGroup, TextField, Button } from '@material-ui/core';
-import { CloudUploadOutlined, DeleteOutlined } from '@material-ui/icons';
+import { CloudUploadOutlined, DeleteOutlined, VisibilityOutlined, VisibilityRounded } from '@material-ui/icons';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -10,37 +10,28 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
 import CardBody from 'components/Card/CardBody';
+import Lightbox from 'react-image-lightbox';
+import UpdateGalleryDialog from './UpdateGalleryDialog';
 
 class GalleryList extends Component {
   state = {
+    showEditBox: false,
+    selectedImage: null,
+    mainSrc: null,
     currentFiles: [],
-    tileData: [
-      {
-        img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
-        title: 'Junior suite',
-        author: ''
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
-        title: 'Deluxe suite',
-        author: ''
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
-        title: 'Luxury Room',
-        author: ''
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
-        title: 'Luxury Room',
-        author: ''
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
-        title: 'Luxury Room',
-        author: ''
-      },
-    ]
+    gallery: [],
+    photoIndex: 0,
+  }
+
+  componentDidMount() {
+    API.get('/uploads').then(response => {
+      if (response.status === 200) {
+        this.setState({ gallery: response.data })
+        this.setState({ mainSrc: response.data[0] })
+      }
+    }).catch(err => {
+      alert("SORRY ! Couldn't fetch gallery images, please try again by refreshing the page.");
+    })
   }
 
   handleDelete = (id) => {
@@ -183,21 +174,27 @@ class GalleryList extends Component {
         }
         <Box>
           <GridList cellHeight={150} className="" spacing={10}>
-            {this.state.tileData.map((tile) => (
-              <GridListTile cols={0.4} key={tile.img}>
-                <img src={tile.img} alt={tile.title} />
+            {this.state.gallery.map((tile, index) => (
+              <GridListTile className="gallery-tile" cols={0.4} key={tile.id}>
+                <img src={tile.avatar} alt={tile.alt_tag} onClick={() => {
+                      this.setState({ selectedImage: this.state.gallery[index] });
+                      this.setState({ showEditBox: true });
+                    }} />
                 <GridListTileBar
-                  title={tile.title}
+                  title={<small>{tile.alt_tag}</small>}
                   // subtitle={<span>by: {tile.author}</span>}
                   actionIcon={
-                    <IconButton aria-label={`info about ${tile.title}`} className="">
-                      <InfoIcon style={{ color: 'rgba(255,255,255,0.6)' }} />
+                    <IconButton aria-label={`info about ${tile.alt_tag}`} className="">
+                      <VisibilityOutlined fontSize="small" style={{ color: 'rgba(255,255,255,0.8)' }} />
                     </IconButton>
                   }
                 />
               </GridListTile>
             ))}
           </GridList>
+        </Box>
+        <Box>
+          <UpdateGalleryDialog open={this.state.showEditBox} onClose={()=> this.setState({showEditBox: false})} image={this.state.selectedImage} />
         </Box>
       </div>
     );

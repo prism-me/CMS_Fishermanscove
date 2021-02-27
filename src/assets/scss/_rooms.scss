@@ -33,7 +33,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    p{
+    p {
         font-size: 18px !important;
     }
     svg {
@@ -50,7 +50,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    p{
+    p {
         font-size: 16px !important;
     }
     svg {
@@ -60,15 +60,15 @@
     }
 }
 
-.gallery-grid{
+.gallery-grid {
     .img-checked::after {
-        content: '✔';    
+        content: "✔";
         position: absolute;
-        top: 50%; 
+        top: 50%;
         left: 50%;
-        width: 90%; 
+        width: 90%;
         height: 150px;
-        transform: translate(-50%,-50%);
+        transform: translate(-50%, -50%);
         color: white;
         font-size: 40px;
         line-height: 150px;
@@ -76,6 +76,20 @@
         border: 2px solid white;
         // border-radius: 50%;
         background-color: rgba($color: #000000, $alpha: 0.5);
-      }
-      
+    }
+}
+
+.gallery-tile {
+    .MuiGridListTile-tile {
+        // overflow: hidden;
+        border-radius: 4px;
+        box-shadow: 0 0 2px #ddd;
+        background: white;
+        cursor: pointer;
+        &:hover {
+            border-radius: 4px;
+            box-shadow: 0 0 24px #ddd;
+            z-index: 1000;
+        }
+    }
 }
