@@ -81,6 +81,26 @@ class GalleryList extends Component {
 
   }
 
+  handleDelete = (id) => {
+       
+    API.delete(`/uploads/${id}`).then(response => {
+        if (response.status === 200) {
+            alert("Image delete successfully.");
+            // this.setState({currentFiles: []})
+        }
+    }).then(()=>{
+      API.get('/uploads').then(response => {
+        if (response.status === 200) {
+          this.setState({ gallery: response.data })
+          this.setState({ mainSrc: response.data[0] })
+        }
+      })
+    })
+    .catch(err => alert("Something went wrong"));
+
+}
+
+
   render() {
     return (
       <div>
@@ -184,7 +204,7 @@ class GalleryList extends Component {
                   title={<small>{tile.alt_tag}</small>}
                   // subtitle={<span>by: {tile.author}</span>}
                   actionIcon={
-                    <IconButton aria-label={`info about ${tile.alt_tag}`} className="">
+                    <IconButton aria-label={`info about ${tile.alt_tag}`} onClick={()=> this.handleDelete(tile.id)} className="">
                       <DeleteRounded fontSize="small" color="secondary" style={{ color: 'rgba(255,255,255,0.7)' }} />
                     </IconButton>
                   }
