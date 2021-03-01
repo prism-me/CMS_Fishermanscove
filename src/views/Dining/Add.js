@@ -33,8 +33,6 @@ const website_url = "http://fishermanscove-resort.com/dining-inner/";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    // width:'60%',
-    // margin:'auto'
   },
   paper: {
     padding: theme.spacing(2),
@@ -97,7 +95,6 @@ export default withRouter(function DiningAdd(props) {
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then(response => {
-      debugger;
       if (response.status === 200) {
         setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
       }

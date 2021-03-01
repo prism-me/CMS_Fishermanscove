@@ -16,14 +16,13 @@ import { Image } from "@material-ui/icons";
 import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
 import { ckEditorConfig } from "utils/data";
+import GalleryDialog from "views/Common/GalleryDialog";
 
 const website_url = "http://fishermanscove-resort.com/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    // width:'60%',
-    // margin:'auto'
   },
   paper: {
     padding: theme.spacing(2),
@@ -54,7 +53,8 @@ export default withRouter(function WeddingAdd(props) {
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: "1,1",
-    img_directory: "wedding"
+    img_directory: "wedding",
+    images_list: []
 
   }
   const [wedding, setWedding] = useState({ ...initialObject });
@@ -62,17 +62,35 @@ export default withRouter(function WeddingAdd(props) {
   const [isEdit, setIsEdit] = useState(false);
   const [post_id, setPostId] = useState(-1);
 
+  const [imagesData, setImagesData] = useState([])
+  const [uploadsPreview, setUploadsPreview] = useState(null)
+  const [selectedImages, setSelectedImages] = useState([])
+  const [showGallery, setShowGallery] = useState(false)
+  const [isSingle, setIsSingle] = useState(false)
+  const [renderPreviews, setRenderPreviews] = useState(false)
+  const [thumbnailPreview, setThumbnailPreview] = useState('')
+
   useEffect(() => {
     if (id && id != null) {
       setIsEdit(true);
       setPostId(id);
       API.get(`/wedding/${id}/edit`).then(response => {
         if (response.status === 200) {
-          setWedding({ ...wedding, ...response?.data?.wedding_details })
+          setWedding({ ...wedding, ...response?.data?.wedding_details });
+          setUploadsPreview(response.data?.uploads);
         }
       })
     }
+    getGalleryImages();
   }, [])
+
+  const getGalleryImages = () => {
+    API.get(`/uploads`).then(response => {
+      if (response.status === 200) {
+        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
+      }
+    })
+  }
 
   const handleInputChange = (e) => {
     let updatedWedding = { ...wedding };
@@ -102,9 +120,55 @@ export default withRouter(function WeddingAdd(props) {
     reader.readAsDataURL(file);
   }
 
+  const handleImageSelect = (e, index) => {
+    if (e.target.checked) {
+      if (isSingle && thumbnailPreview !== "") {
+        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+        return;
+      } else {
+        if (isSingle) {
+          setWedding({ ...wedding, thumbnail: imagesData[index].id })
+          setThumbnailPreview(imagesData[index].avatar)
+        } else {
+          setSelectedImages([...selectedImages, imagesData[index].id]);
+        }
+        let imagesDataUpdated = imagesData.map((x, i) => {
+          if (i === index) {
+            return {
+              ...x,
+              isChecked: true
+            }
+          } else {
+            return x
+          }
+        });
+        setImagesData(imagesDataUpdated);
+      }
+    } else {
+      if (isSingle) {
+        setWedding({ ...wedding, thumbnail: "" })
+        setThumbnailPreview("")
+      } else {
+        setSelectedImages(selectedImages.filter(x => x !== imagesData[index].id));
+      }
+      setImagesData(imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: false
+          }
+        } else {
+          return x
+        }
+      }));
+    }
+  }
+
   const handleSubmit = () => {
     let finalWedding = wedding;
-    finalWedding.is_indexed_or_is_followed = `${finalWedding.is_indexed},${finalWedding.is_followed}`
+    finalWedding.images_list = JSON.stringify(selectedImages);
+    finalWedding.is_indexed_or_is_followed = `${finalWedding.is_indexed},${finalWedding.is_followed}`;
+
     if (isEdit) {
       API.put(`/wedding/${id}`, finalWedding).then(response => {
         console.log(response);
@@ -195,37 +259,32 @@ export default withRouter(function WeddingAdd(props) {
               <Grid item xs={12} sm={5}>
                 <div className="thumbnail-preview-wrapper-small img-thumbnail">
                   {
-                    wedding.thumbnail && wedding.thumbnail !== "" ?
-                      <img src={wedding.thumbnail} alt={wedding.alt_text || ""} />
+                    !isEdit ?
+                      thumbnailPreview && thumbnailPreview !== "" ?
+                        <img src={thumbnailPreview} alt={wedding.alt_text || ""} />
+                        :
+                        <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                       :
-                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                      typeof (wedding.thumbnail) === typeof (0) ?
+                        <img src={thumbnailPreview} alt={wedding.alt_text || ""} />
+                        :
+                        <img src={wedding.thumbnail} alt={wedding.alt_text || ""} />
                   }
                 </div>
                 <Fragment>
-                  <input
+                  <MaterialButton
+                    variant="contained"
                     color="primary"
-                    accept="image/*"
-                    type="file"
-                    onChange={handleFileChange}
+                    startIcon={<Image />}
+                    className="mt-1"
                     fullWidth
-                    id="thumbnail"
-                    name="thumbnail"
-                    style={{ display: 'none', width: '100%' }}
-                  />
-                  <label htmlFor="thumbnail" style={{ width: '100%', height: '100%', margin: 0, marginTop: '.5rem' }}>
-                    <Button
-                      variant="contained"
-                      component="span"
-                      className={classes.button}
-                      // size="sm"
-                      fullWidth
-                      disableElevation={true}
-                      color="primary"
-                      style={{ margin: 0, height: '100%', width: '100%' }}
-                    >
-                      <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
-                    </Button>
-                  </label>
+                    onClick={() => {
+                      setIsSingle(true);
+                      setShowGallery(true);
+                    }}
+                  >
+                    {isEdit ? 'Change' : 'Upload'} Featured Image
+                  </MaterialButton>
                 </Fragment>
               </Grid>
               <Grid item xs={12} sm={12}>
@@ -249,7 +308,10 @@ export default withRouter(function WeddingAdd(props) {
                 </MaterialButton>
               </Grid>
             </Grid>
-
+            <GalleryDialog isSingle={isSingle} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
+              setShowGallery(false);
+              setRenderPreviews(true);
+            }} refreshGallery={getGalleryImages} data={imagesData} />
           </CardBody>
         </Card>
 
