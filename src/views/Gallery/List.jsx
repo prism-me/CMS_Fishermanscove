@@ -82,13 +82,12 @@ class GalleryList extends Component {
   }
 
   handleDelete = (id) => {
-       
     API.delete(`/uploads/${id}`).then(response => {
-        if (response.status === 200) {
-            alert("Image delete successfully.");
-            // this.setState({currentFiles: []})
-        }
-    }).then(()=>{
+      if (response.status === 200) {
+        alert("Image delete successfully.");
+        // this.setState({currentFiles: []})
+      }
+    }).then(() => {
       API.get('/uploads').then(response => {
         if (response.status === 200) {
           this.setState({ gallery: response.data })
@@ -96,10 +95,8 @@ class GalleryList extends Component {
         }
       })
     })
-    .catch(err => alert("Something went wrong"));
-
-}
-
+      .catch(err => alert("Something went wrong"));
+  }
 
   render() {
     return (
@@ -197,14 +194,14 @@ class GalleryList extends Component {
             {this.state.gallery.map((tile, index) => (
               <GridListTile className="gallery-tile" cols={0.4} key={tile.id}>
                 <img src={tile.avatar} alt={tile.alt_tag} onClick={() => {
-                      this.setState({ selectedImage: this.state.gallery[index] });
-                      this.setState({ showEditBox: true });
-                    }} />
+                  this.setState({ selectedImage: this.state.gallery[index] });
+                  this.setState({ showEditBox: true });
+                }} />
                 <GridListTileBar
                   title={<small>{tile.alt_tag}</small>}
                   // subtitle={<span>by: {tile.author}</span>}
                   actionIcon={
-                    <IconButton aria-label={`info about ${tile.alt_tag}`} onClick={()=> this.handleDelete(tile.id)} className="">
+                    <IconButton aria-label={`info about ${tile.alt_tag}`} onClick={() => this.handleDelete(tile.id)} className="">
                       <DeleteRounded fontSize="small" color="secondary" style={{ color: 'rgba(255,255,255,0.7)' }} />
                     </IconButton>
                   }
@@ -214,7 +211,7 @@ class GalleryList extends Component {
           </GridList>
         </Box>
         <Box>
-          <UpdateGalleryDialog open={this.state.showEditBox} onClose={()=> this.setState({showEditBox: false})} image={this.state.selectedImage} />
+          <UpdateGalleryDialog open={this.state.showEditBox} onClose={() => this.setState({ showEditBox: false })} image={this.state.selectedImage} />
         </Box>
       </div>
     );

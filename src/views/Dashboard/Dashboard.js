@@ -39,8 +39,8 @@ import {
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import API from "utils/http";
-import { Checkbox, IconButton } from "@material-ui/core";
-import { AddOutlined, Check, PlaylistAddOutlined } from "@material-ui/icons";
+import { Avatar, Checkbox, IconButton } from "@material-ui/core";
+import { AddOutlined, Check, DeleteOutlined, PlaylistAddOutlined } from "@material-ui/icons";
 import AddTodoDialog from "./AddTodoDialog";
 
 const useStyles = makeStyles(styles);
@@ -104,6 +104,22 @@ export default function Dashboard() {
       .catch(err => {
         alert("Something went wrong")
       })
+  }
+
+  const handleTaskDelete = (id) => {
+    API.delete(`/todo/${id}`).then(response => {
+      if (response.status === 200) {
+        // alert("Task deleted successfully.");
+        // this.setState({currentFiles: []})
+      }
+    }).then(() => {
+      API.get('/todo').then(response => {
+        if (response.status === 200) {
+          setTodos(response.data)
+        }
+      })
+    })
+      .catch(err => alert("Something went wrong"));
   }
 
   return (
@@ -271,33 +287,56 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <IconButton color="default" style={{ color: '#fff' }} onClick={() => setShowAddTodo(true)}>
-                    <AddOutlined fontSize="large" />
+                    <AddOutlined />
                   </IconButton>
                 </div>
               </div>
             </CardHeader>
-            <CardBody>
+            <CardBody style={{ height: '300px', overflowY: 'scroll' }}>
+              <div className="d-flex align-items-center img-thumbnail mb-2" style={{ justifyContent: 'space-between' }}>
+                <small style={{ width: '30%', marginBottom: 0, fontWeight: 500 }}>
+                  Task
+                    </small>
+                <small style={{ width: '30%', marginBottom: 0, fontWeight: 500 }}>
+                  Date
+                    </small>
+                <small style={{ width: '20%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
+                  Status
+                    </small>
+                <small style={{ width: '10%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
+                  Mark
+                    </small>
+                <small style={{ width: '10%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
+                  Delete
+                    </small>
+              </div>
               {
                 todos?.map((x, index) => (
                   <div className="d-flex align-items-center img-thumbnail mb-2" style={{ justifyContent: 'space-between' }}>
-                    <p style={{ width: '10%', marginBottom: 0 }}>
+                    <p title={x.todo_description} style={{ width: '30%', marginBottom: 0 }}>
+                      {x.todo_name}
+                    </p>
+                    <p style={{ width: '30%', marginBottom: 0 }}>
+                      {new Date(x.updated_at).toLocaleDateString()}
+                    </p>
+                    <p style={{ width: '20%', marginBottom: 0, textAlign: 'center' }}>
+                      {
+                        x.is_read == 0 ?
+                          <small className="badge badge-warning">pending</small>
+                          :
+                          <small className="badge badge-success">completed</small>
+                      }
+                    </p>
+                    <p style={{ width: '10%', marginBottom: 0, textAlign: 'center' }}>
                       <Checkbox
                         checked={x.is_read == 0 ? false : true}
                         tabIndex={-1}
                         onChange={(e) => handleStatusChange(e, index)}
-                      // onClick={() => handleToggle(value)}
-                      // checkedIcon={<Check />}
-                      // icon={<Check />}
+                        size="small"
                       />
                     </p>
-                    <p style={{ width: '30%', marginBottom: 0 }}>
-                      {x.todo_name}
-                    </p>
-                    <p style={{ width: '30%', marginBottom: 0 }}>
-                      {x.todo_description}
-                    </p>
-                    <p style={{ width: '30%', marginBottom: 0 }}>
-                      {new Date(x.updated_at).toLocaleDateString()}
+                    <p style={{ width: '10%', marginBottom: 0, textAlign: 'center' }}>
+                      <DeleteOutlined onClick={() => handleTaskDelete(x.id)} style={{ cursor: 'pointer' }} fontSize="small" color="secondary" />
                     </p>
                   </div>
                 ))
@@ -313,15 +352,18 @@ export default function Dashboard() {
                 List of recent activitiies on CMS
               </p>
             </CardHeader>
-            <CardBody>
+            <CardBody style={{ height: '300px', overflowY: 'scroll' }}>
               <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
-                <p style={{ marginBottom: 0, width: '33.3%' }}>
+                <p style={{ marginBottom: 0, width: '10%' }}>
+
+                </p>
+                <p style={{ marginBottom: 0, width: '30%' }}>
                   <b>Activity</b>
                 </p>
-                <p style={{ marginBottom: 0, width: '33.3%' }}>
+                <p style={{ marginBottom: 0, width: '30%' }}>
                   <b>Date</b>
                 </p>
-                <p style={{ marginBottom: 0, width: '33.3%' }}>
+                <p style={{ marginBottom: 0, width: '30%' }}>
                   <b>Time</b>
                 </p>
               </div>
@@ -329,13 +371,16 @@ export default function Dashboard() {
               {
                 recents?.map(x => (
                   <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
-                    <p style={{ width: '33.3%' }}>
+                    <p style={{ width: '10%' }}>
+                      <Avatar src={x.thumbnail} style={{ width: '30px', height: '30px' }} />
+                    </p>
+                    <p style={{ width: '30%' }}>
                       {x.post_name}
                     </p>
-                    <p style={{ width: '33.3%' }}>
+                    <p style={{ width: '30%' }}>
                       {new Date(x.updated_at).toLocaleDateString()}
                     </p>
-                    <p style={{ width: '33.3%' }}>
+                    <p style={{ width: '30%' }}>
                       {new Date(x.updated_at).toLocaleTimeString()}
                     </p>
                   </div>
