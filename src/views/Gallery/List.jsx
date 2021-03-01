@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import API from 'utils/http';
 import { DropzoneArea } from 'material-ui-dropzone';
 import { Avatar, Box, Card, FormControl, FormControlLabel, Grid, Radio, RadioGroup, TextField, Button } from '@material-ui/core';
-import { CloudUploadOutlined, DeleteOutlined, VisibilityOutlined, VisibilityRounded } from '@material-ui/icons';
+import { CloudUploadOutlined, DeleteForever, DeleteOutlined, DeleteRounded, VisibilityOutlined, VisibilityRounded } from '@material-ui/icons';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -185,7 +185,7 @@ class GalleryList extends Component {
                   // subtitle={<span>by: {tile.author}</span>}
                   actionIcon={
                     <IconButton aria-label={`info about ${tile.alt_tag}`} className="">
-                      <VisibilityOutlined fontSize="small" style={{ color: 'rgba(255,255,255,0.8)' }} />
+                      <DeleteRounded fontSize="small" color="secondary" style={{ color: 'rgba(255,255,255,0.7)' }} />
                     </IconButton>
                   }
                 />

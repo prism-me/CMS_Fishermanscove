@@ -26,8 +26,9 @@ import CKEditor from 'ckeditor4-react';
 import { DeleteOutlined, Image } from "@material-ui/icons";
 import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
+import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "http://fishermanscove-resort.com/";
+const website_url = "http://fishermanscove-resort.com/dining-inner/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,7 +64,8 @@ export default withRouter(function DiningAdd(props) {
     route: website_url,
     is_followed: true,
     is_indexed: true,
-    is_indexed_or_is_followed: '1,1'
+    is_indexed_or_is_followed: '1,1',
+    images_list: []
   }
   const [dining, setDining] = useState({ ...initialObject })
 
@@ -71,17 +73,37 @@ export default withRouter(function DiningAdd(props) {
   const [isEdit, setIsEdit] = useState(false);
   const [post_id, setPostId] = useState(-1);
 
+  const [imagesData, setImagesData] = useState([])
+  const [uploadsPreview, setUploadsPreview] = useState(null)
+  const [selectedImages, setSelectedImages] = useState([])
+  const [showGallery, setShowGallery] = useState(false)
+  const [isSingle, setIsSingle] = useState(false)
+  const [renderPreviews, setRenderPreviews] = useState(false)
+  const [thumbnailPreview, setThumbnailPreview] = useState('')
+
   useEffect(() => {
     if (id && id != null) {
       setIsEdit(true);
       setPostId(id);
       API.get(`/dining/${id}/edit`).then(response => {
         if (response.status === 200) {
-          setDining({ ...dining, ...response?.data?.category_details?.[0] })
+          setDining({ ...dining, ...response?.data?.category_details?.[0] });
+          setUploadsPreview(response.data?.uploads)
         }
       })
     }
+    getGalleryImages();
   }, [])
+
+  const getGalleryImages = () => {
+    API.get(`/uploads`).then(response => {
+      debugger;
+      if (response.status === 200) {
+        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
+      }
+    })
+  }
+
   const handleInputChange = (e) => {
     let updatedDining = { ...dining };
     updatedDining[e.target.name] = e.target.value;
@@ -160,8 +182,53 @@ export default withRouter(function DiningAdd(props) {
 
   }
 
+  const handleImageSelect = (e, index) => {
+    if (e.target.checked) {
+      if (isSingle && thumbnailPreview !== "") {
+        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+        return;
+      } else {
+        if (isSingle) {
+          setDining({ ...dining, thumbnail: imagesData[index].id })
+          setThumbnailPreview(imagesData[index].avatar)
+        } else {
+          setSelectedImages([...selectedImages, imagesData[index].id]);
+        }
+        let imagesDataUpdated = imagesData.map((x, i) => {
+          if (i === index) {
+            return {
+              ...x,
+              isChecked: true
+            }
+          } else {
+            return x
+          }
+        });
+        setImagesData(imagesDataUpdated);
+      }
+    } else {
+      if (isSingle) {
+        setDining({ ...dining, thumbnail: "" })
+        setThumbnailPreview("")
+      } else {
+        setSelectedImages(selectedImages.filter(x => x !== imagesData[index].id));
+      }
+      setImagesData(imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: false
+          }
+        } else {
+          return x
+        }
+      }));
+    }
+  }
+
   const handleSubmit = () => {
     let finalDining = dining;
+    finalDining.images_list = JSON.stringify(selectedImages);
     finalDining.is_indexed_or_is_followed = `${finalDining.is_indexed},${finalDining.is_followed}`
 
     if (isEdit) {
@@ -230,37 +297,33 @@ export default withRouter(function DiningAdd(props) {
               <Grid item xs={12} sm={5}>
                 <div className="thumbnail-preview-wrapper-small img-thumbnail">
                   {
-                    dining.thumbnail && dining.thumbnail !== "" ?
-                      <img src={dining.thumbnail} alt={dining.alt_text || ""} />
+                    !isEdit ?
+                      thumbnailPreview && thumbnailPreview !== "" ?
+                        <img src={thumbnailPreview} alt={dining.alt_text || ""} />
+                        :
+                        <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                       :
-                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                      typeof (dining.thumbnail) === typeof (0) ?
+                        // dining.thumbnail && dining.thumbnail !== "" ?
+                        <img src={thumbnailPreview} alt={dining.alt_text || ""} />
+                        :
+                        <img src={dining.thumbnail} alt={dining.alt_text || ""} />
                   }
                 </div>
                 <Fragment>
-                  <input
+                  <MaterialButton
+                    variant="contained"
                     color="primary"
-                    accept="image/*"
-                    type="file"
-                    onChange={handleFileChange}
+                    startIcon={<Image />}
+                    className="mt-1"
                     fullWidth
-                    id="thumbnail"
-                    name="thumbnail"
-                    style={{ display: 'none', width: '100%' }}
-                  />
-                  <label htmlFor="thumbnail" style={{ width: '100%', height: '100%', margin: 0, marginTop: '.5rem' }}>
-                    <Button
-                      variant="contained"
-                      component="span"
-                      className={classes.button}
-                      // size="sm"
-                      fullWidth
-                      disableElevation={true}
-                      color="primary"
-                      style={{ margin: 0, height: '100%', width: '100%' }}
-                    >
-                      <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
-                    </Button>
-                  </label>
+                    onClick={() => {
+                      setIsSingle(true);
+                      setShowGallery(true);
+                    }}
+                  >
+                    {isEdit ? 'Change' : 'Upload'} Featured Image
+                </MaterialButton>
                 </Fragment>
               </Grid>
 
@@ -355,105 +418,66 @@ export default withRouter(function DiningAdd(props) {
                   </RadioGroup>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} sm={12}>
-                <MaterialButton onClick={handleSubmit} style={{ float: 'right' }} variant="contained" color="primary" size="large">
-                  Submit
-                </MaterialButton>
-              </Grid>
             </Grid>
           </CardBody>
         </Card>
-        {isEdit &&
-          <Card>
-            <CardBody>
-              <h3>Dining Images</h3>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={12}>
-                  {diningImages.length < 1 &&
-
-                    <Fragment>
-                      <input
-                        color="primary"
-                        accept="image/*"
-                        type="file"
-                        multiple
-                        onChange={handleMultipleFileChange}
-                        id="thumbnailMultiple"
-                        name="thumbnailMultiple"
-                        disabled={post_id > 0 ? false : true}
-                        style={{ display: 'none', }}
-                      />
-                      <label htmlFor="thumbnailMultiple">
-                        <Button
-                          variant="contained"
-                          component="span"
-                          className={classes.button}
-                          size="large"
-                          color="primary"
-                          disabled={post_id > 0 ? false : true}
-                          style={{ margin: 0, height: '100%', }}
-                        >
-                          <Image className={classes.extendedIcon} /> Select Multiple Images
-                    </Button>
-                      </label>
-                    </Fragment>
-                  }
-                </Grid>
-                {
-                  diningImages?.map((x, i) => (
-                    <Fragment>
-                      <Grid item xs={12} sm={2}>
-                        <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
-                      </Grid>
-                      <Grid item xs={12} sm={4}>
-                        <TextField
-                          required
-                          id={`alt_tag${i}`}
-                          name="alt_tag"
-                          label="Image Alt Text"
-                          value={x.alt_tag}
-                          variant="outlined"
-                          fullWidth
-                          onChange={(e) => handleImageAltChange(e, i)}
-                          size="small"
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={4}>
-                        <FormControl component="fieldset">
-                          <RadioGroup aria-label="is360" row defaultChecked name="is360" value={x.is360} onChange={(e) => {
-                            setDiningImages(diningImages.map((y, ind) => {
-                              if (ind === i) {
-                                return { ...y, is360: !y.is360 }
-                              } else {
-                                return y
-                              }
-                            }))
-                          }}>
-                            <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
-                            <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
-                          </RadioGroup>
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={12} sm={2}>
-                        <MaterialButton variant="outlined" color="secondary" onClick={() => setDiningImages([...diningImages.filter((z, index) => index !== i)])}>
-                          <DeleteOutlined />
-                        </MaterialButton>
-                      </Grid>
-                    </Fragment>
-                  ))
-                }
-                {
-                  diningImages.length > 0 &&
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton variant="contained" size="large" color="primary" style={{ float: 'right' }} onClick={handleMultipleSubmit}>
-                      Upload/Update Images
-                  </MaterialButton>
-                  </Grid>
-                }
+        {/* {isEdit && */}
+        <Card>
+          <CardBody>
+            <h3>Dining Images</h3>
+            <p><em>Please select images from gallery.</em></p>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={12}>
+                <MaterialButton variant="outlined" color="primary" onClick={() => { setRenderPreviews(false); setIsSingle(false); setShowGallery(true) }}>
+                  Select Gallery Images
+              </MaterialButton>
               </Grid>
-            </CardBody>
-          </Card>
-        }
+              {
+                renderPreviews && imagesData?.filter(function (array_el) {
+                  return selectedImages.filter(function (menuItems_el) {
+                    return menuItems_el == array_el.id;
+                  }).length !== 0
+                })?.map(x => (
+                  <Grid item xs={12} sm={2}>
+                    <div style={{ height: '120px' }}>
+                      <img width="100%" src={x.avatar} className="img-thumbnail" alt="" style={{ height: '90%', objectFit: 'cover' }} />
+                      <p style={{ fontSize: '12px' }} className="text-center">
+                        {x.alt_tag}
+                      </p>
+                    </div>
+                  </Grid>
+                ))
+              }
+              {
+                uploadsPreview && uploadsPreview?.map(x => (
+                  <Grid item xs={12} sm={2}>
+                    <div style={{ height: '120px' }}>
+                      <img width="100%" src={x.avatar} className="img-thumbnail" alt="" style={{ height: '90%', objectFit: 'cover' }} />
+                      <p style={{ fontSize: '12px' }} className="text-center">
+                        {x.alt_tag}
+                      </p>
+                    </div>
+                  </Grid>
+                ))
+              }
+              <div className="clearfix clear-fix"></div>
+              {/* GALLERY DIALOG BOX START */}
+              <GalleryDialog isSingle={isSingle} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
+                setShowGallery(false);
+                setRenderPreviews(true);
+              }} refreshGallery={getGalleryImages} data={imagesData} />
+              {/* GALLERY DIALOG BOX END */}
+            </Grid>
+          </CardBody>
+        </Card>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={12}>
+            <MaterialButton onClick={handleSubmit} style={{ float: 'right' }} variant="contained" color="primary" size="large">
+              Submit
+          </MaterialButton>
+          </Grid>
+        </Grid>
+        {/* } */}
       </div>
     </div>
   );

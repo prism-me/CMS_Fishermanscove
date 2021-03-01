@@ -245,7 +245,6 @@ export default withRouter(function AddRoom(props) {
     finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed},${finalRoom.is_followed}`;
     if (isEdit) {
       API.put(`/rooms/${id}`, finalRoom).then(response => {
-        console.log(response);
         if (response.status === 200) {
           alert("Record Updated")
           setRoom({ ...initialObject }); //clear all fields
@@ -255,7 +254,6 @@ export default withRouter(function AddRoom(props) {
     }
     else {
       API.post('/rooms', finalRoom).then(response => {
-        console.log(response);
         if (response.status === 200) {
           setPostId(response.data?.post_id);
           alert('Record Updated');

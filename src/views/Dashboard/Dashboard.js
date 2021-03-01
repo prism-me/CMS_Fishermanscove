@@ -39,6 +39,9 @@ import {
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import API from "utils/http";
+import { Checkbox, IconButton } from "@material-ui/core";
+import { AddOutlined, Check, PlaylistAddOutlined } from "@material-ui/icons";
+import AddTodoDialog from "./AddTodoDialog";
 
 const useStyles = makeStyles(styles);
 
@@ -51,6 +54,8 @@ export default function Dashboard() {
     analytics_count: 12
   });
   const [recents, setRecents] = useState([]);
+  const [todos, setTodos] = useState([]);
+  const [showAddTodo, setShowAddTodo] = useState(false);
 
   useEffect(() => {
     API.get('/dashboard_counts').then(response => {
@@ -62,9 +67,45 @@ export default function Dashboard() {
         if (response?.status === 200) {
           setRecents(response.data)
         }
+      }).then(() => {
+        API.get('/todo').then(response => {
+          if (response?.status === 200) {
+            setTodos(response.data)
+          }
+        })
       })
     })
   }, [])
+
+  const getTodos = () => {
+    API.get('/todo').then(response => {
+      if (response?.status === 200) {
+        setTodos(response.data)
+      }
+    })
+  }
+
+  const handleStatusChange = (e, index) => {
+    let updatedTodo = todos[index];
+    updatedTodo.is_read = e.target.checked;
+    API.put(`/todo/${todos[index].id}`, updatedTodo)
+      .then(response => {
+        if (response?.status === 200) {
+          // alert("Updated")
+        }
+      })
+      .then(() => {
+        API.get('/todo').then(response => {
+          if (response?.status === 200) {
+            setTodos(response.data)
+          }
+        })
+      })
+      .catch(err => {
+        alert("Something went wrong")
+      })
+  }
+
   return (
     <div>
       <GridContainer>
@@ -143,7 +184,7 @@ export default function Dashboard() {
           </Card>
         </GridItem>
       </GridContainer>
-      <GridContainer style={{display: 'none'}}>
+      <GridContainer style={{ display: 'none' }}>
         <GridItem xs={12} sm={12} md={4}>
           <Card chart>
             <CardHeader color="success">
@@ -219,45 +260,50 @@ export default function Dashboard() {
       </GridContainer>
       <GridContainer>
         <GridItem xs={12} sm={12} md={6}>
-          <CustomTabs
-            title="Tasks:"
-            headerColor="success"
-            tabs={[
+          <Card>
+            <CardHeader color="success">
+              <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
+                <div>
+                  <h4 className="mb-0">Todo List</h4>
+                  <p className={classes.cardCategoryWhite}>
+                    List of all tasks and todos.
+                  </p>
+                </div>
+                <div>
+                  <IconButton color="default" style={{ color: '#fff' }} onClick={() => setShowAddTodo(true)}>
+                    <AddOutlined fontSize="large" />
+                  </IconButton>
+                </div>
+              </div>
+            </CardHeader>
+            <CardBody>
               {
-                tabName: "Bugs",
-                tabIcon: BugReport,
-                tabContent: (
-                  <Tasks
-                    checkedIndexes={[0, 3]}
-                    tasksIndexes={[0, 1, 2, 3]}
-                    tasks={bugs}
-                  />
-                )
-              },
-              {
-                tabName: "Website",
-                tabIcon: Code,
-                tabContent: (
-                  <Tasks
-                    checkedIndexes={[0]}
-                    tasksIndexes={[0, 1]}
-                    tasks={website}
-                  />
-                )
-              },
-              {
-                tabName: "Server",
-                tabIcon: Cloud,
-                tabContent: (
-                  <Tasks
-                    checkedIndexes={[1]}
-                    tasksIndexes={[0, 1, 2]}
-                    tasks={server}
-                  />
-                )
+                todos?.map((x, index) => (
+                  <div className="d-flex align-items-center img-thumbnail mb-2" style={{ justifyContent: 'space-between' }}>
+                    <p style={{ width: '10%', marginBottom: 0 }}>
+                      <Checkbox
+                        checked={x.is_read == 0 ? false : true}
+                        tabIndex={-1}
+                        onChange={(e) => handleStatusChange(e, index)}
+                      // onClick={() => handleToggle(value)}
+                      // checkedIcon={<Check />}
+                      // icon={<Check />}
+                      />
+                    </p>
+                    <p style={{ width: '30%', marginBottom: 0 }}>
+                      {x.todo_name}
+                    </p>
+                    <p style={{ width: '30%', marginBottom: 0 }}>
+                      {x.todo_description}
+                    </p>
+                    <p style={{ width: '30%', marginBottom: 0 }}>
+                      {new Date(x.updated_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))
               }
-            ]}
-          />
+            </CardBody>
+          </Card>
         </GridItem>
         <GridItem xs={12} sm={12} md={6}>
           <Card>
@@ -299,6 +345,7 @@ export default function Dashboard() {
           </Card>
         </GridItem>
       </GridContainer>
+      <AddTodoDialog success={() => { getTodos(); setShowAddTodo(false) }} onClose={() => setShowAddTodo(false)} open={showAddTodo} />
     </div>
   );
 }

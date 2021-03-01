@@ -33,17 +33,10 @@ export default function UpdateGalleryDialog(props) {
         set_avatar(files[0]);
     }
 
-    const createImage = (file) => {
-        let reader = new FileReader();
-        reader.onload = (e) => {
-            set_avatar(e.target.result);
-        };
-        reader.readAsDataURL(file);
-    }
-
     const handleSubmit = () => {
         let imagesFormData = new FormData();
         imagesFormData.append("images[]", avatar);
+        imagesFormData.append("id", id);
         imagesFormData.append("data[]", JSON.stringify({
             alt_tag,
             is360
@@ -51,7 +44,7 @@ export default function UpdateGalleryDialog(props) {
 
         // props.onClose();
         // return;
-        API.put(`/uploads/${id}`, imagesFormData, {
+        API.post(`/upload_edit`, imagesFormData, {
             headers: {
                 'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
             }
@@ -69,58 +62,61 @@ export default function UpdateGalleryDialog(props) {
             <Dialog open={props.open} onClose={props.handleClose} maxWidth="sm" fullWidth aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Update Gallery Image</DialogTitle>
                 <DialogContent>
-                    <Grid container spacing={5}>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                id="alt_tag"
-                                label="Alternate Text"
-                                type="text"
-                                fullWidth
-                                size="small"
-                                value={alt_tag}
-                                onChange={(e) => set_alt_tag(e.target.value)}
-                                variant="outlined"
-                            />
-                            <FormControl style={{ marginTop: '1rem' }} component="fieldset">
-                                <RadioGroup aria-label="is360" row defaultChecked name="is360" value={is360} onChange={(e) => { }}>
-                                    <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
-                                    <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
-                                </RadioGroup>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <div style={{
-                                width: '100%', height: '180px'
-                            }}>
-                                <img width="100%" style={{ height: '100%', objectFit: 'cover' }} className="img-thumbnail" src={typeof(avatar) === typeof("") ? avatar : URL.createObjectURL(avatar) } alt="" />
-                            </div>
-                            <Fragment>
-                                <input
-                                    color="primary"
-                                    accept="image/*"
-                                    type="file"
-                                    onChange={handleFileChange}
+                    <form type="post" encType="multipart/form-data">
+
+                        <Grid container spacing={5}>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    id="alt_tag"
+                                    label="Alternate Text"
+                                    type="text"
                                     fullWidth
-                                    id="thumbnail"
-                                    name="thumbnail"
-                                    style={{ display: 'none', width: '100%' }}
+                                    size="small"
+                                    value={alt_tag}
+                                    onChange={(e) => set_alt_tag(e.target.value)}
+                                    variant="outlined"
                                 />
-                                <label htmlFor="thumbnail" style={{ width: '100%', margin: 0, marginTop: '.5rem' }}>
-                                    <Button
-                                        variant="outlined"
-                                        component="span"
-                                        // size="sm"
-                                        fullWidth
-                                        disableElevation={true}
+                                <FormControl style={{ marginTop: '1rem' }} component="fieldset">
+                                    <RadioGroup aria-label="is360" row defaultChecked name="is360" value={is360} onChange={(e) => { }}>
+                                        <FormControlLabel value={false} control={<Radio />} label="Regular/Slider" />
+                                        <FormControlLabel value={true} control={<Radio />} label={<span>360<sup>o</sup> View</span>} />
+                                    </RadioGroup>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <div style={{
+                                    width: '100%', height: '180px'
+                                }}>
+                                    <img width="100%" style={{ height: '100%', objectFit: 'cover' }} className="img-thumbnail" src={typeof (avatar) === typeof ("") ? avatar : URL.createObjectURL(avatar)} alt="" />
+                                </div>
+                                <Fragment>
+                                    <input
                                         color="primary"
-                                        style={{ margin: 0, width: '100%' }}
-                                    >
-                                        <Image /> Upload Featured Image
+                                        accept="image/*"
+                                        type="file"
+                                        onChange={handleFileChange}
+                                        fullWidth
+                                        id="thumbnail"
+                                        name="thumbnail"
+                                        style={{ display: 'none', width: '100%' }}
+                                    />
+                                    <label htmlFor="thumbnail" style={{ width: '100%', margin: 0, marginTop: '.5rem' }}>
+                                        <Button
+                                            variant="outlined"
+                                            component="span"
+                                            // size="sm"
+                                            fullWidth
+                                            disableElevation={true}
+                                            color="primary"
+                                            style={{ margin: 0, width: '100%' }}
+                                        >
+                                            <Image /> Upload Featured Image
                                     </Button>
-                                </label>
-                            </Fragment>
+                                    </label>
+                                </Fragment>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    </form>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={props.onClose} variant="contained" color="secondary">
