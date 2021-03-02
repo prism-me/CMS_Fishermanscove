@@ -100,7 +100,15 @@ export default function AddWedding() {
   const getSEOInfo = () => {
     API.get(`/meta`).then(response => {
       if (response.status === 200) {
-        setSeoInfo(response.data?.find(x => x.post_id == pageId) || seoInfo);
+        let seoInfoData = response.data?.find(x => x.post_id == pageId);
+        if (seoInfoData) {
+          seoInfoData.is_indexed = JSON.parse(seoInfoData.is_indexed)
+          seoInfoData.is_followed = JSON.parse(seoInfoData.is_followed)
+        }
+        else{
+          seoInfoData = seoInfo
+        }
+        setSeoInfo(seoInfoData);
       }
     })
   }

@@ -18,7 +18,7 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
+import { FormControl, FormControlLabel, Radio, RadioGroup, Select, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -32,6 +32,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
 import GalleryDialog from "views/Common/GalleryDialog";
+
+const website_url = "http://fishermanscove-resort.com/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,6 +66,18 @@ export default function AddSpaWellness() {
     },
   })
 
+  const [seoInfo, setSeoInfo] = useState({
+    id: 0,
+    post_id: pageId || 0,
+    meta_title: '',
+    meta_description: '',
+    route: website_url,
+    schema_markup: '',
+    is_followed: true,
+    is_indexed: true,
+    is_indexed_or_is_followed: '1,1',
+  })
+
   const [currentSection, setCurrentSection] = useState("")
 
   const [imagesData, setImagesData] = useState([])
@@ -87,12 +101,29 @@ export default function AddSpaWellness() {
       }
     });
     getGalleryImages();
+    getSEOInfo();
   }, [])
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then(response => {
       if (response.status === 200) {
         setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
+      }
+    })
+  }
+
+  const getSEOInfo = () => {
+    API.get(`/meta`).then(response => {
+      if (response.status === 200) {
+        let seoInfoData = response.data?.find(x => x.post_id == pageId);
+        if (seoInfoData) {
+          seoInfoData.is_indexed = JSON.parse(seoInfoData.is_indexed)
+          seoInfoData.is_followed = JSON.parse(seoInfoData.is_followed)
+        }
+        else {
+          seoInfoData = seoInfo
+        }
+        setSeoInfo(seoInfoData);
       }
     })
   }
@@ -139,6 +170,41 @@ export default function AddSpaWellness() {
           return x
         }
       }));
+    }
+  }
+
+  const handleSEOInputChange = (e) => {
+    let updatedSeoInfo = { ...seoInfo };
+    updatedSeoInfo[e.target.name] = e.target.value;
+    setSeoInfo(updatedSeoInfo);
+  }
+
+  const handleRouteChange = (e) => {
+    let updatedSeoInfo = { ...seoInfo };
+    let splitValues = e.target.value.split(website_url);
+    let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
+    updatedValue = updatedValue.replace(/--/g, '-')
+    updatedSeoInfo[e.target.name] = website_url + updatedValue;
+    setSeoInfo(updatedSeoInfo);
+  }
+
+  const handleSEOSubmit = () => {
+    let updatedSeoInfo = seoInfo;
+    updatedSeoInfo.is_indexed_or_is_followed = `${updatedSeoInfo.is_indexed},${updatedSeoInfo.is_followed}`;
+
+    if (updatedSeoInfo.id > 0) {
+      API.put(`/meta/${pageId}`, updatedSeoInfo).then(response => {
+        if (response.status === 200) {
+          alert("Section updated successfully !");
+        }
+      }).catch(err => console.log(err))
+    } else {
+      API.post(`/meta`, updatedSeoInfo).then(response => {
+        if (response.status === 200) {
+          alert("Section updated successfully !");
+        }
+      }).catch(err => console.log(err))
+
     }
   }
 
@@ -238,6 +304,100 @@ export default function AddSpaWellness() {
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     <MaterialButton onClick={() => handleSubmit(spaWellness.intro.id, "intro")} size="large" color="primary" variant="contained">
+                      Update Section
+                    </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>SEO Information</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      required
+                      id="meta_title"
+                      name="meta_title"
+                      label="Meta Title"
+                      value={seoInfo.meta_title}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      required
+                      id="route"
+                      name="route"
+                      label="Permalink"
+                      value={seoInfo.route}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleRouteChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="meta_description"
+                      name="meta_description"
+                      label="Meta Description"
+                      value={seoInfo.meta_description}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="schema_markup"
+                      name="schema_markup"
+                      label="Schema Markup"
+                      value={seoInfo.schema_markup}
+                      variant="outlined"
+                      fullWidth
+                      multiline
+                      rows={4}
+                      rowsMax={4}
+                      onChange={handleSEOInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl component="fieldset">
+                      <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={seoInfo.is_followed} onChange={(e) => {
+                        setSeoInfo({ ...seoInfo, is_followed: !seoInfo.is_followed })
+                      }}>
+                        <FormControlLabel value={true} control={<Radio />} label="Follow" />
+                        <FormControlLabel value={false} control={<Radio />} label="No Follow" />
+                      </RadioGroup>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl component="fieldset">
+                      <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={seoInfo.is_indexed} onChange={(e) => {
+                        setSeoInfo({ ...seoInfo, is_indexed: !seoInfo.is_indexed })
+                      }}>
+                        <FormControlLabel value={true} control={<Radio />} label="Index" />
+                        <FormControlLabel value={false} control={<Radio />} label="No Index" />
+                      </RadioGroup>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
                       Update Section
                     </MaterialButton>
                   </Grid>
