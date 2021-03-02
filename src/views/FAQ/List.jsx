@@ -2,10 +2,12 @@ import { Button, Typography } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { AccordionContext, Card } from 'react-bootstrap';
 import Accordion from 'react-bootstrap/Accordion';
+import { useParams } from 'react-router-dom';
 import API from 'utils/http';
+import AddFAQDialog from './AddFAQDialog';
 
 
-function ContextAwareToggle({ children, eventKey, callback }) {
+function ContextAwareToggle({ children, eventKey, callback, sectionIndex, contentIndex, handleDelete }) {
   const currentEventKey = useContext(AccordionContext);
 
   // const decoratedOnClick = useAccordionToggle(
@@ -16,147 +18,40 @@ function ContextAwareToggle({ children, eventKey, callback }) {
   const isCurrentEventKey = currentEventKey === eventKey;
 
   return (
-    <div className="d-flex align-items-center">
-      <i className={`pr-4 fa ${isCurrentEventKey ? 'fa-minus' : 'fa-plus'}`} />
-      <h6 style={{ padding: '0.5rem 0', marginBottom: 0 }}>
+    <div className="d-flex align-items-center justify-content-center">
+      <i style={{ width: '5%' }} className={`pr-4 fa ${isCurrentEventKey ? 'fa-minus' : 'fa-plus'}`} />
+      <h6 style={{ padding: '0.5rem 0', marginBottom: 0, width: '90%' }}>
         {children}
       </h6>
+      <i style={{ width: '5%', color: '#ff0000' }} className={`fa fa-trash float-right d-block`} onClick={() => handleDelete(sectionIndex, contentIndex)} />
     </div>
   );
 }
 
 const FAQList = (props) => {
+  const pageId = parseInt(useParams().id);
 
   const [faqList, setFaqList] = useState([]);
-
-  const faqListw = [
-    //sunset
-    {
-      id: 17,
-      question: 'What is there to do in Seychelles at night?',
-      answer: `One prospect can be to dance all night in one of the many night clubs in Seychelles. Thanks to its tropical nature, the city allows guests to sit outside and enjoy the ocean breeze with a hint of lively music`,
-      category: 'dining'
-    },
-    {
-      id: 17,
-      question: 'Can you drink alcohol in Seychelles?',
-      answer: `Hotels and bars in Seychelles are allowed to serve alcohol while having a license. It is not advisable to drink in public places so the tourists should be careful and considerate of the local culture.`,
-      category: 'policy'
-    },
-    {
-      id: 17,
-      question: 'Is Seychelles a party place?',
-      answer: `Seychelles is not considered to be a party place and it is not known for its nightlife. Tourists will have to settle for calm and chill evenings. There aren’t many hotels and Casinos though there are some options but mostly hotels and resorts take this responsibility of entertaining guests.`,
-      category: 'policy'
-    },
-
-    {
-      id: 17,
-      question: 'What are the best areas to stay in Seychelles?',
-      answer: `Here are some areas suited for different kinds of tourists. Victoria is the best place to go for first-timers. Beau Vallon is one of the most visited places in Seychelles. Praslin is the place to go for tourists looking for Nightlife. La Digue is considered to be the coolest place to go and Mahe is the best place to be for families.`,
-      category: 'policy'
-    },
-    //paris seychelles
-    {
-      id: 15,
-      question: 'Is it expensive to eat out in Seychelles?',
-      answer: `There are numerous restaurants in Seychelles, Victoria and the cost of eating out can vary. However, the average cost of lunch and dinner is SCR 560 per day. Breakfasts are usually a bit cheaper.`,
-      category: 'policy'
-    },
-
-    {
-      id: 15,
-      question: 'What is Seychelles known for?',
-      answer: `Seychelles is known for its deep blue waters and yet unspoiled shores. However, there is much more to Seychelles than just a remote island including fine dining restaurants and luxurious resorts.`,
-      category: 'policy'
-    },
-
-    {
-      id: 15,
-      question: 'How many days are enough to explore Seychelles?',
-      answer: `The Island is around 17 miles long. Scheduling three nights and four days would allow tourists to explore enough attractions including beaches, bars, and restaurants in Seychelles.`,
-      category: 'policy'
-    },
-
-    //lecocoloba
-    {
-      id: 16,
-      question: 'Is Seychelles expensive to eat?',
-      answer: `The prices at Seychelles bars and restaurants can vary. There are numerous options to choose from and there is no end to luxury so visitors need to be careful and spend according to their budget.`,
-      category: 'policy'
-    },
-
-    {
-      id: 16,
-      question: 'Is Seychelles better than the Maldives?',
-      answer: `Seychelles is comparatively larger and there is much more to explore than the Maldives. Moreover, Seychelles is home to some of the rarest species of fauna and flora. Having some of the most beautiful diving sites, it is a paradise for divers.  Mahé is the main island and it is home to Seychelles' best restaurants and hotels.`,
-      category: 'policy'
-    },
-
-    {
-      id: 16,
-      question: 'What are Seychelles best bars and clubs?',
-      answer: `Here is a list of some of the famous bars and clubs in Seychelles.
-    Club Liberte Casino
-    Beach Shak
-    Bar Ocean View
-    Honesty Bar
-    Rogan’s Irish Bar
-    Katiolo Night Club
-    Trader Vicks
-    1502
-    `,
-      category: 'policy'
-    },
-    {
-      id: 16,
-      question: 'Where in Seychelles can we enjoy nightlife?',
-      answer: `One of the best places to enjoy the nightlife in Seychelles is Katiolo. Due to its tropical nature, the open-air party vibe is amazing. `,
-      category: 'policy'
-    },
-
-    //le cardinal
-
-    {
-      id: 18,
-      question: 'Is veg food available in Seychelles?',
-      answer: `There are a number of Seychelle restaurants that are vegetarian friendly, mainly in Mahe islands and La Digue. Some of the vegetarian-friendly restaurants include Rey and Josh Café, Mi Mum’s Takeaway, Les Rochers, and Mimi’s Café.`,
-      category: 'policy'
-    },
-
-    {
-      id: 18,
-      question: 'Is Seychelles expensive to eat?',
-      answer: `Prices can vary due to several factors. Primarily due to a huge number of fine dining restaurants in Seychelles However, the average price per day is somewhere around SCR 569. Dinner is considered to be expensive as compared to breakfast. There is something for every price range in the city.`,
-      category: 'policy'
-    },
-
-    {
-      id: 18,
-      question: 'What foods do they eat in Seychelles?',
-      answer: `Some of the common staple foods including fish, shellfish dishes, and seafood dishes are famous and are eaten with rice. Curry dishes with rice are generally well-liked. Seafood is cooked in different ways such as steamed, grilled, baked, and salted.`,
-      category: 'policy'
-    },
-    {
-      id: 18,
-      question: 'How much money do I need for Seychelles?',
-      answer: `According to visitors who have spent some time in Seychelles, the average daily budget should be around $105. Though it varies and numerous factors need to be taken into consideration. However, tourists should at least keep this amount in mind.`,
-      category: 'policy'
-    },
-
-  ];
+  const [currentFAQ, setCurrentFAQ] = useState(null);
+  const [showFAQ, setShowFAQ] = useState(false);
+  const [faq, setFAQ] = useState({
+    id: 0,
+    section_name: '',
+    section_content: [{
+      question: '', answer: ''
+    }],
+    page_id: pageId,
+    section_avatar: '',
+    section_col_arr: 0,
+    section_prior: 1,
+    section_avtar_alt: '',
+    section_slug: 'faq'
+  })
 
   useEffect(() => {
     API.get('/faqs').then(response => {
       if (response.status === 200) {
-        // let data = response.data.map(x => {
-        //   return {
-        //     page_id: x.page_id,
-        //     page_name: x.post_name,
-        //     section_content: JSON.parse(x.section_content)
-        //   }
-        // })
-        // debugger;
+        debugger;
         setFaqList(response.data)
       }
     }).catch(err => {
@@ -164,11 +59,59 @@ const FAQList = (props) => {
     })
   }, [])
 
+  //faq section methods
+  const handleQuestionChange = (e, index) => {
+    let section_content = [...faq.section_content];
+    section_content[0].question = e.target.value;
+    setFAQ({ ...faq, section_content })
+  }
+  const handleAnswerChange = (data, index) => {
+    let section_content = [...faq.section_content];
+    section_content[0].answer = data;
+    setFAQ({ ...faq, section_content })
+  }
+  //end faq section methods
+
+  const handleDelete = (sectionIndex, contentIndex) => {
+    let updatedFAQ = faqList[sectionIndex];
+    debugger;
+    //parsing to JSON as the data is stringified
+    let updatedSectionContent = JSON.parse(updatedFAQ.section_content);
+    //deleting index item
+    updatedSectionContent = updatedSectionContent.filter((x, i) => i !== contentIndex);
+    //replacing section content with modified array
+    updatedFAQ.section_content = updatedSectionContent;
+
+    API.put(`/add_section/${updatedFAQ.page_id}`, updatedFAQ).then(response => {
+      if (response.status === 200) {
+        alert("FAQ added successfully !");
+      }
+    }).catch(err => console.log(err))
+  }
+
+  const handleSubmit = () => {
+    let updatedFAQ = faqList[currentFAQ.index];
+
+    //parsing to JSON as the data is stringified
+    let updatedSectionContent = JSON.parse(updatedFAQ.section_content);
+    //appending the new item
+    updatedSectionContent.push(faq.section_content[0]);
+    //replacing section content with modified array
+    updatedFAQ.section_content = updatedSectionContent;
+
+    //extracting current pageId and calling update API
+    API.put(`/add_section/${updatedFAQ.page_id}`, updatedFAQ).then(response => {
+      if (response.status === 200) {
+        alert("FAQ added successfully !");
+      }
+    }).catch(err => console.log(err))
+  }
+
   return (
     <div className="faq-section-block my-3 my-sm-4">
       <div className="container">
         <h3 className="text-center main-title mb-3">Frequently Asked Questions (F.A.Q's)</h3>
-        
+
         {
           faqList?.map((faq, i) => (
             <div key={faq.id}>
@@ -177,17 +120,20 @@ const FAQList = (props) => {
                   <h5 className="my-3">
                     {faq.post_name}
                   </h5>
-                  {/* <Button variant="contained" color="primary" size="small" onClick={() => props.history.push('/')}>
-                    Add/Update FAQ
-                  </Button> */}
+                  <Button variant="contained" color="primary" size="small" onClick={() => {
+                    setCurrentFAQ({ ...faq, index: i });
+                    setShowFAQ(true);
+                  }}>
+                    Add New F.A.Q Item
+                  </Button>
                 </div>
               }
               {
-                JSON.parse(faq.section_content).map(x => (
+                JSON.parse(faq.section_content).map((x, ind) => (
                   <Accordion key={x.id}>
                     <Card>
                       <Accordion.Toggle as={Card.Header} eventKey={`${i}`} style={{ cursor: 'pointer' }} >
-                        <ContextAwareToggle eventKey={`${i}`} >
+                        <ContextAwareToggle eventKey={`${i}`} sectionIndex={i} contentIndex={ind} handleDelete={handleDelete} >
                           {x.question}
                         </ContextAwareToggle>
                       </Accordion.Toggle>
@@ -204,6 +150,17 @@ const FAQList = (props) => {
           ))
         }
       </div>
+      {
+        <AddFAQDialog
+          currentFAQ={currentFAQ}
+          section_content={faq.section_content[0]}
+          handleQuestionChange={handleQuestionChange}
+          handleAnswerChange={handleAnswerChange}
+          onClose={() => setShowFAQ(false)}
+          handleSubmit={handleSubmit}
+          open={showFAQ}
+        />
+      }
     </div >
   );
 }
