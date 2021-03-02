@@ -139,7 +139,6 @@ export default function AddSustainability() {
   }
 
   const handleImageSelect = (e, index, section) => {
-    debugger;
     if (e.target.checked) {
       if (isSingle && thumbnailPreview !== "") {
         alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");

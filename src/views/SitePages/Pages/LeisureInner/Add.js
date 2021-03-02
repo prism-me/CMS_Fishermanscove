@@ -31,6 +31,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
+import GalleryDialog from "views/Common/GalleryDialog";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -107,6 +108,16 @@ export default function AddLeisureInner() {
     },
   })
 
+  const [currentSection, setCurrentSection] = useState("")
+
+  const [imagesData, setImagesData] = useState([])
+  // const [uploadsPreview, setUploadsPreview] = useState(null)
+  // const [selectedImages, setSelectedImages] = useState([])
+  const [showGallery, setShowGallery] = useState(false)
+  const [isSingle, setIsSingle] = useState(true)
+  // const [renderPreviews, setRenderPreviews] = useState(false)
+  const [thumbnailPreview, setThumbnailPreview] = useState('')
+
   useEffect(() => {
     API.get(`/all_sections/${pageId}`).then(response => {
       if (response?.status === 200) {
@@ -121,30 +132,61 @@ export default function AddLeisureInner() {
           }
         )
       }
-    })
+    });
+    getGalleryImages();
   }, [])
+
+  const getGalleryImages = () => {
+    API.get(`/uploads`).then(response => {
+      if (response.status === 200) {
+        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
+      }
+    })
+  }
+
   const handleInputChange = (e, section) => {
-     
+
     let updatedLeisureInner = { ...leisureInner };
     updatedLeisureInner[section][e.target.name] = e.target.value;
     setLeisureInner(updatedLeisureInner);
   }
 
-  const handleFileChange = (e, section) => {
-    let files = e.target.files || e.dataTransfer.files;
-    if (!files.length)
-      return;
-    createImage(files[0], section);
-  }
+  const handleImageSelect = (e, index, section) => {
+    if (e.target.checked) {
+      if (isSingle && thumbnailPreview !== "") {
+        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+        return;
+      } else {
+        setLeisureInner({ ...leisureInner, [section]: { ...leisureInner[section], section_avatar: imagesData[index].id } })
+        setThumbnailPreview(imagesData[index].avatar)
 
-  const createImage = (file, section) => {
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      let updatedLeisureInner = { ...leisureInner };
-      updatedLeisureInner[section]["section_avatar"] = e.target.result;
-      setLeisureInner(updatedLeisureInner);
-    };
-    reader.readAsDataURL(file);
+        let imagesDataUpdated = imagesData.map((x, i) => {
+          if (i === index) {
+            return {
+              ...x,
+              isChecked: true
+            }
+          } else {
+            return x
+          }
+        });
+        setImagesData(imagesDataUpdated);
+      }
+    } else {
+      setLeisureInner({ ...leisureInner, [section]: { ...leisureInner[section], section_avatar: "" } })
+      setThumbnailPreview("")
+
+      setImagesData(imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: false
+          }
+        } else {
+          return x
+        }
+      }));
+    }
   }
 
   const handleSubmit = (id, name) => {
@@ -205,45 +247,38 @@ export default function AddLeisureInner() {
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {leisureInner.lounge.section_avatar && leisureInner.lounge.section_avatar !== "" ?
-                          <CardMedia
-                            component="img"
-                            alt=""
-                            height="140"
-                            image={leisureInner.lounge.section_avatar}
-                            title=""
-                          />
-                          :
-                          <CardContent>
-                            <Typography variant="body2" component="h2">
-                              Please add an Image
-                          </Typography>
-                          </CardContent>
-                        }
+                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          {
+                            !leisureInner.lounge.id > 0 ?
+                              thumbnailPreview && thumbnailPreview !== "" ?
+                                <img src={thumbnailPreview} alt={leisureInner.lounge.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (leisureInner.lounge.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview} alt={leisureInner.lounge.section_avtar_alt || ""} />
+                                :
+                                <img src={leisureInner.lounge.section_avatar} alt={leisureInner.lounge.section_avtar_alt || ""} />
+                          }
+                        </div>
                       </CardActionArea>
                       <CardActions>
                         <Fragment>
-                          <input
+                          <MaterialButton
+                            variant="contained"
                             color="primary"
-                            accept="image/*"
-                            type="file"
-                            onChange={(e) => handleFileChange(e, "lounge")}
-                            id="section_avatar_lounge"
-                            name="section_avatar_lounge"
-                            style={{ display: 'none', }}
-                          />
-                          <label htmlFor="section_avatar_lounge" style={{ width: '100%', margin: 0 }}>
-                            <Button
-                              variant="contained"
-                              component="span"
-                              className={classes.button}
-                              size="large"
-                              color="primary"
-                              fullWidth
-                            >
-                              <Image className={classes.extendedIcon} /> Upload Section Image
-                        </Button>
-                          </label>
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("lounge");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
                         </Fragment>
                       </CardActions>
                     </Card>
@@ -300,45 +335,38 @@ export default function AddLeisureInner() {
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {leisureInner.kayaking.section_avatar && leisureInner.kayaking.section_avatar !== "" ?
-                          <CardMedia
-                            component="img"
-                            alt=""
-                            height="140"
-                            image={leisureInner.kayaking.section_avatar}
-                            title=""
-                          />
-                          :
-                          <CardContent>
-                            <Typography variant="body2" component="h2">
-                              Please add an Image
-                          </Typography>
-                          </CardContent>
-                        }
+                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          {
+                            !leisureInner.kayaking.id > 0 ?
+                              thumbnailPreview && thumbnailPreview !== "" ?
+                                <img src={thumbnailPreview} alt={leisureInner.kayaking.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (leisureInner.kayaking.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview} alt={leisureInner.kayaking.section_avtar_alt || ""} />
+                                :
+                                <img src={leisureInner.kayaking.section_avatar} alt={leisureInner.kayaking.section_avtar_alt || ""} />
+                          }
+                        </div>
                       </CardActionArea>
                       <CardActions>
                         <Fragment>
-                          <input
+                          <MaterialButton
+                            variant="contained"
                             color="primary"
-                            accept="image/*"
-                            type="file"
-                            onChange={(e) => handleFileChange(e, "kayaking")}
-                            id="section_avatar_kayaking"
-                            name="section_avatar_kayaking"
-                            style={{ display: 'none', }}
-                          />
-                          <label htmlFor="section_avatar_kayaking" style={{ width: '100%', margin: 0 }}>
-                            <Button
-                              variant="contained"
-                              component="span"
-                              className={classes.button}
-                              size="large"
-                              color="primary"
-                              fullWidth
-                            >
-                              <Image className={classes.extendedIcon} /> Upload Section Image
-                            </Button>
-                          </label>
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("kayaking");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
                         </Fragment>
                       </CardActions>
                     </Card>
@@ -395,45 +423,38 @@ export default function AddLeisureInner() {
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {leisureInner.snorkeling.section_avatar && leisureInner.snorkeling.section_avatar !== "" ?
-                          <CardMedia
-                            component="img"
-                            alt=""
-                            height="140"
-                            image={leisureInner.snorkeling.section_avatar}
-                            title=""
-                          />
-                          :
-                          <CardContent>
-                            <Typography variant="body2" component="h2">
-                              Please add an Image
-                          </Typography>
-                          </CardContent>
-                        }
+                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          {
+                            !leisureInner.snorkeling.id > 0 ?
+                              thumbnailPreview && thumbnailPreview !== "" ?
+                                <img src={thumbnailPreview} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (leisureInner.snorkeling.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
+                                :
+                                <img src={leisureInner.snorkeling.section_avatar} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
+                          }
+                        </div>
                       </CardActionArea>
                       <CardActions>
                         <Fragment>
-                          <input
+                          <MaterialButton
+                            variant="contained"
                             color="primary"
-                            accept="image/*"
-                            type="file"
-                            onChange={(e) => handleFileChange(e, "snorkeling")}
-                            id="section_avatar_snorkeling"
-                            name="section_avatar_snorkeling"
-                            style={{ display: 'none', }}
-                          />
-                          <label htmlFor="section_avatar_snorkeling" style={{ width: '100%', margin: 0 }}>
-                            <Button
-                              variant="contained"
-                              component="span"
-                              className={classes.button}
-                              size="large"
-                              color="primary"
-                              fullWidth
-                            >
-                              <Image className={classes.extendedIcon} /> Upload Section Image
-                            </Button>
-                          </label>
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("snorkeling");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
                         </Fragment>
                       </CardActions>
                     </Card>
@@ -490,45 +511,38 @@ export default function AddLeisureInner() {
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {leisureInner.marine.section_avatar && leisureInner.marine.section_avatar !== "" ?
-                          <CardMedia
-                            component="img"
-                            alt=""
-                            height="140"
-                            image={leisureInner.marine.section_avatar}
-                            title=""
-                          />
-                          :
-                          <CardContent>
-                            <Typography variant="body2" component="h2">
-                              Please add an Image
-                          </Typography>
-                          </CardContent>
-                        }
+                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          {
+                            !leisureInner.marine.id > 0 ?
+                              thumbnailPreview && thumbnailPreview !== "" ?
+                                <img src={thumbnailPreview} alt={leisureInner.marine.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (leisureInner.marine.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview} alt={leisureInner.marine.section_avtar_alt || ""} />
+                                :
+                                <img src={leisureInner.marine.section_avatar} alt={leisureInner.marine.section_avtar_alt || ""} />
+                          }
+                        </div>
                       </CardActionArea>
                       <CardActions>
                         <Fragment>
-                          <input
+                          <MaterialButton
+                            variant="contained"
                             color="primary"
-                            accept="image/*"
-                            type="file"
-                            onChange={(e) => handleFileChange(e, "marine")}
-                            id="section_avatar_marine"
-                            name="section_avatar_marine"
-                            style={{ display: 'none', }}
-                          />
-                          <label htmlFor="section_avatar_marine" style={{ width: '100%', margin: 0 }}>
-                            <Button
-                              variant="contained"
-                              component="span"
-                              className={classes.button}
-                              size="large"
-                              color="primary"
-                              fullWidth
-                            >
-                              <Image className={classes.extendedIcon} /> Upload Section Image
-                        </Button>
-                          </label>
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("marine");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
                         </Fragment>
                       </CardActions>
                     </Card>
@@ -588,45 +602,38 @@ export default function AddLeisureInner() {
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {leisureInner.others.section_avatar && leisureInner.others.section_avatar !== "" ?
-                          <CardMedia
-                            component="img"
-                            alt=""
-                            height="140"
-                            image={leisureInner.others.section_avatar}
-                            title=""
-                          />
-                          :
-                          <CardContent>
-                            <Typography variant="body2" component="h2">
-                              Please add an Image
-                          </Typography>
-                          </CardContent>
-                        }
+                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          {
+                            !leisureInner.others.id > 0 ?
+                              thumbnailPreview && thumbnailPreview !== "" ?
+                                <img src={thumbnailPreview} alt={leisureInner.others.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (leisureInner.others.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview} alt={leisureInner.others.section_avtar_alt || ""} />
+                                :
+                                <img src={leisureInner.others.section_avatar} alt={leisureInner.others.section_avtar_alt || ""} />
+                          }
+                        </div>
                       </CardActionArea>
                       <CardActions>
                         <Fragment>
-                          <input
+                          <MaterialButton
+                            variant="contained"
                             color="primary"
-                            accept="image/*"
-                            type="file"
-                            onChange={(e) => handleFileChange(e, "others")}
-                            id="section_avatar_others"
-                            name="section_avatar_others"
-                            style={{ display: 'none', }}
-                          />
-                          <label htmlFor="section_avatar_others" style={{ width: '100%', margin: 0 }}>
-                            <Button
-                              variant="contained"
-                              component="span"
-                              className={classes.button}
-                              size="large"
-                              color="primary"
-                              fullWidth
-                            >
-                              <Image className={classes.extendedIcon} /> Upload Section Image
-                        </Button>
-                          </label>
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("others");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
                         </Fragment>
                       </CardActions>
                     </Card>
@@ -642,6 +649,11 @@ export default function AddLeisureInner() {
           </CardBody>
         </Card>
       </div>
+      <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
+        setShowGallery(false);
+        // setRenderPreviews(true);
+      }} refreshGallery={getGalleryImages} data={imagesData} />
+      {/* GALLERY DIALOG BOX END */}
     </div>
   );
 }
