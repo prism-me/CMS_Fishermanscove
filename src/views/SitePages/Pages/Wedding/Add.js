@@ -9,7 +9,7 @@ import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 
-import { TextField } from "@material-ui/core";
+import { FormControl, FormControlLabel, Radio, RadioGroup, TextField } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 
 import Accordion from '@material-ui/core/Accordion';
@@ -66,10 +66,15 @@ export default function AddWedding() {
   });
 
   const [seoInfo, setSeoInfo] = useState({
+    id: 0,
+    post_id: pageId || 0,
     meta_title: '',
     meta_description: '',
     route: website_url,
-    schema_markup: ''
+    schema_markup: '',
+    is_followed: true,
+    is_indexed: true,
+    is_indexed_or_is_followed: '1,1',
   })
 
   useEffect(() => {
@@ -88,8 +93,17 @@ export default function AddWedding() {
           }
         )
       }
-    })
+    });
+    getSEOInfo();
   }, [])
+
+  const getSEOInfo = () => {
+    API.get(`/meta`).then(response => {
+      if (response.status === 200) {
+        setSeoInfo(response.data?.find(x => x.post_id == pageId) || seoInfo);
+      }
+    })
+  }
 
   const handleInputChange = (e, section) => {
     let updatedWedding = { ...wedding };
@@ -98,7 +112,6 @@ export default function AddWedding() {
   }
 
   const handleSEOInputChange = (e) => {
-    debugger;
     let updatedSeoInfo = { ...seoInfo };
     updatedSeoInfo[e.target.name] = e.target.value;
     setSeoInfo(updatedSeoInfo);
@@ -131,11 +144,23 @@ export default function AddWedding() {
   //end faq section methods
 
   const handleSEOSubmit = () => {
-    API.put(`/path-to-wedding`, seoInfo).then(response => {
-      if (response.status === 200) {
-        alert("Section updated successfully !");
-      }
-    }).catch(err => console.log(err))
+    let updatedSeoInfo = seoInfo;
+    updatedSeoInfo.is_indexed_or_is_followed = `${updatedSeoInfo.is_indexed},${updatedSeoInfo.is_followed}`;
+
+    if (updatedSeoInfo.id > 0) {
+      API.put(`/meta/${pageId}`, updatedSeoInfo).then(response => {
+        if (response.status === 200) {
+          alert("Section updated successfully !");
+        }
+      }).catch(err => console.log(err))
+    } else {
+      API.post(`/meta`, updatedSeoInfo).then(response => {
+        if (response.status === 200) {
+          alert("Section updated successfully !");
+        }
+      }).catch(err => console.log(err))
+
+    }
   }
 
   const handleSubmit = (id, name) => {
@@ -258,10 +283,10 @@ export default function AddWedding() {
                       size="small"
                     />
                   </Grid>
-                  {/* <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={6}>
                     <FormControl component="fieldset">
                       <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={seoInfo.is_followed} onChange={(e) => {
-                        setDining({ ...dining, is_followed: !seoInfo.is_followed })
+                        setSeoInfo({ ...seoInfo, is_followed: !seoInfo.is_followed })
                       }}>
                         <FormControlLabel value={true} control={<Radio />} label="Follow" />
                         <FormControlLabel value={false} control={<Radio />} label="No Follow" />
@@ -271,13 +296,13 @@ export default function AddWedding() {
                   <Grid item xs={12} sm={6}>
                     <FormControl component="fieldset">
                       <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={seoInfo.is_indexed} onChange={(e) => {
-                        setDining({ ...dining, is_indexed: !seoInfo.is_indexed })
+                        setSeoInfo({ ...seoInfo, is_indexed: !seoInfo.is_indexed })
                       }}>
                         <FormControlLabel value={true} control={<Radio />} label="Index" />
                         <FormControlLabel value={false} control={<Radio />} label="No Index" />
                       </RadioGroup>
                     </FormControl>
-                  </Grid> */}
+                  </Grid>
                   <Grid item xs={12} sm={12}>
                     <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
                       Update Section

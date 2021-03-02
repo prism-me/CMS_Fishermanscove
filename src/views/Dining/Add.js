@@ -117,69 +117,6 @@ export default withRouter(function DiningAdd(props) {
     setDining(updatedDining);
   }
 
-  const handleFileChange = (e) => {
-    let files = e.target.files || e.dataTransfer.files;
-    if (!files.length)
-      return;
-    createImage(files[0]);
-  }
-
-  const createImage = (file) => {
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      setDining({ ...dining, thumbnail: e.target.result });
-      if (isEdit) {
-        API.patch(`update_upload/${post_id}/dining`, {
-          thumbnail: e.target.result
-        }).then(response => {
-          console.log(response)
-        })
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-
-  const handleMultipleFileChange = (e) => {
-    let files = e.target.files || e.dataTransfer.files;
-    if (!files.length) return;
-    let imagesObject = [];
-
-    Object.entries(files).map((x, i) => {
-      return imagesObject.push({
-        avatar: x[1],
-        post_id,
-        alt_tag: '',
-        is360: false
-      });
-    })
-    setDiningImages([...diningImages, ...imagesObject])
-  }
-
-  const handleImageAltChange = (e, index) => {
-    let updatedDiningImages = [...diningImages];
-    updatedDiningImages[index].alt_tag = e.target.value;
-    setDiningImages(updatedDiningImages)
-  }
-
-  const handleMultipleSubmit = () => {
-    let imagesFormData = new FormData();
-    diningImages.forEach(x => {
-      imagesFormData.append("images", x)
-    })
-    API.post(`/multiple_upload`, imagesFormData, {
-      headers: {
-        'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
-      }
-    }).then(response => {
-      if (response.status === 200) {
-        alert("Files Uploaded");
-        setDiningImages([]);
-        props.history.push('/admin/weddings');
-      }
-    }).catch(err => alert("Something went wrong"));
-
-  }
-
   const handleImageSelect = (e, index) => {
     if (e.target.checked) {
       if (isSingle && thumbnailPreview !== "") {
