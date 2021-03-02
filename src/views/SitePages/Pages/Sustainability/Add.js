@@ -31,6 +31,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
+import GalleryDialog from "views/Common/GalleryDialog";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -96,6 +97,16 @@ export default function AddSustainability() {
     },
   })
 
+  const [currentSection, setCurrentSection] = useState("")
+
+  const [imagesData, setImagesData] = useState([])
+  // const [uploadsPreview, setUploadsPreview] = useState(null)
+  // const [selectedImages, setSelectedImages] = useState([])
+  const [showGallery, setShowGallery] = useState(false)
+  const [isSingle, setIsSingle] = useState(true)
+  // const [renderPreviews, setRenderPreviews] = useState(false)
+  const [thumbnailPreview, setThumbnailPreview] = useState('')
+
   useEffect(() => {
     API.get(`/all_sections/${pageId}`).then(response => {
       if (response?.status === 200) {
@@ -109,30 +120,63 @@ export default function AddSustainability() {
           }
         )
       }
-    })
+    });
+    getGalleryImages();
   }, [])
+
+  const getGalleryImages = () => {
+    API.get(`/uploads`).then(response => {
+      if (response.status === 200) {
+        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
+      }
+    })
+  }
+
   const handleInputChange = (e, section) => {
     let updatedSustainability = { ...sustainability };
     updatedSustainability[section][e.target.name] = e.target.value;
     setSustainability(updatedSustainability);
   }
 
-  const handleFileChange = (e, section) => {
-    let files = e.target.files || e.dataTransfer.files;
-    if (!files.length)
-      return;
-    createImage(files[0], section);
+  const handleImageSelect = (e, index, section) => {
+    debugger;
+    if (e.target.checked) {
+      if (isSingle && thumbnailPreview !== "") {
+        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+        return;
+      } else {
+        setSustainability({ ...sustainability, [section]: { ...sustainability[section], section_avatar: imagesData[index].id } })
+        setThumbnailPreview(imagesData[index].avatar)
+
+        let imagesDataUpdated = imagesData.map((x, i) => {
+          if (i === index) {
+            return {
+              ...x,
+              isChecked: true
+            }
+          } else {
+            return x
+          }
+        });
+        setImagesData(imagesDataUpdated);
+      }
+    } else {
+      setSustainability({ ...sustainability, [section]: { ...sustainability[section], section_avatar: "" } })
+      setThumbnailPreview("")
+
+      setImagesData(imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: false
+          }
+        } else {
+          return x
+        }
+      }));
+    }
   }
 
-  const createImage = (file, section) => {
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      let updatedSustainability = { ...sustainability };
-      updatedSustainability[section]["section_avatar"] = e.target.result;
-      setSustainability(updatedSustainability);
-    };
-    reader.readAsDataURL(file);
-  }
 
   const handleSubmit = (id, name) => {
     API.put(`/add_section/${id}`, sustainability[name]).then(response => {
@@ -192,45 +236,38 @@ export default function AddSustainability() {
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {sustainability.intro.section_avatar && sustainability.intro.section_avatar !== "" ?
-                          <CardMedia
-                            component="img"
-                            alt=""
-                            height="140"
-                            image={sustainability.intro.section_avatar}
-                            title=""
-                          />
-                          :
-                          <CardContent>
-                            <Typography variant="body2" component="h2">
-                              Please add an Image
-                          </Typography>
-                          </CardContent>
-                        }
+                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          {
+                            !sustainability.intro.id > 0 ?
+                              thumbnailPreview && thumbnailPreview !== "" ?
+                                <img src={thumbnailPreview} alt={sustainability.intro.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (sustainability.intro.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview} alt={sustainability.intro.section_avtar_alt || ""} />
+                                :
+                                <img src={sustainability.intro.section_avatar} alt={sustainability.intro.section_avtar_alt || ""} />
+                          }
+                        </div>
                       </CardActionArea>
                       <CardActions>
                         <Fragment>
-                          <input
+                          <MaterialButton
+                            variant="contained"
                             color="primary"
-                            accept="image/*"
-                            type="file"
-                            onChange={(e) => handleFileChange(e, "intro")}
-                            id="section_avatar_intro"
-                            name="section_avatar_intro"
-                            style={{ display: 'none', }}
-                          />
-                          <label htmlFor="section_avatar_intro" style={{ width: '100%', margin: 0 }}>
-                            <Button
-                              variant="contained"
-                              component="span"
-                              className={classes.button}
-                              size="large"
-                              color="primary"
-                              fullWidth
-                            >
-                              <Image className={classes.extendedIcon} /> Upload Section Image
-                        </Button>
-                          </label>
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("intro");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
                         </Fragment>
                       </CardActions>
                     </Card>
@@ -287,45 +324,38 @@ export default function AddSustainability() {
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {sustainability.projects.section_avatar && sustainability.projects.section_avatar !== "" ?
-                          <CardMedia
-                            component="img"
-                            alt=""
-                            height="140"
-                            image={sustainability.projects.section_avatar}
-                            title=""
-                          />
-                          :
-                          <CardContent>
-                            <Typography variant="body2" component="h2">
-                              Please add an Image
-                          </Typography>
-                          </CardContent>
-                        }
+                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          {
+                            !sustainability.projects.id > 0 ?
+                              thumbnailPreview && thumbnailPreview !== "" ?
+                                <img src={thumbnailPreview} alt={sustainability.projects.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (sustainability.projects.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview} alt={sustainability.projects.section_avtar_alt || ""} />
+                                :
+                                <img src={sustainability.projects.section_avatar} alt={sustainability.projects.section_avtar_alt || ""} />
+                          }
+                        </div>
                       </CardActionArea>
                       <CardActions>
                         <Fragment>
-                          <input
+                          <MaterialButton
+                            variant="contained"
                             color="primary"
-                            accept="image/*"
-                            type="file"
-                            onChange={(e) => handleFileChange(e, "projects")}
-                            id="section_avatar_projects"
-                            name="section_avatar_projects"
-                            style={{ display: 'none', }}
-                          />
-                          <label htmlFor="section_avatar_projects" style={{ width: '100%', margin: 0 }}>
-                            <Button
-                              variant="contained"
-                              component="span"
-                              className={classes.button}
-                              size="large"
-                              color="primary"
-                              fullWidth
-                            >
-                              <Image className={classes.extendedIcon} /> Upload Section Image
-                            </Button>
-                          </label>
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("projects");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
                         </Fragment>
                       </CardActions>
                     </Card>
@@ -382,45 +412,38 @@ export default function AddSustainability() {
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {sustainability.pillars.section_avatar && sustainability.pillars.section_avatar !== "" ?
-                          <CardMedia
-                            component="img"
-                            alt=""
-                            height="140"
-                            image={sustainability.pillars.section_avatar}
-                            title=""
-                          />
-                          :
-                          <CardContent>
-                            <Typography variant="body2" component="h2">
-                              Please add an Image
-                          </Typography>
-                          </CardContent>
-                        }
+                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          {
+                            !sustainability.pillars.id > 0 ?
+                              thumbnailPreview && thumbnailPreview !== "" ?
+                                <img src={thumbnailPreview} alt={sustainability.pillars.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (sustainability.pillars.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview} alt={sustainability.pillars.section_avtar_alt || ""} />
+                                :
+                                <img src={sustainability.pillars.section_avatar} alt={sustainability.pillars.section_avtar_alt || ""} />
+                          }
+                        </div>
                       </CardActionArea>
                       <CardActions>
                         <Fragment>
-                          <input
+                          <MaterialButton
+                            variant="contained"
                             color="primary"
-                            accept="image/*"
-                            type="file"
-                            onChange={(e) => handleFileChange(e, "pillars")}
-                            id="section_avatar_pillars"
-                            name="section_avatar_pillars"
-                            style={{ display: 'none', }}
-                          />
-                          <label htmlFor="section_avatar_pillars" style={{ width: '100%', margin: 0 }}>
-                            <Button
-                              variant="contained"
-                              component="span"
-                              className={classes.button}
-                              size="large"
-                              color="primary"
-                              fullWidth
-                            >
-                              <Image className={classes.extendedIcon} /> Upload Section Image
-                            </Button>
-                          </label>
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("pillars");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
                         </Fragment>
                       </CardActions>
                     </Card>
@@ -477,45 +500,38 @@ export default function AddSustainability() {
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {sustainability.energy.section_avatar && sustainability.energy.section_avatar !== "" ?
-                          <CardMedia
-                            component="img"
-                            alt=""
-                            height="140"
-                            image={sustainability.energy.section_avatar}
-                            title=""
-                          />
-                          :
-                          <CardContent>
-                            <Typography variant="body2" component="h2">
-                              Please add an Image
-                          </Typography>
-                          </CardContent>
-                        }
+                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          {
+                            !sustainability.energy.id > 0 ?
+                              thumbnailPreview && thumbnailPreview !== "" ?
+                                <img src={thumbnailPreview} alt={sustainability.energy.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (sustainability.energy.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview} alt={sustainability.energy.section_avtar_alt || ""} />
+                                :
+                                <img src={sustainability.energy.section_avatar} alt={sustainability.energy.section_avtar_alt || ""} />
+                          }
+                        </div>
                       </CardActionArea>
                       <CardActions>
                         <Fragment>
-                          <input
+                          <MaterialButton
+                            variant="contained"
                             color="primary"
-                            accept="image/*"
-                            type="file"
-                            onChange={(e) => handleFileChange(e, "energy")}
-                            id="section_avatar_energy"
-                            name="section_avatar_energy"
-                            style={{ display: 'none', }}
-                          />
-                          <label htmlFor="section_avatar_energy" style={{ width: '100%', margin: 0 }}>
-                            <Button
-                              variant="contained"
-                              component="span"
-                              className={classes.button}
-                              size="large"
-                              color="primary"
-                              fullWidth
-                            >
-                              <Image className={classes.extendedIcon} /> Upload Section Image
-                        </Button>
-                          </label>
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("energy");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
                         </Fragment>
                       </CardActions>
                     </Card>
@@ -531,6 +547,11 @@ export default function AddSustainability() {
           </CardBody>
         </Card>
       </div>
+      <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
+        setShowGallery(false);
+        // setRenderPreviews(true);
+      }} refreshGallery={getGalleryImages} data={imagesData} />
+      {/* GALLERY DIALOG BOX END */}
     </div>
   );
 }

@@ -32,6 +32,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
 import FAQSection from "../Common/FAQSection";
+import GalleryDialog from "views/Common/GalleryDialog";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,21 +98,50 @@ export default function AddDiningInner() {
     },
   })
 
+  const [currentSection, setCurrentSection] = useState("")
+
+  const [imagesData, setImagesData] = useState([])
+  // const [uploadsPreview, setUploadsPreview] = useState(null)
+  // const [selectedImages, setSelectedImages] = useState([])
+  const [showGallery, setShowGallery] = useState(false)
+  const [isSingle, setIsSingle] = useState(false)
+  // const [renderPreviews, setRenderPreviews] = useState(false)
+  const [thumbnailPreview, setThumbnailPreview] = useState('')
+
   useEffect(() => {
     API.get(`/all_sections/${pageId}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
+
+        let intro = data.find(x => x.section_slug === "intro");
+        let dress = data.find(x => x.section_slug === "dress");
+        let timings = data.find(x => x.section_slug === "timings");
+        let faq = data.find(x => x.section_slug === "faq");
+        if (faq && faq.section_content) {
+          faq.section_content = JSON.parse(faq.section_content);
+        }
         setDiningInner(
           {
-            intro: data.find(x => x.section_slug === "intro") || diningInner.intro,
-            dress: data.find(x => x.section_slug === "dress") || diningInner.dress,
-            timings: data.find(x => x.section_slug === "timings") || diningInner.timings,
-            faq: data.find(x => x.section_slug === "faq") || diningInner.faq,
+            intro: intro || diningInner.intro,
+            dress: dress || diningInner.dress,
+            timings: timings || diningInner.timings,
+            faq: faq || diningInner.faq,
           }
         )
       }
-    })
+    });
+    getGalleryImages();
   }, [])
+
+  const getGalleryImages = () => {
+    API.get(`/uploads`).then(response => {
+      debugger;
+      if (response.status === 200) {
+        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
+      }
+    })
+  }
+
   const handleInputChange = (e, section) => {
 
     let updatedDiningInner = { ...diningInner };
@@ -119,21 +149,43 @@ export default function AddDiningInner() {
     setDiningInner(updatedDiningInner);
   }
 
-  const handleFileChange = (e, section) => {
-    let files = e.target.files || e.dataTransfer.files;
-    if (!files.length)
-      return;
-    createImage(files[0], section);
-  }
+  const handleImageSelect = (e, index, section) => {
+    debugger;
+    if (e.target.checked) {
+      if (isSingle && thumbnailPreview !== "") {
+        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+        return;
+      } else {
+        setDiningInner({ ...diningInner, [section]: { ...diningInner[section], section_avatar: imagesData[index].id } })
+        setThumbnailPreview(imagesData[index].avatar)
 
-  const createImage = (file, section) => {
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      let updatedDiningInner = { ...diningInner };
-      updatedDiningInner[section]["section_avatar"] = e.target.result;
-      setDiningInner(updatedDiningInner);
-    };
-    reader.readAsDataURL(file);
+        let imagesDataUpdated = imagesData.map((x, i) => {
+          if (i === index) {
+            return {
+              ...x,
+              isChecked: true
+            }
+          } else {
+            return x
+          }
+        });
+        setImagesData(imagesDataUpdated);
+      }
+    } else {
+      setDiningInner({ ...diningInner, [section]: { ...diningInner[section], section_avatar: "" } })
+      setThumbnailPreview("")
+
+      setImagesData(imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: false
+          }
+        } else {
+          return x
+        }
+      }));
+    }
   }
 
   //faq section methods
@@ -211,45 +263,38 @@ export default function AddDiningInner() {
                     />
                     <Card className={classes.root}>
                       <CardActionArea>
-                        {diningInner.intro.section_avatar && diningInner.intro.section_avatar !== "" ?
-                          <CardMedia
-                            component="img"
-                            alt=""
-                            height="140"
-                            image={diningInner.intro.section_avatar}
-                            title=""
-                          />
-                          :
-                          <CardContent>
-                            <Typography variant="body2" component="h2">
-                              Please add an Image
-                          </Typography>
-                          </CardContent>
-                        }
+                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          {
+                            !diningInner.intro.id > 0 ?
+                              thumbnailPreview && thumbnailPreview !== "" ?
+                                <img src={thumbnailPreview} alt={diningInner.intro.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (diningInner.intro.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview} alt={diningInner.intro.section_avtar_alt || ""} />
+                                :
+                                <img src={diningInner.intro.section_avatar} alt={diningInner.intro.section_avtar_alt || ""} />
+                          }
+                        </div>
                       </CardActionArea>
                       <CardActions>
                         <Fragment>
-                          <input
+                          <MaterialButton
+                            variant="contained"
                             color="primary"
-                            accept="image/*"
-                            type="file"
-                            onChange={(e) => handleFileChange(e, "intro")}
-                            id="section_avatar_intro"
-                            name="section_avatar_intro"
-                            style={{ display: 'none', }}
-                          />
-                          <label htmlFor="section_avatar_intro" style={{ width: '100%', margin: 0 }}>
-                            <Button
-                              variant="contained"
-                              component="span"
-                              className={classes.button}
-                              size="large"
-                              color="primary"
-                              fullWidth
-                            >
-                              <Image className={classes.extendedIcon} /> Upload Section Image
-                        </Button>
-                          </label>
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("intro");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
                         </Fragment>
                       </CardActions>
                     </Card>
@@ -494,6 +539,11 @@ export default function AddDiningInner() {
           </CardBody>
         </Card>
       </div>
+      {/* GALLERY DIALOG BOX START */}
+      <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
+        setShowGallery(false);
+      }} refreshGallery={getGalleryImages} data={imagesData} />
+      {/* GALLERY DIALOG BOX END */}
     </div>
   );
 }

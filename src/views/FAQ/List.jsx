@@ -51,7 +51,6 @@ const FAQList = (props) => {
   useEffect(() => {
     API.get('/faqs').then(response => {
       if (response.status === 200) {
-        debugger;
         setFaqList(response.data)
       }
     }).catch(err => {

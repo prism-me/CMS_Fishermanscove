@@ -95,6 +95,7 @@ export default withRouter(function DiningAdd(props) {
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then(response => {
+      debugger;
       if (response.status === 200) {
         setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
       }
