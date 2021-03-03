@@ -23,7 +23,7 @@ import InfoIcon from '@material-ui/icons/Info';
 const useStyles = makeStyles((theme) => ({
   root: {
     overflow: 'initial',
-    maxWidth: '75%',
+    maxWidth: '85%',
     margin: 'auto',
     backgroundColor: 'transparent',
   },
@@ -83,6 +83,7 @@ export const WeddingDetail = React.memo(function ReviewCard() {
   const gutterStyles = usePushingGutterStyles({ firstExcluded: true });
 
   const [wedding, setWedding] = useState(null);
+  const [uploads, setUploads] = useState([]);
   const [tileData, setTileData] = useState([
     {
       img: 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80',
@@ -105,6 +106,7 @@ export const WeddingDetail = React.memo(function ReviewCard() {
     API.get(`/wedding/${params.id}`).then(response => {
       if (response.status === 200) {
         setWedding(response.data?.category_details[0])
+        setUploads(response.data?.uploads)
       }
     })
   }, [])
@@ -176,14 +178,14 @@ export const WeddingDetail = React.memo(function ReviewCard() {
         <Box mt={4}>
           <div className={classes.imagesWrapper}>
             <GridList className={classes.gridList} cols={2.5}>
-              {tileData.map((tile) => (
-                <GridListTile key={tile.img}>
-                  <img src={tile.img} alt={tile.title} />
+              {uploads.map((tile) => (
+                <GridListTile key={tile.avatar}>
+                  <img src={tile.avatar} alt={tile.alt_tag} />
                   <GridListTileBar
-                    title={tile.title}
+                    title={tile.alt_tag}
                     // subtitle={<span>by: {tile.author}</span>}
                     actionIcon={
-                      <IconButton aria-label={`info about ${tile.title}`} className={classes.icon}>
+                      <IconButton aria-label={`info about ${tile.alt_tag}`} className={classes.icon}>
                         <InfoIcon />
                       </IconButton>
                     }

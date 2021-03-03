@@ -30,7 +30,7 @@ import { useParams } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
   root: {
     overflow: 'initial',
-    maxWidth: '75%',
+    maxWidth: '85%',
     margin: 'auto',
     backgroundColor: 'transparent',
   },
@@ -183,14 +183,14 @@ export const RoomDetail = React.memo(function ReviewCard() {
         <Box mt={4}>
           <div className={classes.imagesWrapper}>
             <GridList className={classes.gridList} cols={2.5}>
-              {tileData.map((tile) => (
-                <GridListTile key={tile.img}>
-                  <img src={tile.img} alt={tile.title} />
+              {room?.uploads?.map((tile) => (
+                <GridListTile key={tile.alt_tag}>
+                  <img src={tile.avatar} alt={tile.alt_tag} />
                   <GridListTileBar
-                    title={tile.title}
+                    title={tile.alt_tag}
                     // subtitle={<span>by: {tile.author}</span>}
                     actionIcon={
-                      <IconButton aria-label={`info about ${tile.title}`} className={classes.icon}>
+                      <IconButton aria-label={`info about ${tile.alt_tag}`} className={classes.icon}>
                         <InfoIcon />
                       </IconButton>
                     }

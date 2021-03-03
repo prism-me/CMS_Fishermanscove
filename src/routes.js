@@ -73,6 +73,7 @@ import FAQList from "views/FAQ/List";
 import GalleryList from "views/Gallery/List";
 import AddGallery from "views/Gallery/Add";
 import OfferDetail from "views/Offers/Details";
+import SignInSide from "views/Auth/Login";
 
 const dashboardRoutes = [
   {
@@ -82,6 +83,15 @@ const dashboardRoutes = [
     icon: Dashboard,
     component: DashboardPage,
     layout: "/admin"
+  },
+  {
+    path: "/login",
+    name: "Login",
+    rtlName: "لوحة القيادة",
+    icon: Dashboard,
+    component: SignInSide,
+    layout: "/",
+    hide:true
   },
   {
     path: "/room-suites",

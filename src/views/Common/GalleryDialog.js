@@ -20,7 +20,7 @@ export default function GalleryDialog(props) {
             {
                 image: x,
                 is360: false,
-                alt_tag: ""
+                alt_text: ""
             }
         ));
 
@@ -33,7 +33,7 @@ export default function GalleryDialog(props) {
 
     const handleImageAltChange = (e, index) => {
         let updatedFiles = [...currentFiles];
-        updatedFiles[index].alt_tag = e.target.value;
+        updatedFiles[index].alt_text = e.target.value;
         setCurrentFiles(updatedFiles)
     }
 
@@ -95,15 +95,15 @@ export default function GalleryDialog(props) {
                                                     currentFiles.map((x, i) => (
                                                         <>
                                                             <Grid item xs={12} sm={1}>
-                                                                <Avatar src={URL.createObjectURL(x.image)} alt={x.alt_tag || ""} />
+                                                                <Avatar src={URL.createObjectURL(x.image)} alt={x.alt_text || ""} />
                                                             </Grid>
                                                             <Grid item xs={12} sm={5}>
                                                                 <TextField
                                                                     required
-                                                                    id={`alt_tag${i}`}
-                                                                    name="alt_tag"
+                                                                    id={`alt_text${i}`}
+                                                                    name="alt_text"
                                                                     label="Image Alt Text"
-                                                                    value={x.alt_tag}
+                                                                    value={x.alt_text}
                                                                     variant="outlined"
                                                                     fullWidth
                                                                     onChange={(e) => handleImageAltChange(e, i)}

@@ -99,7 +99,7 @@ function Admin({ ...rest }) {
   }, [mainPanel]);
   return (
     <div className={classes.wrapper} style={{ position: 'relative' }}>
-      <div className={`${rest.showSpinner ? "d-flex": "d-none"} vw-100 vh-100 flex-column text-center align-items-center justify-content-center`} style={{ position: 'absolute', zIndex:99999, background: 'rgba(255,255,255,0.6)' }}>
+      <div className={`${rest.showSpinner ? "d-flex" : "d-none"} vw-100 vh-100 flex-column text-center align-items-center justify-content-center`} style={{ position: 'absolute', zIndex: 99999, background: 'rgba(255,255,255,0.6)' }}>
         <ClipLoader color={'#04abc1'} loading={true} size={80} />
       </div>
 
@@ -144,13 +144,13 @@ function Admin({ ...rest }) {
 
 const mapStateToProps = (state) => {
   return {
-      showSpinner: state?.globalReducer?.showSpinner,
+    showSpinner: state?.globalReducer?.showSpinner,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-      
+
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Admin);
