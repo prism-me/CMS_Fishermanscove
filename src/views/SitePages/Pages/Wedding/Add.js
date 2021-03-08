@@ -21,7 +21,7 @@ import { useParams } from "react-router-dom";
 import API from "utils/http";
 import FAQSection from "../Common/FAQSection";
 
-const website_url = "http://fishermanscove-resort.com/";
+const website_url = "https://fishermanscove-resort.com/";
 
 const useStyles = makeStyles((theme) => ({
   root: {

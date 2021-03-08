@@ -18,8 +18,9 @@ const dashboardStyle = {
     display: "inline-flex",
     fontSize: "12px",
     lineHeight: "22px",
+    alignItems:'center',
     "& svg": {
-      top: "4px",
+      top: "0px",
       width: "16px",
       height: "16px",
       position: "relative",
@@ -27,7 +28,7 @@ const dashboardStyle = {
       marginLeft: "3px"
     },
     "& .fab,& .fas,& .far,& .fal,& .material-icons": {
-      top: "4px",
+      top: "0px",
       fontSize: "16px",
       position: "relative",
       marginRight: "3px",

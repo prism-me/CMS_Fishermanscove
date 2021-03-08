@@ -28,7 +28,7 @@ import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "http://fishermanscove-resort.com/dining-inner/";
+const website_url = "https://fishermanscove-resort.com/dining-inner/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -95,7 +95,6 @@ export default withRouter(function DiningAdd(props) {
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then(response => {
-      debugger;
       if (response.status === 200) {
         setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
       }

@@ -42,6 +42,7 @@ import API from "utils/http";
 import { Avatar, Checkbox, IconButton } from "@material-ui/core";
 import { AddOutlined, Check, DeleteOutlined, PlaylistAddOutlined } from "@material-ui/icons";
 import AddTodoDialog from "./AddTodoDialog";
+import WeddingDetailDialog from "./WeddingDetailDialog";
 
 const useStyles = makeStyles(styles);
 
@@ -55,7 +56,11 @@ export default function Dashboard() {
   });
   const [recents, setRecents] = useState([]);
   const [todos, setTodos] = useState([]);
+  const [weddings, setWeddings] = useState([]);
+  const [subscribers, setSubscribers] = useState([]);
+  const [currentWedding, setCurrentWedding] = useState(null);
   const [showAddTodo, setShowAddTodo] = useState(false);
+  const [showWedding, setShowWedding] = useState(false);
 
   useEffect(() => {
     API.get('/dashboard_counts').then(response => {
@@ -72,6 +77,18 @@ export default function Dashboard() {
           if (response?.status === 200) {
             setTodos(response.data)
           }
+        }).then(() => {
+          API.get('/get_bookweddings').then(response => {
+            if (response?.status === 200) {
+              setWeddings(response.data)
+            }
+          }).then(() => {
+            API.get('/get_subscribers').then(response => {
+              if (response?.status === 200) {
+                setSubscribers(response.data)
+              }
+            })
+          })
         })
       })
     })
@@ -370,7 +387,7 @@ export default function Dashboard() {
               <hr />
               {
                 recents?.map(x => (
-                  <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
+                  <div key={x.post_name} className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
                     <p style={{ width: '10%' }}>
                       <Avatar src={x.thumbnail} style={{ width: '30px', height: '30px' }} />
                     </p>
@@ -389,8 +406,103 @@ export default function Dashboard() {
             </CardBody>
           </Card>
         </GridItem>
+        {/* WEDDING FORM DATA */}
+        <GridItem xs={12} sm={12} md={6}>
+          <Card>
+            <CardHeader color="warning">
+              <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
+                <div>
+                  <h4 className="mb-0">Wedding Forms</h4>
+                  <p className={classes.cardCategoryWhite}>
+                    List of all wedding forms data.
+                  </p>
+                </div>
+                <div>
+                  <IconButton color="default" style={{ color: '#fff' }} onClick={() => setShowAddTodo(true)}>
+                    <AddOutlined />
+                  </IconButton>
+                </div>
+              </div>
+            </CardHeader>
+            <CardBody style={{ height: '300px', overflowY: 'scroll' }}>
+              <div className="d-flex align-items-center mb-2" style={{ justifyContent: 'space-between' }}>
+                <small style={{ width: '30%', marginBottom: 0, fontWeight: 500 }}>
+                  Name
+                </small>
+                <small style={{ width: '30%', marginBottom: 0, fontWeight: 500 }}>
+                  Email
+                </small>
+                <small style={{ width: '20%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
+                  Date
+                </small>
+              </div>
+              {
+                weddings?.map((x, index) => (
+                  <div onClick={() => {
+                    setCurrentWedding(weddings[index]);
+                    setShowWedding(true);
+                  }} className="d-flex align-items-center img-thumbnail mb-2" style={{ justifyContent: 'space-between', cursor: 'pointer' }}>
+                    <p title={x.todo_description} style={{ width: '30%', marginBottom: 0 }}>
+                      {x.name}
+                    </p>
+                    <p style={{ width: '30%', marginBottom: 0 }}>
+                      {x.email}
+                    </p>
+                    <p style={{ width: '20%', marginBottom: 0, textAlign: 'center' }}>
+                      {new Date(x.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))
+              }
+            </CardBody>
+          </Card>
+        </GridItem>
+        <GridItem xs={12} sm={12} md={6}>
+          <Card>
+            <CardHeader color="info">
+              <h4 className="mb-0">Subscribers List</h4>
+              <p className={classes.cardCategoryWhite}>
+                List of subscribers
+              </p>
+            </CardHeader>
+            <CardBody style={{ height: '300px', overflowY: 'scroll' }}>
+              <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
+                <p style={{ marginBottom: 0, width: '40%' }}>
+                  <b>Email</b>
+                </p>
+                <p style={{ marginBottom: 0, width: '40%' }}>
+                  <b>Joined</b>
+                </p>
+                <p style={{ marginBottom: 0, width: '20%' }}>
+                  <b>Enroled</b>
+                </p>
+              </div>
+              <hr />
+              {
+                subscribers?.map(x => (
+                  <div key={x.post_name} className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
+                    <p style={{ width: '40%' }}>
+                      {x.email}
+                    </p>
+                    <p style={{ width: '40%' }}>
+                      {new Date(x.created_at).toLocaleDateString()}
+                    </p>
+                    <p style={{ width: '20%' }}>
+                      <Checkbox
+                        defaultChecked
+                        tabIndex={-1}
+                        size="small"
+                      />
+                    </p>
+                  </div>
+                ))
+              }
+            </CardBody>
+          </Card>
+        </GridItem>
       </GridContainer>
       <AddTodoDialog success={() => { getTodos(); setShowAddTodo(false) }} onClose={() => setShowAddTodo(false)} open={showAddTodo} />
+      <WeddingDetailDialog onClose={() => setShowWedding(false)} open={showWedding} wedding={currentWedding} />
     </div>
   );
 }

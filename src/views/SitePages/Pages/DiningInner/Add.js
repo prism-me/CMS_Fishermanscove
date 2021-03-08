@@ -35,7 +35,7 @@ import API from "utils/http";
 import FAQSection from "../Common/FAQSection";
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "http://fishermanscove-resort.com/";
+const website_url = "https://fishermanscove-resort.com/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -151,7 +151,6 @@ export default function AddDiningInner() {
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then(response => {
-      debugger;
       if (response.status === 200) {
         setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
       }
@@ -182,7 +181,6 @@ export default function AddDiningInner() {
   }
 
   const handleImageSelect = (e, index, section) => {
-    debugger;
     if (e.target.checked) {
       if (isSingle && thumbnailPreview !== "") {
         alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");

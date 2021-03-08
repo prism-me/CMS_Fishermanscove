@@ -28,7 +28,7 @@ import API from "utils/http";
 import { useParams } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "http://fishermanscove-resort.com/";
+const website_url = "https://fishermanscove-resort.com/";
 
 const useStyles = makeStyles((theme) => ({
   root: {

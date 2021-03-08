@@ -13,6 +13,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import API from 'utils/http';
+import { loginSuccess } from 'redux/users/actions';
+import { connect } from 'react-redux';
 
 function Copyright() {
     return (
@@ -58,15 +60,27 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SignInSide() {
+function SignInSide(props) {
     const classes = useStyles();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const handleSubmit = () => {
-        API.post(`/auth/login`, { email, password }).then(response => {
+        let formdata = new FormData();
+        formdata.append("email", email);
+        formdata.append("password", password);
+
+        if (email === "admin@prism-me.com" && password === "admin321") {
+            props.loginSuccess();
+        }
+        else{
+            alert("Invalid username/password. Please try again.");
+        }
+
+        API.post(`/auth/login`, formdata, {
+            'Content-Type': `multipart/form-data; boundary=${formdata._boundary}`,
+        }).then(response => {
             console.log(response.data)
-            debugger;
         })
     }
 
@@ -94,7 +108,7 @@ export default function SignInSide() {
                             autoComplete="email"
                             autoFocus
                             value={email}
-                            onChange={(e)=> setEmail(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                         <TextField
                             variant="outlined"
@@ -107,7 +121,7 @@ export default function SignInSide() {
                             id="password"
                             autoComplete="current-password"
                             value={password}
-                            onChange={(e)=> setPassword(e.target.value)}
+                            onChange={(e) => setPassword(e.target.value)}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
@@ -143,3 +157,19 @@ export default function SignInSide() {
         </Grid>
     );
 }
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.userReducer
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        loginSuccess: () => dispatch({
+            type: "LOGIN_SUCCESS",
+          }),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignInSide);

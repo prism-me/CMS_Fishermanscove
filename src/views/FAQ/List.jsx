@@ -73,7 +73,6 @@ const FAQList = (props) => {
 
   const handleDelete = (sectionIndex, contentIndex) => {
     let updatedFAQ = faqList[sectionIndex];
-    debugger;
     //parsing to JSON as the data is stringified
     let updatedSectionContent = JSON.parse(updatedFAQ.section_content);
     //deleting index item
@@ -85,7 +84,14 @@ const FAQList = (props) => {
       if (response.status === 200) {
         alert("FAQ added successfully !");
       }
-    }).catch(err => console.log(err))
+    }).then(()=>{
+      API.get('/faqs').then(response => {
+        if (response.status === 200) {
+          setFaqList(response.data)
+        }
+      })
+    })
+    .catch(err => console.log(err))
   }
 
   const handleSubmit = () => {
@@ -103,7 +109,14 @@ const FAQList = (props) => {
       if (response.status === 200) {
         alert("FAQ added successfully !");
       }
-    }).catch(err => console.log(err))
+    }).then(()=>{
+      API.get('/faqs').then(response => {
+        if (response.status === 200) {
+          setFaqList(response.data)
+        }
+      })
+    })
+    .catch(err => console.log(err))
   }
 
   return (

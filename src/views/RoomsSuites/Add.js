@@ -40,7 +40,7 @@ import { useParams, withRouter } from "react-router-dom";
 // import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "http://fishermanscove-resort.com/rooms-inner/";
+const website_url = "https://fishermanscove-resort.com/rooms-inner/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -120,6 +120,12 @@ export default withRouter(function AddRoom(props) {
     let updatedRoom = { ...room };
     updatedRoom[e.target.name] = e.target.value;
     setRoom(updatedRoom);
+    if (e.target.name === "post_name") {
+      let updatedValue = e.target.value.replace(/\s+/g, '-')
+      updatedValue = updatedValue.replace(/--/g, '-')
+      updatedRoom["route"] = website_url + updatedValue.toLowerCase();
+      setRoom(updatedRoom);
+    }
   }
 
   const handleRouteChange = (e) => {
@@ -127,7 +133,7 @@ export default withRouter(function AddRoom(props) {
     let splitValues = e.target.value.split(website_url);
     let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
     updatedValue = updatedValue.replace(/--/g, '-')
-    updatedRoom[e.target.name] = website_url + updatedValue;
+    updatedRoom[e.target.name] = website_url + updatedValue.toLowerCase();
     setRoom(updatedRoom);
   }
 
@@ -151,48 +157,6 @@ export default withRouter(function AddRoom(props) {
       }
     };
     reader.readAsDataURL(file);
-  }
-
-
-  const handleMultipleFileChange = (e) => {
-    let files = e.target.files || e.dataTransfer.files;
-    if (!files.length) return;
-    let imagesObject = [];
-
-    Object.entries(files).map((x, i) => {
-      return imagesObject.push({
-        avatar: x[1],
-        post_id,
-        alt_tag: '',
-        is360: false
-      });
-    })
-    setRoomImages([...roomImages, ...imagesObject])
-  }
-
-  const handleImageAltChange = (e, index) => {
-    let updatedRoomImages = [...roomImages];
-    updatedRoomImages[index].alt_tag = e.target.value;
-    setRoomImages(updatedRoomImages)
-  }
-
-  const handleMultipleSubmit = () => {
-    let imagesFormData = new FormData();
-    roomImages.forEach(x => {
-      imagesFormData.append("images", x)
-    })
-    API.post(`/multiple_upload`, imagesFormData, {
-      headers: {
-        'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
-      }
-    }).then(response => {
-      if (response.status === 200) {
-        alert("Images uploaded successfully");
-        setRoomImages([]);
-        props.history.push('/admin/room-suites');
-      }
-    }).catch(err => alert("Something went wrong"));
-
   }
 
   const handleImageSelect = (e, index) => {
@@ -223,7 +187,7 @@ export default withRouter(function AddRoom(props) {
       if (isSingle) {
         setRoom({ ...room, thumbnail: "" })
         setThumbnailPreview("")
-      }else{
+      } else {
         setSelectedImages(selectedImages.filter(x => x !== imagesData[index].id));
       }
       setImagesData(imagesData.map((x, i) => {
@@ -241,6 +205,7 @@ export default withRouter(function AddRoom(props) {
 
   const handleSubmit = () => {
     let finalRoom = room;
+    finalRoom.route = finalRoom.route.split(website_url)?.[1];
     finalRoom.images_list = JSON.stringify(selectedImages);
     finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed},${finalRoom.is_followed}`;
     if (isEdit) {
@@ -347,8 +312,8 @@ export default withRouter(function AddRoom(props) {
                       :
                       <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                     :
-                    typeof(room.thumbnail) === typeof(0) ?
-                    // room.thumbnail && room.thumbnail !== "" ?
+                    typeof (room.thumbnail) === typeof (0) ?
+                      // room.thumbnail && room.thumbnail !== "" ?
                       <img src={thumbnailPreview} alt={room.alt_text || ""} />
                       :
                       <img src={room.thumbnail} alt={room.alt_text || ""} />

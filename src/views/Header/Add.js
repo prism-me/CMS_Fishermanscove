@@ -99,7 +99,6 @@ export default function UpdateHeader() {
     const response = await API.get('/get_widgets/header');
     if (response.status === 200) {
       const { data } = response;
-      // debugger;
       const menuItems = data.find(x => x.widget_name === "menuItems");
       const contact = data.find(x => x.widget_name === "contact");
       setHeaderContent({
@@ -119,7 +118,7 @@ export default function UpdateHeader() {
     let updatedItems = [...headerContent.menuItems];
     updatedItems[index][e.target.name] = e.target.value;
     setHeaderContent({ ...headerContent, menuItems: updatedItems });
-    setPagesFilter(pagesFilter.filter(x => x.post_name !== e.target.value))
+    // setPagesFilter(pagesFilter.filter(x => x.post_name !== e.target.value))
   }
 
   const handleContactItemChange = (e) => {
@@ -128,19 +127,11 @@ export default function UpdateHeader() {
     setHeaderContent({ ...headerContent, contact: updatedContact });
   }
 
-  const handleFileChange = (e) => {
-    let files = e.target.files || e.dataTransfer.files;
-    if (!files.length)
-      return;
-    createImage(files[0]);
-  }
-
-  const createImage = (file) => {
-    // let reader = new FileReader();
-    // reader.onload = (e) => {
-    //   setDining({ ...dining, thumbnail: e.target.result })
-    // };
-    // reader.readAsDataURL(file);
+  const addNewLink = () => {
+    if (headerContent.menuItems?.length > 0) {
+      setPagesFilter(pagesFilter.filter(x => x.post_name !== headerContent.menuItems[headerContent.menuItems.length - 1]?.text))
+    }
+    setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', temp_id: headerContent.menuItems.length + 1, order: headerContent.menuItems.length + 1 }] })
   }
 
   const handleDrag = (ev) => {
@@ -211,7 +202,7 @@ export default function UpdateHeader() {
                       className={"mb-3"}
                       // size="small"
                       color="primary"
-                      onClick={() => setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', temp_id: headerContent.menuItems.length + 1, order: headerContent.menuItems.length + 1 }] })}
+                      onClick={addNewLink}
                     >
                       Add a New Link
                     </MaterialButton>
@@ -241,9 +232,10 @@ export default function UpdateHeader() {
                                 id={`address${x.temp_id}`}
                                 name="address"
                                 label="URL"
-                                value={x.address}
+                                value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase())?.route || ""}
                                 variant="outlined"
                                 fullWidth
+                                disabled
                                 onChange={(e) => handleMenuItemChange(e, index)}
                                 size="small"
                               />
