@@ -84,15 +84,15 @@ const dashboardRoutes = [
     component: DashboardPage,
     layout: "/admin"
   },
-  {
-    path: "/login",
-    name: "Login",
-    rtlName: "لوحة القيادة",
-    icon: Dashboard,
-    component: SignInSide,
-    layout: "/",
-    hide:true
-  },
+  // {
+  //   path: "/login",
+  //   name: "Login",
+  //   rtlName: "لوحة القيادة",
+  //   icon: Dashboard,
+  //   component: SignInSide,
+  //   layout: "/",
+  //   hide:true
+  // },
   {
     path: "/room-suites",
     name: "Rooms & Suites",

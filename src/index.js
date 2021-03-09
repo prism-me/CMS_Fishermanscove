@@ -47,27 +47,33 @@ const mapDispatchToProps = (dispatch) => {
 
 const App = connect(mapStateToProps, mapDispatchToProps)((props) => {
   useEffect(() => {
-    console.log(props.user)
+    if (!props.user?.isAuthenticated) {
+      // debugger;
+      hist.replace('/login')
+    }else{
+      hist.replace('/admin')
+    }
   }, [props.user])
 
   console.log(props.user?.isAuthenticated );
   return (
     <Router history={hist}>
       {
-        props.user?.isAuthenticated ?
+        // props.user?.isAuthenticated ?
           <Switch>
+            <Route path="/login" component={SignInSide} />
             <Route path="/admin" component={Admin} />
             <Route path="/rtl" component={RTL} />
             {/* <Route path="/" exact component={Admin} /> */}
             <Redirect exact from="/" to="/admin/dashboard" />
             <Route component={Error404} />
           </Switch>
-          :
-          <Switch>
-            <Route path="/login" component={SignInSide} />
-            {/* <Route path="/" component={SignInSide} /> */}
-            {/* <Redirect from="/" to="/login" /> */}
-          </Switch>
+          // :
+          // <Switch>
+          //   <Route path="/login" component={SignInSide} />
+          //   {/* <Route path="/" component={SignInSide} /> */}
+          //   <Redirect from="/" to="/login" />
+          // </Switch>
       }
     </Router>
   )
