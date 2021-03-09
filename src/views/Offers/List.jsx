@@ -61,7 +61,7 @@ class OffersList extends Component {
       //   }
       // },
       {
-        name: "id",
+        name: "route",
         label: "Actions",
         options: {
           filter: false,

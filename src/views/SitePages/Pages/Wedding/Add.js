@@ -20,6 +20,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
 import FAQSection from "../Common/FAQSection";
+import { Image } from "@material-ui/icons";
+import GalleryDialog from "views/Common/GalleryDialog";
 
 const website_url = "https://fishermanscove-resort.com/";
 
@@ -41,6 +43,17 @@ export default function AddWedding() {
   const pageId = parseInt(useParams().id);
   const classes = useStyles();
   const [wedding, setWedding] = useState({
+    banner: {
+      id: 0,
+      section_name: '',
+      section_content: "<p>Detailed content goes here!</p>",
+      page_id: pageId,
+      section_avatar: '',
+      section_col_arr: 0,
+      section_prior: 1,
+      section_avtar_alt: '',
+      section_slug: 'banner'
+    },
     intro: {
       id: 0,
       section_name: '',
@@ -77,10 +90,22 @@ export default function AddWedding() {
     is_indexed_or_is_followed: '1,1',
   })
 
+
+  const [currentSection, setCurrentSection] = useState("")
+
+  const [imagesData, setImagesData] = useState([])
+  // const [uploadsPreview, setUploadsPreview] = useState(null)
+  // const [selectedImages, setSelectedImages] = useState([])
+  const [showGallery, setShowGallery] = useState(false)
+  const [isSingle, setIsSingle] = useState(true)
+  // const [renderPreviews, setRenderPreviews] = useState(false)
+  const [thumbnailPreview, setThumbnailPreview] = useState('')
+
   useEffect(() => {
     API.get(`/all_sections/${pageId}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
+        const banner = data.find(x => x.section_slug === "banner")
         const intro = data.find(x => x.section_slug === "intro")
         const faq = data.find(x => x.section_slug === "faq")
         if (faq && faq.section_content) {
@@ -90,13 +115,23 @@ export default function AddWedding() {
           {
             intro: intro || wedding.intro,
             faq: faq || wedding.faq,
+            banner: banner || wedding.banner
           }
         )
       }
     });
+    getGalleryImages();
     getSEOInfo();
   }, [])
 
+
+  const getGalleryImages = () => {
+    API.get(`/uploads`).then(response => {
+      if (response.status === 200) {
+        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
+      }
+    })
+  }
   const getSEOInfo = () => {
     API.get(`/meta`).then(response => {
       if (response.status === 200) {
@@ -105,7 +140,7 @@ export default function AddWedding() {
           seoInfoData.is_indexed = JSON.parse(seoInfoData.is_indexed)
           seoInfoData.is_followed = JSON.parse(seoInfoData.is_followed)
         }
-        else{
+        else {
           seoInfoData = seoInfo
         }
         setSeoInfo(seoInfoData);
@@ -124,6 +159,46 @@ export default function AddWedding() {
     updatedSeoInfo[e.target.name] = e.target.value;
     setSeoInfo(updatedSeoInfo);
   }
+
+
+  const handleImageSelect = (e, index, section) => {
+    if (e.target.checked) {
+      if (isSingle && thumbnailPreview !== "") {
+        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+        return;
+      } else {
+        setWedding({ ...wedding, [section]: { ...wedding[section], section_avatar: imagesData[index].id } })
+        setThumbnailPreview(imagesData[index].avatar)
+
+        let imagesDataUpdated = imagesData.map((x, i) => {
+          if (i === index) {
+            return {
+              ...x,
+              isChecked: true
+            }
+          } else {
+            return x
+          }
+        });
+        setImagesData(imagesDataUpdated);
+      }
+    } else {
+      setWedding({ ...wedding, [section]: { ...wedding[section], section_avatar: "" } })
+      setThumbnailPreview("")
+
+      setImagesData(imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: false
+          }
+        } else {
+          return x
+        }
+      }));
+    }
+  }
+
 
   const handleRouteChange = (e) => {
     let updatedSeoInfo = { ...seoInfo };
@@ -188,6 +263,78 @@ export default function AddWedding() {
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
+            {/* ******************* */}
+            {/* SECTION BANNER */}
+            {/* ******************* */}
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panelaa-content"
+                id="panelaa-header"
+              >
+                <Typography className={classes.heading}>Banner</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    {/* SECTION TITLE */}
+                    <TextField
+                      required
+                      id="section_name"
+                      name="section_name"
+                      label="Section Title"
+                      value={wedding.banner.section_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "banner")}
+                      size="medium"
+                      style={{ marginBottom: '1rem' }}
+                    />
+
+                    <div className="thumbnail-preview-wrapper-large img-thumbnail">
+                      {
+                        !wedding.banner.id > 0 ?
+                          thumbnailPreview && thumbnailPreview !== "" ?
+                            <img src={thumbnailPreview} alt={wedding.banner.section_avtar_alt || ""} />
+                            :
+                            <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                          :
+                          typeof (wedding.banner.section_avatar) === typeof (0) ?
+                            // dining.thumbnail && dining.thumbnail !== "" ?
+                            <img src={thumbnailPreview} alt={wedding.banner.section_avtar_alt || ""} />
+                            :
+                            <img src={wedding.banner.section_avatar} alt={wedding.banner.section_avtar_alt || ""} />
+                      }
+                    </div>
+                    <Fragment>
+                      <MaterialButton
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<Image />}
+                        className="mt-1"
+                        fullWidth
+                        size="large"
+                        onClick={() => {
+                          setIsSingle(true);
+                          setCurrentSection("intro");
+                          setShowGallery(true);
+                        }}
+                      >
+                        Upload Featured Image
+                          </MaterialButton>
+                    </Fragment>
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={() => handleSubmit(wedding.banner.id, "banner")} size="large" color="primary" variant="contained">
+                      Update Section
+                    </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            {/* ******************* */}
+            {/* SECTION 1 */}
+            {/* ******************* */}
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -364,6 +511,12 @@ export default function AddWedding() {
           </CardBody>
         </Card>
       </div>
+      {/* GALLERY DIALOG BOX START */}
+      <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
+        setShowGallery(false);
+        // setRenderPreviews(true);
+      }} refreshGallery={getGalleryImages} data={imagesData} />
+      {/* GALLERY DIALOG BOX END */}
     </div>
   );
 }

@@ -119,13 +119,12 @@ export default withRouter(function AddRoom(props) {
   const handleInputChange = (e) => {
     let updatedRoom = { ...room };
     updatedRoom[e.target.name] = e.target.value;
-    setRoom(updatedRoom);
     if (e.target.name === "post_name") {
       let updatedValue = e.target.value.replace(/\s+/g, '-')
       updatedValue = updatedValue.replace(/--/g, '-')
       updatedRoom["route"] = website_url + updatedValue.toLowerCase();
-      setRoom(updatedRoom);
     }
+    setRoom(updatedRoom);
   }
 
   const handleRouteChange = (e) => {

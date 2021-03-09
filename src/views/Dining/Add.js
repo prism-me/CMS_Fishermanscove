@@ -104,6 +104,11 @@ export default withRouter(function DiningAdd(props) {
   const handleInputChange = (e) => {
     let updatedDining = { ...dining };
     updatedDining[e.target.name] = e.target.value;
+    if (e.target.name === "post_name") {
+      let updatedValue = e.target.value.replace(/\s+/g, '-')
+      updatedValue = updatedValue.replace(/--/g, '-')
+      updatedDining["route"] = website_url + updatedValue.toLowerCase();
+    }
     setDining(updatedDining);
   }
 
@@ -112,7 +117,7 @@ export default withRouter(function DiningAdd(props) {
     let splitValues = e.target.value.split(website_url);
     let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
     updatedValue = updatedValue.replace(/--/g, '-')
-    updatedDining[e.target.name] = website_url + updatedValue;
+    updatedDining[e.target.name] = website_url + updatedValue.toLowerCase();
     setDining(updatedDining);
   }
 

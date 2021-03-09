@@ -28,7 +28,7 @@ import API from "utils/http";
 import { useParams } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "https://fishermanscove-resort.com/";
+const website_url = "https://fishermanscove-resort.com/offers/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -112,6 +112,11 @@ export default function AddOffer(props) {
   const handleInputChange = (e) => {
     let updatedOffer = { ...offer };
     updatedOffer[e.target.name] = e.target.value;
+    if (e.target.name === "post_name") {
+      let updatedValue = e.target.value.replace(/\s+/g, '-')
+      updatedValue = updatedValue.replace(/--/g, '-')
+      updatedOffer["route"] = website_url + updatedValue.toLowerCase();
+    }
     setOffer(updatedOffer);
   }
 
@@ -120,7 +125,7 @@ export default function AddOffer(props) {
     let splitValues = e.target.value.split(website_url);
     let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
     updatedValue = updatedValue.replace(/--/g, '-')
-    updatedOffer[e.target.name] = website_url + updatedValue;
+    updatedOffer[e.target.name] = website_url + updatedValue.toLowerCase();
     setOffer(updatedOffer);
   }
 
