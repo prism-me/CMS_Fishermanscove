@@ -80,7 +80,7 @@ class PageList extends Component {
           filter: false,
           sort: false,
           customBodyRender: (val, row) => {
-            return <Link to={`/admin/pages/${row.tableData?.[row.rowIndex]?.route}/add/${val}`} >
+            return <Link to={`/admin/pages/${row.tableData?.[row.rowIndex]?.inner_route}/add/${val}`} >
               {/* <EditOutlined color="primary" /> */}
               <Button size="small" color="primary" variant="outlined">
                 Update Sections

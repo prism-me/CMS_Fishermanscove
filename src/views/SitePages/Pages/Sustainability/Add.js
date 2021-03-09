@@ -53,6 +53,17 @@ export default function AddSustainability() {
   const pageId = parseInt(useParams().id);
   const classes = useStyles();
   const [sustainability, setSustainability] = useState({
+    banner: {
+      id: 0,
+      section_name: '',
+      section_content: "<p>Detailed content goes here!</p>",
+      page_id: pageId,
+      section_avatar: '',
+      section_col_arr: 0,
+      section_prior: 1,
+      section_avtar_alt: '',
+      section_slug: 'banner'
+    },
     intro: {
       id: 0,
       section_name: '',
@@ -131,6 +142,9 @@ export default function AddSustainability() {
             projects: data.find(x => x.section_slug === "projects") || sustainability.projects,
             pillars: data.find(x => x.section_slug === "pillars") || sustainability.pillars,
             energy: data.find(x => x.section_slug === "energy") || sustainability.energy,
+            energy: data.find(x => x.section_slug === "energy") || sustainability.energy,
+            banner: data.find(x => x.section_slug === "banner") || sustainability.banner,
+
           }
         )
       }
@@ -148,17 +162,15 @@ export default function AddSustainability() {
   }
 
   const getSEOInfo = () => {
-    API.get(`/meta`).then(response => {
+    API.get(`/meta/${pageId}`).then(response => {
       if (response.status === 200) {
-        let seoInfoData = response.data?.find(x => x.post_id == pageId);
+        let seoInfoData = response.data;
         if (seoInfoData) {
-          seoInfoData.is_indexed = JSON.parse(seoInfoData.is_indexed)
-          seoInfoData.is_followed = JSON.parse(seoInfoData.is_followed)
+          setSeoInfo(seoInfoData);
         }
         else {
-          seoInfoData = seoInfo
+          seoInfoData(seoInfo);
         }
-        setSeoInfo(seoInfoData);
       }
     })
   }

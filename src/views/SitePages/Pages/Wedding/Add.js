@@ -133,17 +133,17 @@ export default function AddWedding() {
     })
   }
   const getSEOInfo = () => {
-    API.get(`/meta`).then(response => {
+    API.get(`/meta/${pageId}`).then(response => {
       if (response.status === 200) {
-        let seoInfoData = response.data?.find(x => x.post_id == pageId);
+        let seoInfoData = response.data;
         if (seoInfoData) {
-          seoInfoData.is_indexed = JSON.parse(seoInfoData.is_indexed)
-          seoInfoData.is_followed = JSON.parse(seoInfoData.is_followed)
+          // seoInfoData.is_indexed = JSON.parse(seoInfoData.is_indexed)
+          // seoInfoData.is_followed = JSON.parse(seoInfoData.is_followed)
+          setSeoInfo({ ...seoInfo, ...seoInfoData });
         }
         else {
-          seoInfoData = seoInfo
+          seoInfoData(seoInfoData)
         }
-        setSeoInfo(seoInfoData);
       }
     })
   }
@@ -228,6 +228,8 @@ export default function AddWedding() {
 
   const handleSEOSubmit = () => {
     let updatedSeoInfo = seoInfo;
+    updatedSeoInfo.route = updatedSeoInfo.route.split(website_url)?.[1];
+
     updatedSeoInfo.is_indexed_or_is_followed = `${updatedSeoInfo.is_indexed},${updatedSeoInfo.is_followed}`;
 
     if (updatedSeoInfo.id > 0) {
@@ -316,7 +318,7 @@ export default function AddWedding() {
                         size="large"
                         onClick={() => {
                           setIsSingle(true);
-                          setCurrentSection("intro");
+                          setCurrentSection("banner");
                           setShowGallery(true);
                         }}
                       >

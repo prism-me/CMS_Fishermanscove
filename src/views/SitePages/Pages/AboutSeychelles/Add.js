@@ -123,19 +123,17 @@ export default function AddAboutSeychelles() {
       }
     })
   }
-
+  
   const getSEOInfo = () => {
-    API.get(`/meta`).then(response => {
+    API.get(`/meta/${pageId}`).then(response => {
       if (response.status === 200) {
-        let seoInfoData = response.data?.find(x => x.post_id == pageId);
+        let seoInfoData = response.data;
         if (seoInfoData) {
-          seoInfoData.is_indexed = JSON.parse(seoInfoData.is_indexed)
-          seoInfoData.is_followed = JSON.parse(seoInfoData.is_followed)
+          setSeoInfo(seoInfoData);
         }
         else {
-          seoInfoData = seoInfo
+          seoInfoData(seoInfo);
         }
-        setSeoInfo(seoInfoData);
       }
     })
   }
