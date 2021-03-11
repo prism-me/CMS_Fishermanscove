@@ -114,9 +114,11 @@ export default function UpdateHeader() {
     // });
   }
 
-  const handleMenuItemChange = (e, index) => {
+  const handleMenuItemChange = (e, index, inner_route) => {
+    debugger;
     let updatedItems = [...headerContent.menuItems];
     updatedItems[index][e.target.name] = e.target.value;
+    updatedItems[index]["inner_route"] = inner_route;
     setHeaderContent({ ...headerContent, menuItems: updatedItems });
     // setPagesFilter(pagesFilter.filter(x => x.post_name !== e.target.value))
   }
@@ -131,7 +133,7 @@ export default function UpdateHeader() {
     if (headerContent.menuItems?.length > 0) {
       setPagesFilter(pagesFilter.filter(x => x.post_name !== headerContent.menuItems[headerContent.menuItems.length - 1]?.text))
     }
-    setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', temp_id: headerContent.menuItems.length + 1, order: headerContent.menuItems.length + 1 }] })
+    setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', temp_id: headerContent.menuItems.length + 1, order: headerContent.menuItems.length + 1, inner_route: "" }] })
   }
 
   const handleDrag = (ev) => {
@@ -219,7 +221,7 @@ export default function UpdateHeader() {
                                   options={pagesFilter}
                                   size="small"
                                   value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase()) || { post_name: "" }}
-                                  onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, index, pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase())?.inner_route) || ""}
+                                  onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, index, pages.find(p => p.post_name?.toLowerCase() === newValue?.post_name?.toLowerCase())?.inner_route) || ""}
                                   getOptionLabel={(option) => option.post_name}
                                   // style={{ width: 300 }}
                                   renderInput={(params) => <TextField required {...params} label="Select Link Text" variant="outlined" />}
