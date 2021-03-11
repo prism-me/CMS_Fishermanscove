@@ -1,48 +1,25 @@
 import React, { Fragment, Suspense, useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
-// core components
-// import GridItem from "components/Grid/GridItem.js";
-// import GridContainer from "components/Grid/GridContainer.js";
-// import CustomInput from "components/CustomInput/CustomInput.js";
 import Grid from '@material-ui/core/Grid';
-// import Paper from '@material-ui/core/Paper';
 
-import Button from "components/CustomButtons/Button.js";
 import MaterialButton from '@material-ui/core/Button';
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-// import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
 
-// import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel, Collapse, Paper } from "@material-ui/core";
+import {TextField, Paper } from "@material-ui/core";
 import Autocomplete from '@material-ui/lab/Autocomplete';
-// import Accordion from '@material-ui/core/Accordion';
-// import AccordionSummary from '@material-ui/core/AccordionSummary';
-// import AccordionDetails from '@material-ui/core/AccordionDetails';
-// import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
-import { Image } from "@material-ui/icons";
-import { Link } from "react-router-dom";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
-import InboxIcon from '@material-ui/icons/Inbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
 
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import API from "utils/http";
-import { func } from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -115,7 +92,6 @@ export default function UpdateHeader() {
   }
 
   const handleMenuItemChange = (e, index, inner_route) => {
-    debugger;
     let updatedItems = [...headerContent.menuItems];
     updatedItems[index][e.target.name] = e.target.value;
     updatedItems[index]["inner_route"] = inner_route;

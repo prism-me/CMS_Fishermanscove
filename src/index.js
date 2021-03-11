@@ -48,7 +48,6 @@ const mapDispatchToProps = (dispatch) => {
 const App = connect(mapStateToProps, mapDispatchToProps)((props) => {
   useEffect(() => {
     if (!props.user?.isAuthenticated) {
-      // debugger;
       hist.replace('/login')
     }else{
       hist.replace('/admin')
