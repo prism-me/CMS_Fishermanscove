@@ -68,6 +68,7 @@ export default withRouter(function AddRoom(props) {
     room_type: -1,
     parent_id: -1,
     thumbnail: '',
+    banner_img: '',
     alt_text: '',
     meta_title: '',
     meta_description: '',
@@ -93,6 +94,8 @@ export default withRouter(function AddRoom(props) {
   const [isSingle, setIsSingle] = useState(false)
   const [renderPreviews, setRenderPreviews] = useState(false)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
+  const [isBanner, setIsBanner] = useState(false)
+  const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState('')
 
   useEffect(() => {
     if (id && id != null) {
@@ -136,57 +139,49 @@ export default withRouter(function AddRoom(props) {
     setRoom(updatedRoom);
   }
 
-  const handleFileChange = (e) => {
-    let files = e.target.files || e.dataTransfer.files;
-    if (!files.length)
-      return;
-    createImage(files[0]);
-  }
-
-  const createImage = (file) => {
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      setRoom({ ...room, thumbnail: e.target.result });
-      if (isEdit) {
-        API.patch(`update_upload/${post_id}/rooms-suites`, {
-          thumbnail: e.target.result
-        }).then(response => {
-          console.log(response)
-        })
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-
   const handleImageSelect = (e, index) => {
     if (e.target.checked) {
-      if (isSingle && thumbnailPreview !== "") {
-        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
-        return;
-      } else {
-        if (isSingle) {
-          setRoom({ ...room, thumbnail: imagesData[index].id })
-          setThumbnailPreview(imagesData[index].avatar)
-        } else {
-          setSelectedImages([...selectedImages, imagesData[index].id]);
-        }
-        let imagesDataUpdated = imagesData.map((x, i) => {
-          if (i === index) {
-            return {
-              ...x,
-              isChecked: true
-            }
-          } else {
-            return x
-          }
-        });
-        setImagesData(imagesDataUpdated);
+      // if (isSingle && thumbnailPreview !== "") {
+      //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+      //   return;
+      // } else {
+      if (isSingle && !isBanner) {
+        setRoom({ ...room, thumbnail: imagesData[index].id })
+        setThumbnailPreview(imagesData[index].avatar)
+        setTimeout(() => {
+          setShowGallery(false);
+        }, 500)
+      } else if (isSingle && isBanner) {
+        setRoom({ ...room, banner_img: imagesData[index].id })
+        setBannerThumbnailPreview(imagesData[index].avatar)
+        setTimeout(() => {
+          setShowGallery(false);
+        }, 500)
       }
+      else {
+        setSelectedImages([...selectedImages, imagesData[index].id]);
+      }
+      let imagesDataUpdated = imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: true
+          }
+        } else {
+          return x
+        }
+      });
+      setImagesData(imagesDataUpdated);
+      // }
     } else {
-      if (isSingle) {
+      if (isSingle && !isBanner) {
         setRoom({ ...room, thumbnail: "" })
         setThumbnailPreview("")
-      } else {
+      } else if (isSingle && isBanner) {
+        setRoom({ ...room, banner_img: "" })
+        setBannerThumbnailPreview("")
+      }
+      else {
         setSelectedImages(selectedImages.filter(x => x !== imagesData[index].id));
       }
       setImagesData(imagesData.map((x, i) => {
@@ -327,6 +322,42 @@ export default withRouter(function AddRoom(props) {
                   fullWidth
                   onClick={() => {
                     setIsSingle(true);
+                    setIsBanner(false);
+                    setShowGallery(true);
+                  }}
+                >
+                  {isEdit ? 'Change' : 'Upload'} Featured Image
+                </MaterialButton>
+              </Fragment>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <hr />
+              <h4>Add Banner Image</h4>
+              <div className="thumbnail-preview-wrapper-large img-thumbnail">
+                {
+                  !isEdit ?
+                    bannerThumbnailPreview && bannerThumbnailPreview !== "" ?
+                      <img src={bannerThumbnailPreview} alt={room.alt_text || ""} />
+                      :
+                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                    :
+                    typeof (room.banner_img) === typeof (0) ?
+                      // room.thumbnail && room.thumbnail !== "" ?
+                      <img src={bannerThumbnailPreview} alt={room.alt_text || ""} />
+                      :
+                      <img src={room.banner_img} alt={room.alt_text || ""} />
+                }
+              </div>
+              <Fragment>
+                <MaterialButton
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Image />}
+                  className="mt-1"
+                  fullWidth
+                  onClick={() => {
+                    setIsSingle(true);
+                    setIsBanner(true);
                     setShowGallery(true);
                   }}
                 >
@@ -441,7 +472,12 @@ export default withRouter(function AddRoom(props) {
           <p><em>Please select images from gallery.</em></p>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12}>
-              <MaterialButton variant="outlined" color="primary" onClick={() => { setRenderPreviews(false); setIsSingle(false); setShowGallery(true) }}>
+              <MaterialButton variant="outlined" color="primary" onClick={() => {
+                setRenderPreviews(false);
+                setIsSingle(false);
+                setIsBanner(false);
+                setShowGallery(true)
+              }}>
                 Select Gallery Images
               </MaterialButton>
             </Grid>
@@ -475,7 +511,7 @@ export default withRouter(function AddRoom(props) {
             }
             <div className="clearfix clear-fix"></div>
             {/* GALLERY DIALOG BOX START */}
-            <GalleryDialog isSingle={isSingle} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
+            <GalleryDialog isSingle={isSingle} isBanner={isBanner} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
               setShowGallery(false);
               setRenderPreviews(true);
             }} refreshGallery={getGalleryImages} data={imagesData} />

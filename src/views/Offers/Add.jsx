@@ -55,6 +55,7 @@ export default function AddOffer(props) {
     short_description: "<p>Short description goes here!</p>",
     room_type: -1,
     thumbnail: '',
+    banner_img: '',
     alt_text: '',
     meta_title: '',
     meta_description: '',
@@ -81,6 +82,8 @@ export default function AddOffer(props) {
   const [isSingle, setIsSingle] = useState(false)
   const [renderPreviews, setRenderPreviews] = useState(false)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
+  const [isBanner, setIsBanner] = useState(false)
+  const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState('')
 
   useEffect(() => {
     if (id && id != null) {
@@ -129,98 +132,53 @@ export default function AddOffer(props) {
     setOffer(updatedOffer);
   }
 
-  const handleFileChange = (e) => {
-    let files = e.target.files || e.dataTransfer.files;
-    if (!files.length)
-      return;
-    createImage(files[0]);
-  }
-
-  const createImage = (file) => {
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      setOffer({ ...offer, thumbnail: e.target.result });
-      if (isEdit) {
-        API.patch(`update_upload/${post_id}/offers`, {
-          thumbnail: e.target.result
-        }).then(response => {
-          console.log(response)
-        })
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-
-  const handleMultipleFileChange = (e) => {
-    let files = e.target.files || e.dataTransfer.files;
-    if (!files.length) return;
-    let imagesObject = [];
-
-    Object.entries(files).map((x, i) => {
-      return imagesObject.push({
-        avatar: x[1],
-        post_id,
-        alt_tag: '',
-        is360: false
-      });
-    })
-    setOfferImages([...offerImages, ...imagesObject])
-  }
-
-  const handleImageAltChange = (e, index) => {
-    let updatedOfferImages = [...offerImages];
-    updatedOfferImages[index].alt_tag = e.target.value;
-    setOfferImages(updatedOfferImages)
-  }
-
-  const handleMultipleSubmit = () => {
-    let imagesFormData = new FormData();
-    offerImages.forEach(x => {
-      imagesFormData.append("images", x)
-    })
-    API.post(`/multiple_upload`, imagesFormData, {
-      headers: {
-        'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
-      }
-    }).then(response => {
-      if (response.status === 200) {
-        alert("Files Uploaded");
-        setOfferImages([]);
-        props.history.push('/admin/weddings');
-      }
-    }).catch(err => alert("Something went wrong"));
-
-  }
-
   const handleImageSelect = (e, index) => {
     if (e.target.checked) {
-      if (isSingle && thumbnailPreview !== "") {
-        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
-        return;
-      } else {
-        if (isSingle) {
-          setOffer({ ...offer, thumbnail: imagesData[index].id })
-          setThumbnailPreview(imagesData[index].avatar)
-        } else {
-          setSelectedImages([...selectedImages, imagesData[index].id]);
-        }
-        let imagesDataUpdated = imagesData.map((x, i) => {
-          if (i === index) {
-            return {
-              ...x,
-              isChecked: true
-            }
-          } else {
-            return x
-          }
-        });
-        setImagesData(imagesDataUpdated);
+      // if (isSingle && !isBanner) {
+      // alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+      //   setShowGallery(false);
+      //   return;
+      // } else if (!isSingle && isBanner ) {
+      //   alert("You can only select 1 image for banner. If you want to change image, deselect the image and then select a new one");
+      //   return;
+      // } else {
+      if (isSingle && !isBanner) {
+        setOffer({ ...offer, thumbnail: imagesData[index].id })
+        setThumbnailPreview(imagesData[index].avatar)
+        setTimeout(()=>{
+          setShowGallery(false);
+        }, 500)
+      } else if (!isSingle && isBanner) {
+        setOffer({ ...offer, banner_img: imagesData[index].id })
+        setBannerThumbnailPreview(imagesData[index].avatar)
+        setTimeout(()=>{
+          setShowGallery(false);
+        }, 500)
       }
+      else {
+        setSelectedImages([...selectedImages, imagesData[index].id]);
+      }
+      let imagesDataUpdated = imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: true
+          }
+        } else {
+          return x
+        }
+      });
+      setImagesData(imagesDataUpdated);
+      // }
     } else {
-      if (isSingle) {
+      if (isSingle && !isBanner) {
         setOffer({ ...offer, thumbnail: "" })
         setThumbnailPreview("")
-      } else {
+      } else if (!isSingle && isBanner) {
+        setOffer({ ...offer, banner_img: "" })
+        setBannerThumbnailPreview("")
+      }
+      else {
         setSelectedImages(selectedImages.filter(x => x !== imagesData[index].id));
       }
       setImagesData(imagesData.map((x, i) => {
@@ -302,34 +260,6 @@ export default function AddOffer(props) {
                       size="small"
                     />
                   </Grid>
-                  {/* <Grid item xs={6} sm={5}>
-                    <Fragment>
-                      <input
-                        color="primary"
-                        accept="image/*"
-                        type="file"
-                        onChange={handleFileChange}
-                        fullWidth
-                        id="thumbnail"
-                        name="thumbnail"
-                        style={{ display: 'none', width: '100%' }}
-                      />
-                      <label htmlFor="thumbnail" style={{ width: '100%', height: '100%', margin: 0 }}>
-                        <Button
-                          variant="contained"
-                          component="span"
-                          className={classes.button}
-                          size="sm"
-                          fullWidth
-                          disableElevation={true}
-                          color="primary"
-                          style={{ margin: 0, height: '100%', width: '100%' }}
-                        >
-                          <Image className={classes.extendedIcon} /> {isEdit ? 'Change' : 'Upload'} Featured Image
-                        </Button>
-                      </label>
-                    </Fragment>
-                  </Grid> */}
                   <Grid item xs={12} sm={12}>
                     <FormControl variant="outlined"
                       size="small" fullWidth className={classes.formControl}>
@@ -381,6 +311,7 @@ export default function AddOffer(props) {
                     fullWidth
                     onClick={() => {
                       setIsSingle(true);
+                      setIsBanner(false);
                       setShowGallery(true);
                     }}
                   >
@@ -388,7 +319,41 @@ export default function AddOffer(props) {
                 </MaterialButton>
                 </Fragment>
               </Grid>
-
+              <Grid item xs={12} sm={12}>
+                <hr />
+                <h4>Add Banner Image</h4>
+                <div className="thumbnail-preview-wrapper-large img-thumbnail">
+                  {
+                    !isEdit ?
+                      bannerThumbnailPreview && bannerThumbnailPreview !== "" ?
+                        <img src={bannerThumbnailPreview} alt={offer.alt_text || ""} />
+                        :
+                        <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                      :
+                      typeof (offer.banner_img) === typeof (0) ?
+                        // offer.thumbnail && offer.thumbnail !== "" ?
+                        <img src={bannerThumbnailPreview} alt={offer.alt_text || ""} />
+                        :
+                        <img src={offer.banner_img} alt={offer.alt_text || ""} />
+                  }
+                </div>
+                <Fragment>
+                  <MaterialButton
+                    variant="contained"
+                    color="primary"
+                    startIcon={<Image />}
+                    className="mt-1"
+                    fullWidth
+                    onClick={() => {
+                      setIsSingle(false);
+                      setIsBanner(true);
+                      setShowGallery(true);
+                    }}
+                  >
+                    {isEdit ? 'Change' : 'Upload'} Featured Image
+                </MaterialButton>
+                </Fragment>
+              </Grid>
               <Grid item xs={12} sm={12}>
                 <hr />
                 <h4>Short Description</h4>
@@ -491,7 +456,12 @@ export default function AddOffer(props) {
             <p><em>Please select images from gallery.</em></p>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
-                <MaterialButton variant="outlined" color="primary" onClick={() => { setRenderPreviews(false); setIsSingle(false); setShowGallery(true) }}>
+                <MaterialButton variant="outlined" color="primary" onClick={() => {
+                  setRenderPreviews(false);
+                  setIsSingle(false);
+                  setIsBanner(false);
+                  setShowGallery(true)
+                }}>
                   Select Gallery Images
               </MaterialButton>
               </Grid>
@@ -538,7 +508,7 @@ export default function AddOffer(props) {
           <Grid item xs={12} sm={12}>
             <MaterialButton onClick={handleSubmit} style={{ float: 'right' }} variant="contained" color="primary" size="large">
               Submit
-                </MaterialButton>
+            </MaterialButton>
           </Grid>
         </Grid>
       </div>

@@ -54,6 +54,7 @@ export default withRouter(function DiningAdd(props) {
     room_type: -1,
     parent_id: -1,
     thumbnail: '',
+    banner_img: '',
     alt_text: '',
     meta_title: '',
     meta_description: '',
@@ -78,6 +79,8 @@ export default withRouter(function DiningAdd(props) {
   const [isSingle, setIsSingle] = useState(false)
   const [renderPreviews, setRenderPreviews] = useState(false)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
+  const [isBanner, setIsBanner] = useState(false)
+  const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState('')
 
   useEffect(() => {
     if (id && id != null) {
@@ -123,14 +126,24 @@ export default withRouter(function DiningAdd(props) {
 
   const handleImageSelect = (e, index) => {
     if (e.target.checked) {
-      if (isSingle && thumbnailPreview !== "") {
-        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
-        return;
-      } else {
-        if (isSingle) {
+      // if (isSingle && thumbnailPreview !== "") {
+      //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+      //   return;
+      // } else {
+        if (isSingle && !isBanner) {
           setDining({ ...dining, thumbnail: imagesData[index].id })
           setThumbnailPreview(imagesData[index].avatar)
-        } else {
+          setTimeout(()=>{
+            setShowGallery(false);
+          }, 500)
+        } else if (isSingle && isBanner) {
+          setDining({ ...dining, banner_img: imagesData[index].id })
+          setBannerThumbnailPreview(imagesData[index].avatar)
+          setTimeout(()=>{
+            setShowGallery(false);
+          }, 500)
+        }
+        else {
           setSelectedImages([...selectedImages, imagesData[index].id]);
         }
         let imagesDataUpdated = imagesData.map((x, i) => {
@@ -144,12 +157,16 @@ export default withRouter(function DiningAdd(props) {
           }
         });
         setImagesData(imagesDataUpdated);
-      }
+      // }
     } else {
-      if (isSingle) {
+      if (isSingle && !isBanner) {
         setDining({ ...dining, thumbnail: "" })
         setThumbnailPreview("")
-      } else {
+      } else if (isSingle && isBanner) {
+        setDining({ ...dining, banner_img: "" })
+        setBannerThumbnailPreview("")
+      }
+      else {
         setSelectedImages(selectedImages.filter(x => x !== imagesData[index].id));
       }
       setImagesData(imagesData.map((x, i) => {
@@ -258,6 +275,7 @@ export default withRouter(function DiningAdd(props) {
                     fullWidth
                     onClick={() => {
                       setIsSingle(true);
+                      setIsBanner(false);
                       setShowGallery(true);
                     }}
                   >
@@ -265,7 +283,41 @@ export default withRouter(function DiningAdd(props) {
                 </MaterialButton>
                 </Fragment>
               </Grid>
-
+              <Grid item xs={12} sm={12}>
+                <hr />
+                <h4>Add Banner Image</h4>
+                <div className="thumbnail-preview-wrapper-large img-thumbnail">
+                  {
+                    !isEdit ?
+                      bannerThumbnailPreview && bannerThumbnailPreview !== "" ?
+                        <img src={bannerThumbnailPreview} alt={dining.alt_text || ""} />
+                        :
+                        <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                      :
+                      typeof (dining.banner_img) === typeof (0) ?
+                        // dining.thumbnail && dining.thumbnail !== "" ?
+                        <img src={bannerThumbnailPreview} alt={dining.alt_text || ""} />
+                        :
+                        <img src={dining.banner_img} alt={dining.alt_text || ""} />
+                  }
+                </div>
+                <Fragment>
+                  <MaterialButton
+                    variant="contained"
+                    color="primary"
+                    startIcon={<Image />}
+                    className="mt-1"
+                    fullWidth
+                    onClick={() => {
+                      setIsSingle(true);
+                      setIsBanner(true);
+                      setShowGallery(true);
+                    }}
+                  >
+                    {isEdit ? 'Change' : 'Upload'} Featured Image
+                </MaterialButton>
+                </Fragment>
+              </Grid>
               <Grid item xs={12} sm={12}>
                 <hr />
                 <h4 className="mt-2">Short Description</h4>
@@ -367,7 +419,12 @@ export default withRouter(function DiningAdd(props) {
             <p><em>Please select images from gallery.</em></p>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
-                <MaterialButton variant="outlined" color="primary" onClick={() => { setRenderPreviews(false); setIsSingle(false); setShowGallery(true) }}>
+                <MaterialButton variant="outlined" color="primary" onClick={() => {
+                  setRenderPreviews(false); 
+                  setIsSingle(false); 
+                  setIsBanner(false);
+                  setShowGallery(true)
+                }}>
                   Select Gallery Images
               </MaterialButton>
               </Grid>
