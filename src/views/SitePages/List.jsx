@@ -100,7 +100,7 @@ class PageList extends Component {
 
   componentDidMount() {
     API.get('/pages').then(response => {
-      let rows = response.data;
+      let rows = response.data?.filter(x=> x.customized_page == 1);
       // let rows = data.map(x=> {
       //   return {
 

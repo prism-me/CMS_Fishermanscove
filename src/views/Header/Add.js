@@ -219,7 +219,7 @@ export default function UpdateHeader() {
                                   options={pagesFilter}
                                   size="small"
                                   value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase()) || { post_name: "" }}
-                                  onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, index)}
+                                  onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, index, pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase())?.inner_route) || ""}
                                   getOptionLabel={(option) => option.post_name}
                                   // style={{ width: 300 }}
                                   renderInput={(params) => <TextField required {...params} label="Select Link Text" variant="outlined" />}
