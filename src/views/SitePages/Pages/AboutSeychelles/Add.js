@@ -53,6 +53,17 @@ export default function AddAboutSeychelles() {
   const pageId = parseInt(useParams().id);
   const classes = useStyles();
   const initialObject = {
+    banner: {
+      id: 0,
+      section_name: '',
+      section_content: "<p>Detailed content goes here!</p>",
+      page_id: pageId,
+      section_avatar: '',
+      section_col_arr: 0,
+      section_prior: 1,
+      section_avtar_alt: '',
+      section_slug: 'banner'
+    },
     intro: {
       id: 0,
       section_name: '',
@@ -107,6 +118,7 @@ export default function AddAboutSeychelles() {
         setAboutSeychelles(
           {
             intro: data.find(x => x.section_slug === "intro") || initialObject.intro,
+            banner: data.find(x => x.section_slug === "banner") || initialObject.banner,
             features: initialObject.features,
           }
         )
@@ -253,6 +265,78 @@ export default function AddAboutSeychelles() {
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
+            {/* ******************* */}
+            {/* SECTION BANNER */}
+            {/* ******************* */}
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panelaa-content"
+                id="panelaa-header"
+              >
+                <Typography className={classes.heading}>Banner</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    {/* SECTION TITLE */}
+                    <TextField
+                      required
+                      id="section_name"
+                      name="section_name"
+                      label="Section Title"
+                      value={aboutSeychelles.banner.section_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "banner")}
+                      size="medium"
+                      style={{ marginBottom: '1rem' }}
+                    />
+
+                    <div className="thumbnail-preview-wrapper-large img-thumbnail">
+                      {
+                        !aboutSeychelles.banner.id > 0 ?
+                          thumbnailPreview && thumbnailPreview !== "" ?
+                            <img src={thumbnailPreview} alt={aboutSeychelles.banner.section_avtar_alt || ""} />
+                            :
+                            <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                          :
+                          typeof (aboutSeychelles.banner.section_avatar) === typeof (0) ?
+                            // dining.thumbnail && dining.thumbnail !== "" ?
+                            <img src={thumbnailPreview} alt={aboutSeychelles.banner.section_avtar_alt || ""} />
+                            :
+                            <img src={aboutSeychelles.banner.section_avatar} alt={aboutSeychelles.banner.section_avtar_alt || ""} />
+                      }
+                    </div>
+                    <Fragment>
+                      <MaterialButton
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<Image />}
+                        className="mt-1"
+                        fullWidth
+                        size="large"
+                        onClick={() => {
+                          setIsSingle(true);
+                          setCurrentSection("banner");
+                          setShowGallery(true);
+                        }}
+                      >
+                        Upload Featured Image
+                          </MaterialButton>
+                    </Fragment>
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={() => handleSubmit(aboutSeychelles.banner.id, "banner")} size="large" color="primary" variant="contained">
+                      Update Section
+                    </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            {/* ******************* */}
+            {/* SECTION 1 */}
+            {/* ******************* */}
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}

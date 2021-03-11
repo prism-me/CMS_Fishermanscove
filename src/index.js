@@ -55,7 +55,7 @@ const App = connect(mapStateToProps, mapDispatchToProps)((props) => {
     }
   }, [props.user])
 
-  console.log(props.user?.isAuthenticated );
+  // console.log(props.user?.isAuthenticated );
   return (
     <Router history={hist}>
       {

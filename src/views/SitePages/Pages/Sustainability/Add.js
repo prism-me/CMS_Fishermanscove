@@ -142,7 +142,6 @@ export default function AddSustainability() {
             projects: data.find(x => x.section_slug === "projects") || sustainability.projects,
             pillars: data.find(x => x.section_slug === "pillars") || sustainability.pillars,
             energy: data.find(x => x.section_slug === "energy") || sustainability.energy,
-            energy: data.find(x => x.section_slug === "energy") || sustainability.energy,
             banner: data.find(x => x.section_slug === "banner") || sustainability.banner,
 
           }
@@ -272,6 +271,78 @@ export default function AddSustainability() {
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
+            {/* ******************* */}
+            {/* SECTION BANNER */}
+            {/* ******************* */}
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panelaa-content"
+                id="panelaa-header"
+              >
+                <Typography className={classes.heading}>Banner</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    {/* SECTION TITLE */}
+                    <TextField
+                      required
+                      id="section_name"
+                      name="section_name"
+                      label="Section Title"
+                      value={sustainability.banner.section_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "banner")}
+                      size="medium"
+                      style={{ marginBottom: '1rem' }}
+                    />
+
+                    <div className="thumbnail-preview-wrapper-large img-thumbnail">
+                      {
+                        !sustainability.banner.id > 0 ?
+                          thumbnailPreview && thumbnailPreview !== "" ?
+                            <img src={thumbnailPreview} alt={sustainability.banner.section_avtar_alt || ""} />
+                            :
+                            <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                          :
+                          typeof (sustainability.banner.section_avatar) === typeof (0) ?
+                            // dining.thumbnail && dining.thumbnail !== "" ?
+                            <img src={thumbnailPreview} alt={sustainability.banner.section_avtar_alt || ""} />
+                            :
+                            <img src={sustainability.banner.section_avatar} alt={sustainability.banner.section_avtar_alt || ""} />
+                      }
+                    </div>
+                    <Fragment>
+                      <MaterialButton
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<Image />}
+                        className="mt-1"
+                        fullWidth
+                        size="large"
+                        onClick={() => {
+                          setIsSingle(true);
+                          setCurrentSection("banner");
+                          setShowGallery(true);
+                        }}
+                      >
+                        Upload Featured Image
+                          </MaterialButton>
+                    </Fragment>
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={() => handleSubmit(sustainability.banner.id, "banner")} size="large" color="primary" variant="contained">
+                      Update Section
+                    </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            {/* ******************* */}
+            {/* SECTION 1 */}
+            {/* ******************* */}
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
