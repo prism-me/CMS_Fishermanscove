@@ -18,17 +18,12 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 // import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel, Collapse } from "@material-ui/core";
-// import Accordion from '@material-ui/core/Accordion';
-// import AccordionSummary from '@material-ui/core/AccordionSummary';
-// import AccordionDetails from '@material-ui/core/AccordionDetails';
-// import Typography from '@material-ui/core/Typography';
+import { TextField, Paper } from "@material-ui/core";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
-import { Image } from "@material-ui/icons";
-import { Link } from "react-router-dom";
-import FooterPreview from "./Preview";
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -39,8 +34,6 @@ import API from "utils/http";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    // width:'60%',
-    // margin:'auto'
   },
   paper: {
     padding: theme.spacing(2),
@@ -71,28 +64,47 @@ export default function UpdateFooter() {
     }
   }
 
+  const [dragId, setDragId] = useState();
   const [footerContent, setFooterContent] = useState({ ...initialObject })
+  const [pages, setPages] = useState([])
+  const [pagesFilter, setPagesFilter] = useState([])
 
   useEffect(() => {
-    getFooterData();
+    async function getData() {
+      const menuItems = await getFooterData();
+      API.get('/pages').then(response => {
+        setPages(response.data);
+        let filteredArray = response.data?.filter(function (array_el) {
+          return menuItems.filter(function (menuItems_el) {
+            return menuItems_el.text == array_el.post_name;
+          }).length == 0
+        });
+        setPagesFilter(filteredArray)
+        // })
+      })
+    }
+    getData()
   }, [])
 
-  const getFooterData = () => {
-    API.get('/get_widgets/footer').then(response => {
-      if (response.status === 200) {
-        const { data } = response;
-        const first = data.find(x => x.widget_name === "first");
-        const second = data.find(x => x.widget_name === "second");
-        const third = data.find(x => x.widget_name === "third");
-        const social = data.find(x => x.widget_name === "social");
-        setFooterContent({
-          first: first ? { id: first.id, ...JSON.parse(first.items) } : initialObject.first,
-          second: second ? { id: second.id, ...JSON.parse(second.items) } : initialObject.second,
-          third: third ? { id: third.id, ...JSON.parse(third.items) } : initialObject.third,
-          social: social ? { id: social.id, ...JSON.parse(social.items) } : initialObject.social,
-        })
-      }
-    })
+  const getFooterData = async () => {
+    const response = await API.get('/get_widgets/footer')
+    if (response.status === 200) {
+      const { data } = response;
+      const first = data.find(x => x.widget_name === "first");
+      const second = data.find(x => x.widget_name === "second");
+      const third = data.find(x => x.widget_name === "third");
+      const social = data.find(x => x.widget_name === "social");
+      setFooterContent({
+        first: first ? { id: first.id, ...JSON.parse(first.items) } : initialObject.first,
+        second: second ? { id: second.id, ...JSON.parse(second.items) } : initialObject.second,
+        third: third ? { id: third.id, ...JSON.parse(third.items) } : initialObject.third,
+        social: social ? { id: social.id, ...JSON.parse(social.items) } : initialObject.social,
+      })
+      return second?.links ? JSON.parse(second?.links) : initialObject.second.links;
+    } else {
+      return []
+    }
+    // })
   }
 
   const handleInputChange = (e, section) => {
@@ -107,20 +119,62 @@ export default function UpdateFooter() {
     setFooterContent(updatedFooterContent);
   }
 
-  // const handleFileChange = (e) => {
-  //   let files = e.target.files || e.dataTransfer.files;
-  //   if (!files.length)
-  //     return;
-  //   createImage(files[0]);
-  // }
+  const addNewLink = () => {
+    if (footerContent.second.links?.length > 0) {
+      setPagesFilter(pagesFilter.filter(x => x.post_name !== footerContent.second.links[footerContent.second.links.length - 1]?.text))
+    }
+    setFooterContent(
+      {
+        ...footerContent,
+        second: {
+          ...footerContent.second,
+          links: [
+            ...footerContent.second.links,
+            {
+              text: '',
+              address: '',
+              temp_id: footerContent.second.links.length + 1,
+              order: footerContent.second.links.length + 1,
+              inner_route: ""
+            }
+          ]
+        }
+      }
+    )
+  }
 
-  // const createImage = (file) => {
-  //   let reader = new FileReader();
-  //   reader.onload = (e) => {
-  //     setDining({ ...dining, thumbnail: e.target.result })
-  //   };
-  //   reader.readAsDataURL(file);
-  // }
+  const handleMenuItemChange = (e, index, inner_route) => {
+    let updatedItems = [...footerContent.second.links];
+    updatedItems[index][e.target.name] = e.target.value;
+    updatedItems[index]["inner_route"] = inner_route;
+    setFooterContent({ ...footerContent, second: { ...footerContent.second, links: updatedItems } });
+    // setPagesFilter(pagesFilter.filter(x => x.post_name !== e.target.value))
+  }
+
+  const handleDrag = (ev) => {
+    setDragId(ev.currentTarget.id);
+  };
+
+  const handleDrop = (ev) => {
+    const dragBox = footerContent.second.links.find((box) => box.temp_id == dragId);
+    const dropBox = footerContent.second.links.find((box) => box.temp_id == ev.currentTarget.id);
+
+    const dragBoxOrder = dragBox.order;
+    const dropBoxOrder = dropBox.order;
+
+    const updatedMenuItems = footerContent.second.links.map((box) => {
+      if (box.temp_id == dragId) {
+        box.order = dropBoxOrder;
+      }
+      if (box.temp_id == ev.currentTarget.id) {
+        box.order = dragBoxOrder;
+      }
+      return box;
+    });
+
+    setFooterContent({ ...footerContent, second: { ...footerContent.second, links: updatedMenuItems } });
+  };
+
 
   const handleSubmit = (section) => {
     API[footerContent[section]?.id ? "put" : "post"](footerContent[section]?.id ? `/widget/${footerContent[section]?.id}` : `/widget`, {
@@ -190,6 +244,95 @@ export default function UpdateFooter() {
               <AccordionDetails>
                 {/* <h4 className="mt-4"></h4> */}
                 <Grid container spacing={2}>
+                  <Grid item xs={12} sm={8}>
+
+                    <Grid container spacing={2}>
+                      {
+                        footerContent.second?.links?.sort((a, b) => a.order - b.order).map((x, index) => (
+                          <React.Fragment key={x.temp_id}>
+                            <Grid item xs={12} sm={4}>
+                              {
+                                pages?.length > 0 &&
+                                <Autocomplete
+                                  id={`text${x.temp_id}`}
+                                  name="text"
+                                  options={pagesFilter}
+                                  size="small"
+                                  value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase()) || { post_name: "" }}
+                                  onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, index, pages.find(p => p.post_name?.toLowerCase() === newValue?.post_name?.toLowerCase())?.inner_route) || ""}
+                                  getOptionLabel={(option) => option.post_name}
+                                  // style={{ width: 300 }}
+                                  renderInput={(params) => <TextField required {...params} label="Select Link Text" variant="outlined" />}
+                                />
+                              }
+                            </Grid>
+                            <Grid item xs={12} sm={4}>
+                              <TextField
+                                required
+                                id={`address${x.temp_id}`}
+                                name="address"
+                                label="URL"
+                                value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase())?.route || ""}
+                                variant="outlined"
+                                fullWidth
+                                disabled
+                                onChange={(e) => handleMenuItemChange(e, index)}
+                                size="small"
+                              />
+                            </Grid>
+                            <Grid item xs={12} sm={4}>
+                              <MaterialButton onClick={() => setFooterContent({ ...footerContent, second: { ...footerContent.second, links: footerContent.second.links.filter(z => z.temp_id !== x.temp_id) } })} color="secondary" size="small" variant="outlined" style={{ height: '100%' }}>
+                                Delete Link
+                              </MaterialButton>
+                            </Grid>
+                          </React.Fragment>
+                        ))
+                      }
+
+                      <Grid item xs={12}>
+                        <MaterialButton
+                          variant="outlined"
+                          component="span"
+                          className={"mb-3"}
+                          // size="small"
+                          color="primary"
+                          onClick={addNewLink}
+                        >
+                          Add a New Link
+                        </MaterialButton>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <MaterialButton disabled={footerContent.second.links?.length < 1} onClick={() => handleSubmit("second")} color="primary" variant="contained">
+                          Update Section
+                        </MaterialButton>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+
+                  <Grid item xs={12} sm={4}>
+                    <p>Drag and Drop the items to Re-Arrange the order</p>
+                    {
+                      footerContent.second?.links?.length > 0 ?
+
+                        <Paper>
+                          <List component="nav" aria-label="main mailbox folders">
+                            {
+                              footerContent.second?.links?.sort((a, b) => a.order - b.order).map(x => (
+                                <ListItem key={x.text} style={{ borderBottom: '1px solid #ddd', zIndex: 9999 }} button id={x.temp_id} draggable onDragStart={handleDrag} onDrop={handleDrop} onDragOver={(ev) => ev.preventDefault()} >
+                                  <ListItemText primary={x.text} />
+                                </ListItem>
+                              ))
+                            }
+                          </List>
+                        </Paper>
+                        :
+                        <em>No items added yet</em>
+                    }
+                  </Grid>
+
+
+                </Grid>
+                {/* <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <MaterialButton
                       variant="outlined"
@@ -197,7 +340,7 @@ export default function UpdateFooter() {
                       className={classes.button}
                       size="small"
                       color="primary"
-                      onClick={() => setFooterContent({ ...footerContent, second: { ...footerContent.second, links: [...footerContent.second.links, { id: footerContent.second.links.length + 1, text: '', address: '' }] } })}
+                      onClick={addNewLink}
                     >
                       Add a New Link
                     </MaterialButton>
@@ -244,7 +387,7 @@ export default function UpdateFooter() {
                       Update Section
                   </MaterialButton>
                   </Grid>
-                </Grid>
+                </Grid> */}
               </AccordionDetails>
             </Accordion>
             <Accordion>

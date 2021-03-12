@@ -8,7 +8,7 @@ import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 
-import {TextField, Paper } from "@material-ui/core";
+import { TextField, Paper } from "@material-ui/core";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import List from '@material-ui/core/List';
@@ -146,7 +146,7 @@ export default function UpdateHeader() {
     }).then(response => {
       if (response.status === 200) {
         alert(response.data.message);
-        window.location.reload();
+        // window.location.reload();
         // setHeaderContent({ ...initialObject }); //resetting the form
       }
     }).catch(err => alert("Something went wrong"));
@@ -174,16 +174,7 @@ export default function UpdateHeader() {
                   {/* <Grid item xs={12}>
                   </Grid> */}
                   <Grid item xs={12} sm={8}>
-                    <MaterialButton
-                      variant="outlined"
-                      component="span"
-                      className={"mb-3"}
-                      // size="small"
-                      color="primary"
-                      onClick={addNewLink}
-                    >
-                      Add a New Link
-                    </MaterialButton>
+
                     <Grid container spacing={2}>
                       {
                         headerContent?.menuItems?.sort((a, b) => a.order - b.order).map((x, index) => (
@@ -226,6 +217,19 @@ export default function UpdateHeader() {
                           </React.Fragment>
                         ))
                       }
+
+                      <Grid item xs={12}>
+                        <MaterialButton
+                          variant="outlined"
+                          component="span"
+                          className={"mb-3"}
+                          // size="small"
+                          color="primary"
+                          onClick={addNewLink}
+                        >
+                          Add a New Link
+                        </MaterialButton>
+                      </Grid>
                       <Grid item xs={12}>
                         <MaterialButton disabled={headerContent.menuItems?.length < 1} onClick={() => handleSubmit("menuItems")} color="primary" variant="contained">
                           Update Section
