@@ -93,24 +93,26 @@ export default function UpdateHeader() {
     // });
   }
 
-  const handleMenuItemChange = (e, index, inner_route) => {
+  const handleMenuItemChange = (e, route, index, inner_route) => {
     let updatedItems = [...headerContent.menuItems];
     updatedItems[index][e.target.name] = e.target.value;
+    updatedItems[index]["address"] = route;
     updatedItems[index]["inner_route"] = inner_route;
     setHeaderContent({ ...headerContent, menuItems: updatedItems });
     // setPagesFilter(pagesFilter.filter(x => x.post_name !== e.target.value))
   }
 
-  const handleSubMenuItemChange = (e, index, ind, inner_route) => {
+  const handleSubMenuItemChange = (e, route, index, ind, inner_route) => {
     let updatedHeaderContent = { ...headerContent };
     let updatedSubMenu = [...updatedHeaderContent.menuItems[index].subMenu];
 
-    if(updatedSubMenu.find(x => x.text === e.target.value)?.text){
+    if (updatedSubMenu.find(x => x.text === e.target.value)?.text) {
       alert("Submenu item already added. Please select different");
       return;
     }
 
     updatedSubMenu[ind][e.target.name] = e.target.value;
+    updatedSubMenu[ind]["address"] = route;
     updatedSubMenu[ind]["inner_route"] = inner_route;
 
     updatedHeaderContent.menuItems[index].subMenu = updatedSubMenu;
@@ -269,7 +271,7 @@ export default function UpdateHeader() {
                                         options={pagesFilter}
                                         size="small"
                                         value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase()) || { post_name: "" }}
-                                        onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, index, pages.find(p => p.post_name?.toLowerCase() === newValue?.post_name?.toLowerCase())?.inner_route) || ""}
+                                        onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, newValue.route, index, pages.find(p => p.post_name?.toLowerCase() === newValue?.post_name?.toLowerCase())?.inner_route) || ""}
                                         getOptionLabel={(option) => option.post_name}
                                         // style={{ width: 300 }}
                                         renderInput={(params) => <TextField required {...params} label="Select Link Text" variant="outlined" />}
@@ -326,7 +328,7 @@ export default function UpdateHeader() {
                                               options={pages}
                                               size="small"
                                               value={pages.find(p => p.post_name?.toLowerCase() === y.text?.toLowerCase()) || { post_name: "" }}
-                                              onChange={(e, newValue) => handleSubMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, index, ind, pages.find(p => p.post_name?.toLowerCase() === newValue?.post_name?.toLowerCase())?.inner_route) || ""}
+                                              onChange={(e, newValue) => handleSubMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, newValue.route, index, ind, pages.find(p => p.post_name?.toLowerCase() === newValue?.post_name?.toLowerCase())?.inner_route) || ""}
                                               getOptionLabel={(option) => option.post_name}
                                               // style={{ width: 300 }}
                                               renderInput={(params) => <TextField required {...params} label="Select Link Text" variant="outlined" />}

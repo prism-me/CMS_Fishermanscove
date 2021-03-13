@@ -249,7 +249,11 @@ export default function AddWedding() {
   }
 
   const handleSubmit = (id, name) => {
-    API.post(`/add_section`, wedding[name]).then(response => {
+    let updatedWedding = { ...wedding };
+    if (name === "faq") {
+      updatedWedding.faq.section_content = JSON.stringify(updatedWedding.faq.section_content)
+    }
+    API.post(`/add_section`, updatedWedding[name]).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }

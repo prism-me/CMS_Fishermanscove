@@ -28,7 +28,9 @@ import API from "utils/http";
 import { useParams } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "https://fishermanscove-resort.com/offers/";
+
+const website_url = "https://fishermanscove-resort.com/";
+const append_url = "offers/"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,7 +63,7 @@ export default function AddOffer(props) {
     meta_description: '',
     schema_markup: '',
     post_url: '',
-    route: website_url,
+    route: website_url + append_url,
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: "1,1",
@@ -118,17 +120,17 @@ export default function AddOffer(props) {
     if (e.target.name === "post_name") {
       let updatedValue = e.target.value.replace(/\s+/g, '-')
       updatedValue = updatedValue.replace(/--/g, '-')
-      updatedOffer["route"] = website_url + updatedValue.toLowerCase();
+      updatedOffer["route"] = website_url + append_url + updatedValue.toLowerCase();
     }
     setOffer(updatedOffer);
   }
 
   const handleRouteChange = (e) => {
     let updatedOffer = { ...offer };
-    let splitValues = e.target.value.split(website_url);
+    let splitValues = e.target.value.split(website_url+append_url);
     let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
     updatedValue = updatedValue.replace(/--/g, '-')
-    updatedOffer[e.target.name] = website_url + updatedValue.toLowerCase();
+    updatedOffer[e.target.name] = website_url + append_url + updatedValue.toLowerCase();
     setOffer(updatedOffer);
   }
 
@@ -145,13 +147,13 @@ export default function AddOffer(props) {
       if (isSingle && !isBanner) {
         setOffer({ ...offer, thumbnail: imagesData[index].id })
         setThumbnailPreview(imagesData[index].avatar)
-        setTimeout(()=>{
+        setTimeout(() => {
           setShowGallery(false);
         }, 500)
       } else if (!isSingle && isBanner) {
         setOffer({ ...offer, banner_img: imagesData[index].id })
         setBannerThumbnailPreview(imagesData[index].avatar)
-        setTimeout(()=>{
+        setTimeout(() => {
           setShowGallery(false);
         }, 500)
       }

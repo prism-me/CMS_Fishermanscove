@@ -28,7 +28,8 @@ import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "https://fishermanscove-resort.com/dining-inner/";
+const website_url = "https://fishermanscove-resort.com/";
+const append_url = "dining-inner/"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,7 +61,7 @@ export default withRouter(function DiningAdd(props) {
     meta_description: '',
     schema_markup: '',
     post_url: '',
-    route: website_url,
+    route: website_url + append_url,
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: '1,1',
@@ -110,17 +111,17 @@ export default withRouter(function DiningAdd(props) {
     if (e.target.name === "post_name") {
       let updatedValue = e.target.value.replace(/\s+/g, '-')
       updatedValue = updatedValue.replace(/--/g, '-')
-      updatedDining["route"] = website_url + updatedValue.toLowerCase();
+      updatedDining["route"] = website_url + append_url + updatedValue.toLowerCase();
     }
     setDining(updatedDining);
   }
 
   const handleRouteChange = (e) => {
     let updatedDining = { ...dining };
-    let splitValues = e.target.value.split(website_url);
+    let splitValues = e.target.value.split(website_url + append_url);
     let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
     updatedValue = updatedValue.replace(/--/g, '-')
-    updatedDining[e.target.name] = website_url + updatedValue.toLowerCase();
+    updatedDining[e.target.name] = website_url + append_url + updatedValue.toLowerCase();
     setDining(updatedDining);
   }
 
@@ -130,33 +131,33 @@ export default withRouter(function DiningAdd(props) {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-        if (isSingle && !isBanner) {
-          setDining({ ...dining, thumbnail: imagesData[index].id })
-          setThumbnailPreview(imagesData[index].avatar)
-          setTimeout(()=>{
-            setShowGallery(false);
-          }, 500)
-        } else if (isSingle && isBanner) {
-          setDining({ ...dining, banner_img: imagesData[index].id })
-          setBannerThumbnailPreview(imagesData[index].avatar)
-          setTimeout(()=>{
-            setShowGallery(false);
-          }, 500)
-        }
-        else {
-          setSelectedImages([...selectedImages, imagesData[index].id]);
-        }
-        let imagesDataUpdated = imagesData.map((x, i) => {
-          if (i === index) {
-            return {
-              ...x,
-              isChecked: true
-            }
-          } else {
-            return x
+      if (isSingle && !isBanner) {
+        setDining({ ...dining, thumbnail: imagesData[index].id })
+        setThumbnailPreview(imagesData[index].avatar)
+        setTimeout(() => {
+          setShowGallery(false);
+        }, 500)
+      } else if (isSingle && isBanner) {
+        setDining({ ...dining, banner_img: imagesData[index].id })
+        setBannerThumbnailPreview(imagesData[index].avatar)
+        setTimeout(() => {
+          setShowGallery(false);
+        }, 500)
+      }
+      else {
+        setSelectedImages([...selectedImages, imagesData[index].id]);
+      }
+      let imagesDataUpdated = imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: true
           }
-        });
-        setImagesData(imagesDataUpdated);
+        } else {
+          return x
+        }
+      });
+      setImagesData(imagesDataUpdated);
       // }
     } else {
       if (isSingle && !isBanner) {
@@ -185,6 +186,7 @@ export default withRouter(function DiningAdd(props) {
   const handleSubmit = () => {
     let finalDining = dining;
     finalDining.images_list = JSON.stringify(selectedImages);
+    finalDining.route = finalDining.route.split(website_url)?.[1];
     finalDining.is_indexed_or_is_followed = `${finalDining.is_indexed},${finalDining.is_followed}`
 
     if (isEdit) {
@@ -420,8 +422,8 @@ export default withRouter(function DiningAdd(props) {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
                 <MaterialButton variant="outlined" color="primary" onClick={() => {
-                  setRenderPreviews(false); 
-                  setIsSingle(false); 
+                  setRenderPreviews(false);
+                  setIsSingle(false);
                   setIsBanner(false);
                   setShowGallery(true)
                 }}>
