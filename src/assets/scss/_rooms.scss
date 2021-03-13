@@ -245,3 +245,11 @@
         }
     }
 }
+
+.header-menu-list-item {
+    box-shadow: 0 0 3px rgba($color: #000000, $alpha: .2) !important;
+    cursor: pointer;
+    &:hover{
+        box-shadow: 0 0 10px rgba($color: #000000, $alpha: .15) !important;
+    }
+}

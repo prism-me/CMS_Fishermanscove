@@ -233,7 +233,7 @@ const dashboardRoutes = [
   },
   {
     path: "/gallery",
-    name: "Gallery",
+    name: "Media",
     rtlName: "ملف تعريفي للمستخدم",
     icon: ViewCarouselOutlined,
     component: GalleryList,

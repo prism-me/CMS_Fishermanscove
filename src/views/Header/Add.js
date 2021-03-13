@@ -20,6 +20,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import API from "utils/http";
+import { AddCircleOutline, AddCircleOutlined, CloseOutlined, DragHandleOutlined } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,6 +49,7 @@ export default function UpdateHeader() {
     }
   }
   const [dragId, setDragId] = useState();
+  const [submenuDragId, setSubmenuDragId] = useState();
   const [headerContent, setHeaderContent] = useState({ ...initialObject })
   const [pages, setPages] = useState([])
   const [pagesFilter, setPagesFilter] = useState([])
@@ -99,6 +101,24 @@ export default function UpdateHeader() {
     // setPagesFilter(pagesFilter.filter(x => x.post_name !== e.target.value))
   }
 
+  const handleSubMenuItemChange = (e, index, ind, inner_route) => {
+    let updatedHeaderContent = { ...headerContent };
+    let updatedSubMenu = [...updatedHeaderContent.menuItems[index].subMenu];
+
+    if(updatedSubMenu.find(x => x.text === e.target.value)?.text){
+      alert("Submenu item already added. Please select different");
+      return;
+    }
+
+    updatedSubMenu[ind][e.target.name] = e.target.value;
+    updatedSubMenu[ind]["inner_route"] = inner_route;
+
+    updatedHeaderContent.menuItems[index].subMenu = updatedSubMenu;
+    setHeaderContent(updatedHeaderContent);
+    // setPagesFilter(pagesFilter.filter(x => x.post_name !== e.target.value))
+  }
+
+
   const handleContactItemChange = (e) => {
     let updatedContact = { ...headerContent.contact };
     updatedContact[e.target.name] = e.target.value;
@@ -110,6 +130,32 @@ export default function UpdateHeader() {
       setPagesFilter(pagesFilter.filter(x => x.post_name !== headerContent.menuItems[headerContent.menuItems.length - 1]?.text))
     }
     setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', temp_id: headerContent.menuItems.length + 1, order: headerContent.menuItems.length + 1, inner_route: "" }] })
+  }
+
+  const addSubmenu = (index) => {
+    setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', temp_id: headerContent.menuItems.length + 1, order: headerContent.menuItems.length + 1, inner_route: "" }] })
+
+    let updatedHeaderContent = { ...headerContent };
+
+    let subMenu = updatedHeaderContent.menuItems[index].subMenu || [];
+
+    updatedHeaderContent.menuItems[index].subMenu = [...subMenu, {
+      text: '',
+      address: '',
+      temp_id: subMenu.length + 1,
+      order: subMenu.length + 1,
+      inner_route: ""
+    }]
+
+    setHeaderContent(updatedHeaderContent);
+
+  }
+
+  const deleteSubmenuLink = (index, ind) => {
+    let updatedHeaderContent = { ...headerContent };
+    let updatedSubMenu = updatedHeaderContent.menuItems[index].subMenu?.filter((x, i) => i !== ind);
+    updatedHeaderContent.menuItems[index].subMenu = updatedSubMenu;
+    setHeaderContent(updatedHeaderContent);
   }
 
   const handleDrag = (ev) => {
@@ -134,6 +180,33 @@ export default function UpdateHeader() {
     });
 
     setHeaderContent({ ...headerContent, menuItems: updatedMenuItems });
+  };
+
+
+  const handleSubMenuDrag = (ev) => {
+    setSubmenuDragId(ev.currentTarget.id);
+  };
+
+  const handleSubMenuDrop = (ev, index) => {
+    const dragBox = headerContent.menuItems[index]?.subMenu?.find((box) => box.temp_id == submenuDragId);
+    const dropBox = headerContent.menuItems[index]?.subMenu?.find((box) => box.temp_id == ev.currentTarget.id);
+
+    const dragBoxOrder = dragBox.order;
+    const dropBoxOrder = dropBox.order;
+
+    const updatedSubMenuItems = headerContent.menuItems[index]?.subMenu?.map((box) => {
+      if (box.temp_id == submenuDragId) {
+        box.order = dropBoxOrder;
+      }
+      if (box.temp_id == ev.currentTarget.id) {
+        box.order = dragBoxOrder;
+      }
+      return box;
+    });
+    let updatedHeaderContent = { ...headerContent };
+    updatedHeaderContent.menuItems[index].subMenu = updatedSubMenuItems;
+
+    setHeaderContent(updatedHeaderContent);
   };
 
   const handleSubmit = (section) => {
@@ -173,47 +246,124 @@ export default function UpdateHeader() {
                 <Grid container spacing={2}>
                   {/* <Grid item xs={12}>
                   </Grid> */}
-                  <Grid item xs={12} sm={8}>
+                  <Grid item xs={12} sm={12}>
 
                     <Grid container spacing={2}>
                       {
                         headerContent?.menuItems?.sort((a, b) => a.order - b.order).map((x, index) => (
-                          <React.Fragment key={x.temp_id}>
-                            <Grid item xs={12} sm={4}>
-                              {
-                                pages?.length > 0 &&
-                                <Autocomplete
-                                  id={`text${x.temp_id}`}
-                                  name="text"
-                                  options={pagesFilter}
-                                  size="small"
-                                  value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase()) || { post_name: "" }}
-                                  onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, index, pages.find(p => p.post_name?.toLowerCase() === newValue?.post_name?.toLowerCase())?.inner_route) || ""}
-                                  getOptionLabel={(option) => option.post_name}
-                                  // style={{ width: 300 }}
-                                  renderInput={(params) => <TextField required {...params} label="Select Link Text" variant="outlined" />}
-                                />
-                              }
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                              <TextField
-                                required
-                                id={`address${x.temp_id}`}
-                                name="address"
-                                label="URL"
-                                value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase())?.route || ""}
-                                variant="outlined"
-                                fullWidth
-                                disabled
-                                onChange={(e) => handleMenuItemChange(e, index)}
-                                size="small"
-                              />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                              <MaterialButton onClick={() => setHeaderContent({ ...headerContent, menuItems: headerContent.menuItems.filter(z => z.temp_id !== x.temp_id) })} color="secondary" size="small" variant="outlined" style={{ height: '100%' }}>
-                                Delete Link
+                          <React.Fragment >
+                            <Grid item xs={12} sm={12}>
+                              <Paper className="px-2 py-3 header-menu-list-item" key={x.temp_id} id={x.temp_id} draggable onDragStart={handleDrag} onDrop={handleDrop} onDragOver={(ev) => ev.preventDefault()}>
+
+                                <Grid container spacing={1}>
+                                  <Grid item xs={12} sm={1} style={{ display: 'flex', alignItems: 'center' }}>
+                                    <DragHandleOutlined style={{ cursor: 'pointer' }} color="disabled" />
+                                  </Grid>
+
+                                  <Grid item xs={12} sm={4}>
+                                    {
+                                      pages?.length > 0 &&
+                                      <Autocomplete
+                                        id={`text${x.temp_id}`}
+                                        name="text"
+                                        options={pagesFilter}
+                                        size="small"
+                                        value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase()) || { post_name: "" }}
+                                        onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, index, pages.find(p => p.post_name?.toLowerCase() === newValue?.post_name?.toLowerCase())?.inner_route) || ""}
+                                        getOptionLabel={(option) => option.post_name}
+                                        // style={{ width: 300 }}
+                                        renderInput={(params) => <TextField required {...params} label="Select Link Text" variant="outlined" />}
+                                      />
+                                    }
+                                  </Grid>
+                                  <Grid item xs={12} sm={4}>
+                                    <TextField
+                                      required
+                                      id={`address${x.temp_id}`}
+                                      name="address"
+                                      label="URL"
+                                      value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase())?.route || ""}
+                                      variant="outlined"
+                                      fullWidth
+                                      disabled
+                                      onChange={(e) => handleMenuItemChange(e, index)}
+                                      size="small"
+                                    />
+                                  </Grid>
+                                  <Grid item xs={12} sm={2}>
+                                    <MaterialButton onClick={() => setHeaderContent({ ...headerContent, menuItems: headerContent.menuItems.filter(z => z.temp_id !== x.temp_id) })} color="secondary" size="small" variant="outlined" style={{ height: '100%' }}>
+                                      Delete Link
                               </MaterialButton>
+                                  </Grid>
+
+                                  <Grid item xs={12} sm={1} style={{ display: 'flex', alignItems: 'center' }}>
+                                    <AddCircleOutline style={{ cursor: 'pointer' }} titleAccess="Add submenu" onClick={() => addSubmenu(index)} color="primary" />
+                                  </Grid>
+                                </Grid>
+
+                                {/* ************************* */}
+                                {/* SUBMENU LOGIC STARTS HERE */}
+                                {/* ************************* */}
+                                <div className={x.subMenu?.length > 0 ? '' : 'd-none'} style={{ border: '1px dashed #3f50b5', borderRadius: '4px', margin: '1rem 0', padding: '1rem' }}>
+                                  <Typography color="primary" variant="caption">SUBMENU</Typography>
+                                  {x.subMenu?.sort((a, b) => a.order - b.order).map((y, ind) => (
+
+                                    <Paper className="px-2 py-2 mt-2 header-menu-list-item" key={y.temp_id} id={y.temp_id} draggable onDragStart={handleSubMenuDrag} onDrop={(ev) => handleSubMenuDrop(ev, index)} onDragOver={(ev) => ev.preventDefault()}>
+
+                                      <Grid container spacing={1}>
+                                        <Grid item xs={12} sm={1} style={{ display: 'flex', alignItems: 'center' }}>
+                                        </Grid>
+                                        <Grid item xs={12} sm={1} style={{ display: 'flex', alignItems: 'center' }}>
+                                          <DragHandleOutlined style={{ cursor: 'pointer' }} color="disabled" />
+                                        </Grid>
+
+                                        <Grid item xs={12} sm={4}>
+                                          {
+                                            pages?.length > 0 &&
+                                            <Autocomplete
+                                              id={`text${y.temp_id}`}
+                                              name="text"
+                                              options={pages}
+                                              size="small"
+                                              value={pages.find(p => p.post_name?.toLowerCase() === y.text?.toLowerCase()) || { post_name: "" }}
+                                              onChange={(e, newValue) => handleSubMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, index, ind, pages.find(p => p.post_name?.toLowerCase() === newValue?.post_name?.toLowerCase())?.inner_route) || ""}
+                                              getOptionLabel={(option) => option.post_name}
+                                              // style={{ width: 300 }}
+                                              renderInput={(params) => <TextField required {...params} label="Select Link Text" variant="outlined" />}
+                                            />
+                                          }
+                                        </Grid>
+                                        <Grid item xs={12} sm={4}>
+                                          <TextField
+                                            required
+                                            id={`address${y.temp_id}`}
+                                            name="address"
+                                            label="URL"
+                                            value={pages.find(p => p.post_name?.toLowerCase() === y.text?.toLowerCase())?.route || ""}
+                                            variant="outlined"
+                                            fullWidth
+                                            disabled
+                                            onChange={(e) => handleSubMenuItemChange(e, ind)}
+                                            size="small"
+                                          />
+                                        </Grid>
+                                        <Grid item xs={12} sm={1} style={{ display: 'flex', alignItems: 'center' }}>
+                                          <CloseOutlined onClick={() => deleteSubmenuLink(index, ind)} color="secondary" fontSize="small" variant="outlined" style={{ cursor: 'pointer' }} />
+                                        </Grid>
+
+                                        {/* <Grid item xs={12} sm={1} style={{ display: 'flex', alignItems: 'center' }}>
+                                        <AddCircleOutline style={{ cursor: 'pointer' }} onClick={() => addSubmenu(ind)} color="primary" />
+                                      </Grid> */}
+                                      </Grid>
+                                    </Paper>
+                                  ))}
+                                </div>
+                                {/* ************************* */}
+                                {/* SUBMENU LOGIC ENDS HERE */}
+                                {/* ************************* */}
+                              </Paper>
                             </Grid>
+
                           </React.Fragment>
                         ))
                       }
@@ -230,7 +380,7 @@ export default function UpdateHeader() {
                           Add a New Link
                         </MaterialButton>
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid item xs={12} style={{ alignItems: 'flex-end', display: 'flex', justifyContent: 'flex-end' }}>
                         <MaterialButton disabled={headerContent.menuItems?.length < 1} onClick={() => handleSubmit("menuItems")} color="primary" variant="contained">
                           Update Section
                         </MaterialButton>
@@ -238,7 +388,7 @@ export default function UpdateHeader() {
                     </Grid>
 
                   </Grid>
-                  <Grid item xs={12} sm={4}>
+                  {/* <Grid item xs={12} sm={4}>
                     <p>Drag and Drop the items to Re-Arrange the order</p>
                     {
                       headerContent.menuItems?.length > 0 ?
@@ -257,7 +407,7 @@ export default function UpdateHeader() {
                         :
                         <em>No items added yet</em>
                     }
-                  </Grid>
+                  </Grid> */}
                 </Grid>
               </AccordionDetails>
             </Accordion>

@@ -55,6 +55,7 @@ export default function Dashboard() {
   const [showWedding, setShowWedding] = useState(false);
 
   useEffect(() => {
+    return;
     API.get('/dashboard_counts').then(response => {
       if (response?.status === 200) {
         setStats({ ...stats, ...response?.data?.data });
