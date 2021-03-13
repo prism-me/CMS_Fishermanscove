@@ -282,7 +282,7 @@ export default function AddDiningInner() {
   }
 
   const handleSubmit = (id, name) => {
-    API.put(`/add_section/${id}`, diningInner[name]).then(response => {
+    API.post(`/add_section`, diningInner[name]).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }

@@ -245,7 +245,7 @@ export default function AddAboutSeychelles() {
 
 
   const handleSubmit = (id, name) => {
-    API.put(`/add_section/${id}`, JSON.stringify(aboutSeychelles[name]), {
+    API.post(`/add_section`, JSON.stringify(aboutSeychelles[name]), {
       headers: {
         'Content-Type': 'application/json'
       }

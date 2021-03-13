@@ -229,7 +229,7 @@ export default function AddAboutUs() {
   }
 
   const handleSubmit = (id, name) => {
-    API.put(`/add_section/${id}`, about[name]).then(response => {
+    API.post(`/add_section`, about[name]).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }

@@ -83,7 +83,7 @@ export default function AddCovidPolicy() {
   }
 
   const handleSubmit = (id, name) => {
-    API.put(`/add_section/${id}`, covidPolicy[name]).then(response => {
+    API.post(`/add_section`, covidPolicy[name]).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
