@@ -237,7 +237,7 @@ export default withRouter(function DiningAdd(props) {
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={12}>
+                  {/* <Grid item xs={12} sm={12}>
                     <TextField
                       required
                       id="alt_text"
@@ -249,7 +249,7 @@ export default withRouter(function DiningAdd(props) {
                       onChange={handleInputChange}
                       size="small"
                     />
-                  </Grid>
+                  </Grid> */}
                 </Grid>
               </Grid>
               <Grid item xs={12} sm={5}>

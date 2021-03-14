@@ -368,7 +368,7 @@ export default function AddAboutSeychelles() {
                     <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={aboutSeychelles.intro.section_content} onChange={(e) => setAboutSeychelles({ ...aboutSeychelles, intro: { ...aboutSeychelles.intro, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <TextField
+                    {/* <TextField
                       required
                       id="section_avtar_alt"
                       name="section_avtar_alt"
@@ -378,7 +378,7 @@ export default function AddAboutSeychelles() {
                       fullWidth
                       onChange={(e) => handleInputChange(e, "intro")}
                       size="small"
-                    />
+                    /> */}
                     <Card className={classes.root}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">

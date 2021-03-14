@@ -282,7 +282,7 @@ export default withRouter(function AddRoom(props) {
                     size="small"
                   />
                 </Grid>
-                <Grid item xs={12} sm={12}>
+                {/* <Grid item xs={12} sm={12}>
                   <TextField
                     required
                     id="alt_text"
@@ -294,7 +294,7 @@ export default withRouter(function AddRoom(props) {
                     onChange={handleInputChange}
                     size="small"
                   />
-                </Grid>
+                </Grid> */}
 
               </Grid>
             </Grid>

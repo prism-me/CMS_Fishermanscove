@@ -382,7 +382,7 @@ export default function AddLeisureInner() {
                     <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.lounge.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, lounge: { ...leisureInner.lounge, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <TextField
+                    {/* <TextField
                       required
                       id="section_avtar_alt"
                       name="section_avtar_alt"
@@ -392,7 +392,7 @@ export default function AddLeisureInner() {
                       fullWidth
                       onChange={(e) => handleInputChange(e, "lounge")}
                       size="small"
-                    />
+                    /> */}
                     <Card className={classes.root}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
@@ -470,7 +470,7 @@ export default function AddLeisureInner() {
                     <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.kayaking.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, kayaking: { ...leisureInner.kayaking, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <TextField
+                    {/* <TextField
                       required
                       id="section_avtar_alt"
                       name="section_avtar_alt"
@@ -480,7 +480,7 @@ export default function AddLeisureInner() {
                       fullWidth
                       onChange={(e) => handleInputChange(e, "kayaking")}
                       size="small"
-                    />
+                    /> */}
                     <Card className={classes.root}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
@@ -558,7 +558,7 @@ export default function AddLeisureInner() {
                     <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.snorkeling.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, snorkeling: { ...leisureInner.snorkeling, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <TextField
+                    {/* <TextField
                       required
                       id="section_avtar_alt"
                       name="section_avtar_alt"
@@ -568,7 +568,7 @@ export default function AddLeisureInner() {
                       fullWidth
                       onChange={(e) => handleInputChange(e, "snorkeling")}
                       size="small"
-                    />
+                    /> */}
                     <Card className={classes.root}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
@@ -646,7 +646,7 @@ export default function AddLeisureInner() {
                     <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.marine.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, marine: { ...leisureInner.marine, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <TextField
+                    {/* <TextField
                       required
                       id="section_avtar_alt"
                       name="section_avtar_alt"
@@ -656,7 +656,7 @@ export default function AddLeisureInner() {
                       fullWidth
                       onChange={(e) => handleInputChange(e, "marine")}
                       size="small"
-                    />
+                    /> */}
                     <Card className={classes.root}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
@@ -737,7 +737,7 @@ export default function AddLeisureInner() {
                     <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.others.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, others: { ...leisureInner.others, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <TextField
+                    {/* <TextField
                       required
                       id="section_avtar_alt"
                       name="section_avtar_alt"
@@ -747,7 +747,7 @@ export default function AddLeisureInner() {
                       fullWidth
                       onChange={(e) => handleInputChange(e, "others")}
                       size="small"
-                    />
+                    /> */}
                     <Card className={classes.root}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">

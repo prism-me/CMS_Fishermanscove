@@ -433,7 +433,7 @@ export default function AddAboutUs() {
                     <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={about.dine.section_content} onChange={(e) => setAbout({ ...about, dine: { ...about.dine, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <TextField
+                    {/* <TextField
                       required
                       id="section_avtar_alt"
                       name="section_avtar_alt"
@@ -443,7 +443,7 @@ export default function AddAboutUs() {
                       fullWidth
                       onChange={(e) => handleInputChange(e, "dine")}
                       size="small"
-                    />
+                    /> */}
                     <Card className={classes.root}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
