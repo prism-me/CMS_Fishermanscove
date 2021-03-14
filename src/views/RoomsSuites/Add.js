@@ -40,7 +40,7 @@ import { useParams, withRouter } from "react-router-dom";
 // import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "https://fishermanscove-resort.com/";
+const website_url = "https://fishermanscove-resort.com/rooms-inner/";
 const append_url = "rooms-inner/"
 
 const useStyles = makeStyles((theme) => ({
@@ -75,7 +75,7 @@ export default withRouter(function AddRoom(props) {
     meta_description: '',
     schema_markup: '',
     post_url: '',
-    route: website_url + append_url,
+    route: website_url,
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: "0,0",
@@ -126,17 +126,17 @@ export default withRouter(function AddRoom(props) {
     if (e.target.name === "post_name") {
       let updatedValue = e.target.value.replace(/\s+/g, '-')
       updatedValue = updatedValue.replace(/--/g, '-')
-      updatedRoom["route"] = website_url + append_url + updatedValue.toLowerCase();
+      updatedRoom["route"] = website_url + updatedValue.toLowerCase();
     }
     setRoom(updatedRoom);
   }
 
   const handleRouteChange = (e) => {
     let updatedRoom = { ...room };
-    let splitValues = e.target.value.split(website_url + append_url);
+    let splitValues = e.target.value.split(website_url);
     let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
     updatedValue = updatedValue.replace(/--/g, '-')
-    updatedRoom[e.target.name] = website_url + append_url + updatedValue.toLowerCase();
+    updatedRoom[e.target.name] = website_url + updatedValue.toLowerCase();
     setRoom(updatedRoom);
   }
 
@@ -202,7 +202,7 @@ export default withRouter(function AddRoom(props) {
     let finalRoom = room;
     finalRoom.route = finalRoom.route.split(website_url)?.[1];
     finalRoom.images_list = JSON.stringify(selectedImages);
-    finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed},${finalRoom.is_followed}`;
+    finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed ? '1' : '0'},${finalRoom.is_followed ? '1' : '0'}`;
     if (isEdit) {
       API.put(`/rooms/${id}`, finalRoom).then(response => {
         if (response.status === 200) {

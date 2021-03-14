@@ -135,7 +135,7 @@ export default function AddAboutSeychelles() {
       }
     })
   }
-  
+
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {
       if (response.status === 200) {
@@ -245,11 +245,14 @@ export default function AddAboutSeychelles() {
 
 
   const handleSubmit = (id, name) => {
-    API.post(`/add_section`, JSON.stringify(aboutSeychelles[name]), {
+    let updatedAboutSeychelles = { ...aboutSeychelles };
+    updatedAboutSeychelles.route = updatedAboutSeychelles.route.split(website_url)?.[1];
+
+    API.post(`/add_section`, JSON.stringify(updatedAboutSeychelles[name]), {
       headers: {
         'Content-Type': 'application/json'
       }
-    } ).then(response => {
+    }).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }

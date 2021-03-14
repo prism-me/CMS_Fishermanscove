@@ -22,6 +22,9 @@ import Typography from '@material-ui/core/Typography';
 import API from "utils/http";
 import { AddCircleOutline, AddCircleOutlined, CloseOutlined, DragHandleOutlined } from "@material-ui/icons";
 
+const append_url_dining = "dining-inner"
+const append_url_room = "rooms-inner"
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -114,6 +117,7 @@ export default function UpdateHeader() {
     updatedSubMenu[ind][e.target.name] = e.target.value;
     updatedSubMenu[ind]["address"] = route;
     updatedSubMenu[ind]["inner_route"] = inner_route;
+    updatedSubMenu[ind]["base_url"] = inner_route;
 
     updatedHeaderContent.menuItems[index].subMenu = updatedSubMenu;
     setHeaderContent(updatedHeaderContent);
@@ -144,6 +148,7 @@ export default function UpdateHeader() {
     updatedHeaderContent.menuItems[index].subMenu = [...subMenu, {
       text: '',
       address: '',
+      base_url: "",
       temp_id: subMenu.length + 1,
       order: subMenu.length + 1,
       inner_route: ""
@@ -271,7 +276,7 @@ export default function UpdateHeader() {
                                         options={pagesFilter}
                                         size="small"
                                         value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase()) || { post_name: "" }}
-                                        onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, newValue.route, index, pages.find(p => p.post_name?.toLowerCase() === newValue?.post_name?.toLowerCase())?.inner_route) || ""}
+                                        onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, newValue?.route, index, pages.find(p => p.post_name?.toLowerCase() === newValue?.post_name?.toLowerCase())?.inner_route) || ""}
                                         getOptionLabel={(option) => option.post_name}
                                         // style={{ width: 300 }}
                                         renderInput={(params) => <TextField required {...params} label="Select Link Text" variant="outlined" />}

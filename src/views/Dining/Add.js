@@ -28,7 +28,7 @@ import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "https://fishermanscove-resort.com/";
+const website_url = "https://fishermanscove-resort.com/dining-inner/";
 const append_url = "dining-inner/"
 
 const useStyles = makeStyles((theme) => ({
@@ -61,7 +61,7 @@ export default withRouter(function DiningAdd(props) {
     meta_description: '',
     schema_markup: '',
     post_url: '',
-    route: website_url + append_url,
+    route: website_url,
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: '1,1',
@@ -111,17 +111,17 @@ export default withRouter(function DiningAdd(props) {
     if (e.target.name === "post_name") {
       let updatedValue = e.target.value.replace(/\s+/g, '-')
       updatedValue = updatedValue.replace(/--/g, '-')
-      updatedDining["route"] = website_url + append_url + updatedValue.toLowerCase();
+      updatedDining["route"] = website_url + updatedValue.toLowerCase();
     }
     setDining(updatedDining);
   }
 
   const handleRouteChange = (e) => {
     let updatedDining = { ...dining };
-    let splitValues = e.target.value.split(website_url + append_url);
+    let splitValues = e.target.value.split(website_url);
     let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
     updatedValue = updatedValue.replace(/--/g, '-')
-    updatedDining[e.target.name] = website_url + append_url + updatedValue.toLowerCase();
+    updatedDining[e.target.name] = website_url + updatedValue.toLowerCase();
     setDining(updatedDining);
   }
 
@@ -187,7 +187,7 @@ export default withRouter(function DiningAdd(props) {
     let finalDining = dining;
     finalDining.images_list = JSON.stringify(selectedImages);
     finalDining.route = finalDining.route.split(website_url)?.[1];
-    finalDining.is_indexed_or_is_followed = `${finalDining.is_indexed},${finalDining.is_followed}`
+    finalDining.is_indexed_or_is_followed = `${finalDining.is_indexed ? '1' : '0'},${finalDining.is_followed ? '1' : '0'}`;
 
     if (isEdit) {
       API.put(`/dining/${id}`, finalDining).then(response => {

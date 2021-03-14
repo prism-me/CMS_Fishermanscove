@@ -116,7 +116,15 @@ class DiningList extends Component {
         if (response.status === 200) {
           alert("Restaurant deleted successfully !");
         }
-      }).catch(err => console.log(err))
+      }).then(()=>{
+        API.get(`/dining`).then(response => {
+          if (response.status === 200) {
+            let rows = response.data;
+            this.setState({ rows })
+          }
+        })
+      })
+      .catch(err => console.log(err))
     }
   }
 
