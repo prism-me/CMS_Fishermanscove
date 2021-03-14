@@ -413,7 +413,7 @@ export default function AddDiningInner() {
                       onChange={(e) => handleInputChange(e, "intro")}
                       size="small"
                     /> */}
-                    <Card className={classes.root}>
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {

@@ -221,7 +221,7 @@ export default withRouter(function DiningAdd(props) {
           </CardHeader>
           <CardBody>
             <h4 className="mt-3">General Information</h4>
-            <Grid container spacing={2} style={{ display: 'flex', alignItems: 'center' }}>
+            <Grid container spacing={2} style={{ display: 'flex' }}>
               <Grid item xs={12} sm={7} >
                 <Grid container spacing={5}>
                   <Grid item xs={12} sm={12}>

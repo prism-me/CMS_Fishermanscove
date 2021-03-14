@@ -232,36 +232,6 @@ const dashboardRoutes = [
     hide: true
   },
   {
-    path: "/gallery",
-    name: "Media",
-    rtlName: "ملف تعريفي للمستخدم",
-    icon: ViewCarouselOutlined,
-    component: GalleryList,
-    layout: "/admin",
-    exact: true,
-    // hide: true
-  },
-  {
-    path: "/gallery/add",
-    name: "Gallery",
-    rtlName: "ملف تعريفي للمستخدم",
-    icon: ViewCarouselOutlined,
-    component: AddGallery,
-    layout: "/admin",
-    exact: true,
-    hide: true
-  },
-  {
-    path: "/gallery/:id",
-    name: "Gallery",
-    rtlName: "ملف تعريفي للمستخدم",
-    icon: ViewCarouselOutlined,
-    component: GalleryList,
-    layout: "/admin",
-    exact: true,
-    hide: true
-  },
-  {
     path: "/spa-wellness",
     name: "Spa & Wellness",
     rtlName: "ملف تعريفي للمستخدم",
@@ -446,6 +416,36 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
     component: PageDetail,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/gallery",
+    name: "Media",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: ViewCarouselOutlined,
+    component: GalleryList,
+    layout: "/admin",
+    exact: true,
+    // hide: true
+  },
+  {
+    path: "/gallery/add",
+    name: "Gallery",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: ViewCarouselOutlined,
+    component: AddGallery,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/gallery/:id",
+    name: "Gallery",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: ViewCarouselOutlined,
+    component: GalleryList,
     layout: "/admin",
     exact: true,
     hide: true

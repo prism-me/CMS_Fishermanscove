@@ -371,7 +371,7 @@ export default function AddSustainability() {
                     <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.intro.section_content} onChange={(e) => setSustainability({ ...sustainability, intro: { ...sustainability.intro, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <TextField
+                    {/* <TextField
                       required
                       id="section_avtar_alt_intro"
                       name="section_avtar_alt"
@@ -381,8 +381,8 @@ export default function AddSustainability() {
                       fullWidth
                       onChange={(e) => handleInputChange(e, "intro")}
                       size="small"
-                    />
-                    <Card className={classes.root}>
+                    /> */}
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
@@ -459,7 +459,7 @@ export default function AddSustainability() {
                     <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.projects.section_content} onChange={(e) => setSustainability({ ...sustainability, projects: { ...sustainability.projects, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <TextField
+                    {/* <TextField
                       required
                       id="section_avtar_alt_projects"
                       name="section_avtar_alt"
@@ -469,8 +469,8 @@ export default function AddSustainability() {
                       fullWidth
                       onChange={(e) => handleInputChange(e, "projects")}
                       size="small"
-                    />
-                    <Card className={classes.root}>
+                    /> */}
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
@@ -547,7 +547,7 @@ export default function AddSustainability() {
                     <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.pillars.section_content} onChange={(e) => setSustainability({ ...sustainability, pillars: { ...sustainability.pillars, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <TextField
+                    {/* <TextField
                       required
                       id="section_avtar_alt_pillars"
                       name="section_avtar_alt"
@@ -557,8 +557,8 @@ export default function AddSustainability() {
                       fullWidth
                       onChange={(e) => handleInputChange(e, "pillars")}
                       size="small"
-                    />
-                    <Card className={classes.root}>
+                    /> */}
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
@@ -635,7 +635,7 @@ export default function AddSustainability() {
                     <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.energy.section_content} onChange={(e) => setSustainability({ ...sustainability, energy: { ...sustainability.energy, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <TextField
+                    {/* <TextField
                       required
                       id="section_avtar_alt_energy"
                       name="section_avtar_alt"
@@ -645,8 +645,8 @@ export default function AddSustainability() {
                       fullWidth
                       onChange={(e) => handleInputChange(e, "energy")}
                       size="small"
-                    />
-                    <Card className={classes.root}>
+                    /> */}
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {

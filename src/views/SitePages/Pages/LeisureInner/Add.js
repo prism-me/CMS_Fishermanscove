@@ -393,7 +393,7 @@ export default function AddLeisureInner() {
                       onChange={(e) => handleInputChange(e, "lounge")}
                       size="small"
                     /> */}
-                    <Card className={classes.root}>
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
@@ -481,7 +481,7 @@ export default function AddLeisureInner() {
                       onChange={(e) => handleInputChange(e, "kayaking")}
                       size="small"
                     /> */}
-                    <Card className={classes.root}>
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
@@ -569,7 +569,7 @@ export default function AddLeisureInner() {
                       onChange={(e) => handleInputChange(e, "snorkeling")}
                       size="small"
                     /> */}
-                    <Card className={classes.root}>
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
@@ -657,7 +657,7 @@ export default function AddLeisureInner() {
                       onChange={(e) => handleInputChange(e, "marine")}
                       size="small"
                     /> */}
-                    <Card className={classes.root}>
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
@@ -748,7 +748,7 @@ export default function AddLeisureInner() {
                       onChange={(e) => handleInputChange(e, "others")}
                       size="small"
                     /> */}
-                    <Card className={classes.root}>
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
