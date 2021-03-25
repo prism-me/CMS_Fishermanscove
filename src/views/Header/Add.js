@@ -135,7 +135,7 @@ export default function UpdateHeader() {
     if (headerContent.menuItems?.length > 0) {
       setPagesFilter(pagesFilter.filter(x => x.post_name !== headerContent.menuItems[headerContent.menuItems.length - 1]?.text))
     }
-    setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', temp_id: headerContent.menuItems.length + 1, order: headerContent.menuItems.length + 1, inner_route: "" }] })
+    setHeaderContent({ ...headerContent, menuItems: [...headerContent.menuItems, { text: '', address: '', temp_id: headerContent.menuItems[headerContent.menuItems.length - 1].order + 1, order: headerContent.menuItems[headerContent.menuItems.length - 1].order + 1, inner_route: "" }] })
   }
 
   const addSubmenu = (index) => {
@@ -175,6 +175,10 @@ export default function UpdateHeader() {
 
     const dragBoxOrder = dragBox.order;
     const dropBoxOrder = dropBox.order;
+
+    if (dragBoxOrder == dropBoxOrder) {
+      return;
+    }
 
     const updatedMenuItems = headerContent.menuItems.map((box) => {
       if (box.temp_id == dragId) {

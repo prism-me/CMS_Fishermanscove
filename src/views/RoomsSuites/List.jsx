@@ -16,7 +16,7 @@ class RoomsList extends Component {
           filter: false,
           sort: false,
           customBodyRender: (val, row) => (
-            <Avatar alt={row.tableData[row.rowIndex][1]?.toUpperCase() } src={val}></Avatar>
+            <Avatar alt={row.tableData[row.rowIndex][1]?.toUpperCase()} src={val}></Avatar>
           )
         }
       },

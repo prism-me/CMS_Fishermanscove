@@ -76,7 +76,9 @@ export default withRouter(function WeddingAdd(props) {
       setPostId(id);
       API.get(`/wedding/${id}/edit`).then(response => {
         if (response.status === 200) {
-          setWedding({ ...wedding, ...response?.data?.wedding_details });
+          let data = { ...response?.data?.wedding_details };
+          data.route = website_url + data.route;
+          setWedding({ ...wedding, ...data });
           setUploadsPreview(response.data?.uploads);
         }
       })
@@ -98,27 +100,6 @@ export default withRouter(function WeddingAdd(props) {
     setWedding(updatedWedding);
   }
 
-  const handleFileChange = (e) => {
-    let files = e.target.files || e.dataTransfer.files;
-    if (!files.length)
-      return;
-    createImage(files[0]);
-  }
-
-  const createImage = (file) => {
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      setWedding({ ...wedding, thumbnail: e.target.result });
-      if (isEdit) {
-        API.patch(`update_upload/${post_id}/wedding`, {
-          thumbnail: e.target.result
-        }).then(response => {
-          console.log(response)
-        })
-      }
-    };
-    reader.readAsDataURL(file);
-  }
 
   const handleImageSelect = (e, index) => {
     if (e.target.checked) {
@@ -166,6 +147,7 @@ export default withRouter(function WeddingAdd(props) {
 
   const handleSubmit = () => {
     let finalWedding = wedding;
+    finalWedding.route = "wedding";
     finalWedding.images_list = JSON.stringify(selectedImages);
     finalWedding.is_indexed_or_is_followed = `${finalWedding.is_indexed},${finalWedding.is_followed}`;
 
@@ -189,31 +171,6 @@ export default withRouter(function WeddingAdd(props) {
         }
       }).catch(err => alert("Something went wrong."))
     }
-  }
-
-  const handleMultipleSubmit = () => {
-    let imagesFormData = new FormData();
-    weddingImages.forEach(x => {
-      console.log(x);
-      imagesFormData.append("images[]", x.avatar);
-      imagesFormData.append("data[]", JSON.stringify(x))
-    });
-
-    API.post(`/multiple_upload`, imagesFormData, {
-      headers: {
-        'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
-      },
-      onUploadProgress: (progressEvent) => {
-        console.log('progress', Math.round((progressEvent.loaded * 100) / progressEvent.total))
-      }
-    }).then(response => {
-      if (response.status === 200) {
-        alert("Files Uploaded");
-        setWeddingImages([]);
-        props.history.push('/admin/weddings');
-      }
-    }).catch(err => alert("Something went wrong"));
-
   }
 
   return (

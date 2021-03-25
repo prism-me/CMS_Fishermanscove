@@ -106,7 +106,7 @@ class WeddingList extends Component {
   componentDidMount() {
     API.get('/wedding').then(response => {
       let rows = response.data;
-      this.setState({ rows })
+      this.setState({ rows: rows.filter(x=> x.post_type !== "page") })
     })
   }
 

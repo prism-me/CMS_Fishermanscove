@@ -141,7 +141,14 @@ export default function AddLeisureInner() {
   const [showGallery, setShowGallery] = useState(false)
   const [isSingle, setIsSingle] = useState(true)
   // const [renderPreviews, setRenderPreviews] = useState(false)
-  const [thumbnailPreview, setThumbnailPreview] = useState('')
+  const [thumbnailPreview, setThumbnailPreview] = useState({
+    banner: "",
+    lounge: "",
+    snorkeling: "",
+    kayaking: "",
+    marine: "",
+    others: "",
+  })
 
   useEffect(() => {
     API.get(`/all_sections/${pageId}`).then(response => {
@@ -194,12 +201,13 @@ export default function AddLeisureInner() {
 
   const handleImageSelect = (e, index, section) => {
     if (e.target.checked) {
-      if (isSingle && thumbnailPreview !== "") {
-        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
-        return;
-      } else {
+      // if (isSingle && thumbnailPreview !== "") {
+      //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+      //   return;
+      // } else {
         setLeisureInner({ ...leisureInner, [section]: { ...leisureInner[section], section_avatar: imagesData[index].id } })
-        setThumbnailPreview(imagesData[index].avatar)
+        // setThumbnailPreview(imagesData[index].avatar)
+        setThumbnailPreview({...thumbnailPreview, [section]: imagesData[index].avatar })
 
         let imagesDataUpdated = imagesData.map((x, i) => {
           if (i === index) {
@@ -212,10 +220,11 @@ export default function AddLeisureInner() {
           }
         });
         setImagesData(imagesDataUpdated);
-      }
+      // }
     } else {
       setLeisureInner({ ...leisureInner, [section]: { ...leisureInner[section], section_avatar: "" } })
-      setThumbnailPreview("")
+      // setThumbnailPreview("")
+      setThumbnailPreview({...thumbnailPreview, [section]: "" })
 
       setImagesData(imagesData.map((x, i) => {
         if (i === index) {
@@ -285,7 +294,7 @@ export default function AddLeisureInner() {
             {/* ******************* */}
             {/* SECTION BANNER */}
             {/* ******************* */}
-            <Accordion>
+            <Accordion defaultExpanded>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panelaa-content"
@@ -313,14 +322,14 @@ export default function AddLeisureInner() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !leisureInner.banner.id > 0 ?
-                          thumbnailPreview && thumbnailPreview !== "" ?
-                            <img src={thumbnailPreview} alt={leisureInner.banner.section_avtar_alt || ""} />
+                          thumbnailPreview["banner"] !== "" ?
+                            <img src={thumbnailPreview["banner"]} alt={leisureInner.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
                           typeof (leisureInner.banner.section_avatar) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
-                            <img src={thumbnailPreview} alt={leisureInner.banner.section_avtar_alt || ""} />
+                            <img src={thumbnailPreview["banner"]} alt={leisureInner.banner.section_avtar_alt || ""} />
                             :
                             <img src={leisureInner.banner.section_avatar} alt={leisureInner.banner.section_avtar_alt || ""} />
                       }
@@ -398,14 +407,14 @@ export default function AddLeisureInner() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !leisureInner.lounge.id > 0 ?
-                              thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={leisureInner.lounge.section_avtar_alt || ""} />
+                              thumbnailPreview["lounge"] !== "" ?
+                                <img src={thumbnailPreview["lounge"]} alt={leisureInner.lounge.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
                               typeof (leisureInner.lounge.section_avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={leisureInner.lounge.section_avtar_alt || ""} />
+                                <img src={thumbnailPreview["lounge"]} alt={leisureInner.lounge.section_avtar_alt || ""} />
                                 :
                                 <img src={leisureInner.lounge.section_avatar} alt={leisureInner.lounge.section_avtar_alt || ""} />
                           }
@@ -486,14 +495,14 @@ export default function AddLeisureInner() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !leisureInner.kayaking.id > 0 ?
-                              thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={leisureInner.kayaking.section_avtar_alt || ""} />
+                              thumbnailPreview["kayaking"] !== "" ?
+                                <img src={thumbnailPreview["kayaking"]} alt={leisureInner.kayaking.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
                               typeof (leisureInner.kayaking.section_avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={leisureInner.kayaking.section_avtar_alt || ""} />
+                                <img src={thumbnailPreview["kayaking"]} alt={leisureInner.kayaking.section_avtar_alt || ""} />
                                 :
                                 <img src={leisureInner.kayaking.section_avatar} alt={leisureInner.kayaking.section_avtar_alt || ""} />
                           }
@@ -574,14 +583,14 @@ export default function AddLeisureInner() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !leisureInner.snorkeling.id > 0 ?
-                              thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
+                              thumbnailPreview["snorkeling"] !== "" ?
+                                <img src={thumbnailPreview["snorkeling"]} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
                               typeof (leisureInner.snorkeling.section_avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
+                                <img src={thumbnailPreview["snorkeling"]} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
                                 :
                                 <img src={leisureInner.snorkeling.section_avatar} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
                           }
@@ -662,14 +671,14 @@ export default function AddLeisureInner() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !leisureInner.marine.id > 0 ?
-                              thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={leisureInner.marine.section_avtar_alt || ""} />
+                              thumbnailPreview["marine"] !== "" ?
+                                <img src={thumbnailPreview["marine"]} alt={leisureInner.marine.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
                               typeof (leisureInner.marine.section_avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={leisureInner.marine.section_avtar_alt || ""} />
+                                <img src={thumbnailPreview["marine"]} alt={leisureInner.marine.section_avtar_alt || ""} />
                                 :
                                 <img src={leisureInner.marine.section_avatar} alt={leisureInner.marine.section_avtar_alt || ""} />
                           }
@@ -753,14 +762,14 @@ export default function AddLeisureInner() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !leisureInner.others.id > 0 ?
-                              thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={leisureInner.others.section_avtar_alt || ""} />
+                              thumbnailPreview["others"] !== "" ?
+                                <img src={thumbnailPreview["others"]} alt={leisureInner.others.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
                               typeof (leisureInner.others.section_avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={leisureInner.others.section_avtar_alt || ""} />
+                                <img src={thumbnailPreview["others"]} alt={leisureInner.others.section_avtar_alt || ""} />
                                 :
                                 <img src={leisureInner.others.section_avatar} alt={leisureInner.others.section_avtar_alt || ""} />
                           }
@@ -787,7 +796,7 @@ export default function AddLeisureInner() {
                     </Card>
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(leisureInner.marine.id, "marine")} size="large" color="primary" variant="contained">
+                    <MaterialButton onClick={() => handleSubmit(leisureInner.others.id, "others")} size="large" color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>

@@ -18,18 +18,20 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 // import avatar from "assets/img/faces/marc.jpg";
-import { TextField, Paper } from "@material-ui/core";
+import { TextField, Paper, IconButton } from "@material-ui/core";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import API from "utils/http";
+import { CloseOutlined } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,6 +65,9 @@ export default function UpdateFooter() {
       instagram: ''
     }
   }
+
+  const [openSnackAlert, setOpenSnackAlert] = useState(false);
+  const [messageInfo, setMessageInfo] = React.useState(undefined);
 
   const [dragId, setDragId] = useState();
   const [footerContent, setFooterContent] = useState({ ...initialObject })
@@ -143,10 +148,11 @@ export default function UpdateFooter() {
     )
   }
 
-  const handleMenuItemChange = (e, index, inner_route) => {
+  const handleMenuItemChange = (e, index, route, inner_route) => {
     let updatedItems = [...footerContent.second.links];
     updatedItems[index][e.target.name] = e.target.value;
     updatedItems[index]["inner_route"] = inner_route;
+    updatedItems[index]["address"] = route;
     setFooterContent({ ...footerContent, second: { ...footerContent.second, links: updatedItems } });
     // setPagesFilter(pagesFilter.filter(x => x.post_name !== e.target.value))
   }
@@ -183,7 +189,9 @@ export default function UpdateFooter() {
       items: footerContent[section]
     }).then(response => {
       if (response.status === 200) {
-        alert(response.data.message);
+        // alert(response.data.message);
+        setMessageInfo((prev) => [...prev, { message: response.data.message, key: new Date().getTime() }])
+        setOpenSnackAlert(true)
         // setFooterContent({ ...initialObject }); //resetting the form
       }
     }).catch(err => alert("Something went wrong"));
@@ -259,7 +267,7 @@ export default function UpdateFooter() {
                                   options={pagesFilter}
                                   size="small"
                                   value={pages.find(p => p.post_name?.toLowerCase() === x.text?.toLowerCase()) || { post_name: "" }}
-                                  onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, index, pages.find(p => p.post_name?.toLowerCase() === newValue?.post_name?.toLowerCase())?.inner_route) || ""}
+                                  onChange={(e, newValue) => handleMenuItemChange({ target: { value: newValue?.post_name, name: 'text' } }, index, newValue?.route, pages.find(p => p.post_name?.toLowerCase() === newValue?.post_name?.toLowerCase())?.inner_route) || ""}
                                   getOptionLabel={(option) => option.post_name}
                                   // style={{ width: 300 }}
                                   renderInput={(params) => <TextField required {...params} label="Select Link Text" variant="outlined" />}
@@ -450,6 +458,33 @@ export default function UpdateFooter() {
           </CardBody>
         </Card>
       </div>
+      <Snackbar
+        key={messageInfo ? messageInfo.key : undefined}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={openSnackAlert}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackAlert(false)}
+        onExited={() => setOpenSnackAlert(false)}
+        message={messageInfo ? messageInfo.message : undefined}
+        action={
+          <React.Fragment>
+            <Button color="secondary" size="small" onClick={() => setOpenSnackAlert(false)}>
+              OK
+            </Button>
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              className={classes.close}
+              onClick={() => setOpenSnackAlert(false)}
+            >
+              <CloseOutlined />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
     </div>
   );
 }

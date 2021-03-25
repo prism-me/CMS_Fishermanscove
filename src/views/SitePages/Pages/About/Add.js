@@ -156,11 +156,15 @@ export default function AddAboutUs() {
   }
 
   const handleImageSelect = (e, index, section) => {
+    setTimeout(() => {
+      setShowGallery(false);
+    }, 500);
+
     if (e.target.checked) {
-      if (isSingle && thumbnailPreview !== "") {
-        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
-        return;
-      } else {
+      // if (isSingle && thumbnailPreview !== "") {
+      //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+      //   return;
+      // } else {
         setAbout({ ...about, [section]: { ...about[section], section_avatar: imagesData[index].id } })
         setThumbnailPreview(imagesData[index].avatar)
 
@@ -175,7 +179,7 @@ export default function AddAboutUs() {
           }
         });
         setImagesData(imagesDataUpdated);
-      }
+      // }
     } else {
       setAbout({ ...about, [section]: { ...about[section], section_avatar: "" } })
       setThumbnailPreview("")
@@ -241,7 +245,7 @@ export default function AddAboutUs() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className="mb-0">Add DiningInner Sections</h4>
+            <h4 className="mb-0">Add About-Us Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>

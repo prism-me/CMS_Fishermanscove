@@ -74,6 +74,7 @@ import GalleryList from "views/Gallery/List";
 import AddGallery from "views/Gallery/Add";
 import OfferDetail from "views/Offers/Details";
 import SignInSide from "views/Auth/Login";
+import AddContactUs from "views/SitePages/Pages/Contact/Add";
 
 const dashboardRoutes = [
   {
@@ -346,6 +347,16 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
     component: AddAboutUs,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/pages/contact/add/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: AddContactUs,
     layout: "/admin",
     exact: true,
     hide: true

@@ -29,7 +29,7 @@ import { useParams, withRouter } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 
 const website_url = "https://fishermanscove-resort.com/dining-inner/";
-const append_url = "dining-inner/"
+const append_url = "dining-inner"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,12 +56,14 @@ export default withRouter(function DiningAdd(props) {
     parent_id: -1,
     thumbnail: '',
     banner_img: '',
+    banner_text: '',
     alt_text: '',
     meta_title: '',
     meta_description: '',
     schema_markup: '',
     post_url: '',
     route: website_url,
+    inner_route: append_url,
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: '1,1',
@@ -89,7 +91,9 @@ export default withRouter(function DiningAdd(props) {
       setPostId(id);
       API.get(`/dining/${id}/edit`).then(response => {
         if (response.status === 200) {
-          setDining({ ...dining, ...response?.data?.category_details?.[0] });
+          let data = { ...response?.data?.category_details?.[0] };
+          data.route = website_url + data.route;
+          setDining({ ...dining, ...data });
           setUploadsPreview(response.data?.uploads)
         }
       })
@@ -186,7 +190,7 @@ export default withRouter(function DiningAdd(props) {
   const handleSubmit = () => {
     let finalDining = dining;
     finalDining.images_list = JSON.stringify(selectedImages);
-    finalDining.route = finalDining.route.split(website_url)?.[1];
+    finalDining.route = finalDining.route.split(website_url)?.[1] || finalDining.route;
     finalDining.is_indexed_or_is_followed = `${finalDining.is_indexed ? '1' : '0'},${finalDining.is_followed ? '1' : '0'}`;
 
     if (isEdit) {
@@ -216,50 +220,31 @@ export default withRouter(function DiningAdd(props) {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className="mb-0">Add Dining/Suite</h4>
+            <h4 style={{ fontWeight: '400' }} className="my-0">Add Dining/Suite</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
-            <h4 className="mt-3">General Information</h4>
+            <h4 style={{ fontWeight: '400' }} className="mt-3">General Information</h4>
             <Grid container spacing={2} style={{ display: 'flex' }}>
-              <Grid item xs={12} sm={7} >
-                <Grid container spacing={5}>
-                  <Grid item xs={12} sm={12}>
-                    <TextField
-                      required
-                      id="post_name"
-                      name="post_name"
-                      label="Name"
-                      value={dining.post_name}
-                      variant="outlined"
-                      fullWidth
-                      onChange={handleInputChange}
-                      size="small"
-                    />
-                  </Grid>
-                  {/* <Grid item xs={12} sm={12}>
-                    <TextField
-                      required
-                      id="alt_text"
-                      name="alt_text"
-                      label="Image Alt Text"
-                      value={dining.alt_text}
-                      variant="outlined"
-                      fullWidth
-                      onChange={handleInputChange}
-                      size="small"
-                    />
-                  </Grid> */}
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={5}>
-                <div className="thumbnail-preview-wrapper-small img-thumbnail">
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="post_name"
+                  name="post_name"
+                  label="Restaurant Name"
+                  value={dining.post_name}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                  size="small"
+                />
+                <div className="thumbnail-preview-wrapper-small mt-2 img-thumbnail">
                   {
                     !isEdit ?
                       thumbnailPreview && thumbnailPreview !== "" ?
                         <img src={thumbnailPreview} alt={dining.alt_text || ""} />
                         :
-                        <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                        <img src={require('./../../assets/img/placeholder.png')} alt="" />
                       :
                       typeof (dining.thumbnail) === typeof (0) ?
                         // dining.thumbnail && dining.thumbnail !== "" ?
@@ -270,7 +255,7 @@ export default withRouter(function DiningAdd(props) {
                 </div>
                 <Fragment>
                   <MaterialButton
-                    variant="contained"
+                    variant="outlined"
                     color="primary"
                     startIcon={<Image />}
                     className="mt-1"
@@ -282,19 +267,28 @@ export default withRouter(function DiningAdd(props) {
                     }}
                   >
                     {isEdit ? 'Change' : 'Upload'} Featured Image
-                </MaterialButton>
+                  </MaterialButton>
                 </Fragment>
               </Grid>
-              <Grid item xs={12} sm={12}>
-                <hr />
-                <h4>Add Banner Image</h4>
-                <div className="thumbnail-preview-wrapper-large img-thumbnail">
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="banner_text"
+                  name="banner_text"
+                  label="Banner Text"
+                  value={dining.banner_text}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                  size="small"
+                />
+                <div className="thumbnail-preview-wrapper-small mt-2 img-thumbnail">
                   {
                     !isEdit ?
                       bannerThumbnailPreview && bannerThumbnailPreview !== "" ?
                         <img src={bannerThumbnailPreview} alt={dining.alt_text || ""} />
                         :
-                        <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                        <img src={require('./../../assets/img/placeholder.png')} alt="" />
                       :
                       typeof (dining.banner_img) === typeof (0) ?
                         // dining.thumbnail && dining.thumbnail !== "" ?
@@ -305,7 +299,7 @@ export default withRouter(function DiningAdd(props) {
                 </div>
                 <Fragment>
                   <MaterialButton
-                    variant="contained"
+                    variant="outlined"
                     color="primary"
                     startIcon={<Image />}
                     className="mt-1"
@@ -316,25 +310,26 @@ export default withRouter(function DiningAdd(props) {
                       setShowGallery(true);
                     }}
                   >
-                    {isEdit ? 'Change' : 'Upload'} Featured Image
+                    {isEdit ? 'Change' : 'Upload'} Banner Image
                 </MaterialButton>
                 </Fragment>
               </Grid>
+
               <Grid item xs={12} sm={12}>
                 <hr />
-                <h4 className="mt-2">Short Description</h4>
+                <h4 style={{ fontWeight: '400' }} className="mt-2">Short Description</h4>
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={dining.short_description} onChange={(e) => setDining({ ...dining, short_description: e.editor.getData() })} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
                 <hr />
-                <h4 className="mt-2">Detailed Content</h4>
+                <h4 style={{ fontWeight: '400' }} className="mt-2">Detailed Content</h4>
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={dining.post_content} onChange={(e) => setDining({ ...dining, post_content: e.editor.getData() })} />
 
               </Grid>
             </Grid>
             <hr />
-            <h4 className="mt-2">SEO Information</h4>
+            <h4 style={{ fontWeight: '400' }} className="mt-2">SEO Information</h4>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -414,10 +409,13 @@ export default withRouter(function DiningAdd(props) {
             </Grid>
           </CardBody>
         </Card>
-        {/* {isEdit && */}
+
+        {/* ******************************** */}
+        {/* ********* SLIDER IMAGES ******** */}
+        {/* ******************************** */}
         <Card>
           <CardBody>
-            <h3>Dining Images</h3>
+            <h4 style={{ fontWeight: '400' }}>Dining Images</h4>
             <p><em>Please select images from gallery.</em></p>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
@@ -477,7 +475,7 @@ export default withRouter(function DiningAdd(props) {
         </Grid>
         {/* } */}
       </div>
-    </div>
+    </div >
   );
 }
 )

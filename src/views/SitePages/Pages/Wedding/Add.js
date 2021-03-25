@@ -137,8 +137,7 @@ export default function AddWedding() {
       if (response.status === 200) {
         let seoInfoData = response.data;
         if (seoInfoData) {
-          // seoInfoData.is_indexed = JSON.parse(seoInfoData.is_indexed)
-          // seoInfoData.is_followed = JSON.parse(seoInfoData.is_followed)
+          seoInfoData.route = website_url + seoInfoData.route;
           setSeoInfo({ ...seoInfo, ...seoInfoData });
         }
         else {

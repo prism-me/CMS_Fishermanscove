@@ -49,10 +49,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function AddAboutSeychelles() {
+export default function AddContactUs() {
   const pageId = parseInt(useParams().id);
   const classes = useStyles();
-  const initialObject = {
+  const [contact, setContact] = useState({
     banner: {
       id: 0,
       section_name: '',
@@ -67,7 +67,12 @@ export default function AddAboutSeychelles() {
     intro: {
       id: 0,
       section_name: '',
-      section_content: "<p>Detailed content goes here!</p>",
+      section_content: {
+        phone: '',
+        email: '',
+        address: '',
+        whatsapp: ''
+      },
       page_id: pageId,
       section_avatar: '',
       section_col_arr: 0,
@@ -75,18 +80,18 @@ export default function AddAboutSeychelles() {
       section_avtar_alt: '',
       section_slug: 'intro'
     },
-    features: {
-      id: 0,
-      section_name: 'features list',
-      section_content: [],
-      page_id: pageId,
-      section_avatar: '',
-      section_col_arr: 0,
-      section_prior: 1,
-      section_avtar_alt: '',
-      section_slug: 'features'
-    }
-  }
+    // dine: {
+    //   id: 0,
+    //   section_name: '',
+    //   section_content: "<p>Detailed content goes here!</p>",
+    //   page_id: pageId,
+    //   section_avatar: '',
+    //   section_col_arr: 0,
+    //   section_prior: 1,
+    //   section_avtar_alt: '',
+    //   section_slug: 'dine'
+    // },
+  });
 
   const [seoInfo, setSeoInfo] = useState({
     id: 0,
@@ -100,7 +105,6 @@ export default function AddAboutSeychelles() {
     is_indexed_or_is_followed: '1,1',
   })
 
-  const [aboutSeychelles, setAboutSeychelles] = useState({ ...initialObject })
   const [currentSection, setCurrentSection] = useState("")
 
   const [imagesData, setImagesData] = useState([])
@@ -115,18 +119,22 @@ export default function AddAboutSeychelles() {
     API.get(`/all_sections/${pageId}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
-        setAboutSeychelles(
+        let intro = data.find(x => x.section_slug === "intro");
+        if (intro) {
+          intro.section_content = JSON.parse(intro.section_content)
+        }
+        setContact(
           {
-            intro: data.find(x => x.section_slug === "intro") || initialObject.intro,
-            banner: data.find(x => x.section_slug === "banner") || initialObject.banner,
-            features: initialObject.features,
+            intro: intro || contact.intro,
+            // dine: data.find(x => x.section_slug === "dine") || contact.dine,
+            banner: data.find(x => x.section_slug === "banner") || contact.banner,
           }
         )
       }
     });
     getGalleryImages();
     getSEOInfo();
-  }, [])
+  }, []);
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then(response => {
@@ -150,39 +158,46 @@ export default function AddAboutSeychelles() {
     })
   }
 
-  const handleInputChange = (e, section) => {
 
-    let updatedDiningInner = { ...aboutSeychelles };
-    updatedDiningInner[section][e.target.name] = e.target.value;
-    setAboutSeychelles(updatedDiningInner);
+  const handleBannerInputChange = (e, section) => {
+    let updatedContact = { ...contact };
+    updatedContact[section][e.target.name] = e.target.value;
+    setContact(updatedContact);
+  }
+
+  const handleInputChange = (e, section) => {
+    let updatedContact = { ...contact };
+    updatedContact[section]["section_content"][e.target.name] = e.target.value;
+    setContact(updatedContact);
   }
 
   const handleImageSelect = (e, index, section) => {
     setTimeout(() => {
       setShowGallery(false);
-    }, 500)
-    if (e.target.checked) {
-      if (isSingle && thumbnailPreview !== "") {
-        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
-        return;
-      } else {
-        setAboutSeychelles({ ...aboutSeychelles, [section]: { ...aboutSeychelles[section], section_avatar: imagesData[index].id } })
-        setThumbnailPreview(imagesData[index].avatar)
+    }, 500);
 
-        let imagesDataUpdated = imagesData.map((x, i) => {
-          if (i === index) {
-            return {
-              ...x,
-              isChecked: true
-            }
-          } else {
-            return x
+    if (e.target.checked) {
+      // if (isSingle && thumbnailPreview !== "") {
+      //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+      //   return;
+      // } else {
+      setContact({ ...contact, [section]: { ...contact[section], section_avatar: imagesData[index].id } })
+      setThumbnailPreview(imagesData[index].avatar)
+
+      let imagesDataUpdated = imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: true
           }
-        });
-        setImagesData(imagesDataUpdated);
-      }
+        } else {
+          return x
+        }
+      });
+      setImagesData(imagesDataUpdated);
+      // }
     } else {
-      setAboutSeychelles({ ...aboutSeychelles, [section]: { ...aboutSeychelles[section], section_avatar: "" } })
+      setContact({ ...contact, [section]: { ...contact[section], section_avatar: "" } })
       setThumbnailPreview("")
 
       setImagesData(imagesData.map((x, i) => {
@@ -197,19 +212,6 @@ export default function AddAboutSeychelles() {
       }));
     }
   }
-
-
-  const handleLinkChange = (e, index, section) => {
-    let updatedAboutSeychelles = { ...aboutSeychelles };
-    updatedAboutSeychelles[section].section_content[index][e.target.name] = e.target.value;
-    setAboutSeychelles(updatedAboutSeychelles);
-  }
-  const addNewLink = () => {
-    let updatedAboutSeychelles = { ...aboutSeychelles };
-    updatedAboutSeychelles.features.section_content.push({ id: aboutSeychelles.features.section_content?.length + 1, title: '', description: '' });
-    setAboutSeychelles(updatedAboutSeychelles);
-  }
-
 
   const handleSEOInputChange = (e) => {
     let updatedSeoInfo = { ...seoInfo };
@@ -246,16 +248,10 @@ export default function AddAboutSeychelles() {
     }
   }
 
-
   const handleSubmit = (id, name) => {
-    let updatedAboutSeychelles = { ...aboutSeychelles };
-    // updatedAboutSeychelles.route = updatedAboutSeychelles.route.split(website_url)?.[1];
-
-    API.post(`/add_section`, JSON.stringify(updatedAboutSeychelles[name]), {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(response => {
+    let updatedContact = { ...contact };
+    updatedContact.intro.section_content = JSON.stringify(updatedContact?.intro?.section_content)
+    API.post(`/add_section`, contact[name]).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
@@ -267,7 +263,7 @@ export default function AddAboutSeychelles() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className="mb-0">Add About Seychelles Information</h4>
+            <h4 className="mb-0">Add Contact-Us Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
@@ -291,27 +287,27 @@ export default function AddAboutSeychelles() {
                       id="section_name"
                       name="section_name"
                       label="Section Title"
-                      value={aboutSeychelles.banner.section_name}
+                      value={contact.banner.section_name}
                       variant="outlined"
                       fullWidth
-                      onChange={(e) => handleInputChange(e, "banner")}
+                      onChange={(e) => handleBannerInputChange(e, "banner")}
                       size="medium"
                       style={{ marginBottom: '1rem' }}
                     />
 
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
-                        !aboutSeychelles.banner.id > 0 ?
+                        !contact.banner.id > 0 ?
                           thumbnailPreview && thumbnailPreview !== "" ?
-                            <img src={thumbnailPreview} alt={aboutSeychelles.banner.section_avtar_alt || ""} />
+                            <img src={thumbnailPreview} alt={contact.banner.section_avtar_alt || ""} />
                             :
-                            <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                            <img src={require('./../../../../assets/img/placeholder.png')} alt="" />
                           :
-                          typeof (aboutSeychelles.banner.section_avatar) === typeof (0) ?
+                          typeof (contact.banner.section_avatar) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
-                            <img src={thumbnailPreview} alt={aboutSeychelles.banner.section_avtar_alt || ""} />
+                            <img src={thumbnailPreview} alt={contact.banner.section_avtar_alt || ""} />
                             :
-                            <img src={aboutSeychelles.banner.section_avatar} alt={aboutSeychelles.banner.section_avtar_alt || ""} />
+                            <img src={contact.banner.section_avatar} alt={contact.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
@@ -333,7 +329,7 @@ export default function AddAboutSeychelles() {
                     </Fragment>
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(aboutSeychelles.banner.id, "banner")} size="large" color="primary" variant="contained">
+                    <MaterialButton onClick={() => handleSubmit(contact.banner.id, "banner")} size="large" color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>
@@ -353,155 +349,70 @@ export default function AddAboutSeychelles() {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={9}>
-                    {/* SECTION TITLE */}
+                  <Grid item xs={12} sm={4}>
                     <TextField
                       required
-                      id="section_name"
-                      name="section_name"
-                      label="Section Title"
-                      value={aboutSeychelles.intro.section_name}
+                      id="email"
+                      name="email"
+                      label="Email Address"
+                      value={contact.intro?.section_content?.email}
                       variant="outlined"
                       fullWidth
-                      onChange={(e) => handleInputChange(e, "intro")}
+                      onChange={(e) => handleInputChange(e, 'intro')}
                       size="small"
-                      style={{ marginBottom: '1rem' }}
                     />
-                    {/* CKEDITOR  */}
-                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={aboutSeychelles.intro.section_content} onChange={(e) => setAboutSeychelles({ ...aboutSeychelles, intro: { ...aboutSeychelles.intro, section_content: e.editor.getData() } })} />
                   </Grid>
-                  <Grid item xs={12} sm={3}>
-                    {/* <TextField
+                  <Grid item xs={12} sm={4}>
+                    <TextField
                       required
-                      id="section_avtar_alt"
-                      name="section_avtar_alt"
-                      label="Image Alt Text"
-                      value={aboutSeychelles.intro.section_avtar_alt}
+                      id="phone"
+                      name="phone"
+                      label="Phone Number"
+                      value={contact.intro?.section_content?.phone}
                       variant="outlined"
                       fullWidth
-                      onChange={(e) => handleInputChange(e, "intro")}
+                      onChange={(e) => handleInputChange(e, 'intro')}
                       size="small"
-                    /> */}
-                    <Card className={classes.root} style={{ marginTop: 0 }}>
-                      <CardActionArea>
-                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
-                          {
-                            !aboutSeychelles.intro.id > 0 ?
-                              thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={aboutSeychelles.intro.section_avtar_alt || ""} />
-                                :
-                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                              :
-                              typeof (aboutSeychelles.intro.section_avatar) === typeof (0) ?
-                                // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={aboutSeychelles.intro.section_avtar_alt || ""} />
-                                :
-                                <img src={aboutSeychelles.intro.section_avatar} alt={aboutSeychelles.intro.section_avtar_alt || ""} />
-                          }
-                        </div>
-                      </CardActionArea>
-                      <CardActions>
-                        <Fragment>
-                          <MaterialButton
-                            variant="contained"
-                            color="primary"
-                            startIcon={<Image />}
-                            className="mt-1"
-                            fullWidth
-                            onClick={() => {
-                              setIsSingle(true);
-                              setCurrentSection("intro");
-                              setShowGallery(true);
-                            }}
-                          >
-                            Upload Featured Image
-                          </MaterialButton>
-                        </Fragment>
-                      </CardActions>
-                    </Card>
+                    />
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(aboutSeychelles.intro.id, "intro")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
-                </Grid>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel2a-content"
-                id="panel2a-header"
-              >
-                <Typography className={classes.heading}>Features</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {/* <h4 className="mt-4"></h4> */}
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <MaterialButton
+                  <Grid item xs={12} sm={4}>
+                    <TextField
+                      required
+                      id="whatsapp"
+                      name="whatsapp"
+                      label="Whatsapp Number"
+                      value={contact.intro?.section_content?.whatsapp}
                       variant="outlined"
-                      component="span"
-                      className={classes.button}
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, 'intro')}
                       size="small"
-                      color="primary"
-                      onClick={() => addNewLink()}
-                    >
-                      Add a New Link
-                    </MaterialButton>
+                    />
                   </Grid>
-                  {
-                    aboutSeychelles?.features?.section_content?.map((x, index) => (
-                      <React.Fragment>
-                        <Grid item xs={12} sm={4}>
-                          <TextField
-                            required
-                            id={`title${x.id}`}
-                            name="title"
-                            label="Link Text"
-                            value={x.title}
-                            variant="outlined"
-                            fullWidth
-                            multiline
-                            rows={2}
-                            rowsMax={2}
-                            onChange={(e) => handleLinkChange(e, index, 'features')}
-                            size="small"
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            required
-                            id={`description${x.id}`}
-                            name="description"
-                            label="Short Description"
-                            value={x.description}
-                            variant="outlined"
-                            fullWidth
-                            multiline
-                            rows={2}
-                            rowsMax={2}
-                            onChange={(e) => handleLinkChange(e, index, 'features')}
-                            size="small"
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                          <MaterialButton onClick={() => setAboutSeychelles({ ...aboutSeychelles, features: { ...aboutSeychelles.features, section_content: aboutSeychelles.features.section_content.filter(z => z.id !== x.id) } })} color="secondary" size="small" variant="outlined" style={{ height: '100%' }}>
-                            Delete Link
-                          </MaterialButton>
-                        </Grid>
-                      </React.Fragment>
-                    ))
-                  }
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton disabled={aboutSeychelles.features.section_content < 1} onClick={() => handleSubmit(aboutSeychelles.features.id, "features")} color="primary" variant="contained">
+                    <TextField
+                      required
+                      id="address"
+                      name="address"
+                      label="Location"
+                      value={contact.intro?.section_content?.address}
+                      variant="outlined"
+                      fullWidth
+                      multiline
+                      rows={2}
+                      rowsMax={2}
+                      onChange={(e) => handleInputChange(e, 'intro')}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={() => handleSubmit(contact.intro.id, "intro")} size="large" color="primary" variant="contained">
                       Update Section
-                  </MaterialButton>
+                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
+
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -602,7 +513,6 @@ export default function AddAboutSeychelles() {
         setShowGallery(false);
         // setRenderPreviews(true);
       }} refreshGallery={getGalleryImages} data={imagesData} />
-      {/* GALLERY DIALOG BOX END */}
     </div>
   );
 }

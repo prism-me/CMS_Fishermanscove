@@ -67,7 +67,7 @@ class DiningList extends Component {
           customBodyRender: val => (
             <code>
               {
-                val.length > 100 ? val.substr(0, 100) + '...' : val
+                val?.length > 100 ? val?.substr(0, 100) + '...' : val
               }
             </code>
           )

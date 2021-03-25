@@ -130,7 +130,13 @@ export default function AddSustainability() {
   const [showGallery, setShowGallery] = useState(false)
   const [isSingle, setIsSingle] = useState(true)
   // const [renderPreviews, setRenderPreviews] = useState(false)
-  const [thumbnailPreview, setThumbnailPreview] = useState('')
+  const [thumbnailPreview, setThumbnailPreview] = useState({
+    banner: "",
+    intro: "",
+    pillars: "",
+    projects: "",
+    energy: ""
+  })
 
   useEffect(() => {
     API.get(`/all_sections/${pageId}`).then(response => {
@@ -181,29 +187,32 @@ export default function AddSustainability() {
   }
 
   const handleImageSelect = (e, index, section) => {
+    setTimeout(() => {
+      setShowGallery(false)
+    }, 500)
     if (e.target.checked) {
-      if (isSingle && thumbnailPreview !== "") {
-        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
-        return;
-      } else {
-        setSustainability({ ...sustainability, [section]: { ...sustainability[section], section_avatar: imagesData[index].id } })
-        setThumbnailPreview(imagesData[index].avatar)
+      // if (isSingle && thumbnailPreview !== "") {
+      //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+      //   return;
+      // } else {
+      setSustainability({ ...sustainability, [section]: { ...sustainability[section], section_avatar: imagesData[index].id } })
+      setThumbnailPreview({ ...thumbnailPreview, [section]: imagesData[index].avatar })
 
-        let imagesDataUpdated = imagesData.map((x, i) => {
-          if (i === index) {
-            return {
-              ...x,
-              isChecked: true
-            }
-          } else {
-            return x
+      let imagesDataUpdated = imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: true
           }
-        });
-        setImagesData(imagesDataUpdated);
-      }
+        } else {
+          return x
+        }
+      });
+      setImagesData(imagesDataUpdated);
+      // }
     } else {
       setSustainability({ ...sustainability, [section]: { ...sustainability[section], section_avatar: "" } })
-      setThumbnailPreview("")
+      setThumbnailPreview({ ...thumbnailPreview, [section]: "" })
 
       setImagesData(imagesData.map((x, i) => {
         if (i === index) {
@@ -302,14 +311,14 @@ export default function AddSustainability() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !sustainability.banner.id > 0 ?
-                          thumbnailPreview && thumbnailPreview !== "" ?
-                            <img src={thumbnailPreview} alt={sustainability.banner.section_avtar_alt || ""} />
+                          thumbnailPreview["banner"] !== "" ?
+                            <img src={thumbnailPreview["banner"]} alt={sustainability.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
                           typeof (sustainability.banner.section_avatar) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
-                            <img src={thumbnailPreview} alt={sustainability.banner.section_avtar_alt || ""} />
+                            <img src={thumbnailPreview["banner"]} alt={sustainability.banner.section_avtar_alt || ""} />
                             :
                             <img src={sustainability.banner.section_avatar} alt={sustainability.banner.section_avtar_alt || ""} />
                       }
@@ -387,14 +396,14 @@ export default function AddSustainability() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !sustainability.intro.id > 0 ?
-                              thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={sustainability.intro.section_avtar_alt || ""} />
+                              thumbnailPreview["intro"] !== "" ?
+                                <img src={thumbnailPreview["intro"]} alt={sustainability.intro.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
                               typeof (sustainability.intro.section_avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={sustainability.intro.section_avtar_alt || ""} />
+                                <img src={thumbnailPreview["intro"]} alt={sustainability.intro.section_avtar_alt || ""} />
                                 :
                                 <img src={sustainability.intro.section_avatar} alt={sustainability.intro.section_avtar_alt || ""} />
                           }
@@ -475,14 +484,14 @@ export default function AddSustainability() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !sustainability.projects.id > 0 ?
-                              thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={sustainability.projects.section_avtar_alt || ""} />
+                              thumbnailPreview["projects"] !== "" ?
+                                <img src={thumbnailPreview["projects"]} alt={sustainability.projects.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
                               typeof (sustainability.projects.section_avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={sustainability.projects.section_avtar_alt || ""} />
+                                <img src={thumbnailPreview["projects"]} alt={sustainability.projects.section_avtar_alt || ""} />
                                 :
                                 <img src={sustainability.projects.section_avatar} alt={sustainability.projects.section_avtar_alt || ""} />
                           }
@@ -563,14 +572,14 @@ export default function AddSustainability() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !sustainability.pillars.id > 0 ?
-                              thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={sustainability.pillars.section_avtar_alt || ""} />
+                              thumbnailPreview["pillars"] !== "" ?
+                                <img src={thumbnailPreview["pillars"]} alt={sustainability.pillars.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
                               typeof (sustainability.pillars.section_avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={sustainability.pillars.section_avtar_alt || ""} />
+                                <img src={thumbnailPreview["pillars"]} alt={sustainability.pillars.section_avtar_alt || ""} />
                                 :
                                 <img src={sustainability.pillars.section_avatar} alt={sustainability.pillars.section_avtar_alt || ""} />
                           }
@@ -651,14 +660,14 @@ export default function AddSustainability() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !sustainability.energy.id > 0 ?
-                              thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={sustainability.energy.section_avtar_alt || ""} />
+                              thumbnailPreview["energy"] !== "" ?
+                                <img src={thumbnailPreview["energy"]} alt={sustainability.energy.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
                               typeof (sustainability.energy.section_avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={sustainability.energy.section_avtar_alt || ""} />
+                                <img src={thumbnailPreview["energy"]} alt={sustainability.energy.section_avtar_alt || ""} />
                                 :
                                 <img src={sustainability.energy.section_avatar} alt={sustainability.energy.section_avtar_alt || ""} />
                           }

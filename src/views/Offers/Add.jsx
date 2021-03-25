@@ -58,6 +58,7 @@ export default function AddOffer(props) {
     room_type: -1,
     thumbnail: '',
     banner_img: '',
+    banner_text: '',
     alt_text: '',
     meta_title: '',
     meta_description: '',
@@ -93,7 +94,9 @@ export default function AddOffer(props) {
       setPostId(id);
       API.get(`/offers/${id}/edit`).then(response => {
         if (response.status === 200) {
-          setOffer({ ...offer, ...response?.data?.category_details[0] });
+          let data = { ...response?.data?.category_details[0] };
+          data.route = website_url + data.route;
+          setOffer({ ...offer, ...data });
           setUploadsPreview(response.data?.uploads);
         }
       });
@@ -127,7 +130,7 @@ export default function AddOffer(props) {
 
   const handleRouteChange = (e) => {
     let updatedOffer = { ...offer };
-    let splitValues = e.target.value.split(website_url+append_url);
+    let splitValues = e.target.value.split(website_url + append_url);
     let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
     updatedValue = updatedValue.replace(/--/g, '-')
     updatedOffer[e.target.name] = website_url + updatedValue.toLowerCase();
@@ -228,14 +231,14 @@ export default function AddOffer(props) {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className="mb-0">Add an Offer</h4>
+            <h4 style={{ fontWeight: '400' }} className="mb-0">Add an Offer</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
-            <h4 className="mt-1">General Information</h4>
-            <Grid container spacing={2} style={{ display: 'flex', alignItems: 'center' }}>
-              <Grid item xs={12} sm={7}>
-                <Grid container spacing={3}>
+            <h4 style={{ fontWeight: '400' }} className="mt-1">General Information</h4>
+            <Grid container spacing={2} style={{ display: 'flex' }}>
+              <Grid item xs={12} sm={6}>
+                <Grid container spacing={1}>
                   <Grid item xs={12} sm={12}>
                     <TextField
                       required
@@ -249,19 +252,6 @@ export default function AddOffer(props) {
                       size="small"
                     />
                   </Grid>
-                  {/* <Grid item xs={12} sm={12}>
-                    <TextField
-                      required
-                      id="alt_text"
-                      name="alt_text"
-                      label="Image Alt Text"
-                      value={offer.alt_text}
-                      variant="outlined"
-                      fullWidth
-                      onChange={handleInputChange}
-                      size="small"
-                    />
-                  </Grid> */}
                   <Grid item xs={12} sm={12}>
                     <FormControl variant="outlined"
                       size="small" fullWidth className={classes.formControl}>
@@ -286,91 +276,108 @@ export default function AddOffer(props) {
                       </Select>
                     </FormControl>
                   </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                      {
+                        !isEdit ?
+                          thumbnailPreview && thumbnailPreview !== "" ?
+                            <img src={thumbnailPreview} alt={offer.alt_text || ""} />
+                            :
+                            <img src={require('./../../assets/img/placeholder.png')} alt="" />
+                          :
+                          typeof (offer.thumbnail) === typeof (0) ?
+                            // offer.thumbnail && offer.thumbnail !== "" ?
+                            <img src={thumbnailPreview} alt={offer.alt_text || ""} />
+                            :
+                            <img src={offer.thumbnail} alt={offer.alt_text || ""} />
+                      }
+                    </div>
+                    <Fragment>
+                      <MaterialButton
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<Image />}
+                        className="mt-1"
+                        fullWidth
+                        onClick={() => {
+                          setIsSingle(true);
+                          setIsBanner(false);
+                          setShowGallery(true);
+                        }}
+                      >
+                        {isEdit ? 'Change' : 'Upload'} Featured Image
+                      </MaterialButton>
+                    </Fragment>
+                  </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12} sm={5}>
-                <div className="thumbnail-preview-wrapper-small img-thumbnail">
-                  {
-                    !isEdit ?
-                      thumbnailPreview && thumbnailPreview !== "" ?
-                        <img src={thumbnailPreview} alt={offer.alt_text || ""} />
-                        :
-                        <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                      :
-                      typeof (offer.thumbnail) === typeof (0) ?
-                        // offer.thumbnail && offer.thumbnail !== "" ?
-                        <img src={thumbnailPreview} alt={offer.alt_text || ""} />
-                        :
-                        <img src={offer.thumbnail} alt={offer.alt_text || ""} />
-                  }
-                </div>
-                <Fragment>
-                  <MaterialButton
-                    variant="contained"
-                    color="primary"
-                    startIcon={<Image />}
-                    className="mt-1"
-                    fullWidth
-                    onClick={() => {
-                      setIsSingle(true);
-                      setIsBanner(false);
-                      setShowGallery(true);
-                    }}
-                  >
-                    {isEdit ? 'Change' : 'Upload'} Featured Image
-                </MaterialButton>
-                </Fragment>
+              <Grid item xs={12} sm={6}>
+                <Grid container spacing={2}>
+
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="banner_text"
+                      name="banner_text"
+                      label="Banner Text"
+                      value={offer.banner_text}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <div className="thumbnail-preview-wrapper img-thumbnail">
+                      {
+                        !isEdit ?
+                          bannerThumbnailPreview && bannerThumbnailPreview !== "" ?
+                            <img src={bannerThumbnailPreview} alt={offer.alt_text || ""} />
+                            :
+                            <img src={require('./../../assets/img/placeholder.png')} alt="" />
+                          :
+                          typeof (offer.banner_img) === typeof (0) ?
+                            // offer.thumbnail && offer.thumbnail !== "" ?
+                            <img src={bannerThumbnailPreview} alt={offer.alt_text || ""} />
+                            :
+                            <img src={offer.banner_img} alt={offer.alt_text || ""} />
+                      }
+                    </div>
+                    <Fragment>
+                      <MaterialButton
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<Image />}
+                        className="mt-1"
+                        fullWidth
+                        onClick={() => {
+                          setIsSingle(false);
+                          setIsBanner(true);
+                          setShowGallery(true);
+                        }}
+                      >
+                        {isEdit ? 'Change' : 'Upload'} Featured Image
+                      </MaterialButton>
+                    </Fragment>
+                  </Grid>
+                </Grid>
               </Grid>
+              
               <Grid item xs={12} sm={12}>
                 <hr />
-                <h4>Add Banner Image</h4>
-                <div className="thumbnail-preview-wrapper-large img-thumbnail">
-                  {
-                    !isEdit ?
-                      bannerThumbnailPreview && bannerThumbnailPreview !== "" ?
-                        <img src={bannerThumbnailPreview} alt={offer.alt_text || ""} />
-                        :
-                        <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                      :
-                      typeof (offer.banner_img) === typeof (0) ?
-                        // offer.thumbnail && offer.thumbnail !== "" ?
-                        <img src={bannerThumbnailPreview} alt={offer.alt_text || ""} />
-                        :
-                        <img src={offer.banner_img} alt={offer.alt_text || ""} />
-                  }
-                </div>
-                <Fragment>
-                  <MaterialButton
-                    variant="contained"
-                    color="primary"
-                    startIcon={<Image />}
-                    className="mt-1"
-                    fullWidth
-                    onClick={() => {
-                      setIsSingle(false);
-                      setIsBanner(true);
-                      setShowGallery(true);
-                    }}
-                  >
-                    {isEdit ? 'Change' : 'Upload'} Featured Image
-                </MaterialButton>
-                </Fragment>
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <hr />
-                <h4>Short Description</h4>
+                <h4 style={{ fontWeight: '400' }}>Short Description</h4>
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={offer.short_description} onChange={(e) => setOffer({ ...offer, short_description: e.editor.getData() })} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
                 <hr />
-                <h4>Detailed Content</h4>
+                <h4 style={{ fontWeight: '400' }}>Detailed Content</h4>
                 <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={offer.post_content} onChange={(e) => setOffer({ ...offer, post_content: e.editor.getData() })} />
 
               </Grid>
             </Grid>
             <hr />
-            <h4 className="mt-2">SEO Information</h4>
+            <h4 style={{ fontWeight: '400' }} className="mt-2">SEO Information</h4>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField

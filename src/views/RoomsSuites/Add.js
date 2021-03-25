@@ -41,7 +41,7 @@ import { useParams, withRouter } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 
 const website_url = "https://fishermanscove-resort.com/rooms-inner/";
-const append_url = "rooms-inner/"
+const append_url = "rooms-inner";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,12 +70,14 @@ export default withRouter(function AddRoom(props) {
     parent_id: -1,
     thumbnail: '',
     banner_img: '',
+    banner_text: '',
     alt_text: '',
     meta_title: '',
     meta_description: '',
     schema_markup: '',
     post_url: '',
     route: website_url,
+    inner_route: append_url,
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: "0,0",
@@ -104,7 +106,9 @@ export default withRouter(function AddRoom(props) {
       setPostId(id);
       API.get(`/rooms/${id}/edit`).then(response => {
         if (response.status === 200) {
-          setRoom({ ...room, ...response?.data?.content[0] })
+          let data = { ...response?.data?.content[0] };
+          data.route = website_url + data.route;
+          setRoom({ ...room, ...data })
           setUploadsPreview(response.data?.uploads)
         }
       })
@@ -228,14 +232,14 @@ export default withRouter(function AddRoom(props) {
     <div className={classes.root}>
       <Card>
         <CardHeader color="primary">
-          <h4 className="mb-0">Add Room/Suite</h4>
+          <h4 style={{ fontWeight: '400' }} className="mb-0">Add Room/Suite</h4>
           {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
         </CardHeader>
         <CardBody>
-          <h4 className="mt-3">General Information</h4>
-          <Grid container spacing={2} style={{ display: 'flex', alignItems: 'center' }}>
-            <Grid item xs={12} sm={7} >
-              <Grid container spacing={3}>
+          <h4 style={{ fontWeight: '400' }} className="mt-3">General Information</h4>
+          <Grid container spacing={2} style={{ display: 'flex' }}>
+            <Grid item xs={12} sm={6} >
+              <Grid container spacing={2}>
                 <Grid item xs={12} sm={12}>
                   <TextField
                     required
@@ -250,6 +254,94 @@ export default withRouter(function AddRoom(props) {
                   />
                 </Grid>
                 <Grid item xs={12} sm={12}>
+                  <div className="thumbnail-preview-wrapper img-thumbnail">
+                    {
+                      !isEdit ?
+                        thumbnailPreview && thumbnailPreview !== "" ?
+                          <img src={thumbnailPreview} alt={room.alt_text || ""} />
+                          :
+                          <img src={require('./../../assets/img/placeholder.png')} alt="" />
+                        :
+                        typeof (room.thumbnail) === typeof (0) ?
+                          // room.thumbnail && room.thumbnail !== "" ?
+                          <img src={thumbnailPreview} alt={room.alt_text || ""} />
+                          :
+                          <img src={room.thumbnail} alt={room.alt_text || ""} />
+                    }
+                  </div>
+                  <Fragment>
+                    <MaterialButton
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<Image />}
+                      className="mt-1"
+                      fullWidth
+                      onClick={() => {
+                        setIsSingle(true);
+                        setIsBanner(false);
+                        setShowGallery(true);
+                      }}
+                    >
+                      {isEdit ? 'Change' : 'Upload'} Featured Image
+                    </MaterialButton>
+                  </Fragment>
+                </Grid>
+
+              </Grid>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    required
+                    id="banner_text"
+                    name="banner_text"
+                    label="Banner Text"
+                    value={room.banner_text}
+                    variant="outlined"
+                    fullWidth
+                    onChange={handleInputChange}
+                    size="small"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <div className="thumbnail-preview-wrapper img-thumbnail">
+                    {
+                      !isEdit ?
+                        bannerThumbnailPreview && bannerThumbnailPreview !== "" ?
+                          <img src={bannerThumbnailPreview} alt={room.alt_text || ""} />
+                          :
+                          <img src={require('./../../assets/img/placeholder.png')} alt="" />
+                        :
+                        typeof (room.banner_img) === typeof (0) ?
+                          // room.thumbnail && room.thumbnail !== "" ?
+                          <img src={bannerThumbnailPreview} alt={room.alt_text || ""} />
+                          :
+                          <img src={room.banner_img} alt={room.alt_text || ""} />
+                    }
+                  </div>
+                  <Fragment>
+                    <MaterialButton
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<Image />}
+                      className="mt-1"
+                      fullWidth
+                      onClick={() => {
+                        setIsSingle(true);
+                        setIsBanner(true);
+                        setShowGallery(true);
+                      }}
+                    >
+                      {isEdit ? 'Change' : 'Upload'} Banner Image
+                    </MaterialButton>
+                  </Fragment>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
                   <FormControl variant="outlined" size="small" fullWidth className={classes.formControl}>
                     <InputLabel id="room_type-label">Type</InputLabel>
                     <Select
@@ -269,7 +361,7 @@ export default withRouter(function AddRoom(props) {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={12}>
+                <Grid item xs={12} sm={6}>
                   <TextField
                     required
                     id="post_url"
@@ -282,98 +374,17 @@ export default withRouter(function AddRoom(props) {
                     size="small"
                   />
                 </Grid>
-                {/* <Grid item xs={12} sm={12}>
-                  <TextField
-                    required
-                    id="alt_text"
-                    name="alt_text"
-                    label="Image Alt Text"
-                    value={room.alt_text}
-                    variant="outlined"
-                    fullWidth
-                    onChange={handleInputChange}
-                    size="small"
-                  />
-                </Grid> */}
-
               </Grid>
             </Grid>
-            <Grid item xs={12} sm={5}>
-              <div className="thumbnail-preview-wrapper img-thumbnail">
-                {
-                  !isEdit ?
-                    thumbnailPreview && thumbnailPreview !== "" ?
-                      <img src={thumbnailPreview} alt={room.alt_text || ""} />
-                      :
-                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                    :
-                    typeof (room.thumbnail) === typeof (0) ?
-                      // room.thumbnail && room.thumbnail !== "" ?
-                      <img src={thumbnailPreview} alt={room.alt_text || ""} />
-                      :
-                      <img src={room.thumbnail} alt={room.alt_text || ""} />
-                }
-              </div>
-              <Fragment>
-                <MaterialButton
-                  variant="contained"
-                  color="primary"
-                  startIcon={<Image />}
-                  className="mt-1"
-                  fullWidth
-                  onClick={() => {
-                    setIsSingle(true);
-                    setIsBanner(false);
-                    setShowGallery(true);
-                  }}
-                >
-                  {isEdit ? 'Change' : 'Upload'} Featured Image
-                </MaterialButton>
-              </Fragment>
-            </Grid>
+
             <Grid item xs={12} sm={12}>
               <hr />
-              <h4>Add Banner Image</h4>
-              <div className="thumbnail-preview-wrapper-large img-thumbnail">
-                {
-                  !isEdit ?
-                    bannerThumbnailPreview && bannerThumbnailPreview !== "" ?
-                      <img src={bannerThumbnailPreview} alt={room.alt_text || ""} />
-                      :
-                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                    :
-                    typeof (room.banner_img) === typeof (0) ?
-                      // room.thumbnail && room.thumbnail !== "" ?
-                      <img src={bannerThumbnailPreview} alt={room.alt_text || ""} />
-                      :
-                      <img src={room.banner_img} alt={room.alt_text || ""} />
-                }
-              </div>
-              <Fragment>
-                <MaterialButton
-                  variant="contained"
-                  color="primary"
-                  startIcon={<Image />}
-                  className="mt-1"
-                  fullWidth
-                  onClick={() => {
-                    setIsSingle(true);
-                    setIsBanner(true);
-                    setShowGallery(true);
-                  }}
-                >
-                  {isEdit ? 'Change' : 'Upload'} Featured Image
-                </MaterialButton>
-              </Fragment>
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <hr />
-              <h4>Short Description</h4>
+              <h4 style={{ fontWeight: '400' }}>Short Description</h4>
               <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={room.short_description} onChange={(e) => setRoom({ ...room, short_description: e.editor.getData() })} />
             </Grid>
             <Grid item xs={12} sm={12}>
               <hr />
-              <h4>Detailed Content</h4>
+              <h4 style={{ fontWeight: '400' }}>Detailed Content</h4>
 
               <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={room.post_content} onChange={(e) => setRoom({ ...room, post_content: e.editor.getData() })} />
 
@@ -381,7 +392,7 @@ export default withRouter(function AddRoom(props) {
           </Grid>
           <hr />
 
-          <h4 className="mt-2">SEO Information</h4>
+          <h4 style={{ fontWeight: '400' }} className="mt-2">SEO Information</h4>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
