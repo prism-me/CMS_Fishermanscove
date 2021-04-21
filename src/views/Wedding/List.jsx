@@ -74,7 +74,7 @@ class WeddingList extends Component {
         }
       },
       {
-        name: "route",
+        name: "id",
         label: "Actions",
         options: {
           filter: false,

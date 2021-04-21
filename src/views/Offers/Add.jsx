@@ -202,6 +202,8 @@ export default function AddOffer(props) {
 
   const handleSubmit = () => {
     let finalOffer = offer;
+    finalOffer.route = finalOffer.route.split(website_url)?.[1];
+
     finalOffer.images_list = JSON.stringify(selectedImages);
     finalOffer.is_indexed_or_is_followed = `${finalOffer.is_indexed},${finalOffer.is_followed}`;
 
