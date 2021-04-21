@@ -113,7 +113,7 @@ class PageList extends Component {
   render() {
     return (
       <div>
-        <Box marginBottom={4}>
+        {/* <Box marginBottom={4}>
           <Link to="/admin/pages/add">
             <Button
               variant="contained"
@@ -123,7 +123,7 @@ class PageList extends Component {
               Add Page
           </Button>
           </Link>
-        </Box>
+        </Box> */}
         <MUIDataTable
           title="Leisure Activities"
           columns={this.state.columns}
