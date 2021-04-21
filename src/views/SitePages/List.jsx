@@ -125,7 +125,7 @@ class PageList extends Component {
           </Link>
         </Box> */}
         <MUIDataTable
-          title="Leisure Activities"
+          title="Site Pages"
           columns={this.state.columns}
           data={this.state.rows}
           options={this.options}

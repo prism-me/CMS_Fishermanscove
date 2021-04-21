@@ -48,7 +48,8 @@ export default function UpdateHeader() {
     contact: {
       phone: '',
       email: '',
-      address: ''
+      address: '',
+      whatsapp: ''
     }
   }
   const [dragId, setDragId] = useState();
@@ -453,6 +454,19 @@ export default function UpdateHeader() {
                       name="email"
                       label="Email Address"
                       value={headerContent.contact.email}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleContactItemChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      required
+                      id="whatsapp"
+                      name="whatsapp"
+                      label="Whatsapp"
+                      value={headerContent.contact.whatsapp}
                       variant="outlined"
                       fullWidth
                       onChange={handleContactItemChange}

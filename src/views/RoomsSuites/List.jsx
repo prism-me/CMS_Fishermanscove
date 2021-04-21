@@ -1,9 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import MUIDataTable from "mui-datatables";
-import API from 'utils/http';
-import { Avatar, Box, Button } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import { AddOutlined, DeleteOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
+import API from "utils/http";
+import { Avatar, Box, Button } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import {
+  AddOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  VisibilityOutlined,
+} from "@material-ui/icons";
 
 class RoomsList extends Component {
   state = {
@@ -16,9 +21,12 @@ class RoomsList extends Component {
           filter: false,
           sort: false,
           customBodyRender: (val, row) => (
-            <Avatar alt={row.tableData[row.rowIndex][1]?.toUpperCase()} src={val}></Avatar>
-          )
-        }
+            <Avatar
+              alt={row.tableData[row.rowIndex][1]?.toUpperCase()}
+              src={val}
+            ></Avatar>
+          ),
+        },
       },
       {
         name: "post_name",
@@ -26,7 +34,7 @@ class RoomsList extends Component {
         options: {
           filter: true,
           sort: true,
-        }
+        },
       },
       {
         name: "room_type",
@@ -35,9 +43,13 @@ class RoomsList extends Component {
           filter: true,
           sort: false,
           customBodyRender: (val) => {
-            return val === 1 ? <span className="badge badge-primary">Room</span> : <span className="badge badge-warning">Suite</span>  //1 for room, 2 for suite
-          }
-        }
+            return val === 1 ? (
+              <span className="badge badge-primary">Room</span>
+            ) : (
+              <span className="badge badge-warning">Suite</span>
+            ); //1 for room, 2 for suite
+          },
+        },
       },
       {
         name: "category_name",
@@ -45,7 +57,7 @@ class RoomsList extends Component {
         options: {
           filter: true,
           sort: false,
-        }
+        },
       },
       // {
       //   name: "short_description",
@@ -64,12 +76,10 @@ class RoomsList extends Component {
         options: {
           filter: true,
           sort: false,
-          customBodyRender: val => (
-            <code>
-              {val?.length > 100 ? val?.substr(0, 100) + '...' : val}
-            </code>
-          )
-        }
+          customBodyRender: (val) => (
+            <code>{val?.length > 100 ? val?.substr(0, 100) + "..." : val}</code>
+          ),
+        },
       },
       {
         name: "route",
@@ -77,24 +87,37 @@ class RoomsList extends Component {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: val => (
+          customBodyRender: (val) => (
             <div className="d-flex nowrap">
-              <Link title="View Details" title="Details" to={`/admin/room-suites/${val}`} >
+              <Link
+                title="View Details"
+                title="Details"
+                to={`/admin/room-suites/${val}`}
+              >
                 <VisibilityOutlined fontSize="small" color="action" />
               </Link>
-              <Link className="ml-2" title="Edit" to={`/admin/room-suites/edit/${val}`} >
+              <Link
+                className="ml-2"
+                title="Edit"
+                to={`/admin/room-suites/edit/${val}`}
+              >
                 <EditOutlined fontSize="small" color="primary" />
               </Link>
-              <Link className="ml-2" title="Delete" to={`#`} onClick={() => this.handleDelete(val)} >
+              <Link
+                className="ml-2"
+                title="Delete"
+                to={`#`}
+                onClick={() => this.handleDelete(val)}
+              >
                 <DeleteOutlined fontSize="small" color="secondary" />
               </Link>
             </div>
-          )
-        }
+          ),
+        },
       },
     ],
-    rows: []
-  }
+    rows: [],
+  };
 
   options = {
     filterType: "checkbox",
@@ -102,21 +125,29 @@ class RoomsList extends Component {
   };
 
   componentDidMount() {
-    API.get('/rooms').then(response => {
+    API.get("/rooms").then((response) => {
       let rows = response.data;
-      this.setState({ rows })
-    })
+      this.setState({ rows });
+    });
   }
 
   handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this ?')) {
-      API.delete(`/rooms/${id}`).then(response => {
-        if (response.status === 200) {
-          alert("Room deleted successfully !");
-        }
-      }).catch(err => console.log(err))
+    if (window.confirm("Are you sure you want to delete this ?")) {
+      API.delete(`/rooms/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            alert("Room deleted successfully !");
+          }
+        })
+        .then(() => {
+          API.get("/rooms").then((response) => {
+            let rows = response.data;
+            this.setState({ rows });
+          });
+        })
+        .catch((err) => console.log(err));
     }
-  }
+  };
 
   render() {
     return (
@@ -129,7 +160,7 @@ class RoomsList extends Component {
               startIcon={<AddOutlined />}
             >
               Add Room
-          </Button>
+            </Button>
           </Link>
         </Box>
         <MUIDataTable

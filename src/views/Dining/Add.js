@@ -6,9 +6,9 @@ import InputLabel from "@material-ui/core/InputLabel";
 // import GridItem from "components/Grid/GridItem.js";
 // import GridContainer from "components/Grid/GridContainer.js";
 // import CustomInput from "components/CustomInput/CustomInput.js";
-import Grid from '@material-ui/core/Grid';
+import Grid from "@material-ui/core/Grid";
 // import Paper from '@material-ui/core/Paper';
-import MaterialButton from '@material-ui/core/Button';
+import MaterialButton from "@material-ui/core/Button";
 
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
@@ -18,8 +18,17 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 // import avatar from "assets/img/faces/marc.jpg";
-import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel, Avatar } from "@material-ui/core";
-import CKEditor from 'ckeditor4-react';
+import {
+  MenuItem,
+  Select,
+  FormControl,
+  TextField,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  Avatar,
+} from "@material-ui/core";
+import CKEditor from "ckeditor4-react";
 
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
@@ -29,7 +38,7 @@ import { useParams, withRouter } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 
 const website_url = "https://fishermanscove-resort.com/dining-inner/";
-const append_url = "dining-inner"
+const append_url = "dining-inner";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: 'center',
+    textAlign: "center",
     color: theme.palette.text.secondary,
   },
 }));
@@ -49,85 +58,92 @@ export default withRouter(function DiningAdd(props) {
   let { id } = useParams();
 
   const initialObject = {
-    post_name: '',
+    post_name: "",
     post_content: "<p>Detailed content goes here!</p>",
     short_description: "<p>Short description goes here!</p>",
     room_type: -1,
     parent_id: -1,
-    thumbnail: '',
-    banner_img: '',
-    banner_text: '',
-    alt_text: '',
-    meta_title: '',
-    meta_description: '',
-    schema_markup: '',
-    post_url: '',
+    thumbnail: "",
+    banner_img: "",
+    banner_text: "",
+    alt_text: "",
+    meta_title: "",
+    meta_description: "",
+    schema_markup: "",
+    post_url: "",
     route: website_url,
     inner_route: append_url,
     is_followed: true,
     is_indexed: true,
-    is_indexed_or_is_followed: '1,1',
-    images_list: []
-  }
-  const [dining, setDining] = useState({ ...initialObject })
+    is_indexed_or_is_followed: "1,1",
+    images_list: [],
+  };
+  const [dining, setDining] = useState({ ...initialObject });
 
   const [diningImages, setDiningImages] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [post_id, setPostId] = useState(-1);
 
-  const [imagesData, setImagesData] = useState([])
-  const [uploadsPreview, setUploadsPreview] = useState(null)
-  const [selectedImages, setSelectedImages] = useState([])
-  const [showGallery, setShowGallery] = useState(false)
-  const [isSingle, setIsSingle] = useState(false)
-  const [renderPreviews, setRenderPreviews] = useState(false)
-  const [thumbnailPreview, setThumbnailPreview] = useState('')
-  const [isBanner, setIsBanner] = useState(false)
-  const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState('')
+  const [imagesData, setImagesData] = useState([]);
+  const [uploadsPreview, setUploadsPreview] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [showGallery, setShowGallery] = useState(false);
+  const [isSingle, setIsSingle] = useState(false);
+  const [renderPreviews, setRenderPreviews] = useState(false);
+  const [thumbnailPreview, setThumbnailPreview] = useState("");
+  const [isBanner, setIsBanner] = useState(false);
+  const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState("");
 
   useEffect(() => {
     if (id && id != null) {
       setIsEdit(true);
       setPostId(id);
-      API.get(`/dining/${id}/edit`).then(response => {
+      API.get(`/dining/${id}/edit`).then((response) => {
         if (response.status === 200) {
           let data = { ...response?.data?.category_details?.[0] };
+          let meta = { ...response?.data?.meta[0] };
+          data.meta_title = meta.meta_title;
+          data.is_indexed_or_is_followed = meta.is_indexed_or_is_followed;
+          data.meta_description = meta.meta_description;
+          data.schema_markup = meta.schema_markup;
           data.route = website_url + data.route;
           setDining({ ...dining, ...data });
-          setUploadsPreview(response.data?.uploads)
+          setUploadsPreview(response.data?.uploads);
         }
-      })
+      });
     }
     getGalleryImages();
-  }, [])
+  }, []);
 
   const getGalleryImages = () => {
-    API.get(`/uploads`).then(response => {
+    API.get(`/uploads`).then((response) => {
       if (response.status === 200) {
-        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
+        setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
       }
-    })
-  }
+    });
+  };
 
   const handleInputChange = (e) => {
     let updatedDining = { ...dining };
     updatedDining[e.target.name] = e.target.value;
     if (e.target.name === "post_name") {
-      let updatedValue = e.target.value.replace(/\s+/g, '-')
-      updatedValue = updatedValue.replace(/--/g, '-')
+      let updatedValue = e.target.value.replace(/\s+/g, "-");
+      updatedValue = updatedValue.replace(/--/g, "-");
       updatedDining["route"] = website_url + updatedValue.toLowerCase();
     }
     setDining(updatedDining);
-  }
+  };
 
   const handleRouteChange = (e) => {
     let updatedDining = { ...dining };
     let splitValues = e.target.value.split(website_url);
-    let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
-    updatedValue = updatedValue.replace(/--/g, '-')
+    let updatedValue = splitValues[1]
+      ? splitValues[1].replace(/\s+/g, "-")
+      : "";
+    updatedValue = updatedValue.replace(/--/g, "-");
     updatedDining[e.target.name] = website_url + updatedValue.toLowerCase();
     setDining(updatedDining);
-  }
+  };
 
   const handleImageSelect = (e, index) => {
     if (e.target.checked) {
@@ -136,96 +152,105 @@ export default withRouter(function DiningAdd(props) {
       //   return;
       // } else {
       if (isSingle && !isBanner) {
-        setDining({ ...dining, thumbnail: imagesData[index].id })
-        setThumbnailPreview(imagesData[index].avatar)
+        setDining({ ...dining, thumbnail: imagesData[index].id });
+        setThumbnailPreview(imagesData[index].avatar);
         setTimeout(() => {
           setShowGallery(false);
-        }, 500)
+        }, 500);
       } else if (isSingle && isBanner) {
-        setDining({ ...dining, banner_img: imagesData[index].id })
-        setBannerThumbnailPreview(imagesData[index].avatar)
+        setDining({ ...dining, banner_img: imagesData[index].id });
+        setBannerThumbnailPreview(imagesData[index].avatar);
         setTimeout(() => {
           setShowGallery(false);
-        }, 500)
-      }
-      else {
+        }, 500);
+      } else {
         setSelectedImages([...selectedImages, imagesData[index].id]);
       }
       let imagesDataUpdated = imagesData.map((x, i) => {
         if (i === index) {
           return {
             ...x,
-            isChecked: true
-          }
+            isChecked: true,
+          };
         } else {
-          return x
+          return x;
         }
       });
       setImagesData(imagesDataUpdated);
       // }
     } else {
       if (isSingle && !isBanner) {
-        setDining({ ...dining, thumbnail: "" })
-        setThumbnailPreview("")
+        setDining({ ...dining, thumbnail: "" });
+        setThumbnailPreview("");
       } else if (isSingle && isBanner) {
-        setDining({ ...dining, banner_img: "" })
-        setBannerThumbnailPreview("")
+        setDining({ ...dining, banner_img: "" });
+        setBannerThumbnailPreview("");
+      } else {
+        setSelectedImages(
+          selectedImages.filter((x) => x !== imagesData[index].id)
+        );
       }
-      else {
-        setSelectedImages(selectedImages.filter(x => x !== imagesData[index].id));
-      }
-      setImagesData(imagesData.map((x, i) => {
-        if (i === index) {
-          return {
-            ...x,
-            isChecked: false
+      setImagesData(
+        imagesData.map((x, i) => {
+          if (i === index) {
+            return {
+              ...x,
+              isChecked: false,
+            };
+          } else {
+            return x;
           }
-        } else {
-          return x
-        }
-      }));
+        })
+      );
     }
-  }
+  };
 
   const handleSubmit = () => {
     let finalDining = dining;
     finalDining.images_list = JSON.stringify(selectedImages);
-    finalDining.route = finalDining.route.split(website_url)?.[1] || finalDining.route;
-    finalDining.is_indexed_or_is_followed = `${finalDining.is_indexed ? '1' : '0'},${finalDining.is_followed ? '1' : '0'}`;
+    finalDining.route =
+      finalDining.route.split(website_url)?.[1] || finalDining.route;
+    finalDining.is_indexed_or_is_followed = `${
+      finalDining.is_indexed ? "1" : "0"
+    },${finalDining.is_followed ? "1" : "0"}`;
 
     if (isEdit) {
-      API.put(`/dining/${id}`, finalDining).then(response => {
+      API.put(`/dining/${id}`, finalDining).then((response) => {
         console.log(response);
         if (response.status === 200) {
           alert("Record Updated");
           setDining({ ...initialObject }); //clear all fields
-          props.history.push('/admin/dining');
+          props.history.push("/admin/dining");
         }
-      })
+      });
     } else {
-      API.post('/dining', finalDining).then(response => {
+      API.post("/dining", finalDining).then((response) => {
         console.log(response);
         if (response.status === 200) {
           setPostId(response.data?.post_id);
           alert("Restaurant/Bar Added");
           setDining({ ...initialObject });
-          props.history.push('/admin/dining');
+          props.history.push("/admin/dining");
         }
-      })
+      });
     }
-  }
+  };
 
   return (
     <div>
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 style={{ fontWeight: '400' }} className="my-0">Add Dining/Suite</h4>
+            <h4 style={{ fontWeight: "400" }} className="my-0">
+              Add Dining/Suite
+            </h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
-            <h4 style={{ fontWeight: '400' }} className="mt-3">General Information</h4>
-            <Grid container spacing={2} style={{ display: 'flex' }}>
+            <h4 style={{ fontWeight: "400" }} className="mt-3">
+              General Information
+            </h4>
+            <Grid container spacing={2} style={{ display: "flex" }}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -239,19 +264,21 @@ export default withRouter(function DiningAdd(props) {
                   size="small"
                 />
                 <div className="thumbnail-preview-wrapper-small mt-2 img-thumbnail">
-                  {
-                    !isEdit ?
-                      thumbnailPreview && thumbnailPreview !== "" ?
-                        <img src={thumbnailPreview} alt={dining.alt_text || ""} />
-                        :
-                        <img src={require('./../../assets/img/placeholder.png')} alt="" />
-                      :
-                      typeof (dining.thumbnail) === typeof (0) ?
-                        // dining.thumbnail && dining.thumbnail !== "" ?
-                        <img src={thumbnailPreview} alt={dining.alt_text || ""} />
-                        :
-                        <img src={dining.thumbnail} alt={dining.alt_text || ""} />
-                  }
+                  {!isEdit ? (
+                    thumbnailPreview && thumbnailPreview !== "" ? (
+                      <img src={thumbnailPreview} alt={dining.alt_text || ""} />
+                    ) : (
+                      <img
+                        src={require("./../../assets/img/placeholder.png")}
+                        alt=""
+                      />
+                    )
+                  ) : typeof dining.thumbnail === typeof 0 ? (
+                    // dining.thumbnail && dining.thumbnail !== "" ?
+                    <img src={thumbnailPreview} alt={dining.alt_text || ""} />
+                  ) : (
+                    <img src={dining.thumbnail} alt={dining.alt_text || ""} />
+                  )}
                 </div>
                 <Fragment>
                   <MaterialButton
@@ -266,7 +293,7 @@ export default withRouter(function DiningAdd(props) {
                       setShowGallery(true);
                     }}
                   >
-                    {isEdit ? 'Change' : 'Upload'} Featured Image
+                    {isEdit ? "Change" : "Upload"} Featured Image
                   </MaterialButton>
                 </Fragment>
               </Grid>
@@ -283,19 +310,27 @@ export default withRouter(function DiningAdd(props) {
                   size="small"
                 />
                 <div className="thumbnail-preview-wrapper-small mt-2 img-thumbnail">
-                  {
-                    !isEdit ?
-                      bannerThumbnailPreview && bannerThumbnailPreview !== "" ?
-                        <img src={bannerThumbnailPreview} alt={dining.alt_text || ""} />
-                        :
-                        <img src={require('./../../assets/img/placeholder.png')} alt="" />
-                      :
-                      typeof (dining.banner_img) === typeof (0) ?
-                        // dining.thumbnail && dining.thumbnail !== "" ?
-                        <img src={bannerThumbnailPreview} alt={dining.alt_text || ""} />
-                        :
-                        <img src={dining.banner_img} alt={dining.alt_text || ""} />
-                  }
+                  {!isEdit ? (
+                    bannerThumbnailPreview && bannerThumbnailPreview !== "" ? (
+                      <img
+                        src={bannerThumbnailPreview}
+                        alt={dining.alt_text || ""}
+                      />
+                    ) : (
+                      <img
+                        src={require("./../../assets/img/placeholder.png")}
+                        alt=""
+                      />
+                    )
+                  ) : typeof dining.banner_img === typeof 0 ? (
+                    // dining.thumbnail && dining.thumbnail !== "" ?
+                    <img
+                      src={bannerThumbnailPreview}
+                      alt={dining.alt_text || ""}
+                    />
+                  ) : (
+                    <img src={dining.banner_img} alt={dining.alt_text || ""} />
+                  )}
                 </div>
                 <Fragment>
                   <MaterialButton
@@ -310,26 +345,49 @@ export default withRouter(function DiningAdd(props) {
                       setShowGallery(true);
                     }}
                   >
-                    {isEdit ? 'Change' : 'Upload'} Banner Image
-                </MaterialButton>
+                    {isEdit ? "Change" : "Upload"} Banner Image
+                  </MaterialButton>
                 </Fragment>
               </Grid>
 
               <Grid item xs={12} sm={12}>
                 <hr />
-                <h4 style={{ fontWeight: '400' }} className="mt-2">Short Description</h4>
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={dining.short_description} onChange={(e) => setDining({ ...dining, short_description: e.editor.getData() })} />
-
+                <h4 style={{ fontWeight: "400" }} className="mt-2">
+                  Short Description
+                </h4>
+                <CKEditor
+                  onBeforeLoad={(CKEDITOR) =>
+                    (CKEDITOR.disableAutoInline = true)
+                  }
+                  data={dining.short_description}
+                  onChange={(e) =>
+                    setDining({
+                      ...dining,
+                      short_description: e.editor.getData(),
+                    })
+                  }
+                />
               </Grid>
               <Grid item xs={12} sm={12}>
                 <hr />
-                <h4 style={{ fontWeight: '400' }} className="mt-2">Detailed Content</h4>
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={dining.post_content} onChange={(e) => setDining({ ...dining, post_content: e.editor.getData() })} />
-
+                <h4 style={{ fontWeight: "400" }} className="mt-2">
+                  Detailed Content
+                </h4>
+                <CKEditor
+                  onBeforeLoad={(CKEDITOR) =>
+                    (CKEDITOR.disableAutoInline = true)
+                  }
+                  data={dining.post_content}
+                  onChange={(e) =>
+                    setDining({ ...dining, post_content: e.editor.getData() })
+                  }
+                />
               </Grid>
             </Grid>
             <hr />
-            <h4 style={{ fontWeight: '400' }} className="mt-2">SEO Information</h4>
+            <h4 style={{ fontWeight: "400" }} className="mt-2">
+              SEO Information
+            </h4>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -388,21 +446,54 @@ export default withRouter(function DiningAdd(props) {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl component="fieldset">
-                  <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={dining.is_followed} onChange={(e) => {
-                    setDining({ ...dining, is_followed: !dining.is_followed })
-                  }}>
-                    <FormControlLabel value={true} control={<Radio />} label="Follow" />
-                    <FormControlLabel value={false} control={<Radio />} label="No Follow" />
+                  <RadioGroup
+                    aria-label="is_followed"
+                    row
+                    defaultChecked
+                    name="is_followed"
+                    value={dining.is_followed}
+                    onChange={(e) => {
+                      setDining({
+                        ...dining,
+                        is_followed: !dining.is_followed,
+                      });
+                    }}
+                  >
+                    <FormControlLabel
+                      value={true}
+                      control={<Radio />}
+                      label="Follow"
+                    />
+                    <FormControlLabel
+                      value={false}
+                      control={<Radio />}
+                      label="No Follow"
+                    />
                   </RadioGroup>
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl component="fieldset">
-                  <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={dining.is_indexed} onChange={(e) => {
-                    setDining({ ...dining, is_indexed: !dining.is_indexed })
-                  }}>
-                    <FormControlLabel value={true} control={<Radio />} label="Index" />
-                    <FormControlLabel value={false} control={<Radio />} label="No Index" />
+                  <RadioGroup
+                    aria-label="is_indexed"
+                    row
+                    defaultChecked
+                    name="is_indexed"
+                    value={dining.is_indexed}
+                    onChange={(e) => {
+                      setDining({ ...dining, is_indexed: !dining.is_indexed });
+                    }}
+                  >
+                    <FormControlLabel
+                      value={true}
+                      control={<Radio />}
+                      label="Index"
+                    />
+                    <FormControlLabel
+                      value={false}
+                      control={<Radio />}
+                      label="No Index"
+                    />
                   </RadioGroup>
                 </FormControl>
               </Grid>
@@ -415,67 +506,99 @@ export default withRouter(function DiningAdd(props) {
         {/* ******************************** */}
         <Card>
           <CardBody>
-            <h4 style={{ fontWeight: '400' }}>Dining Images</h4>
-            <p><em>Please select images from gallery.</em></p>
+            <h4 style={{ fontWeight: "400" }}>Dining Images</h4>
+            <p>
+              <em>Please select images from gallery.</em>
+            </p>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
-                <MaterialButton variant="outlined" color="primary" onClick={() => {
-                  setRenderPreviews(false);
-                  setIsSingle(false);
-                  setIsBanner(false);
-                  setShowGallery(true)
-                }}>
+                <MaterialButton
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    setRenderPreviews(false);
+                    setIsSingle(false);
+                    setIsBanner(false);
+                    setShowGallery(true);
+                  }}
+                >
                   Select Gallery Images
-              </MaterialButton>
+                </MaterialButton>
               </Grid>
-              {
-                renderPreviews && imagesData?.filter(function (array_el) {
-                  return selectedImages.filter(function (menuItems_el) {
-                    return menuItems_el == array_el.id;
-                  }).length !== 0
-                })?.map(x => (
+              {renderPreviews &&
+                imagesData
+                  ?.filter(function (array_el) {
+                    return (
+                      selectedImages.filter(function (menuItems_el) {
+                        return menuItems_el == array_el.id;
+                      }).length !== 0
+                    );
+                  })
+                  ?.map((x) => (
+                    <Grid item xs={12} sm={2}>
+                      <div style={{ height: "120px" }}>
+                        <img
+                          width="100%"
+                          src={x.avatar}
+                          className="img-thumbnail"
+                          alt=""
+                          style={{ height: "90%", objectFit: "cover" }}
+                        />
+                        <p style={{ fontSize: "12px" }} className="text-center">
+                          {x.alt_tag}
+                        </p>
+                      </div>
+                    </Grid>
+                  ))}
+              {uploadsPreview &&
+                uploadsPreview?.map((x) => (
                   <Grid item xs={12} sm={2}>
-                    <div style={{ height: '120px' }}>
-                      <img width="100%" src={x.avatar} className="img-thumbnail" alt="" style={{ height: '90%', objectFit: 'cover' }} />
-                      <p style={{ fontSize: '12px' }} className="text-center">
+                    <div style={{ height: "120px" }}>
+                      <img
+                        width="100%"
+                        src={x.avatar}
+                        className="img-thumbnail"
+                        alt=""
+                        style={{ height: "90%", objectFit: "cover" }}
+                      />
+                      <p style={{ fontSize: "12px" }} className="text-center">
                         {x.alt_tag}
                       </p>
                     </div>
                   </Grid>
-                ))
-              }
-              {
-                uploadsPreview && uploadsPreview?.map(x => (
-                  <Grid item xs={12} sm={2}>
-                    <div style={{ height: '120px' }}>
-                      <img width="100%" src={x.avatar} className="img-thumbnail" alt="" style={{ height: '90%', objectFit: 'cover' }} />
-                      <p style={{ fontSize: '12px' }} className="text-center">
-                        {x.alt_tag}
-                      </p>
-                    </div>
-                  </Grid>
-                ))
-              }
+                ))}
               <div className="clearfix clear-fix"></div>
               {/* GALLERY DIALOG BOX START */}
-              <GalleryDialog isSingle={isSingle} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
-                setShowGallery(false);
-                setRenderPreviews(true);
-              }} refreshGallery={getGalleryImages} data={imagesData} />
+              <GalleryDialog
+                isSingle={isSingle}
+                open={showGallery}
+                handleImageSelect={handleImageSelect}
+                handleClose={() => {
+                  setShowGallery(false);
+                  setRenderPreviews(true);
+                }}
+                refreshGallery={getGalleryImages}
+                data={imagesData}
+              />
               {/* GALLERY DIALOG BOX END */}
             </Grid>
           </CardBody>
         </Card>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12}>
-            <MaterialButton onClick={handleSubmit} style={{ float: 'right' }} variant="contained" color="primary" size="large">
+            <MaterialButton
+              onClick={handleSubmit}
+              style={{ float: "right" }}
+              variant="contained"
+              color="primary"
+              size="large"
+            >
               Submit
-          </MaterialButton>
+            </MaterialButton>
           </Grid>
         </Grid>
         {/* } */}
       </div>
-    </div >
+    </div>
   );
-}
-)
+});
