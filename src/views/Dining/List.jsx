@@ -1,9 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import MUIDataTable from "mui-datatables";
-import API from 'utils/http';
-import { Avatar, Box, Button } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import { AddOutlined, DeleteOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
+import API from "utils/http";
+import { Avatar, Box, Button } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import {
+  AddOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  VisibilityOutlined,
+} from "@material-ui/icons";
 
 class DiningList extends Component {
   state = {
@@ -15,10 +20,8 @@ class DiningList extends Component {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: (val) => (
-            <Avatar alt={"Image"} src={val}></Avatar>
-          )
-        }
+          customBodyRender: (val) => <Avatar alt={"Image"} src={val}></Avatar>,
+        },
       },
       {
         name: "post_name",
@@ -26,7 +29,7 @@ class DiningList extends Component {
         options: {
           filter: true,
           sort: true,
-        }
+        },
       },
       // {
       //   name: "room_type",
@@ -64,14 +67,10 @@ class DiningList extends Component {
         options: {
           filter: true,
           sort: false,
-          customBodyRender: val => (
-            <code>
-              {
-                val?.length > 100 ? val?.substr(0, 100) + '...' : val
-              }
-            </code>
-          )
-        }
+          customBodyRender: (val) => (
+            <code>{val?.length > 100 ? val?.substr(0, 100) + "..." : val}</code>
+          ),
+        },
       },
       {
         name: "route",
@@ -79,24 +78,33 @@ class DiningList extends Component {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: val => (
+          customBodyRender: (val) => (
             <div className="d-flex nowrap">
-              <Link to={`/admin/dining/${val}`} >
+              <Link to={`/admin/dining/${val}`}>
                 <VisibilityOutlined fontSize="small" color="action" />
               </Link>
-              <Link className="ml-2" title="Edit" to={`/admin/dining/edit/${val}`} >
+              <Link
+                className="ml-2"
+                title="Edit"
+                to={`/admin/dining/edit/${val}`}
+              >
                 <EditOutlined fontSize="small" color="primary" />
               </Link>
-              <Link className="ml-2" title="Delete" to={`#`} onClick={() => this.handleDelete(val)} >
+              <Link
+                className="ml-2"
+                title="Delete"
+                to={`#`}
+                onClick={() => this.handleDelete(val)}
+              >
                 <DeleteOutlined fontSize="small" color="secondary" />
               </Link>
             </div>
-          )
-        }
+          ),
+        },
       },
     ],
-    rows: []
-  }
+    rows: [],
+  };
 
   options = {
     filterType: "checkbox",
@@ -104,29 +112,31 @@ class DiningList extends Component {
   };
 
   componentDidMount() {
-    API.get('/dining').then(response => {
+    API.get("/dining").then((response) => {
       let rows = response.data;
-      this.setState({ rows })
-    })
+      this.setState({ rows: rows.filter((x) => x.post_type === "page") });
+    });
   }
 
   handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this ?')) {
-      API.delete(`/dining/${id}`).then(response => {
-        if (response.status === 200) {
-          alert("Restaurant deleted successfully !");
-        }
-      }).then(()=>{
-        API.get(`/dining`).then(response => {
+    if (window.confirm("Are you sure you want to delete this ?")) {
+      API.delete(`/dining/${id}`)
+        .then((response) => {
           if (response.status === 200) {
-            let rows = response.data;
-            this.setState({ rows })
+            alert("Restaurant deleted successfully !");
           }
         })
-      })
-      .catch(err => console.log(err))
+        .then(() => {
+          API.get(`/dining`).then((response) => {
+            if (response.status === 200) {
+              let rows = response.data;
+              this.setState({ rows });
+            }
+          });
+        })
+        .catch((err) => console.log(err));
     }
-  }
+  };
 
   render() {
     return (
@@ -139,7 +149,7 @@ class DiningList extends Component {
               startIcon={<AddOutlined />}
             >
               Add Restaurant
-          </Button>
+            </Button>
           </Link>
         </Box>
         <MUIDataTable

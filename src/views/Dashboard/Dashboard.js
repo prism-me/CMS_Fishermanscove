@@ -145,7 +145,7 @@ export default function Dashboard() {
                 {stats.contacts_count}
               </h3>
             </CardHeader>
-            <CardFooter stats>
+            {/* <CardFooter stats>
               <div className={classes.stats}>
                 <Danger>
                   <Warning />
@@ -154,7 +154,7 @@ export default function Dashboard() {
                   Get more space
                 </a>
               </div>
-            </CardFooter>
+            </CardFooter> */}
           </Card>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
@@ -166,12 +166,12 @@ export default function Dashboard() {
               <p className={classes.cardCategory}>Total Subscribers</p>
               <h3 className={classes.cardTitle}>{stats.subscribers_count}</h3>
             </CardHeader>
-            <CardFooter stats>
+            {/* <CardFooter stats>
               <div className={classes.stats}>
                 <DateRange />
                 Last 24 Hours
               </div>
-            </CardFooter>
+            </CardFooter> */}
           </Card>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
@@ -183,12 +183,12 @@ export default function Dashboard() {
               <p className={classes.cardCategory}>Active Offers</p>
               <h3 className={classes.cardTitle}>{stats.offers_count}</h3>
             </CardHeader>
-            <CardFooter stats>
+            {/* <CardFooter stats>
               <div className={classes.stats}>
                 <LocalOffer />
                 Tracked from Github
               </div>
-            </CardFooter>
+            </CardFooter> */}
           </Card>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
@@ -200,12 +200,12 @@ export default function Dashboard() {
               <p className={classes.cardCategory}>Analytics</p>
               <h3 className={classes.cardTitle}>{stats.analytics_count}</h3>
             </CardHeader>
-            <CardFooter stats>
+            {/* <CardFooter stats>
               <div className={classes.stats}>
                 <Update />
                 Just Updated
               </div>
-            </CardFooter>
+            </CardFooter> */}
           </Card>
         </GridItem>
       </GridContainer>
