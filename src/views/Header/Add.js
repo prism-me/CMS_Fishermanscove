@@ -11,9 +11,6 @@ import CardBody from "components/Card/CardBody.js";
 import { TextField, Paper } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -22,7 +19,6 @@ import Typography from "@material-ui/core/Typography";
 import API from "utils/http";
 import {
   AddCircleOutline,
-  AddCircleOutlined,
   CloseOutlined,
   DragHandleOutlined,
 } from "@material-ui/icons";
@@ -114,6 +110,8 @@ export default function UpdateHeader() {
   };
 
   const handleSubMenuItemChange = (e, route, index, ind, inner_route) => {
+    // eslint-disable-next-line no-debugger
+    // debugger;
     let updatedHeaderContent = { ...headerContent };
     let updatedSubMenu = [...updatedHeaderContent.menuItems[index].subMenu];
 
@@ -326,7 +324,7 @@ export default function UpdateHeader() {
                       {headerContent?.menuItems
                         ?.sort((a, b) => a.order - b.order)
                         .map((x, index) => (
-                          <React.Fragment>
+                          <React.Fragment key={x.temp_id}>
                             <Grid item xs={12} sm={12}>
                               <Paper
                                 className="px-2 py-3 header-menu-list-item"

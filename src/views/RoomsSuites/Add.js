@@ -135,7 +135,7 @@ export default withRouter(function AddRoom(props) {
   const handleInputChange = (e) => {
     let updatedRoom = { ...room };
     updatedRoom[e.target.name] = e.target.value;
-    if (e.target.name === "post_name") {
+    if (e.target.name === "post_name" && !isEdit) {
       let updatedValue = e.target.value.replace(/\s+/g, "-");
       updatedValue = updatedValue.replace(/--/g, "-");
       updatedRoom["route"] = website_url + updatedValue.toLowerCase();
@@ -157,7 +157,7 @@ export default withRouter(function AddRoom(props) {
   const handleImageSelect = (e, index) => {
     if (e.target.checked) {
       // if (isSingle && thumbnailPreview !== "") {
-      //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+      //   alert("You can only select 1 image for thumbnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
       if (isSingle && !isBanner) {
