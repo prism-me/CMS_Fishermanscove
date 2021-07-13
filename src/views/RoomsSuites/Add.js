@@ -107,7 +107,6 @@ export default withRouter(function AddRoom(props) {
   const [thumbnailPreview, setThumbnailPreview] = useState("");
   const [isBanner, setIsBanner] = useState(false);
   const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState("");
-
   useEffect(() => {
     if (id && id != null) {
       setIsEdit(true);
@@ -117,7 +116,7 @@ export default withRouter(function AddRoom(props) {
           let data = { ...response?.data?.content[0] };
           data.route = website_url + data.route;
           setRoom({ ...room, ...data });
-          setUploadsPreview(response.data?.uploads);
+          setUploadsPreview(response.data?.uploads);          
         }
       });
     }
@@ -172,7 +171,7 @@ export default withRouter(function AddRoom(props) {
         setTimeout(() => {
           setShowGallery(false);
         }, 500);
-      } else {
+      } else {        
         setSelectedImages([...selectedImages, imagesData[index].id]);
       }
       let imagesDataUpdated = imagesData.map((x, i) => {
@@ -185,6 +184,7 @@ export default withRouter(function AddRoom(props) {
           return x;
         }
       });
+      
       setImagesData(imagesDataUpdated);
       // }
     } else {
@@ -215,14 +215,17 @@ export default withRouter(function AddRoom(props) {
   };
 
   const handleSubmit = () => {
+    
+    const newImageList = [...JSON.parse(room.images_list), ...selectedImages]    
     let finalRoom = room;
     finalRoom.route = finalRoom.route.split(website_url)?.[1];
     finalRoom.inner_route = append_url;
-    finalRoom.images_list = JSON.stringify(selectedImages);
+    //finalRoom.images_list = JSON.stringify(selectedImages);
+    finalRoom.images_list = JSON.stringify(newImageList);
     finalRoom.is_indexed_or_is_followed = `${
       finalRoom.is_indexed ? "1" : "0"
     },${finalRoom.is_followed ? "1" : "0"}`;
-    if (isEdit) {
+    if (isEdit) {      
       API.put(`/rooms/${id}`, finalRoom).then((response) => {
         if (response.status === 200) {
           alert("Record Updated");
