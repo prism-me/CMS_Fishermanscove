@@ -53,11 +53,11 @@ const App = connect(
   mapDispatchToProps
 )((props) => {
   useEffect(() => {
-    // if (!props.user?.isAuthenticated) {
-    //   hist.replace("/login");
-    // } else {
+    if (!props.user?.isAuthenticated) {
+      hist.replace("/login");
+    } else {
       hist.replace("/admin");
-    // }
+    }
   }, [props.user]);
 
   // console.log(props.user?.isAuthenticated );
