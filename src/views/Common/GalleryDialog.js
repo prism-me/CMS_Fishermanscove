@@ -16,6 +16,7 @@ export default function GalleryDialog(props) {
     const [currentFiles, setCurrentFiles] = useState([]);
 
     useMemo(()=>{
+        if(props.data !== undefined && props.selectedData !== undefined)
         if(props.data.length > 0 && props.selectedData.length > 0){
             props.data.map(x => {
                 props.selectedData.filter(d => {

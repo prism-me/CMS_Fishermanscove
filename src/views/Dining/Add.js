@@ -109,6 +109,7 @@ export default withRouter(function DiningAdd(props) {
           data.route = website_url + data.route;
           setDining({ ...dining, ...data });
           setUploadsPreview(response.data?.uploads);
+          setSelectedImages(response.data?.uploads.map(x => x.id))
         }
       });
     }
@@ -207,7 +208,7 @@ export default withRouter(function DiningAdd(props) {
 
   const handleSubmit = () => {
     let finalDining = dining;
-    finalDining.images_list = JSON.stringify(selectedImages);
+    finalDining.images_list = JSON.stringify([...new Set(selectedImages)]);
     finalDining.route =
       finalDining.route.split(website_url)?.[1] || finalDining.route;
     finalDining.is_indexed_or_is_followed = `${
@@ -576,9 +577,11 @@ export default withRouter(function DiningAdd(props) {
                 handleClose={() => {
                   setShowGallery(false);
                   setRenderPreviews(true);
+                  setUploadsPreview([])
                 }}
                 refreshGallery={getGalleryImages}
                 data={imagesData}
+                selectedData={selectedImages}
               />
               {/* GALLERY DIALOG BOX END */}
             </Grid>
