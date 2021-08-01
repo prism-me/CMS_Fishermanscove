@@ -27,8 +27,8 @@ import {
   DragHandleOutlined,
 } from "@material-ui/icons";
 
-const append_url_dining = "dining-inner";
-const append_url_room = "rooms-inner";
+const append_url_dining = "dining";
+const append_url_room = "rooms";
 
 const useStyles = makeStyles((theme) => ({
   root: {
