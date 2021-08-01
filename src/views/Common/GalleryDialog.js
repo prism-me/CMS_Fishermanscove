@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -14,6 +14,20 @@ import API from 'utils/http';
 
 export default function GalleryDialog(props) {
     const [currentFiles, setCurrentFiles] = useState([]);
+
+    useMemo(()=>{
+        if(props.data !== undefined && props.selectedData !== undefined)
+        if(props.data.length > 0 && props.selectedData.length > 0){
+            props.data.map(x => {
+                props.selectedData.filter(d => {
+                    if(d === x.id){
+                        x.isChecked = true
+                    }
+                })
+                return x
+            })
+        }
+    },[props])
 
     const handleFileDrop = (files) => {
         let updatedFiles = files.map(x => (
@@ -166,7 +180,7 @@ export default function GalleryDialog(props) {
                             props.data?.map((x, index) => (
                                 <FormControlLabel
                                     style={{ width: '25%', margin: 0 }}
-                                    control={<Checkbox checked={x.checked} style={{ width: '100%' }} onChange={(e) => props.handleImageSelect(e, index, props.section)} color="primary" icon={<div style={{ width: '100%', height: '150px' }}>
+                                    control={<Checkbox checked={x.isChecked} style={{ width: '100%' }} onChange={(e) => props.handleImageSelect(e, index, props.section)} color="primary" icon={<div style={{ width: '100%', height: '150px' }}>
                                         <img className="img-thumbnail" width="100%" style={{ height: '100%', objectFit: 'cover' }} src={x.avatar} alt="" />
                                     </div>} checkedIcon={
                                         <div style={{ width: '100%', height: '150px' }}>

@@ -127,7 +127,7 @@ export default function AddOffer(props) {
   const handleInputChange = (e) => {
     let updatedOffer = { ...offer };
     updatedOffer[e.target.name] = e.target.value;
-    if (e.target.name === "post_name") {
+    if (e.target.name === "post_name" && !isEdit) {
       let updatedValue = e.target.value.replace(/\s+/g, "-");
       updatedValue = updatedValue.replace(/--/g, "-");
       updatedOffer["route"] = website_url + updatedValue.toLowerCase();
@@ -136,8 +136,10 @@ export default function AddOffer(props) {
   };
 
   const handleRouteChange = (e) => {
+    // eslint-disable-next-line no-debugger
+    // debugger;
     let updatedOffer = { ...offer };
-    let splitValues = e.target.value.split(website_url + append_url);
+    let splitValues = e.target.value.split(website_url);
     let updatedValue = splitValues[1]
       ? splitValues[1].replace(/\s+/g, "-")
       : "";
@@ -228,8 +230,9 @@ export default function AddOffer(props) {
       API.put(`/offers/${id}`, finalOffer)
         .then((response) => {
           if (response.status === 200) {
-            alert("Record Added");
+            alert("Record Updated");
             // setOffer({ ...initialObject }); //resetting the form
+            // eslint-disable-next-line react/prop-types
             props.history.push("/admin/offers");
           }
         })
@@ -240,7 +243,7 @@ export default function AddOffer(props) {
       API.post("/offers", finalOffer)
         .then((response) => {
           if (response.status === 200) {
-            alert("Record Updated");
+            alert("Record Added");
             setPostId(response.data?.post_id);
             // setOffer({ ...initialObject });
             props.history.push("/admin/offers");

@@ -220,7 +220,7 @@ export default function UpdateFooter() {
       }
     )
       .then((response) => {
-        debugger;
+        // debugger;
         if (response.status === 200) {
           alert(response.data.message);
           // setMessageInfo((prev) => [...prev, { message: response.data.message, key: new Date().getTime() }])

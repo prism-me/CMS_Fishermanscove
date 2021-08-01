@@ -116,7 +116,8 @@ export default withRouter(function AddRoom(props) {
           let data = { ...response?.data?.content[0] };
           data.route = website_url + data.route;
           setRoom({ ...room, ...data });
-          setUploadsPreview(response.data?.uploads);          
+          setUploadsPreview(response.data?.uploads);
+          setSelectedImages(response.data?.uploads.map(x => x.id))
         }
       });
     }
@@ -134,7 +135,7 @@ export default withRouter(function AddRoom(props) {
   const handleInputChange = (e) => {
     let updatedRoom = { ...room };
     updatedRoom[e.target.name] = e.target.value;
-    if (e.target.name === "post_name") {
+    if (e.target.name === "post_name" && !isEdit) {
       let updatedValue = e.target.value.replace(/\s+/g, "-");
       updatedValue = updatedValue.replace(/--/g, "-");
       updatedRoom["route"] = website_url + updatedValue.toLowerCase();
@@ -156,7 +157,7 @@ export default withRouter(function AddRoom(props) {
   const handleImageSelect = (e, index) => {
     if (e.target.checked) {
       // if (isSingle && thumbnailPreview !== "") {
-      //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+      //   alert("You can only select 1 image for thumbnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
       if (isSingle && !isBanner) {
@@ -220,12 +221,12 @@ export default withRouter(function AddRoom(props) {
     let finalRoom = room;
     finalRoom.route = finalRoom.route.split(website_url)?.[1];
     finalRoom.inner_route = append_url;
-    //finalRoom.images_list = JSON.stringify(selectedImages);
-    finalRoom.images_list = JSON.stringify(newImageList);
+    finalRoom.images_list = JSON.stringify([...new Set(selectedImages)]);
     finalRoom.is_indexed_or_is_followed = `${
       finalRoom.is_indexed ? "1" : "0"
     },${finalRoom.is_followed ? "1" : "0"}`;
-    if (isEdit) {      
+    if (isEdit) {
+      // console.log("finalRoom",finalRoom)
       API.put(`/rooms/${id}`, finalRoom).then((response) => {
         if (response.status === 200) {
           alert("Record Updated");
@@ -583,7 +584,7 @@ export default withRouter(function AddRoom(props) {
                 ?.filter(function (array_el) {
                   return (
                     selectedImages.filter(function (menuItems_el) {
-                      return menuItems_el == array_el.id;
+                      return menuItems_el === array_el.id;
                     }).length !== 0
                   );
                 })
@@ -630,9 +631,11 @@ export default withRouter(function AddRoom(props) {
               handleClose={() => {
                 setShowGallery(false);
                 setRenderPreviews(true);
+                setUploadsPreview([])
               }}
               refreshGallery={getGalleryImages}
               data={imagesData}
+              selectedData={selectedImages}
             />
             {/* GALLERY DIALOG BOX END */}
           </Grid>
