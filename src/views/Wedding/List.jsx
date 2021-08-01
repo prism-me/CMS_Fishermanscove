@@ -1,9 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import MUIDataTable from "mui-datatables";
-import API from 'utils/http';
-import { Avatar, Box, Button } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import { AddOutlined, DeleteOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
+import API from "utils/http";
+import { Avatar, Box, Button } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import {
+  AddOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  VisibilityOutlined,
+} from "@material-ui/icons";
 
 class WeddingList extends Component {
   state = {
@@ -16,9 +21,12 @@ class WeddingList extends Component {
           filter: false,
           sort: false,
           customBodyRender: (val, row) => (
-            <Avatar alt={row.tableData[row.rowIndex][1]?.toUpperCase() } src={val}></Avatar>
-          )
-        }
+            <Avatar
+              alt={row.tableData[row.rowIndex][1]?.toUpperCase()}
+              src={val}
+            ></Avatar>
+          ),
+        },
       },
       {
         name: "post_name",
@@ -26,7 +34,7 @@ class WeddingList extends Component {
         options: {
           filter: true,
           sort: true,
-        }
+        },
       },
       // {
       //   name: "room_type",
@@ -64,14 +72,10 @@ class WeddingList extends Component {
         options: {
           filter: true,
           sort: false,
-          customBodyRender: val => (
-            <code>
-              {
-                val.length > 100 ? val.substr(0, 100) + '...' : val
-              }
-            </code>
-          )
-        }
+          customBodyRender: (val) => (
+            <code>{val.length > 100 ? val.substr(0, 100) + "..." : val}</code>
+          ),
+        },
       },
       {
         name: "id",
@@ -79,24 +83,33 @@ class WeddingList extends Component {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: val => (
+          customBodyRender: (val) => (
             <div className="d-flex nowrap">
-              <Link to={`/admin/weddings/${val}`} >
+              <Link to={`/admin/weddings/${val}`}>
                 <VisibilityOutlined fontSize="small" color="action" />
               </Link>
-              <Link className="ml-2" title="Edit" to={`/admin/weddings/edit/${val}`} >
+              <Link
+                className="ml-2"
+                title="Edit"
+                to={`/admin/weddings/edit/${val}`}
+              >
                 <EditOutlined fontSize="small" color="primary" />
               </Link>
-              <Link className="ml-2" title="Delete" to={`#`} onClick={() => this.handleDelete(val)} >
+              <Link
+                className="ml-2"
+                title="Delete"
+                to={`#`}
+                onClick={() => this.handleDelete(val)}
+              >
                 <DeleteOutlined fontSize="small" color="secondary" />
               </Link>
             </div>
-          )
-        }
+          ),
+        },
       },
     ],
-    rows: []
-  }
+    rows: [],
+  };
 
   options = {
     filterType: "checkbox",
@@ -104,29 +117,30 @@ class WeddingList extends Component {
   };
 
   componentDidMount() {
-    API.get('/wedding').then(response => {
+    API.get("/wedding").then((response) => {
       let rows = response.data;
-      this.setState({ rows: rows.filter(x=> x.post_type !== "page") })
-    })
+      this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
+    });
   }
 
   handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this ?')) {
-      API.delete(`/wedding/${id}`).then(response => {
-        if (response.status === 200) {
-          alert("Wedding Item deleted successfully !");
-        }
-      })
-      .then(()=>{
-        debugger;
-        API.get('/wedding').then(response => {
-          let rows = response.data;
-          this.setState({ rows: rows.filter(x=> x.post_type !== "page") })
+    if (window.confirm("Are you sure you want to delete this ?")) {
+      API.delete(`/wedding/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            alert("Wedding Item deleted successfully !");
+          }
         })
-      })
-      .catch(err => console.log(err))
+        .then(() => {
+          // debugger;
+          API.get("/wedding").then((response) => {
+            let rows = response.data;
+            this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
+          });
+        })
+        .catch((err) => console.log(err));
     }
-  }
+  };
 
   render() {
     return (
@@ -139,7 +153,7 @@ class WeddingList extends Component {
               startIcon={<AddOutlined />}
             >
               Add Wedding
-          </Button>
+            </Button>
           </Link>
         </Box>
         <MUIDataTable
