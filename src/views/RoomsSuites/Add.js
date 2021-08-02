@@ -216,8 +216,7 @@ export default withRouter(function AddRoom(props) {
   };
 
   const handleSubmit = () => {
-    
-    const newImageList = [...JSON.parse(room.images_list), ...selectedImages]    
+    const newImageList = [...JSON.parse(room.images_list), ...selectedImages]
     let finalRoom = room;
     finalRoom.route = finalRoom.route.split(website_url)?.[1];
     finalRoom.inner_route = append_url;
