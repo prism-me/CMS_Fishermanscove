@@ -49,6 +49,7 @@ import DiningAdd from "views/Dining/Add";
 import LeisureList from "views/Leisure/List";
 import WeddingList from "views/Wedding/List";
 import WeddingAdd from "views/Wedding/Add";
+
 import LeisureAdd from "views/Leisure/Add";
 import LeisureDetail from "views/Leisure/Details";
 import WeddingDetail from "views/Wedding/Details";
@@ -60,6 +61,7 @@ import PageList from "views/SitePages/List";
 import Footer from "views/Footer/Add";
 import UpdateHeader from "views/Header/Add";
 import AddSustainability from "views/SitePages/Pages/Sustainability/Add";
+import LeisureActivities from  "views/SitePages/Pages/Sustainability/Add";
 import AddLeisureInner from "views/SitePages/Pages/LeisureInner/Add";
 import AddDiningInner from "views/SitePages/Pages/DiningInner/Add";
 import AddAboutUs from "views/SitePages/Pages/About/Add";
@@ -193,6 +195,7 @@ const dashboardRoutes = [
     exact: true,
     hide: true
   },
+
   {
     path: "/offers",
     name: "Offers",
@@ -313,6 +316,16 @@ const dashboardRoutes = [
   },
   {
     path: "/pages/sustainability/add/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: AddSustainability,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/pages/whats-on/add/:id",
     name: "Pages",
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
