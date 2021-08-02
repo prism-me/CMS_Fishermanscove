@@ -418,10 +418,12 @@ export default withRouter(function AddRoom(props) {
               <hr />
               <h4 style={{ fontWeight: "400" }}>Short Description</h4>
               <CKEditor
+                 
                 onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)}
                 data={room.short_description}
                 onChange={(e) =>
                   setRoom({ ...room, short_description: e.editor.getData() })
+                  
                 }
               />
             </Grid>
