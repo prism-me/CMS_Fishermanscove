@@ -7,9 +7,11 @@ import CKEditor from "ckeditor4-react";
 import Typography from "@material-ui/core/Typography";
 
 export default function FAQSection(props) {
+  // const SectionContent = JSON.parse(props.section_content);
   return (
-    props.section_content?.length > 0 &&
-    props.section_content?.map((x, i) => (
+
+      Object.keys(props.section_content)?.length > 0 &&
+      Object.keys(props.section_content)?.map((x, i) => (
       <div
         className="mb-3 p-2"
         style={{ boxShadow: "0 0 4px #dadada", position: "relative" }}
