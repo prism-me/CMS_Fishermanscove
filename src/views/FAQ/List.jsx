@@ -143,7 +143,6 @@ const FAQList = (props) => {
       })
       .catch((err) => console.log(err));
   };
-
   return (
     <div className="faq-section-block my-3 my-sm-4">
       <div className="container">

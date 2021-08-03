@@ -154,6 +154,16 @@ export default withRouter(function AddRoom(props) {
     setRoom(updatedRoom);
   };
 
+  const handleImageDelete = id => {
+    const updatedPhotos = [...selectedImages];
+    updatedPhotos.splice(id, 1);
+    setSelectedImages(updatedPhotos);
+  };
+  const handleImageDelete2 = id => {
+    const updatedPhotos = [...imagesData];
+    updatedPhotos.splice(id, 1);
+    setImagesData(updatedPhotos);
+  };
   const handleImageSelect = (e, index) => {
     if (e.target.checked) {
       // if (isSingle && thumbnailPreview !== "") {
@@ -560,7 +570,7 @@ export default withRouter(function AddRoom(props) {
       </Card>
       {/* {isEdit && */}
       <Card>
-        <CardBody>
+        <CardBody className={"pb-5"}>
           <h3>Room Images</h3>
           <p>
             <em>Please select images from gallery.</em>
@@ -592,6 +602,13 @@ export default withRouter(function AddRoom(props) {
                 ?.map((x) => (
                   <Grid item xs={12} sm={2}>
                     <div style={{ height: "120px" }}>
+                      <div
+                          className="delete"
+                          type="button"
+                          onClick={() => handleImageDelete2(x)}
+                      >
+                        X
+                      </div>
                       <img
                         width="100%"
                         src={x.avatar}
@@ -609,6 +626,13 @@ export default withRouter(function AddRoom(props) {
               uploadsPreview?.map((x) => (
                 <Grid item xs={12} sm={2}>
                   <div style={{ height: "120px" }}>
+                    <div
+                        className="delete"
+                        type="button"
+                        onClick={() => handleImageDelete(x)}
+                    >
+                      X
+                    </div>
                     <img
                       width="100%"
                       src={x.avatar}

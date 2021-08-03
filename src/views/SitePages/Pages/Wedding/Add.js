@@ -161,6 +161,10 @@ export default function AddWedding() {
 
 
   const handleImageSelect = (e, index, section) => {
+    setTimeout(() => {
+      setShowGallery(false);
+    }, 500);
+
     if (e.target.checked) {
       if (isSingle && thumbnailPreview !== "") {
         alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
@@ -181,7 +185,8 @@ export default function AddWedding() {
         });
         setImagesData(imagesDataUpdated);
       }
-    } else {
+    }
+    else {
       setWedding({ ...wedding, [section]: { ...wedding[section], section_avatar: "" } })
       setThumbnailPreview("")
 
@@ -498,12 +503,12 @@ export default function AddWedding() {
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     {/*FAQ ITEM*/}
-                    <FAQSection
-                      removeQuestion={removeQuestion}
-                      section_content={wedding.faq.section_content}
-                      handleQuestionChange={handleQuestionChange}
-                      handleAnswerChange={handleAnswerChange}
-                    />
+                    {/*<FAQSection*/}
+                    {/*  removeQuestion={removeQuestion}*/}
+                    {/*  section_content={wedding.faq.section_content}*/}
+                    {/*  handleQuestionChange={handleQuestionChange}*/}
+                    {/*  handleAnswerChange={handleAnswerChange}*/}
+                    {/*/>*/}
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     <MaterialButton onClick={() => handleSubmit(wedding.faq.id, "faq")} size="large" color="primary" variant="contained">

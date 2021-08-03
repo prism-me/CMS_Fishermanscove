@@ -127,7 +127,7 @@ export default withRouter(function DiningAdd(props) {
   const handleInputChange = (e) => {
     let updatedDining = { ...dining };
     updatedDining[e.target.name] = e.target.value;
-    if (e.target.name === "post_name" && !isEdit) {
+    if (e.target.name === "post_name") {
       let updatedValue = e.target.value.replace(/\s+/g, "-");
       updatedValue = updatedValue.replace(/--/g, "-");
       updatedDining["route"] = website_url + updatedValue.toLowerCase();
@@ -206,18 +206,18 @@ export default withRouter(function DiningAdd(props) {
     }
   };
 
+
   const handleSubmit = () => {
+    const newImageList = [...JSON.parse(dining.images_list), ...selectedImages]
     let finalDining = dining;
     finalDining.route = finalDining.route.split(website_url)?.[1];
     finalDining.inner_route = append_url;
     finalDining.images_list = JSON.stringify([...new Set(selectedImages)]);
-    finalDining.is_indexed_or_is_followed = `${
-      finalDining.is_indexed ? "1" : "0"
+    finalDining.is_indexed_or_is_followed = `${ finalDining.is_indexed ? "1" : "0"
     },${finalDining.is_followed ? "1" : "0"}`;
-
     if (isEdit) {
+      // console.log("finalRoom",finalRoom)
       API.put(`/dining/${id}`, finalDining).then((response) => {
-        console.log(response);
         if (response.status === 200) {
           alert("Record Updated");
           setDining({ ...initialObject }); //clear all fields
@@ -226,16 +226,47 @@ export default withRouter(function DiningAdd(props) {
       });
     } else {
       API.post("/dining", finalDining).then((response) => {
-        console.log(response);
         if (response.status === 200) {
           setPostId(response.data?.post_id);
-          alert("Restaurant/Bar Added");
+          alert("Record Updated");
           setDining({ ...initialObject });
           props.history.push("/admin/dining");
         }
       });
     }
   };
+
+  //
+  // const handleSubmit = () => {
+  //   let finalDining = dining;
+  //   finalDining.images_list = JSON.stringify([...new Set(selectedImages)]);
+  //   finalDining.route =
+  //     finalDining.route.split(website_url)?.[1] || finalDining.route;
+  //   finalDining.is_indexed_or_is_followed = `${
+  //     finalDining.is_indexed ? "1" : "0"
+  //   },${finalDining.is_followed ? "1" : "0"}`;
+  //
+  //   if (isEdit) {
+  //     API.put(`/dining/${id}`, finalDining).then((response) => {
+  //       console.log(response);
+  //       if (response.status === 200) {
+  //         alert("Record Updated");
+  //         setDining({ ...initialObject }); //clear all fields
+  //         props.history.push("/admin/dining");
+  //       }
+  //     });
+  //   } else {
+  //     API.post("/dining", finalDining).then((response) => {
+  //       console.log(response);
+  //       if (response.status === 200) {
+  //         setPostId(response.data?.post_id);
+  //         alert("Restaurant/Bar Added");
+  //         setDining({ ...initialObject });
+  //         props.history.push("/admin/dining");
+  //       }
+  //     });
+  //   }
+  // };
 
   return (
     <div>
