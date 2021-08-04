@@ -55,35 +55,12 @@ export default function Dashboard() {
   const [showWedding, setShowWedding] = useState(false);
 
   useEffect(() => {
-    API.get('/dashboard_counts').then(response => {
+    API.get('/dashboard_apis').then(response => {
       if (response?.status === 200) {
-        setStats({ ...stats, ...response?.data?.data });
+        setRecents(response.data)
       }
-    }).then(() => {
-      API.get('/recent_adds').then(response => {
-        if (response?.status === 200) {
-          setRecents(response.data)
-        }
-      }).then(() => {
-        API.get('/todo').then(response => {
-          if (response?.status === 200) {
-            setTodos(response.data)
-          }
-        }).then(() => {
-          API.get('/get_bookweddings').then(response => {
-            if (response?.status === 200) {
-              setWeddings(response.data)
-            }
-          }).then(() => {
-            API.get('/get_subscribers').then(response => {
-              if (response?.status === 200) {
-                setSubscribers(response.data)
-              }
-            })
-          })
-        })
-      })
     })
+
   }, [])
 
   const getTodos = () => {
@@ -142,7 +119,7 @@ export default function Dashboard() {
               </CardIcon>
               <p className={classes.cardCategory}>Contacts</p>
               <h3 className={classes.cardTitle}>
-                {stats.contacts_count}
+                {recents.contacts_count}
               </h3>
             </CardHeader>
             {/* <CardFooter stats>
@@ -164,7 +141,7 @@ export default function Dashboard() {
                 <Store />
               </CardIcon>
               <p className={classes.cardCategory}>Total Subscribers</p>
-              <h3 className={classes.cardTitle}>{stats.subscribers_count}</h3>
+              <h3 className={classes.cardTitle}>{recents.subscribers_count}</h3>
             </CardHeader>
             {/* <CardFooter stats>
               <div className={classes.stats}>
@@ -181,7 +158,7 @@ export default function Dashboard() {
                 <Icon>info_outline</Icon>
               </CardIcon>
               <p className={classes.cardCategory}>Active Offers</p>
-              <h3 className={classes.cardTitle}>{stats.offers_count}</h3>
+              <h3 className={classes.cardTitle}>{recents.offers_count}</h3>
             </CardHeader>
             {/* <CardFooter stats>
               <div className={classes.stats}>
@@ -198,7 +175,7 @@ export default function Dashboard() {
                 <Accessibility />
               </CardIcon>
               <p className={classes.cardCategory}>Analytics</p>
-              <h3 className={classes.cardTitle}>{stats.analytics_count}</h3>
+              <h3 className={classes.cardTitle}>{recents.analytics_count}</h3>
             </CardHeader>
             {/* <CardFooter stats>
               <div className={classes.stats}>
@@ -320,7 +297,7 @@ export default function Dashboard() {
                     </small>
               </div>
               {
-                todos?.map((x, index) => (
+                recents?.Todo_lists?.map((x, index) => (
                   <div className="d-flex align-items-center img-thumbnail mb-2" style={{ justifyContent: 'space-between' }}>
                     <p title={x.todo_description} style={{ width: '30%', marginBottom: 0 }}>
                       {x.todo_name}
@@ -378,7 +355,7 @@ export default function Dashboard() {
               </div>
               <hr />
               {
-                recents?.map(x => (
+                recents.recent_activities?.map(x => (
                   <div key={x.post_name} className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
                     <p style={{ width: '10%' }}>
                       <Avatar src={x.thumbnail} style={{ width: '30px', height: '30px' }} />
@@ -429,7 +406,7 @@ export default function Dashboard() {
                 </small>
               </div>
               {
-                weddings?.map((x, index) => (
+                recents.weddings?.map((x, index) => (
                   <div onClick={() => {
                     setCurrentWedding(weddings[index]);
                     setShowWedding(true);
@@ -471,7 +448,7 @@ export default function Dashboard() {
               </div>
               <hr />
               {
-                subscribers?.map(x => (
+                recents.subscribers?.map(x => (
                   <div key={x.post_name} className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
                     <p style={{ width: '40%' }}>
                       {x.email}

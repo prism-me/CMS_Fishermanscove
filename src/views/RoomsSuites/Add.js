@@ -155,14 +155,18 @@ export default withRouter(function AddRoom(props) {
   };
 
   const handleImageDelete = id => {
-    const updatedPhotos = [...selectedImages];
-    updatedPhotos.splice(id, 1);
-    setSelectedImages(updatedPhotos);
+    const updatedPhotos = [...uploadsPreview];
+    const index = updatedPhotos.indexOf(id);
+    let filtered =  updatedPhotos.splice(id, index);
+    setSelectedImages(filtered);
+    setUploadsPreview(filtered);
   };
   const handleImageDelete2 = id => {
     const updatedPhotos = [...imagesData];
     updatedPhotos.splice(id, 1);
+
     setImagesData(updatedPhotos);
+    setUploadsPreview(updatedPhotos);
   };
   const handleImageSelect = (e, index) => {
     if (e.target.checked) {
@@ -602,13 +606,13 @@ export default withRouter(function AddRoom(props) {
                 ?.map((x) => (
                   <Grid item xs={12} sm={2}>
                     <div style={{ height: "120px" }}>
-                      <div
+                      <button
                           className="delete"
                           type="button"
                           onClick={() => handleImageDelete2(x)}
                       >
-                        X
-                      </div>
+                        x
+                      </button>
                       <img
                         width="100%"
                         src={x.avatar}
@@ -626,13 +630,7 @@ export default withRouter(function AddRoom(props) {
               uploadsPreview?.map((x) => (
                 <Grid item xs={12} sm={2}>
                   <div style={{ height: "120px" }}>
-                    <div
-                        className="delete"
-                        type="button"
-                        onClick={() => handleImageDelete(x)}
-                    >
-                      X
-                    </div>
+                   
                     <img
                       width="100%"
                       src={x.avatar}
@@ -640,6 +638,13 @@ export default withRouter(function AddRoom(props) {
                       alt=""
                       style={{ height: "90%", objectFit: "cover" }}
                     />
+                     <button
+                        className="delete"
+                        type="button"
+                        onClick={() => handleImageDelete(x)}
+                    >
+                      x
+                    </button>
                     <p style={{ fontSize: "12px" }} className="text-center">
                       {x.alt_tag}
                     </p>
