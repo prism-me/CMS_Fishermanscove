@@ -154,10 +154,11 @@ export default withRouter(function AddRoom(props) {
     setRoom(updatedRoom);
   };
 
+
   const handleImageDelete = id => {
-    const updatedPhotos = [...selectedImages];
-    updatedPhotos.splice(id, 1);
-    setSelectedImages(updatedPhotos);
+    const removeImages = [...selectedImages];
+    removeImages.splice(id,1);
+    setSelectedImages(removeImages);
   };
   const handleImageDelete2 = id => {
     const updatedPhotos = [...imagesData];
@@ -603,9 +604,9 @@ export default withRouter(function AddRoom(props) {
                   <Grid item xs={12} sm={2}>
                     <div style={{ height: "120px" }}>
                       <div
-                          className="delete"
+                          className="delete text-right"
                           type="button"
-                          onClick={() => handleImageDelete2(x)}
+                          onClick={() => handleImageDelete(x)}
                       >
                         X
                       </div>
@@ -627,7 +628,7 @@ export default withRouter(function AddRoom(props) {
                 <Grid item xs={12} sm={2}>
                   <div style={{ height: "120px" }}>
                     <div
-                        className="delete"
+                        className="delete text-right"
                         type="button"
                         onClick={() => handleImageDelete(x)}
                     >
