@@ -253,3 +253,13 @@
         box-shadow: 0 0 10px rgba($color: #000000, $alpha: .15) !important;
     }
 }
+
+.delete{
+    width: 26px;
+    float: right;
+    background: #f50057;
+    text-align: center;
+    border-radius: 50%;
+    color: white;
+    margin: 6px auto;
+}
