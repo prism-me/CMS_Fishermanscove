@@ -1039,7 +1039,7 @@ export default function LeisureActivities() {
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                 >
-                  <Typography className={classes.heading}>Activities</Typography>
+                  <Typography className={classes.heading}>Diving In Seychelles</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <Grid container spacing={2}>
@@ -1074,7 +1074,7 @@ export default function LeisureActivities() {
                     /> */}
                       <Card className={classes.root} style={{ marginTop: 0 }}>
                         <CardActionArea>
-                          <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          <div className="thumbnail-preview-wrapper-large img-thumbnail">
                             {
                               !leisure.activities.id > 0 ?
                                   thumbnailPreview["activities"] !== "" ?
@@ -1116,6 +1116,17 @@ export default function LeisureActivities() {
                       </MaterialButton>
                     </Grid>
                   </Grid>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel2a-content"
+                    id="panel2a-header"
+                >
+                  <Typography className={classes.heading}>Fishing In Seychelles</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={12}>
                       {/* SECTION TITLE */}
@@ -1148,7 +1159,7 @@ export default function LeisureActivities() {
                     /> */}
                       <Card className={classes.root} style={{ marginTop: 0 }}>
                         <CardActionArea>
-                          <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          <div className="thumbnail-preview-wrapper-large img-thumbnail">
                             {
                               !leisure.Fishing.id > 0 ?
                                   thumbnailPreview["Fishing"] !== "" ?
@@ -1190,6 +1201,17 @@ export default function LeisureActivities() {
                       </MaterialButton>
                     </Grid>
                   </Grid>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel2a-content"
+                    id="panel2a-header"
+                >
+                  <Typography className={classes.heading}>Unlock the Sea</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={12}>
                       {/* SECTION TITLE */}
@@ -1222,7 +1244,7 @@ export default function LeisureActivities() {
                     /> */}
                       <Card className={classes.root} style={{ marginTop: 0 }}>
                         <CardActionArea>
-                          <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          <div className="thumbnail-preview-wrapper-large img-thumbnail">
                             {
                               !leisure.Unlock.id > 0 ?
                                   thumbnailPreview["Unlock"] !== "" ?
@@ -1259,11 +1281,22 @@ export default function LeisureActivities() {
                       </Card>
                     </Grid>
                     <Grid item xs={12} sm={12}>
-                      <MaterialButton onClick={() => handleSubmit(leisure.Unlock.id, "Fishing")} size="large" color="primary" variant="contained">
+                      <MaterialButton onClick={() => handleSubmit(leisure.Unlock.id, "Unlock")} size="large" color="primary" variant="contained">
                         Update Section
                       </MaterialButton>
                     </Grid>
                   </Grid>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel2a-content"
+                    id="panel2a-header"
+                >
+                  <Typography className={classes.heading}>Water Activities</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={12}>
                       {/* SECTION TITLE */}
@@ -1296,7 +1329,7 @@ export default function LeisureActivities() {
                     /> */}
                       <Card className={classes.root} style={{ marginTop: 0 }}>
                         <CardActionArea>
-                          <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          <div className="thumbnail-preview-wrapper-large img-thumbnail">
                             {
                               !leisure.Water.id > 0 ?
                                   thumbnailPreview["Water"] !== "" ?
@@ -1333,7 +1366,7 @@ export default function LeisureActivities() {
                       </Card>
                     </Grid>
                     <Grid item xs={12} sm={12}>
-                      <MaterialButton onClick={() => handleSubmit(leisure.Water.id, "Fishing")} size="large" color="primary" variant="contained">
+                      <MaterialButton onClick={() => handleSubmit(leisure.Water.id, "Water")} size="large" color="primary" variant="contained">
                         Update Section
                       </MaterialButton>
                     </Grid>
@@ -1468,278 +1501,99 @@ export default function LeisureActivities() {
                   </Grid>
                 </AccordionDetails>
               </Accordion>
-              {/*/!* ****************** *!/*/}
-              {/*/!* SECTION 4 *!/*/}
-              {/*/!* ****************** *!/*/}
-              {/*<Accordion>*/}
-              {/*  <AccordionSummary*/}
-              {/*      expandIcon={<ExpandMoreIcon />}*/}
-              {/*      aria-controls="panel4a-content"*/}
-              {/*      id="panel4a-header"*/}
-              {/*  >*/}
-              {/*    <Typography className={classes.heading}>Discover the Marine Life</Typography>*/}
-              {/*  </AccordionSummary>*/}
-              {/*  <AccordionDetails>*/}
-              {/*    <Grid container spacing={2}>*/}
-              {/*      <Grid item xs={12} sm={9}>*/}
-              {/*        /!* SECTION TITLE *!/*/}
-              {/*        <TextField*/}
-              {/*            required*/}
-              {/*            id="section_name"*/}
-              {/*            name="section_name"*/}
-              {/*            label="Section Title"*/}
-              {/*            value={leisureInner.marine.section_name}*/}
-              {/*            variant="outlined"*/}
-              {/*            fullWidth*/}
-              {/*            onChange={(e) => handleInputChange(e, "marine")}*/}
-              {/*            size="small"*/}
-              {/*            style={{ marginBottom: '1rem' }}*/}
-              {/*        />*/}
-              {/*        /!* CKEDITOR  *!/*/}
-              {/*        <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.marine.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, marine: { ...leisureInner.marine, section_content: e.editor.getData() } })} />*/}
-              {/*      </Grid>*/}
-              {/*      <Grid item xs={12} sm={3}>*/}
-              {/*        /!* <TextField*/}
-              {/*        required*/}
-              {/*        id="section_avtar_alt"*/}
-              {/*        name="section_avtar_alt"*/}
-              {/*        label="Image Alt Text"*/}
-              {/*        value={leisureInner.marine.section_avtar_alt}*/}
-              {/*        variant="outlined"*/}
-              {/*        fullWidth*/}
-              {/*        onChange={(e) => handleInputChange(e, "marine")}*/}
-              {/*        size="small"*/}
-              {/*      /> *!/*/}
-              {/*        <Card className={classes.root} style={{ marginTop: 0 }}>*/}
-              {/*          <CardActionArea>*/}
-              {/*            <div className="thumbnail-preview-wrapper-small img-thumbnail">*/}
-              {/*              {*/}
-              {/*                !leisureInner.marine.id > 0 ?*/}
-              {/*                    thumbnailPreview["marine"] !== "" ?*/}
-              {/*                        <img src={thumbnailPreview["marine"]} alt={leisureInner.marine.section_avtar_alt || ""} />*/}
-              {/*                        :*/}
-              {/*                        <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />*/}
-              {/*                    :*/}
-              {/*                    typeof (leisureInner.marine.section_avatar) === typeof (0) ?*/}
-              {/*                        // dining.thumbnail && dining.thumbnail !== "" ?*/}
-              {/*                        <img src={thumbnailPreview["marine"]} alt={leisureInner.marine.section_avtar_alt || ""} />*/}
-              {/*                        :*/}
-              {/*                        <img src={leisureInner.marine.section_avatar} alt={leisureInner.marine.section_avtar_alt || ""} />*/}
-              {/*              }*/}
-              {/*            </div>*/}
-              {/*          </CardActionArea>*/}
-              {/*          <CardActions>*/}
-              {/*            <Fragment>*/}
-              {/*              <MaterialButton*/}
-              {/*                  variant="contained"*/}
-              {/*                  color="primary"*/}
-              {/*                  startIcon={<Image />}*/}
-              {/*                  className="mt-1"*/}
-              {/*                  fullWidth*/}
-              {/*                  onClick={() => {*/}
-              {/*                    setIsSingle(true);*/}
-              {/*                    setCurrentSection("marine");*/}
-              {/*                    setShowGallery(true);*/}
-              {/*                  }}*/}
-              {/*              >*/}
-              {/*                Upload Featured Image*/}
-              {/*              </MaterialButton>*/}
-              {/*            </Fragment>*/}
-              {/*          </CardActions>*/}
-              {/*        </Card>*/}
-              {/*      </Grid>*/}
-              {/*      <Grid item xs={12} sm={12}>*/}
-              {/*        <MaterialButton onClick={() => handleSubmit(leisureInner.marine.id, "marine")} size="large" color="primary" variant="contained">*/}
-              {/*          Update Section*/}
-              {/*        </MaterialButton>*/}
-              {/*      </Grid>*/}
-              {/*    </Grid>*/}
-              {/*  </AccordionDetails>*/}
-              {/*</Accordion>*/}
-
-
-
-              {/*/!* ****************** *!/*/}
-              {/*/!* SECTION 5 *!/*/}
-              {/*/!* ****************** *!/*/}
-              {/*<Accordion>*/}
-              {/*  <AccordionSummary*/}
-              {/*      expandIcon={<ExpandMoreIcon />}*/}
-              {/*      aria-controls="panel5a-content"*/}
-              {/*      id="panel5a-header"*/}
-              {/*  >*/}
-              {/*    <Typography className={classes.heading}>Others</Typography>*/}
-              {/*  </AccordionSummary>*/}
-              {/*  <AccordionDetails>*/}
-              {/*    <Grid container spacing={2}>*/}
-              {/*      <Grid item xs={12} sm={9}>*/}
-              {/*        /!* SECTION TITLE *!/*/}
-              {/*        <TextField*/}
-              {/*            required*/}
-              {/*            id="section_name"*/}
-              {/*            name="section_name"*/}
-              {/*            label="Section Title"*/}
-              {/*            value={leisureInner.others.section_name}*/}
-              {/*            variant="outlined"*/}
-              {/*            fullWidth*/}
-              {/*            onChange={(e) => handleInputChange(e, "others")}*/}
-              {/*            size="small"*/}
-              {/*            style={{ marginBottom: '1rem' }}*/}
-              {/*        />*/}
-              {/*        /!* CKEDITOR  *!/*/}
-              {/*        <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.others.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, others: { ...leisureInner.others, section_content: e.editor.getData() } })} />*/}
-              {/*      </Grid>*/}
-              {/*      <Grid item xs={12} sm={3}>*/}
-              {/*        /!* <TextField*/}
-              {/*        required*/}
-              {/*        id="section_avtar_alt"*/}
-              {/*        name="section_avtar_alt"*/}
-              {/*        label="Image Alt Text"*/}
-              {/*        value={leisureInner.others.section_avtar_alt}*/}
-              {/*        variant="outlined"*/}
-              {/*        fullWidth*/}
-              {/*        onChange={(e) => handleInputChange(e, "others")}*/}
-              {/*        size="small"*/}
-              {/*      /> *!/*/}
-              {/*        <Card className={classes.root} style={{ marginTop: 0 }}>*/}
-              {/*          <CardActionArea>*/}
-              {/*            <div className="thumbnail-preview-wrapper-small img-thumbnail">*/}
-              {/*              {*/}
-              {/*                !leisureInner.others.id > 0 ?*/}
-              {/*                    thumbnailPreview["others"] !== "" ?*/}
-              {/*                        <img src={thumbnailPreview["others"]} alt={leisureInner.others.section_avtar_alt || ""} />*/}
-              {/*                        :*/}
-              {/*                        <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />*/}
-              {/*                    :*/}
-              {/*                    typeof (leisureInner.others.section_avatar) === typeof (0) ?*/}
-              {/*                        // dining.thumbnail && dining.thumbnail !== "" ?*/}
-              {/*                        <img src={thumbnailPreview["others"]} alt={leisureInner.others.section_avtar_alt || ""} />*/}
-              {/*                        :*/}
-              {/*                        <img src={leisureInner.others.section_avatar} alt={leisureInner.others.section_avtar_alt || ""} />*/}
-              {/*              }*/}
-              {/*            </div>*/}
-              {/*          </CardActionArea>*/}
-              {/*          <CardActions>*/}
-              {/*            <Fragment>*/}
-              {/*              <MaterialButton*/}
-              {/*                  variant="contained"*/}
-              {/*                  color="primary"*/}
-              {/*                  startIcon={<Image />}*/}
-              {/*                  className="mt-1"*/}
-              {/*                  fullWidth*/}
-              {/*                  onClick={() => {*/}
-              {/*                    setIsSingle(true);*/}
-              {/*                    setCurrentSection("others");*/}
-              {/*                    setShowGallery(true);*/}
-              {/*                  }}*/}
-              {/*              >*/}
-              {/*                Upload Featured Image*/}
-              {/*              </MaterialButton>*/}
-              {/*            </Fragment>*/}
-              {/*          </CardActions>*/}
-              {/*        </Card>*/}
-              {/*      </Grid>*/}
-              {/*      <Grid item xs={12} sm={12}>*/}
-              {/*        <MaterialButton onClick={() => handleSubmit(leisureInner.others.id, "others")} size="large" color="primary" variant="contained">*/}
-              {/*          Update Section*/}
-              {/*        </MaterialButton>*/}
-              {/*      </Grid>*/}
-              {/*    </Grid>*/}
-              {/*  </AccordionDetails>*/}
-              {/*</Accordion>*/}
-              {/*<Accordion>*/}
-              {/*  <AccordionSummary*/}
-              {/*      expandIcon={<ExpandMoreIcon />}*/}
-              {/*      aria-controls="panel2a-content"*/}
-              {/*      id="panel2a-header"*/}
-              {/*  >*/}
-              {/*    <Typography className={classes.heading}>SEO Information</Typography>*/}
-              {/*  </AccordionSummary>*/}
-              {/*  <AccordionDetails>*/}
-              {/*    <Grid container spacing={2}>*/}
-              {/*      <Grid item xs={12} sm={6}>*/}
-              {/*        <TextField*/}
-              {/*            required*/}
-              {/*            id="meta_title"*/}
-              {/*            name="meta_title"*/}
-              {/*            label="Meta Title"*/}
-              {/*            value={seoInfo.meta_title}*/}
-              {/*            variant="outlined"*/}
-              {/*            fullWidth*/}
-              {/*            onChange={handleSEOInputChange}*/}
-              {/*            size="small"*/}
-              {/*        />*/}
-              {/*      </Grid>*/}
-              {/*      <Grid item xs={12} sm={6}>*/}
-              {/*        <TextField*/}
-              {/*            required*/}
-              {/*            id="route"*/}
-              {/*            name="route"*/}
-              {/*            label="Permalink"*/}
-              {/*            value={seoInfo.route}*/}
-              {/*            variant="outlined"*/}
-              {/*            fullWidth*/}
-              {/*            onChange={handleRouteChange}*/}
-              {/*            size="small"*/}
-              {/*        />*/}
-              {/*      </Grid>*/}
-              {/*      <Grid item xs={12} sm={12}>*/}
-              {/*        <TextField*/}
-              {/*            required*/}
-              {/*            id="meta_description"*/}
-              {/*            name="meta_description"*/}
-              {/*            label="Meta Description"*/}
-              {/*            value={seoInfo.meta_description}*/}
-              {/*            variant="outlined"*/}
-              {/*            fullWidth*/}
-              {/*            onChange={handleSEOInputChange}*/}
-              {/*            size="small"*/}
-              {/*        />*/}
-              {/*      </Grid>*/}
-              {/*      <Grid item xs={12} sm={12}>*/}
-              {/*        <TextField*/}
-              {/*            required*/}
-              {/*            id="schema_markup"*/}
-              {/*            name="schema_markup"*/}
-              {/*            label="Schema Markup"*/}
-              {/*            value={seoInfo.schema_markup}*/}
-              {/*            variant="outlined"*/}
-              {/*            fullWidth*/}
-              {/*            multiline*/}
-              {/*            rows={4}*/}
-              {/*            rowsMax={4}*/}
-              {/*            onChange={handleSEOInputChange}*/}
-              {/*            size="small"*/}
-              {/*        />*/}
-              {/*      </Grid>*/}
-              {/*      <Grid item xs={12} sm={6}>*/}
-              {/*        <FormControl component="fieldset">*/}
-              {/*          <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={seoInfo.is_followed} onChange={(e) => {*/}
-              {/*            setSeoInfo({ ...seoInfo, is_followed: !seoInfo.is_followed })*/}
-              {/*          }}>*/}
-              {/*            <FormControlLabel value={true} control={<Radio />} label="Follow" />*/}
-              {/*            <FormControlLabel value={false} control={<Radio />} label="No Follow" />*/}
-              {/*          </RadioGroup>*/}
-              {/*        </FormControl>*/}
-              {/*      </Grid>*/}
-              {/*      <Grid item xs={12} sm={6}>*/}
-              {/*        <FormControl component="fieldset">*/}
-              {/*          <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={seoInfo.is_indexed} onChange={(e) => {*/}
-              {/*            setSeoInfo({ ...seoInfo, is_indexed: !seoInfo.is_indexed })*/}
-              {/*          }}>*/}
-              {/*            <FormControlLabel value={true} control={<Radio />} label="Index" />*/}
-              {/*            <FormControlLabel value={false} control={<Radio />} label="No Index" />*/}
-              {/*          </RadioGroup>*/}
-              {/*        </FormControl>*/}
-              {/*      </Grid>*/}
-              {/*      <Grid item xs={12} sm={12}>*/}
-              {/*        <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">*/}
-              {/*          Update Section*/}
-              {/*        </MaterialButton>*/}
-              {/*      </Grid>*/}
-              {/*    </Grid>*/}
-              {/*  </AccordionDetails>*/}
-              {/*</Accordion>*/}
+              <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel2a-content"
+                    id="panel2a-header"
+                >
+                  <Typography className={classes.heading}>SEO Information</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                          required
+                          id="meta_title"
+                          name="meta_title"
+                          label="Meta Title"
+                          value={seoInfo.meta_title}
+                          variant="outlined"
+                          fullWidth
+                          onChange={handleSEOInputChange}
+                          size="small"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                          required
+                          id="route"
+                          name="route"
+                          label="Permalink"
+                          value={seoInfo.route}
+                          variant="outlined"
+                          fullWidth
+                          onChange={handleRouteChange}
+                          size="small"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                      <TextField
+                          required
+                          id="meta_description"
+                          name="meta_description"
+                          label="Meta Description"
+                          value={seoInfo.meta_description}
+                          variant="outlined"
+                          fullWidth
+                          onChange={handleSEOInputChange}
+                          size="small"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                      <TextField
+                          required
+                          id="schema_markup"
+                          name="schema_markup"
+                          label="Schema Markup"
+                          value={seoInfo.schema_markup}
+                          variant="outlined"
+                          fullWidth
+                          multiline
+                          rows={4}
+                          rowsMax={4}
+                          onChange={handleSEOInputChange}
+                          size="small"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <FormControl component="fieldset">
+                        <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={seoInfo.is_followed} onChange={(e) => {
+                          setSeoInfo({ ...seoInfo, is_followed: !seoInfo.is_followed })
+                        }}>
+                          <FormControlLabel value={true} control={<Radio />} label="Follow" />
+                          <FormControlLabel value={false} control={<Radio />} label="No Follow" />
+                        </RadioGroup>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <FormControl component="fieldset">
+                        <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={seoInfo.is_indexed} onChange={(e) => {
+                          setSeoInfo({ ...seoInfo, is_indexed: !seoInfo.is_indexed })
+                        }}>
+                          <FormControlLabel value={true} control={<Radio />} label="Index" />
+                          <FormControlLabel value={false} control={<Radio />} label="No Index" />
+                        </RadioGroup>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                      <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
+                        Update Section
+                      </MaterialButton>
+                    </Grid>
+                  </Grid>
+                </AccordionDetails>
+              </Accordion>
             </CardBody>
           </Card>
         </div>
