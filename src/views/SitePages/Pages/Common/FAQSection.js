@@ -10,8 +10,8 @@ export default function FAQSection(props) {
   // const SectionContent = JSON.parse(props.section_content);
   return (
 
-      Object.keys(props.section_content)?.length > 0 &&
-      Object.keys(props.section_content)?.map((x, i) => (
+      props.section_content?.length > 0 &&
+      props.section_content?.map((x, i) => (
       <div
         className="mb-3 p-2"
         style={{ boxShadow: "0 0 4px #dadada", position: "relative" }}

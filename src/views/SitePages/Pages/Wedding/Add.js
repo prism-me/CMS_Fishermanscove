@@ -503,12 +503,12 @@ export default function AddWedding() {
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     {/*FAQ ITEM*/}
-                    {/*<FAQSection*/}
-                    {/*  removeQuestion={removeQuestion}*/}
-                    {/*  section_content={wedding.faq.section_content}*/}
-                    {/*  handleQuestionChange={handleQuestionChange}*/}
-                    {/*  handleAnswerChange={handleAnswerChange}*/}
-                    {/*/>*/}
+                    <FAQSection
+                      removeQuestion={removeQuestion}
+                      section_content={wedding.faq.section_content}
+                      handleQuestionChange={handleQuestionChange}
+                      handleAnswerChange={handleAnswerChange}
+                    />
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     <MaterialButton onClick={() => handleSubmit(wedding.faq.id, "faq")} size="large" color="primary" variant="contained">
