@@ -248,7 +248,7 @@ export default withRouter(function WeddingAdd(props) {
                 <hr />
 
                 <h4>Short Description</h4>
-                <CKEditor config={ckEditorConfig} onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} type="classic" data={wedding.short_description} onChange={(e) => setWedding({ ...wedding, short_description: e.editor.getData() })}
+                <CKEditor config={ckEditorConfig} onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.short_description} onChange={(e) => setWedding({ ...wedding, short_description: e.editor.getData() })}
                 />
               </Grid>
 
@@ -256,7 +256,7 @@ export default withRouter(function WeddingAdd(props) {
                 <hr />
                 <h4>Detailed Content</h4>
 
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.post_content} onChange={(e) => setWedding({ ...wedding, post_content: e.editor.getData() })} />
+                <CKEditor config={ckEditorConfig} onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.post_content} type="classic"  onChange={(e) => setWedding({ ...wedding, post_content: e.editor.getData() })} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
