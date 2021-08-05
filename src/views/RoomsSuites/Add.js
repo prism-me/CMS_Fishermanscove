@@ -154,6 +154,7 @@ export default withRouter(function AddRoom(props) {
     setRoom(updatedRoom);
   };
 
+
   const handleImageDelete = id => {
     const updatedPhotos = [...uploadsPreview];
     const index = updatedPhotos.indexOf(id);
@@ -609,7 +610,7 @@ export default withRouter(function AddRoom(props) {
                       <button
                           className="delete"
                           type="button"
-                          onClick={() => handleImageDelete2(x)}
+                          onClick={() => handleImageDelete(x)}
                       >
                         x
                       </button>
@@ -629,8 +630,7 @@ export default withRouter(function AddRoom(props) {
             {uploadsPreview &&
               uploadsPreview?.map((x) => (
                 <Grid item xs={12} sm={2}>
-                  <div style={{ height: "120px" }}>
-                   
+                  <div style={{ height: "120px" }}>                   
                     <img
                       width="100%"
                       src={x.avatar}
