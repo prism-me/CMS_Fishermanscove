@@ -18,7 +18,7 @@ import CardFooter from "components/Card/CardFooter.js";
 
 import avatar from "assets/img/faces/marc.jpg";
 import { MenuItem, Select, FormControl, TextField, RadioGroup, Radio, FormControlLabel } from "@material-ui/core";
-
+import { ckEditorConfig } from "utils/data";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
@@ -180,6 +180,7 @@ export default function SpaWellnessAdd() {
               <Grid item xs={12} sm={12}>
                 <p>Short Description</p>
                 <CKEditor
+                    config={ckEditorConfig}
                   editor={ClassicEditor}
                   data={spaWellness.short_description}
                   // config={{
@@ -211,6 +212,7 @@ export default function SpaWellnessAdd() {
               <Grid item xs={12} sm={12}>
                 <p>Detailed Content</p>
                 <CKEditor
+                    config={ckEditorConfig}
                   editor={ClassicEditor}
                   data={spaWellness.post_content}
                   // config={{

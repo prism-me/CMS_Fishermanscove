@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import MaterialButton from "@material-ui/core/Button";
 import { TextField } from "@material-ui/core";
 import CKEditor from "ckeditor4-react";
+import { ckEditorConfig } from "utils/data";
 import Typography from "@material-ui/core/Typography";
 
 export default function FAQSection(props) {
@@ -49,8 +50,9 @@ export default function FAQSection(props) {
         />
         {/* CKEDITOR  */}
         <CKEditor
-          onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)}
-          data={x.answer}
+            config={ckEditorConfig}
+            onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)}
+            data={x.answer}
           onChange={(e) =>
             props.handleAnswerChange(e.editor.getData(), "faq", i)
           }

@@ -10,7 +10,7 @@ import { Image } from '@material-ui/icons';
 import API from 'utils/http';
 import { Typography, Grid, FormControl, FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 import CKEditor from 'ckeditor4-react';
-
+import { ckEditorConfig } from "utils/data";
 export default function AddFAQDialog(props) {
     const [id, set_id] = React.useState(-1);
     const [alt_tag, set_alt_tag] = React.useState("");
@@ -49,7 +49,9 @@ export default function AddFAQDialog(props) {
                             style={{ marginBottom: '1rem' }}
                         />
                         {/* CKEDITOR  */}
-                        <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={props.answer} onChange={(e) => props.handleAnswerChange(e.editor.getData())} />
+                        <CKEditor
+                            config={ckEditorConfig}
+                            onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={props.answer} onChange={(e) => props.handleAnswerChange(e.editor.getData())} />
                     </div>
                 </DialogContent>
                 <DialogActions>

@@ -30,6 +30,8 @@ import {
 } from "@material-ui/core";
 import CKEditor from "ckeditor4-react";
 
+import { ckEditorConfig } from "utils/data";
+
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { DeleteOutlined, Image } from "@material-ui/icons";
@@ -419,7 +421,8 @@ export default function AddOffer(props) {
                 <hr />
                 <h4 style={{ fontWeight: "400" }}>Short Description</h4>
                 <CKEditor
-                  onBeforeLoad={(CKEDITOR) =>
+                    config={ckEditorConfig}
+                    onBeforeLoad={(CKEDITOR) =>
                     (CKEDITOR.disableAutoInline = true)
                   }
                   data={offer.short_description}
@@ -435,7 +438,8 @@ export default function AddOffer(props) {
                 <hr />
                 <h4 style={{ fontWeight: "400" }}>Detailed Content</h4>
                 <CKEditor
-                  onBeforeLoad={(CKEDITOR) =>
+                    config={ckEditorConfig}
+                    onBeforeLoad={(CKEDITOR) =>
                     (CKEDITOR.disableAutoInline = true)
                   }
                   data={offer.post_content}

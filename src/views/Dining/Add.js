@@ -29,7 +29,6 @@ import {
   Avatar,
 } from "@material-ui/core";
 import CKEditor from "ckeditor4-react";
-
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { DeleteOutlined, Image } from "@material-ui/icons";

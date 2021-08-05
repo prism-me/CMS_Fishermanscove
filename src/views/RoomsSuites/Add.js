@@ -30,7 +30,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import CKEditor from "ckeditor4-react";
-
+import { ckEditorConfig } from "utils/data";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 // import ClassicEditor from "../../plugins/ckeditor.js";
@@ -430,7 +430,7 @@ export default withRouter(function AddRoom(props) {
               <hr />
               <h4 style={{ fontWeight: "400" }}>Short Description</h4>
               <CKEditor
-                 
+                  config={ckEditorConfig}
                 onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)}
                 data={room.short_description}
                 onChange={(e) =>
@@ -444,7 +444,8 @@ export default withRouter(function AddRoom(props) {
               <h4 style={{ fontWeight: "400" }}>Detailed Content</h4>
 
               <CKEditor
-                onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)}
+                  config={ckEditorConfig}
+                  onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)}
                 data={room.post_content}
                 onChange={(e) =>
                   setRoom({ ...room, post_content: e.editor.getData() })
