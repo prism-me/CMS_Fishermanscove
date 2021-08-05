@@ -165,9 +165,7 @@ export default withRouter(function AddRoom(props) {
   const handleImageDelete2 = id => {
     const updatedPhotos = [...imagesData];
     updatedPhotos.splice(id, 1);
-
     setImagesData(updatedPhotos);
-    setUploadsPreview(updatedPhotos);
   };
   const handleImageSelect = (e, index) => {
     if (e.target.checked) {
@@ -610,7 +608,7 @@ export default withRouter(function AddRoom(props) {
                       <button
                           className="delete"
                           type="button"
-                          onClick={() => handleImageDelete(x)}
+                          onClick={() => handleImageDelete2(x)}
                       >
                         x
                       </button>
