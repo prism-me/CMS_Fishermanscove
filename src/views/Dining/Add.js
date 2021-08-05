@@ -16,7 +16,7 @@ import CardHeader from "components/Card/CardHeader.js";
 // import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-
+import { ckEditorConfig } from "utils/data";
 // import avatar from "assets/img/faces/marc.jpg";
 import {
   MenuItem,
@@ -388,6 +388,7 @@ export default withRouter(function DiningAdd(props) {
                   Short Description
                 </h4>
                 <CKEditor
+                config={ckEditorConfig}
                   onBeforeLoad={(CKEDITOR) =>
                     (CKEDITOR.disableAutoInline = true)
                   }
@@ -406,6 +407,7 @@ export default withRouter(function DiningAdd(props) {
                   Detailed Content
                 </h4>
                 <CKEditor
+                config={ckEditorConfig}
                   onBeforeLoad={(CKEDITOR) =>
                     (CKEDITOR.disableAutoInline = true)
                   }

@@ -8,6 +8,7 @@ export const ckEditorConfig = {
     { name: 'source', items: ['Source'] }
   ],
   extraPlugins: 'easyimage',
+  format_tags: 'p;h1;h2;h3;h4;h5;h6',
   // removePlugins: 'image',
   //cloudServices_uploadUrl: 'https://33333.cke-cs.com/easyimage/upload/', //this is a demo ckeditor cloud service URL
   cloudServices_uploadUrl: '/app/Data' //this is folder hosted on our server which is accessible as localhost/app/data
