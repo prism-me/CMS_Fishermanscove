@@ -35,7 +35,8 @@ import API from "utils/http";
 import FAQSection from "../Common/FAQSection";
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "https://fishermanscove-resort.com/";
+// const website_url = "https://fishermanscove-resort.com/";
+const website_url = "/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -384,7 +385,7 @@ export default function AddDiningInner() {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={9}>
+                  <Grid item xs={12} sm={12}>
                     {/* SECTION TITLE */}
                     <TextField
                       required
@@ -403,56 +404,56 @@ export default function AddDiningInner() {
                         config={ckEditorConfig}
                         onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={diningInner.intro.section_content} onChange={(e) => setDiningInner({ ...diningInner, intro: { ...diningInner.intro, section_content: e.editor.getData() } })} />
                   </Grid>
-                  <Grid item xs={12} sm={3}>
-                    {/* <TextField
-                      required
-                      id="section_avtar_alt"
-                      name="section_avtar_alt"
-                      label="Image Alt Text"
-                      value={diningInner.intro.section_avtar_alt}
-                      variant="outlined"
-                      fullWidth
-                      onChange={(e) => handleInputChange(e, "intro")}
-                      size="small"
-                    /> */}
-                    <Card className={classes.root} style={{ marginTop: 0 }}>
-                      <CardActionArea>
-                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
-                          {
-                            !diningInner.intro.id > 0 ?
-                              thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={diningInner.intro.section_avtar_alt || ""} />
-                                :
-                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                              :
-                              typeof (diningInner.intro.section_avatar) === typeof (0) ?
-                                // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={diningInner.intro.section_avtar_alt || ""} />
-                                :
-                                <img src={diningInner.intro.section_avatar} alt={diningInner.intro.section_avtar_alt || ""} />
-                          }
-                        </div>
-                      </CardActionArea>
-                      <CardActions>
-                        <Fragment>
-                          <MaterialButton
-                            variant="contained"
-                            color="primary"
-                            startIcon={<Image />}
-                            className="mt-1"
-                            fullWidth
-                            onClick={() => {
-                              setIsSingle(true);
-                              setCurrentSection("intro");
-                              setShowGallery(true);
-                            }}
-                          >
-                            Upload Featured Image
-                          </MaterialButton>
-                        </Fragment>
-                      </CardActions>
-                    </Card>
-                  </Grid>
+                  {/*<Grid item xs={12} sm={3}>*/}
+                  {/*  /!* <TextField*/}
+                  {/*    required*/}
+                  {/*    id="section_avtar_alt"*/}
+                  {/*    name="section_avtar_alt"*/}
+                  {/*    label="Image Alt Text"*/}
+                  {/*    value={diningInner.intro.section_avtar_alt}*/}
+                  {/*    variant="outlined"*/}
+                  {/*    fullWidth*/}
+                  {/*    onChange={(e) => handleInputChange(e, "intro")}*/}
+                  {/*    size="small"*/}
+                  {/*  /> *!/*/}
+                  {/*  <Card className={classes.root} style={{ marginTop: 0 }}>*/}
+                  {/*    <CardActionArea>*/}
+                  {/*      <div className="thumbnail-preview-wrapper-small img-thumbnail">*/}
+                  {/*        {*/}
+                  {/*          !diningInner.intro.id > 0 ?*/}
+                  {/*            thumbnailPreview && thumbnailPreview !== "" ?*/}
+                  {/*              <img src={thumbnailPreview} alt={diningInner.intro.section_avtar_alt || ""} />*/}
+                  {/*              :*/}
+                  {/*              <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />*/}
+                  {/*            :*/}
+                  {/*            typeof (diningInner.intro.section_avatar) === typeof (0) ?*/}
+                  {/*              // dining.thumbnail && dining.thumbnail !== "" ?*/}
+                  {/*              <img src={thumbnailPreview} alt={diningInner.intro.section_avtar_alt || ""} />*/}
+                  {/*              :*/}
+                  {/*              <img src={diningInner.intro.section_avatar} alt={diningInner.intro.section_avtar_alt || ""} />*/}
+                  {/*        }*/}
+                  {/*      </div>*/}
+                  {/*    </CardActionArea>*/}
+                  {/*    <CardActions>*/}
+                  {/*      <Fragment>*/}
+                  {/*        <MaterialButton*/}
+                  {/*          variant="contained"*/}
+                  {/*          color="primary"*/}
+                  {/*          startIcon={<Image />}*/}
+                  {/*          className="mt-1"*/}
+                  {/*          fullWidth*/}
+                  {/*          onClick={() => {*/}
+                  {/*            setIsSingle(true);*/}
+                  {/*            setCurrentSection("intro");*/}
+                  {/*            setShowGallery(true);*/}
+                  {/*          }}*/}
+                  {/*        >*/}
+                  {/*          Upload Featured Image*/}
+                  {/*        </MaterialButton>*/}
+                  {/*      </Fragment>*/}
+                  {/*    </CardActions>*/}
+                  {/*  </Card>*/}
+                  {/*</Grid>*/}
                   <Grid item xs={12} sm={12}>
                     <MaterialButton onClick={() => handleSubmit(diningInner.intro.id, "intro")} size="large" color="primary" variant="contained">
                       Update Section
@@ -622,7 +623,10 @@ export default function AddDiningInner() {
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={3}>
+                    <span>https://fishermanscove-resort.com</span>
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
                     <TextField
                       required
                       id="route"

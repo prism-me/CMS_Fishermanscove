@@ -61,6 +61,7 @@ import PageList from "views/SitePages/List";
 import Footer from "views/Footer/Add";
 import UpdateHeader from "views/Header/Add";
 import AddSustainability from "views/SitePages/Pages/Sustainability/Add";
+import AddRoomsSuites from "views/SitePages/Pages/RoomsSuites/Add";
 import LeisureActivities from  "views/SitePages/Pages/leisureActivities/Add";
 import AddLeisureInner from "views/SitePages/Pages/LeisureInner/Add";
 import AddDiningInner from "views/SitePages/Pages/DiningInner/Add";
@@ -345,7 +346,7 @@ const dashboardRoutes = [
     hide: true
   },
   {
-    path: "/pages/dining-inner/add/:id",
+    path: "/pages/fine-dining-seychelles/add/:id",
     name: "Pages",
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
@@ -420,6 +421,16 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
     component: AddWedding,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/pages/rooms-suites-seychelles/add/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: AddRoomsSuites,
     layout: "/admin",
     exact: true,
     hide: true

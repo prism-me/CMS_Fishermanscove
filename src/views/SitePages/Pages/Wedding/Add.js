@@ -23,7 +23,7 @@ import FAQSection from "../Common/FAQSection";
 import { Image } from "@material-ui/icons";
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "https://fishermanscove-resort.com/";
+const website_url = "/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -408,7 +408,10 @@ export default function AddWedding() {
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={3}>
+                        <span>https://fishermanscove-resort.com</span>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
                     <TextField
                       required
                       id="route"
@@ -504,13 +507,13 @@ export default function AddWedding() {
                     </MaterialButton>
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    {/*FAQ ITEM*/}
-                    <FAQSection
-                      removeQuestion={removeQuestion}
-                      section_content={wedding.faq.section_content}
-                      handleQuestionChange={handleQuestionChange}
-                      handleAnswerChange={handleAnswerChange}
-                    />
+                    FAQ ITEM
+                    {/*<FAQSection*/}
+                    {/*  removeQuestion={removeQuestion}*/}
+                    {/*  section_content={wedding.faq.section_content}*/}
+                    {/*  handleQuestionChange={handleQuestionChange}*/}
+                    {/*  handleAnswerChange={handleAnswerChange}*/}
+                    {/*/>*/}
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     <MaterialButton onClick={() => handleSubmit(wedding.faq.id, "faq")} size="large" color="primary" variant="contained">

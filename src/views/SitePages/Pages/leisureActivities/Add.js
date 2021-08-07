@@ -27,7 +27,8 @@ import { useParams } from "react-router-dom";
 import API from "utils/http";
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "https://fishermanscove-resort.com/";
+// const website_url = "https://fishermanscove-resort.com/";
+const website_url = "/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -861,7 +862,10 @@ export default function LeisureActivities() {
                           size="small"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={3}>
+                      <span>https://fishermanscove-resort.com</span>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
                       <TextField
                           required
                           id="route"
