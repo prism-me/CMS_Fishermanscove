@@ -72,6 +72,8 @@ import AddCovidPolicy from "views/SitePages/Pages/CovidPolicy/Add";
 import AddCancellationPolicy from "views/SitePages/Pages/CancellationPolicy/Add";
 import AddWedding from "views/SitePages/Pages/Wedding/Add";
 import AddAboutSeychelles from "views/SitePages/Pages/AboutSeychelles/Add";
+import ParisFrenchRestaurant from "views/SitePages/Pages/ParisFrenchRestaurant/Add";
+import AddGalleryPage from "views/SitePages/Pages/Gallery/Add";
 import FAQList from "views/FAQ/List";
 import GalleryList from "views/Gallery/List";
 import AddGallery from "views/Gallery/Add";
@@ -321,6 +323,26 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
     component: AddSustainability,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/pages/gallery/add/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: AddGalleryPage,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/pages/paris-french-restaurant/add/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: ParisFrenchRestaurant,
     layout: "/admin",
     exact: true,
     hide: true

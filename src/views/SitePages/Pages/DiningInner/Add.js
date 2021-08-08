@@ -465,140 +465,140 @@ export default function AddDiningInner() {
             {/* ****************** */}
             {/* SECTION 2 */}
             {/* ****************** */}
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel2a-content"
-                id="panel2a-header"
-              >
-                <Typography className={classes.heading}>Opening Hours</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12}>
-                    {/* SECTION TITLE */}
-                    <TextField
-                      required
-                      id="section_name"
-                      name="section_name"
-                      label="Section Title"
-                      value={diningInner.dress.section_name}
-                      variant="outlined"
-                      fullWidth
-                      onChange={(e) => handleInputChange(e, "dress")}
-                      size="small"
-                      style={{ marginBottom: '1rem' }}
-                    />
-                    {/* CKEDITOR  */}
-                    <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={diningInner.dress.section_content} onChange={(e) => setDiningInner({ ...diningInner, dress: { ...diningInner.dress, section_content: e.editor.getData() } })} />
-                  </Grid>
-                  {/* <Grid item xs={12} sm={3}>
-                    <TextField
-                      required
-                      id="section_avtar_alt"
-                      name="section_avtar_alt"
-                      label="Image Alt Text"
-                      value={diningInner.dress.section_avtar_alt}
-                      variant="outlined"
-                      fullWidth
-                      onChange={(e) => handleInputChange(e, "dress")}
-                      size="small"
-                    />
-                    <Card className={classes.root}>
-                      <CardActionArea>
-                        {diningInner.dress.section_avatar && diningInner.dress.section_avatar !== "" ?
-                          <CardMedia
-                            component="img"
-                            alt=""
-                            height="140"
-                            image={diningInner.dress.section_avatar}
-                            title=""
-                          />
-                          :
-                          <CardContent>
-                            <Typography variant="body2" component="h2">
-                              Please add an Image
-                          </Typography>
-                          </CardContent>
-                        }
-                      </CardActionArea>
-                      <CardActions>
-                        <Fragment>
-                          <input
-                            color="primary"
-                            accept="image/*"
-                            type="file"
-                            onChange={(e) => handleFileChange(e, "dress")}
-                            id="section_avatar_dress"
-                            name="section_avatar_dress"
-                            style={{ display: 'none', }}
-                          />
-                          <label htmlFor="section_avatar_dress" style={{ width: '100%', margin: 0 }}>
-                            <Button
-                              variant="contained"
-                              component="span"
-                              className={classes.button}
-                              size="large"
-                              color="primary"
-                              fullWidth
-                            >
-                              <Image className={classes.extendedIcon} /> Upload Section Image
-                            </Button>
-                          </label>
-                        </Fragment>
-                      </CardActions>
-                    </Card>
-                  </Grid> */}
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(diningInner.dress.id, "dress")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
-                </Grid>
-              </AccordionDetails>
-            </Accordion>
+            {/*<Accordion>*/}
+            {/*  <AccordionSummary*/}
+            {/*    expandIcon={<ExpandMoreIcon />}*/}
+            {/*    aria-controls="panel2a-content"*/}
+            {/*    id="panel2a-header"*/}
+            {/*  >*/}
+            {/*    <Typography className={classes.heading}>Opening Hours</Typography>*/}
+            {/*  </AccordionSummary>*/}
+            {/*  <AccordionDetails>*/}
+            {/*    <Grid container spacing={2}>*/}
+            {/*      <Grid item xs={12} sm={12}>*/}
+            {/*        /!* SECTION TITLE *!/*/}
+            {/*        <TextField*/}
+            {/*          required*/}
+            {/*          id="section_name"*/}
+            {/*          name="section_name"*/}
+            {/*          label="Section Title"*/}
+            {/*          value={diningInner.dress.section_name}*/}
+            {/*          variant="outlined"*/}
+            {/*          fullWidth*/}
+            {/*          onChange={(e) => handleInputChange(e, "dress")}*/}
+            {/*          size="small"*/}
+            {/*          style={{ marginBottom: '1rem' }}*/}
+            {/*        />*/}
+            {/*        /!* CKEDITOR  *!/*/}
+            {/*        <CKEditor*/}
+            {/*            config={ckEditorConfig}*/}
+            {/*            onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={diningInner.dress.section_content} onChange={(e) => setDiningInner({ ...diningInner, dress: { ...diningInner.dress, section_content: e.editor.getData() } })} />*/}
+            {/*      </Grid>*/}
+            {/*      /!* <Grid item xs={12} sm={3}>*/}
+            {/*        <TextField*/}
+            {/*          required*/}
+            {/*          id="section_avtar_alt"*/}
+            {/*          name="section_avtar_alt"*/}
+            {/*          label="Image Alt Text"*/}
+            {/*          value={diningInner.dress.section_avtar_alt}*/}
+            {/*          variant="outlined"*/}
+            {/*          fullWidth*/}
+            {/*          onChange={(e) => handleInputChange(e, "dress")}*/}
+            {/*          size="small"*/}
+            {/*        />*/}
+            {/*        <Card className={classes.root}>*/}
+            {/*          <CardActionArea>*/}
+            {/*            {diningInner.dress.section_avatar && diningInner.dress.section_avatar !== "" ?*/}
+            {/*              <CardMedia*/}
+            {/*                component="img"*/}
+            {/*                alt=""*/}
+            {/*                height="140"*/}
+            {/*                image={diningInner.dress.section_avatar}*/}
+            {/*                title=""*/}
+            {/*              />*/}
+            {/*              :*/}
+            {/*              <CardContent>*/}
+            {/*                <Typography variant="body2" component="h2">*/}
+            {/*                  Please add an Image*/}
+            {/*              </Typography>*/}
+            {/*              </CardContent>*/}
+            {/*            }*/}
+            {/*          </CardActionArea>*/}
+            {/*          <CardActions>*/}
+            {/*            <Fragment>*/}
+            {/*              <input*/}
+            {/*                color="primary"*/}
+            {/*                accept="image/*"*/}
+            {/*                type="file"*/}
+            {/*                onChange={(e) => handleFileChange(e, "dress")}*/}
+            {/*                id="section_avatar_dress"*/}
+            {/*                name="section_avatar_dress"*/}
+            {/*                style={{ display: 'none', }}*/}
+            {/*              />*/}
+            {/*              <label htmlFor="section_avatar_dress" style={{ width: '100%', margin: 0 }}>*/}
+            {/*                <Button*/}
+            {/*                  variant="contained"*/}
+            {/*                  component="span"*/}
+            {/*                  className={classes.button}*/}
+            {/*                  size="large"*/}
+            {/*                  color="primary"*/}
+            {/*                  fullWidth*/}
+            {/*                >*/}
+            {/*                  <Image className={classes.extendedIcon} /> Upload Section Image*/}
+            {/*                </Button>*/}
+            {/*              </label>*/}
+            {/*            </Fragment>*/}
+            {/*          </CardActions>*/}
+            {/*        </Card>*/}
+            {/*      </Grid> *!/*/}
+            {/*      <Grid item xs={12} sm={12}>*/}
+            {/*        <MaterialButton onClick={() => handleSubmit(diningInner.dress.id, "dress")} size="large" color="primary" variant="contained">*/}
+            {/*          Update Section*/}
+            {/*        </MaterialButton>*/}
+            {/*      </Grid>*/}
+            {/*    </Grid>*/}
+            {/*  </AccordionDetails>*/}
+            {/*</Accordion>*/}
             {/* ****************** */}
             {/* SECTION 3 */}
             {/* ****************** */}
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel3a-content"
-                id="panel3a-header"
-              >
-                <Typography className={classes.heading}>Dress Code</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12}>
-                    {/* SECTION TITLE */}
-                    <TextField
-                      required
-                      id="section_name"
-                      name="section_name"
-                      label="Section Title"
-                      value={diningInner.timings.section_name}
-                      variant="outlined"
-                      fullWidth
-                      onChange={(e) => handleInputChange(e, "timings")}
-                      size="small"
-                      style={{ marginBottom: '1rem' }}
-                    />
-                    {/* CKEDITOR  */}
-                    <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={diningInner.timings.section_content} onChange={(e) => setDiningInner({ ...diningInner, timings: { ...diningInner.timings, section_content: e.editor.getData() } })} />
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(diningInner.timings.id, "timings")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
-                </Grid>
-              </AccordionDetails>
-            </Accordion>
+            {/*<Accordion>*/}
+            {/*  <AccordionSummary*/}
+            {/*    expandIcon={<ExpandMoreIcon />}*/}
+            {/*    aria-controls="panel3a-content"*/}
+            {/*    id="panel3a-header"*/}
+            {/*  >*/}
+            {/*    <Typography className={classes.heading}>Dress Code</Typography>*/}
+            {/*  </AccordionSummary>*/}
+            {/*  <AccordionDetails>*/}
+            {/*    <Grid container spacing={2}>*/}
+            {/*      <Grid item xs={12} sm={12}>*/}
+            {/*        /!* SECTION TITLE *!/*/}
+            {/*        <TextField*/}
+            {/*          required*/}
+            {/*          id="section_name"*/}
+            {/*          name="section_name"*/}
+            {/*          label="Section Title"*/}
+            {/*          value={diningInner.timings.section_name}*/}
+            {/*          variant="outlined"*/}
+            {/*          fullWidth*/}
+            {/*          onChange={(e) => handleInputChange(e, "timings")}*/}
+            {/*          size="small"*/}
+            {/*          style={{ marginBottom: '1rem' }}*/}
+            {/*        />*/}
+            {/*        /!* CKEDITOR  *!/*/}
+            {/*        <CKEditor*/}
+            {/*            config={ckEditorConfig}*/}
+            {/*            onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={diningInner.timings.section_content} onChange={(e) => setDiningInner({ ...diningInner, timings: { ...diningInner.timings, section_content: e.editor.getData() } })} />*/}
+            {/*      </Grid>*/}
+            {/*      <Grid item xs={12} sm={12}>*/}
+            {/*        <MaterialButton onClick={() => handleSubmit(diningInner.timings.id, "timings")} size="large" color="primary" variant="contained">*/}
+            {/*          Update Section*/}
+            {/*        </MaterialButton>*/}
+            {/*      </Grid>*/}
+            {/*    </Grid>*/}
+            {/*  </AccordionDetails>*/}
+            {/*</Accordion>*/}
 
             <Accordion>
               <AccordionSummary
