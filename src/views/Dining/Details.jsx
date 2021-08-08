@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     marginBottom: 0,
+    color: theme.palette.primary.light,
   },
   rateValue: {
     fontWeight: 'bold',
@@ -63,9 +64,6 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'nowrap',
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
     transform: 'translateZ(0)',
-  },
-  title: {
-    color: theme.palette.primary.light,
   },
   titleBar: {
     background:

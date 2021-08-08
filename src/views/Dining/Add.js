@@ -36,6 +36,7 @@ import { DeleteOutlined, Image } from "@material-ui/icons";
 import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
+import SelectedImagesThumbnails from "../Common/SelectedImagesThumbnails";
 
 const website_url = "https://fishermanscove-resort.com/dining-inner/";
 const append_url = "dining-inner";
@@ -236,6 +237,36 @@ export default withRouter(function DiningAdd(props) {
       });
     }
   };
+
+  const handleRemoveSelectedImage = (x, arrayListType) => {
+    switch (arrayListType) {
+      case "uploadsPreview" :
+        let updatePreview = uploadsPreview.filter((u) => u.id !== x.id)
+        setUploadsPreview(updatePreview);
+        setImagesData(imagesData.map(im => {
+          if(im.id === x.id)
+          {
+            im.isChecked = false
+          }
+          return im
+        }))
+        setSelectedImages(updatePreview.map((u) => u.id ));
+        break;
+      case "selectedImages" :
+        let updateData = selectedImages.filter((u) => u !== x.id);
+        setImagesData(imagesData.map(im => {
+          if(im.id === x.id)
+          {
+            im.isChecked = false
+          }
+          return im
+        }))
+        setSelectedImages(updateData);
+        break;
+      default :
+        return setUploadsPreview(uploadsPreview.filter((u) => u.id !== x.id))
+    }
+  }
 
   return (
     <div>
@@ -536,37 +567,40 @@ export default withRouter(function DiningAdd(props) {
                     );
                   })
                   ?.map((x) => (
-                    <Grid item xs={12} sm={2}>
-                      <div style={{ height: "120px" }}>
-                        <img
-                          width="100%"
-                          src={x.avatar}
-                          className="img-thumbnail"
-                          alt=""
-                          style={{ height: "90%", objectFit: "cover" }}
-                        />
-                        <p style={{ fontSize: "12px" }} className="text-center">
-                          {x.alt_tag}
-                        </p>
-                      </div>
-                    </Grid>
+                      <SelectedImagesThumbnails x={x}
+                                                handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")}/>
+                    // <Grid item xs={12} sm={2}>
+                    //   <div style={{ height: "120px" }}>
+                    //     <img
+                    //       width="100%"
+                    //       src={x.avatar}
+                    //       className="img-thumbnail"
+                    //       alt=""
+                    //       style={{ height: "90%", objectFit: "cover" }}
+                    //     />
+                    //     <p style={{ fontSize: "12px" }} className="text-center">
+                    //       {x.alt_tag}
+                    //     </p>
+                    //   </div>
+                    // </Grid>
                   ))}
               {uploadsPreview &&
                 uploadsPreview?.map((x) => (
-                  <Grid item xs={12} sm={2}>
-                    <div style={{ height: "120px" }}>
-                      <img
-                        width="100%"
-                        src={x.avatar}
-                        className="img-thumbnail"
-                        alt=""
-                        style={{ height: "90%", objectFit: "cover" }}
-                      />
-                      <p style={{ fontSize: "12px" }} className="text-center">
-                        {x.alt_tag}
-                      </p>
-                    </div>
-                  </Grid>
+                    <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r)=>handleRemoveSelectedImage(r,"uploadsPreview")}/>
+                  // <Grid item xs={12} sm={2}>
+                  //   <div style={{ height: "120px" }}>
+                  //     <img
+                  //       width="100%"
+                  //       src={x.avatar}
+                  //       className="img-thumbnail"
+                  //       alt=""
+                  //       style={{ height: "90%", objectFit: "cover" }}
+                  //     />
+                  //     <p style={{ fontSize: "12px" }} className="text-center">
+                  //       {x.alt_tag}
+                  //     </p>
+                  //   </div>
+                  // </Grid>
                 ))}
               <div className="clearfix clear-fix"></div>
               {/* GALLERY DIALOG BOX START */}

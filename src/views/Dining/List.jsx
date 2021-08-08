@@ -73,6 +73,28 @@ class DiningList extends Component {
         },
       },
       {
+        name: "section_dress_code",
+        label: "Dress Code",
+        options: {
+          filter: true,
+          sort: false,
+          customBodyRender: (val) => (
+              <code>{val?.length > 100 ? val?.substr(0, 100) + "..." : val}</code>
+          ),
+        },
+      },
+      {
+        name: "section_opening_hours",
+        label: "Opening Hours",
+        options: {
+          filter: true,
+          sort: false,
+          customBodyRender: (val) => (
+              <code>{val?.length > 100 ? val?.substr(0, 100) + "..." : val}</code>
+          ),
+        },
+      },
+      {
         name: "route",
         label: "Actions",
         options: {
