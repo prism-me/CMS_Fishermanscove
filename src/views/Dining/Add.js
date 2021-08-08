@@ -78,7 +78,8 @@ export default withRouter(function DiningAdd(props) {
     images_list: [],
     section_slug: "",
     section_name:"",
-    section_content: "<p>Detailed content goes here!</p>",
+    section_dress_code: "<p>Dress Code </p>",
+    section_opening_hour : "<p>Opening Hours</p>"
 
   };
   const [dining, setDining] = useState({ ...initialObject });
@@ -422,10 +423,10 @@ export default withRouter(function DiningAdd(props) {
                 <hr/>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <h4 style={{ fontWeight: "400" }} className="mt-2">
+               <h4 style={{ fontWeight: "400" }} className="mt-2">
                   Opening Hours
                 </h4>
-                <TextField
+               {/*   <TextField
                     required
                     id="banner_text"
                     name="banner_text"
@@ -436,15 +437,15 @@ export default withRouter(function DiningAdd(props) {
                     onChange={handleInputChange}
                     size="small"
                     style={{ marginBottom: '1rem' }}
-                />
+                /> */}
                 <CKEditor
                     config={ckEditorConfig}
                     onBeforeLoad={(CKEDITOR) =>
                         (CKEDITOR.disableAutoInline = true)
                     }
-                    data={dining.section_content}
+                    data={dining.section_opening_hour}
                     onChange={(e) =>
-                        setDining({ ...dining, section_content: e.editor.getData() })
+                        setDining({ ...dining, section_opening_hour: e.editor.getData() })
                     }
                 />
               </Grid>
@@ -452,7 +453,7 @@ export default withRouter(function DiningAdd(props) {
                 <h4 style={{ fontWeight: "400" }} className="mt-2">
                   Dress Code
                 </h4>
-                <TextField
+                {/* <TextField
                     required
                     id="banner_text"
                     name="banner_text"
@@ -463,15 +464,15 @@ export default withRouter(function DiningAdd(props) {
                     onChange={handleInputChange}
                     size="small"
                     style={{ marginBottom: '1rem' }}
-                />
+                /> */}
                 <CKEditor
                     config={ckEditorConfig}
                     onBeforeLoad={(CKEDITOR) =>
                         (CKEDITOR.disableAutoInline = true)
                     }
-                    data={dining.section_content}
+                    data={dining.section_dress_code}
                     onChange={(e) =>
-                        setDining({ ...dining, section_content: e.editor.getData() })
+                        setDining({ ...dining, section_dress_code: e.editor.getData() })
                     }
                 />
               </Grid>
