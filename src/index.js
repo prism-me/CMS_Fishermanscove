@@ -28,12 +28,15 @@ import {
 // core components
 import Admin from "layouts/Admin.js";
 import RTL from "layouts/RTL.js";
+import ReactGA from 'react-ga';
+
 
 import "./App.scss";
 import "assets/css/material-dashboard-react.css?v=1.9.0";
 import { store } from "store";
 import { connect, Provider } from "react-redux";
 import SignInSide from "views/Auth/Login";
+import Dashboard from "views/Dashboard/Dashboard";
 import Error404 from "views/Common/Error404";
 
 const hist = createBrowserHistory();
@@ -53,32 +56,36 @@ const App = connect(
   mapDispatchToProps
 )((props) => {
   useEffect(() => {
-    // if (!props.user?.isAuthenticated) {
+    console.log(props)
+    if (!props.user?.isAuthenticated) {
       hist.replace("/login");
-    // } else {
-      hist.replace("/admin");
-    // }
+    } else {
+      hist.replace("/dashboard");
+    }
   }, [props.user]);
 
+  ReactGA.initialize('UA-121337419-1');
+  console.log('analytics'+ReactGA.pageview('/Fisherman'));
+  
   // console.log(props.user?.isAuthenticated );
   return (
     <Router history={hist}>
       {
-        // props.user?.isAuthenticated ?
-        <Switch>
-          <Route path="/login" component={SignInSide} />
-          <Route path="/admin" component={Admin} />
-          <Route path="/rtl" component={RTL} />
-          {/* <Route path="/" exact component={Admin} /> */}
-          <Redirect exact from="/" to="/admin/dashboard" />
-          <Route component={Error404} />
-        </Switch>
-        // :
-        // <Switch>
-        //   <Route path="/login" component={SignInSide} />
-        //   {/* <Route path="/" component={SignInSide} /> */}
-        //   <Redirect from="/" to="/login" />
-        // </Switch>
+        props.user?.isAuthenticated ?
+          <Switch>
+            <Route path="/login" component={SignInSide} />
+            <Route path="/" component={Admin} />
+            <Route path="/rtl" component={RTL} />
+            {/* <Route path="/" exact component={Admin} /> */}
+            <Redirect exact from="/" to="/dashboard" />
+            <Route component={Error404} />
+          </Switch>
+          :
+          <Switch>
+            <Route path="/login" component={SignInSide} />
+            <Route path="/" component={SignInSide} />
+            <Redirect from="/" to="/login" />
+          </Switch>
       }
     </Router>
   );
