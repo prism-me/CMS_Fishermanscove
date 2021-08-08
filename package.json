@@ -34,6 +34,7 @@
     "react-chartist": "0.14.3",
     "react-dom": "16.13.1",
     "react-draggable": "^4.4.3",
+    "react-ga": "^3.3.0",
     "react-google-maps": "9.4.5",
     "react-helmet": "^6.1.0",
     "react-image-lightbox": "^5.1.1",

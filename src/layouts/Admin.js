@@ -24,13 +24,14 @@ import { connect } from "react-redux";
 
 let ps;
 
+
 const switchRoutes = (
   <Switch>
     {routes.map((prop, key) => {
       if (prop.layout === "/admin") {
         return (
           <Route
-            path={prop.layout + prop.path}
+            path={prop.layout+ prop.path}
             component={prop.component}
             key={key}
             exact={prop.exact}
@@ -39,7 +40,7 @@ const switchRoutes = (
       }
       return null;
     })}
-    <Redirect from="/admin" to="/admin/dashboard" />
+    <Redirect from="/" to="/dashboard" />
   </Switch>
 );
 
