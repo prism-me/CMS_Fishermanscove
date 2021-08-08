@@ -290,23 +290,18 @@ export default function AddOffer(props) {
                       fullWidth
                       className={classes.formControl}
                     >
-                      <InputLabel id="category_id-label">Category</InputLabel>
-                      <Select
-                        labelId="category_id-label"
-                        id="category_id"
-                        name="category_id"
-                        value={offer.category_id}
-                        onChange={handleInputChange}
-                        label="Category"
+                    
+                      <TextField
+                        required
+                        id="post_url"
+                        name="post_url"
+                        label="synxis Link"
+                        value={offer.post_url}
+                        variant="outlined"
                         fullWidth
-                      >
-                        <MenuItem value={-1}>
-                          <em>Select</em>
-                        </MenuItem>
-                        {categories?.map((x) => (
-                          <MenuItem value={x.id}>{x.category_name}</MenuItem>
-                        ))}
-                      </Select>
+                        onChange={handleInputChange}
+                        size="small"
+                      />
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={12}>
@@ -367,6 +362,7 @@ export default function AddOffer(props) {
                       size="small"
                     />
                   </Grid>
+                  
                   <Grid item xs={12} sm={12}>
                     <div className="thumbnail-preview-wrapper img-thumbnail">
                       {!isEdit ? (

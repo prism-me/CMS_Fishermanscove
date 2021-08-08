@@ -417,7 +417,7 @@ export default withRouter(function AddRoom(props) {
                     required
                     id="post_url"
                     name="post_url"
-                    label="Synesis Link"
+                    label="synxis Link"
                     value={room.post_url}
                     variant="outlined"
                     fullWidth
