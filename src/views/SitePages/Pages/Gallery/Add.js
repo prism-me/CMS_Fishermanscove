@@ -31,7 +31,6 @@ import {
 } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
-
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
@@ -43,7 +42,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
 import GalleryDialog from "../../../Common/GalleryDialog";
-
 const website_url = "/";
 
 const useStyles = makeStyles((theme) => ({
@@ -60,21 +58,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function AddPrivacyPolicy() {
+export default function AddGallery() {
   const pageId = parseInt(useParams().id);
   const classes = useStyles();
-  const [privacyPolicy, setPrivacyPolicy] = useState({
-    intro: {
-      id: 0,
-      section_name: '',
-      section_content: "<p>Detailed content goes here!</p>",
-      page_id: pageId,
-      section_avatar: '',
-      section_col_arr: 0,
-      section_prior: 1,
-      section_avtar_alt: '',
-      section_slug: 'intro'
-    },
+  const [gallery, setGallery] = useState({
     banner: {
       id: 0,
       section_name: '',
@@ -112,10 +99,9 @@ export default function AddPrivacyPolicy() {
     API.get(`/all_sections/${pageId}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
-        setPrivacyPolicy(
+        setGallery(
             {
-              intro: data.find(x => x.section_slug === "intro") || privacyPolicy.intro,
-              banner: data.find(x => x.section_slug === "banner") || privacyPolicy.banner,
+              banner: data.find(x => x.section_slug === "banner") || gallery.banner,
             }
         )
       }
@@ -147,9 +133,9 @@ export default function AddPrivacyPolicy() {
   }
 
   const handleInputChange = (e, section) => {
-    let updatedAbout = { ...privacyPolicy };
+    let updatedAbout = { ...gallery };
     updatedAbout[section][e.target.name] = e.target.value;
-    setPrivacyPolicy(updatedAbout);
+    setGallery(updatedAbout);
   }
 
   const handleImageSelect = (e, index, section) => {
@@ -162,7 +148,7 @@ export default function AddPrivacyPolicy() {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-      setPrivacyPolicy({ ...privacyPolicy, [section]: { ...privacyPolicy[section], section_avatar: imagesData[index].id } })
+      setGallery({ ...gallery, [section]: { ...gallery[section], section_avatar: imagesData[index].id } })
       setThumbnailPreview(imagesData[index].avatar)
 
       let imagesDataUpdated = imagesData.map((x, i) => {
@@ -178,7 +164,7 @@ export default function AddPrivacyPolicy() {
       setImagesData(imagesDataUpdated);
       // }
     } else {
-      setPrivacyPolicy({ ...privacyPolicy, [section]: { ...privacyPolicy[section], section_avatar: "" } })
+      setGallery({ ...gallery, [section]: { ...gallery[section], section_avatar: "" } })
       setThumbnailPreview("")
 
       setImagesData(imagesData.map((x, i) => {
@@ -230,7 +216,7 @@ export default function AddPrivacyPolicy() {
   }
 
   const handleSubmit = (id, name) => {
-    API.post(`/add_section`, privacyPolicy[name]).then(response => {
+    API.post(`/add_section`, gallery[name]).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
@@ -242,7 +228,7 @@ export default function AddPrivacyPolicy() {
       <div className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h4 className="mb-0">Add Privacy Policy</h4>
+            <h4 className="mb-0">Add Gallery</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
@@ -263,7 +249,7 @@ export default function AddPrivacyPolicy() {
                         id="section_name"
                         name="section_name"
                         label="Section Title"
-                        value={privacyPolicy.banner.section_name}
+                        value={gallery.banner.section_name}
                         variant="outlined"
                         fullWidth
                         onChange={(e) => handleInputChange(e, "banner")}
@@ -273,17 +259,17 @@ export default function AddPrivacyPolicy() {
 
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
-                        !privacyPolicy.banner.id > 0 ?
+                        !gallery.banner.id > 0 ?
                             thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={privacyPolicy.banner.section_avtar_alt || ""} />
+                                <img src={thumbnailPreview} alt={gallery.banner.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                             :
-                            typeof (privacyPolicy.banner.section_avatar) === typeof (0) ?
+                            typeof (gallery.banner.section_avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={privacyPolicy.banner.section_avtar_alt || ""} />
+                                <img src={thumbnailPreview} alt={gallery.banner.section_avtar_alt || ""} />
                                 :
-                                <img src={privacyPolicy.banner.section_avatar} alt={privacyPolicy.banner.section_avtar_alt || ""} />
+                                <img src={gallery.banner.section_avatar} alt={gallery.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
@@ -305,44 +291,7 @@ export default function AddPrivacyPolicy() {
                     </Fragment>
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(privacyPolicy.banner.id, "banner")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
-                </Grid>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                <Typography className={classes.heading}>Intro</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12}>
-                    {/* SECTION TITLE */}
-                    <TextField
-                      required
-                      id="section_name"
-                      name="section_name"
-                      label="Section Title"
-                      value={privacyPolicy.intro.section_name}
-                      variant="outlined"
-                      fullWidth
-                      onChange={(e) => handleInputChange(e, "intro")}
-                      size="small"
-                      style={{ marginBottom: '1rem' }}
-                    />
-                    {/* CKEDITOR  */}
-                    <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={privacyPolicy.intro.section_content} onChange={(e) => setPrivacyPolicy({ ...privacyPolicy, intro: { ...privacyPolicy.intro, section_content: e.editor.getData() } })} />
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(privacyPolicy.intro.id, "intro")} size="large" color="primary" variant="contained">
+                    <MaterialButton onClick={() => handleSubmit(gallery.banner.id, "banner")} size="large" color="primary" variant="contained">
                       Update Section
                     </MaterialButton>
                   </Grid>

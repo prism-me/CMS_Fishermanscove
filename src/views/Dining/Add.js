@@ -76,6 +76,10 @@ export default withRouter(function DiningAdd(props) {
     is_indexed: true,
     is_indexed_or_is_followed: "1,1",
     images_list: [],
+    section_slug: "",
+    section_name:"",
+    section_content: "<p>Detailed content goes here!</p>",
+
   };
   const [dining, setDining] = useState({ ...initialObject });
 
@@ -414,6 +418,61 @@ export default withRouter(function DiningAdd(props) {
                   onChange={(e) =>
                     setDining({ ...dining, post_content: e.editor.getData() })
                   }
+                />
+                <hr/>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <h4 style={{ fontWeight: "400" }} className="mt-2">
+                  Opening Hours
+                </h4>
+                <TextField
+                    required
+                    id="banner_text"
+                    name="banner_text"
+                    label="Section Title"
+                    value={dining.section_name}
+                    variant="outlined"
+                    fullWidth
+                    onChange={handleInputChange}
+                    size="small"
+                    style={{ marginBottom: '1rem' }}
+                />
+                <CKEditor
+                    config={ckEditorConfig}
+                    onBeforeLoad={(CKEDITOR) =>
+                        (CKEDITOR.disableAutoInline = true)
+                    }
+                    data={dining.section_content}
+                    onChange={(e) =>
+                        setDining({ ...dining, section_content: e.editor.getData() })
+                    }
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <h4 style={{ fontWeight: "400" }} className="mt-2">
+                  Dress Code
+                </h4>
+                <TextField
+                    required
+                    id="banner_text"
+                    name="banner_text"
+                    label="Section Title"
+                    value={dining.section_name}
+                    variant="outlined"
+                    fullWidth
+                    onChange={handleInputChange}
+                    size="small"
+                    style={{ marginBottom: '1rem' }}
+                />
+                <CKEditor
+                    config={ckEditorConfig}
+                    onBeforeLoad={(CKEDITOR) =>
+                        (CKEDITOR.disableAutoInline = true)
+                    }
+                    data={dining.section_content}
+                    onChange={(e) =>
+                        setDining({ ...dining, section_content: e.editor.getData() })
+                    }
                 />
               </Grid>
             </Grid>
