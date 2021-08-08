@@ -19,7 +19,7 @@ import CardFooter from "components/Card/CardFooter.js";
 import avatar from "assets/img/faces/marc.jpg";
 import { MenuItem, Select, FormControl, TextField, Radio, RadioGroup, FormControlLabel, Avatar } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
-
+import { ckEditorConfig } from "utils/data";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image, DeleteOutlined } from "@material-ui/icons";
@@ -188,12 +188,16 @@ export default function LeisureAdd() {
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Short Description</p>
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.short_description} onChange={(e)=> setLeisure({...leisure, short_description: e.editor.getData()})} />
+                <CKEditor
+                    config={ckEditorConfig}
+                    onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.short_description} onChange={(e)=> setLeisure({...leisure, short_description: e.editor.getData()})} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
                 <p>Detailed Content</p>
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.post_content} onChange={(e)=> setLeisure({...leisure, post_content: e.editor.getData()})} />
+                <CKEditor
+                    config={ckEditorConfig}
+                    onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.post_content} onChange={(e)=> setLeisure({...leisure, post_content: e.editor.getData()})} />
 
               </Grid>
             </Grid>

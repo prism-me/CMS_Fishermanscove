@@ -20,7 +20,7 @@ import CardFooter from "components/Card/CardFooter.js";
 import avatar from "assets/img/faces/marc.jpg";
 import { FormControl, FormControlLabel, Radio, RadioGroup, Select, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
-
+import { ckEditorConfig } from "utils/data";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
@@ -33,7 +33,8 @@ import { useParams } from "react-router-dom";
 import API from "utils/http";
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "https://fishermanscove-resort.com/";
+// const website_url = "https://fishermanscove-resort.com/";
+const website_url = "/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -436,7 +437,10 @@ export default function AddContactUs() {
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={3}>
+                    <span>https://fishermanscove-resort.com</span>
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
                     <TextField
                       required
                       id="route"

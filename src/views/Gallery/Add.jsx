@@ -20,7 +20,7 @@ import CardFooter from "components/Card/CardFooter.js";
 import avatar from "assets/img/faces/marc.jpg";
 import { MenuItem, Select, FormControl, TextField, RadioGroup, Radio, FormControlLabel, Avatar } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
-
+import { ckEditorConfig } from "utils/data";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { DeleteOutlined, Image } from "@material-ui/icons";
@@ -268,13 +268,17 @@ export default function AddGallery(props) {
               <Grid item xs={12} sm={12}>
                 <hr />
                 <h4>Short Description</h4>
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={offer.short_description} onChange={(e) => setOffer({ ...offer, short_description: e.editor.getData() })} />
+                <CKEditor
+                    config={ckEditorConfig}
+                    onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={offer.short_description} onChange={(e) => setOffer({ ...offer, short_description: e.editor.getData() })} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
                 <hr />
                 <h4>Detailed Content</h4>
-                <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={offer.post_content} onChange={(e) => setOffer({ ...offer, post_content: e.editor.getData() })} />
+                <CKEditor
+                    config={ckEditorConfig}
+                    onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={offer.post_content} onChange={(e) => setOffer({ ...offer, post_content: e.editor.getData() })} />
 
               </Grid>
             </Grid>

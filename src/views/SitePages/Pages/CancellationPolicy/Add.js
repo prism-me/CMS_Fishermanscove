@@ -20,7 +20,7 @@ import CardFooter from "components/Card/CardFooter.js";
 import avatar from "assets/img/faces/marc.jpg";
 import { MenuItem, Select, FormControl, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
-
+import { ckEditorConfig } from "utils/data";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
@@ -124,7 +124,9 @@ export default function AddCancellationPolicy() {
                       style={{ marginBottom: '1rem' }}
                     />
                     {/* CKEDITOR  */}
-                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={cancellationPolicy.intro.section_content} onChange={(e) => setCancellationPolicy({ ...cancellationPolicy, intro: { ...cancellationPolicy.intro, section_content: e.editor.getData() } })} />
+                    <CKEditor
+                        config={ckEditorConfig}
+                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={cancellationPolicy.intro.section_content} onChange={(e) => setCancellationPolicy({ ...cancellationPolicy, intro: { ...cancellationPolicy.intro, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     <MaterialButton onClick={() => handleSubmit(cancellationPolicy.intro.id, "intro")} size="large" color="primary" variant="contained">

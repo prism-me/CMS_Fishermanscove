@@ -11,7 +11,7 @@ import CardBody from "components/Card/CardBody.js";
 
 import { FormControl, FormControlLabel, Radio, RadioGroup, TextField } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
-
+import { ckEditorConfig } from "utils/data";
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -23,7 +23,7 @@ import FAQSection from "../Common/FAQSection";
 import { Image } from "@material-ui/icons";
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "https://fishermanscove-resort.com/";
+const website_url = "/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -370,7 +370,9 @@ export default function AddWedding() {
                       style={{ marginBottom: '1rem' }}
                     />
                     {/* CKEDITOR  */}
-                    <CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.intro.section_content} onChange={(e) => setWedding({ ...wedding, intro: { ...wedding.intro, section_content: e.editor.getData() } })} />
+                    <CKEditor
+                        config={ckEditorConfig}
+                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.intro.section_content} onChange={(e) => setWedding({ ...wedding, intro: { ...wedding.intro, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     <MaterialButton onClick={() => handleSubmit(wedding.intro.id, "intro")} size="large" color="primary" variant="contained">
@@ -406,7 +408,10 @@ export default function AddWedding() {
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={3}>
+                        <span>https://fishermanscove-resort.com</span>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
                     <TextField
                       required
                       id="route"
@@ -502,13 +507,13 @@ export default function AddWedding() {
                     </MaterialButton>
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    {/*FAQ ITEM*/}
-                    <FAQSection
-                      removeQuestion={removeQuestion}
-                      section_content={wedding.faq.section_content}
-                      handleQuestionChange={handleQuestionChange}
-                      handleAnswerChange={handleAnswerChange}
-                    />
+                    FAQ ITEM
+                    {/*<FAQSection*/}
+                    {/*  removeQuestion={removeQuestion}*/}
+                    {/*  section_content={wedding.faq.section_content}*/}
+                    {/*  handleQuestionChange={handleQuestionChange}*/}
+                    {/*  handleAnswerChange={handleAnswerChange}*/}
+                    {/*/>*/}
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     <MaterialButton onClick={() => handleSubmit(wedding.faq.id, "faq")} size="large" color="primary" variant="contained">
