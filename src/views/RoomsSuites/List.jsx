@@ -92,14 +92,14 @@ class RoomsList extends Component {
               <Link
                 title="View Details"
                 title="Details"
-                to={`/admin/room-suites/${val}`}
+                to={`/room-suites/${val}`}
               >
                 <VisibilityOutlined fontSize="small" color="action" />
               </Link>
               <Link
                 className="ml-2"
                 title="Edit"
-                to={`/admin/room-suites/edit/${val}`}
+                to={`/room-suites/edit/${val}`}
               >
                 <EditOutlined fontSize="small" color="primary" />
               </Link>
@@ -153,7 +153,7 @@ class RoomsList extends Component {
     return (
       <div>
         <Box marginBottom={4}>
-          <Link to="/admin/room-suites/add">
+          <Link to="/room-suites/add">
             <Button
               variant="contained"
               color="primary"
