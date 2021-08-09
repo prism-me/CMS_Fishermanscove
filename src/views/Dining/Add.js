@@ -79,7 +79,7 @@ export default withRouter(function DiningAdd(props) {
     section_slug: "",
     section_name:"",
     section_dress_code: "<p>Dress Code </p>",
-    section_opening_hour : "<p>Opening Hours</p>"
+    section_opening_hours : "<p>Opening Hours</p>"
 
   };
   const [dining, setDining] = useState({ ...initialObject });
@@ -443,9 +443,9 @@ export default withRouter(function DiningAdd(props) {
                     onBeforeLoad={(CKEDITOR) =>
                         (CKEDITOR.disableAutoInline = true)
                     }
-                    data={dining.section_opening_hour}
+                    data={dining.section_opening_hours}
                     onChange={(e) =>
-                        setDining({ ...dining, section_opening_hour: e.editor.getData() })
+                        setDining({ ...dining, section_opening_hours: e.editor.getData() })
                     }
                 />
               </Grid>
