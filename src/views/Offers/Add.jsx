@@ -80,7 +80,7 @@ export default function AddOffer(props) {
     is_indexed_or_is_followed: "1,1",
     img_directory: "offers",
     images_list: [],
-    category_id: -1,
+    category_id: 5,
   };
   const [offer, setOffer] = useState({ ...initialObject });
   const [offerImages, setOfferImages] = useState([]);
