@@ -187,7 +187,7 @@ export default function AddLeisureInner() {
           setSeoInfo(seoInfoData);
         }
         else {
-          seoInfoData(seoInfo);
+          seoInfoData({...seoInfo});
         }
       }
     })
