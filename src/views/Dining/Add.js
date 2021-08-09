@@ -35,6 +35,7 @@ import { DeleteOutlined, Image } from "@material-ui/icons";
 import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
+import SelectedImagesThumbnails from "../Common/SelectedImagesThumbnails";
 
 const website_url = "https://fishermanscove-resort.com/dining-inner/";
 const append_url = "dining-inner";
@@ -78,7 +79,8 @@ export default withRouter(function DiningAdd(props) {
     images_list: [],
     section_slug: "",
     section_name:"",
-    section_content: "<p>Detailed content goes here!</p>",
+    section_dress_code: "<p>Dress Code </p>",
+    section_opening_hours : "<p>Opening Hours</p>"
 
   };
   const [dining, setDining] = useState({ ...initialObject });
@@ -239,37 +241,35 @@ export default withRouter(function DiningAdd(props) {
     }
   };
 
-  //
-  // const handleSubmit = () => {
-  //   let finalDining = dining;
-  //   finalDining.images_list = JSON.stringify([...new Set(selectedImages)]);
-  //   finalDining.route =
-  //     finalDining.route.split(website_url)?.[1] || finalDining.route;
-  //   finalDining.is_indexed_or_is_followed = `${
-  //     finalDining.is_indexed ? "1" : "0"
-  //   },${finalDining.is_followed ? "1" : "0"}`;
-  //
-  //   if (isEdit) {
-  //     API.put(`/dining/${id}`, finalDining).then((response) => {
-  //       console.log(response);
-  //       if (response.status === 200) {
-  //         alert("Record Updated");
-  //         setDining({ ...initialObject }); //clear all fields
-  //         props.history.push("/admin/dining");
-  //       }
-  //     });
-  //   } else {
-  //     API.post("/dining", finalDining).then((response) => {
-  //       console.log(response);
-  //       if (response.status === 200) {
-  //         setPostId(response.data?.post_id);
-  //         alert("Restaurant/Bar Added");
-  //         setDining({ ...initialObject });
-  //         props.history.push("/admin/dining");
-  //       }
-  //     });
-  //   }
-  // };
+  const handleRemoveSelectedImage = (x, arrayListType) => {
+    switch (arrayListType) {
+      case "uploadsPreview" :
+        let updatePreview = uploadsPreview.filter((u) => u.id !== x.id)
+        setUploadsPreview(updatePreview);
+        setImagesData(imagesData.map(im => {
+          if(im.id === x.id)
+          {
+            im.isChecked = false
+          }
+          return im
+        }))
+        setSelectedImages(updatePreview.map((u) => u.id ));
+        break;
+      case "selectedImages" :
+        let updateData = selectedImages.filter((u) => u !== x.id);
+        setImagesData(imagesData.map(im => {
+          if(im.id === x.id)
+          {
+            im.isChecked = false
+          }
+          return im
+        }))
+        setSelectedImages(updateData);
+        break;
+      default :
+        return setUploadsPreview(uploadsPreview.filter((u) => u.id !== x.id))
+    }
+  }
 
   return (
     <div>
@@ -422,10 +422,10 @@ export default withRouter(function DiningAdd(props) {
                 <hr/>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <h4 style={{ fontWeight: "400" }} className="mt-2">
+               <h4 style={{ fontWeight: "400" }} className="mt-2">
                   Opening Hours
                 </h4>
-                <TextField
+               {/*   <TextField
                     required
                     id="banner_text"
                     name="banner_text"
@@ -436,15 +436,15 @@ export default withRouter(function DiningAdd(props) {
                     onChange={handleInputChange}
                     size="small"
                     style={{ marginBottom: '1rem' }}
-                />
+                /> */}
                 <CKEditor
                     config={ckEditorConfig}
                     onBeforeLoad={(CKEDITOR) =>
                         (CKEDITOR.disableAutoInline = true)
                     }
-                    data={dining.section_content}
+                    data={dining.section_opening_hours}
                     onChange={(e) =>
-                        setDining({ ...dining, section_content: e.editor.getData() })
+                        setDining({ ...dining, section_opening_hours: e.editor.getData() })
                     }
                 />
               </Grid>
@@ -452,7 +452,7 @@ export default withRouter(function DiningAdd(props) {
                 <h4 style={{ fontWeight: "400" }} className="mt-2">
                   Dress Code
                 </h4>
-                <TextField
+                {/* <TextField
                     required
                     id="banner_text"
                     name="banner_text"
@@ -463,15 +463,15 @@ export default withRouter(function DiningAdd(props) {
                     onChange={handleInputChange}
                     size="small"
                     style={{ marginBottom: '1rem' }}
-                />
+                /> */}
                 <CKEditor
                     config={ckEditorConfig}
                     onBeforeLoad={(CKEDITOR) =>
                         (CKEDITOR.disableAutoInline = true)
                     }
-                    data={dining.section_content}
+                    data={dining.section_dress_code}
                     onChange={(e) =>
-                        setDining({ ...dining, section_content: e.editor.getData() })
+                        setDining({ ...dining, section_dress_code: e.editor.getData() })
                     }
                 />
               </Grid>
@@ -627,37 +627,40 @@ export default withRouter(function DiningAdd(props) {
                     );
                   })
                   ?.map((x) => (
-                    <Grid item xs={12} sm={2}>
-                      <div style={{ height: "120px" }}>
-                        <img
-                          width="100%"
-                          src={x.avatar}
-                          className="img-thumbnail"
-                          alt=""
-                          style={{ height: "90%", objectFit: "cover" }}
-                        />
-                        <p style={{ fontSize: "12px" }} className="text-center">
-                          {x.alt_tag}
-                        </p>
-                      </div>
-                    </Grid>
+                      <SelectedImagesThumbnails x={x}
+                                                handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")}/>
+                    // <Grid item xs={12} sm={2}>
+                    //   <div style={{ height: "120px" }}>
+                    //     <img
+                    //       width="100%"
+                    //       src={x.avatar}
+                    //       className="img-thumbnail"
+                    //       alt=""
+                    //       style={{ height: "90%", objectFit: "cover" }}
+                    //     />
+                    //     <p style={{ fontSize: "12px" }} className="text-center">
+                    //       {x.alt_tag}
+                    //     </p>
+                    //   </div>
+                    // </Grid>
                   ))}
               {uploadsPreview &&
                 uploadsPreview?.map((x) => (
-                  <Grid item xs={12} sm={2}>
-                    <div style={{ height: "120px" }}>
-                      <img
-                        width="100%"
-                        src={x.avatar}
-                        className="img-thumbnail"
-                        alt=""
-                        style={{ height: "90%", objectFit: "cover" }}
-                      />
-                      <p style={{ fontSize: "12px" }} className="text-center">
-                        {x.alt_tag}
-                      </p>
-                    </div>
-                  </Grid>
+                    <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r)=>handleRemoveSelectedImage(r,"uploadsPreview")}/>
+                  // <Grid item xs={12} sm={2}>
+                  //   <div style={{ height: "120px" }}>
+                  //     <img
+                  //       width="100%"
+                  //       src={x.avatar}
+                  //       className="img-thumbnail"
+                  //       alt=""
+                  //       style={{ height: "90%", objectFit: "cover" }}
+                  //     />
+                  //     <p style={{ fontSize: "12px" }} className="text-center">
+                  //       {x.alt_tag}
+                  //     </p>
+                  //   </div>
+                  // </Grid>
                 ))}
               <div className="clearfix clear-fix"></div>
               {/* GALLERY DIALOG BOX START */}

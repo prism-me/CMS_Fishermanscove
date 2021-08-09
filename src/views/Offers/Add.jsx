@@ -38,6 +38,7 @@ import { DeleteOutlined, Image } from "@material-ui/icons";
 import API from "utils/http";
 import { useParams } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
+import SelectedImagesThumbnails from "../Common/SelectedImagesThumbnails";
 
 const website_url = "https://fishermanscove-resort.com/offers/";
 const append_url = "offers/";
@@ -255,6 +256,36 @@ export default function AddOffer(props) {
     }
   };
 
+  const handleRemoveSelectedImage = (x, arrayListType) => {
+    switch (arrayListType) {
+      case "uploadsPreview" :
+        let updatePreview = uploadsPreview.filter((u) => u.id !== x.id)
+        setUploadsPreview(updatePreview);
+        setImagesData(imagesData.map(im => {
+          if(im.id === x.id)
+          {
+            im.isChecked = false
+          }
+          return im
+        }))
+        setSelectedImages(updatePreview.map((u) => u.id ));
+        break;
+      case "selectedImages" :
+        let updateData = selectedImages.filter((u) => u !== x.id);
+        setImagesData(imagesData.map(im => {
+          if(im.id === x.id)
+          {
+            im.isChecked = false
+          }
+          return im
+        }))
+        setSelectedImages(updateData);
+        break;
+      default :
+        return setUploadsPreview(uploadsPreview.filter((u) => u.id !== x.id))
+    }
+  }
+
   return (
     <div>
       <div className={classes.root}>
@@ -292,23 +323,18 @@ export default function AddOffer(props) {
                       fullWidth
                       className={classes.formControl}
                     >
-                      <InputLabel id="category_id-label">Category</InputLabel>
-                      <Select
-                        labelId="category_id-label"
-                        id="category_id"
-                        name="category_id"
-                        value={offer.category_id}
-                        onChange={handleInputChange}
-                        label="Category"
+                    
+                      <TextField
+                        required
+                        id="post_url"
+                        name="post_url"
+                        label="synxis Link"
+                        value={offer.post_url}
+                        variant="outlined"
                         fullWidth
-                      >
-                        <MenuItem value={-1}>
-                          <em>Select</em>
-                        </MenuItem>
-                        {categories?.map((x) => (
-                          <MenuItem value={x.id}>{x.category_name}</MenuItem>
-                        ))}
-                      </Select>
+                        onChange={handleInputChange}
+                        size="small"
+                      />
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={12}>
@@ -369,6 +395,7 @@ export default function AddOffer(props) {
                       size="small"
                     />
                   </Grid>
+                  
                   <Grid item xs={12} sm={12}>
                     <div className="thumbnail-preview-wrapper img-thumbnail">
                       {!isEdit ? (
@@ -595,37 +622,40 @@ export default function AddOffer(props) {
                     );
                   })
                   ?.map((x) => (
-                    <Grid item xs={12} sm={2}>
-                      <div style={{ height: "120px" }}>
-                        <img
-                          width="100%"
-                          src={x.avatar}
-                          className="img-thumbnail"
-                          alt=""
-                          style={{ height: "90%", objectFit: "cover" }}
-                        />
-                        <p style={{ fontSize: "12px" }} className="text-center">
-                          {x.alt_tag}
-                        </p>
-                      </div>
-                    </Grid>
+                      <SelectedImagesThumbnails x={x}
+                                                handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")}/>
+                    // <Grid item xs={12} sm={2}>
+                    //   <div style={{ height: "120px" }}>
+                    //     <img
+                    //       width="100%"
+                    //       src={x.avatar}
+                    //       className="img-thumbnail"
+                    //       alt=""
+                    //       style={{ height: "90%", objectFit: "cover" }}
+                    //     />
+                    //     <p style={{ fontSize: "12px" }} className="text-center">
+                    //       {x.alt_tag}
+                    //     </p>
+                    //   </div>
+                    // </Grid>
                   ))}
               {uploadsPreview &&
                 uploadsPreview?.map((x) => (
-                  <Grid item xs={12} sm={2}>
-                    <div style={{ height: "120px" }}>
-                      <img
-                        width="100%"
-                        src={x.avatar}
-                        className="img-thumbnail"
-                        alt=""
-                        style={{ height: "90%", objectFit: "cover" }}
-                      />
-                      <p style={{ fontSize: "12px" }} className="text-center">
-                        {x.alt_tag}
-                      </p>
-                    </div>
-                  </Grid>
+                    <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r)=>handleRemoveSelectedImage(r,"uploadsPreview")}/>
+                  // <Grid item xs={12} sm={2}>
+                  //   <div style={{ height: "120px" }}>
+                  //     <img
+                  //       width="100%"
+                  //       src={x.avatar}
+                  //       className="img-thumbnail"
+                  //       alt=""
+                  //       style={{ height: "90%", objectFit: "cover" }}
+                  //     />
+                  //     <p style={{ fontSize: "12px" }} className="text-center">
+                  //       {x.alt_tag}
+                  //     </p>
+                  //   </div>
+                  // </Grid>
                 ))}
               <div className="clearfix clear-fix"></div>
               {/* GALLERY DIALOG BOX START */}
@@ -636,9 +666,11 @@ export default function AddOffer(props) {
                 handleClose={() => {
                   setShowGallery(false);
                   setRenderPreviews(true);
+                  setUploadsPreview([])
                 }}
                 refreshGallery={getGalleryImages}
                 data={imagesData}
+                selectedData={selectedImages}
               />
               {/* GALLERY DIALOG BOX END */}
             </Grid>
