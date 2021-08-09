@@ -38,7 +38,7 @@ import {useParams, withRouter} from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 import SelectedImagesThumbnails from "../Common/SelectedImagesThumbnails";
 
-const website_url = "https://fishermanscove-resort.com/rooms-inner/";
+const website_url = "https://fishermanscove-resort.com/rooms/";
 const append_url = "rooms-inner";
 
 const useStyles = makeStyles((theme) => ({

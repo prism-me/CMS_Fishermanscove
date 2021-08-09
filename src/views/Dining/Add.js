@@ -37,7 +37,7 @@ import { useParams, withRouter } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 import SelectedImagesThumbnails from "../Common/SelectedImagesThumbnails";
 
-const website_url = "https://fishermanscove-resort.com/dining-inner/";
+const website_url = "https://fishermanscove-resort.com/dining/";
 const append_url = "dining-inner";
 
 const useStyles = makeStyles((theme) => ({
@@ -422,33 +422,6 @@ export default withRouter(function DiningAdd(props) {
                 <hr/>
               </Grid>
               <Grid item xs={12} sm={6}>
-               <h4 style={{ fontWeight: "400" }} className="mt-2">
-                  Opening Hours
-                </h4>
-               {/*   <TextField
-                    required
-                    id="banner_text"
-                    name="banner_text"
-                    label="Section Title"
-                    value={dining.section_name}
-                    variant="outlined"
-                    fullWidth
-                    onChange={handleInputChange}
-                    size="small"
-                    style={{ marginBottom: '1rem' }}
-                /> */}
-                <CKEditor
-                    config={ckEditorConfig}
-                    onBeforeLoad={(CKEDITOR) =>
-                        (CKEDITOR.disableAutoInline = true)
-                    }
-                    data={dining.section_opening_hours}
-                    onChange={(e) =>
-                        setDining({ ...dining, section_opening_hours: e.editor.getData() })
-                    }
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
                 <h4 style={{ fontWeight: "400" }} className="mt-2">
                   Dress Code
                 </h4>
@@ -472,6 +445,33 @@ export default withRouter(function DiningAdd(props) {
                     data={dining.section_dress_code}
                     onChange={(e) =>
                         setDining({ ...dining, section_dress_code: e.editor.getData() })
+                    }
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <h4 style={{ fontWeight: "400" }} className="mt-2">
+                  Opening hours
+                </h4>
+                {/*   <TextField
+                    required
+                    id="banner_text"
+                    name="banner_text"
+                    label="Section Title"
+                    value={dining.section_name}
+                    variant="outlined"
+                    fullWidth
+                    onChange={handleInputChange}
+                    size="small"
+                    style={{ marginBottom: '1rem' }}
+                /> */}
+                <CKEditor
+                    config={ckEditorConfig}
+                    onBeforeLoad={(CKEDITOR) =>
+                        (CKEDITOR.disableAutoInline = true)
+                    }
+                    data={dining.section_opening_hours}
+                    onChange={(e) =>
+                        setDining({ ...dining, section_opening_hours: e.editor.getData() })
                     }
                 />
               </Grid>

@@ -143,7 +143,7 @@ class OffersList extends Component {
               Add Offer
             </Button>
           </Link>
-          <Button
+          {/* <Button
             variant="outlined"
             className="ml-3"
             color="primary"
@@ -151,7 +151,7 @@ class OffersList extends Component {
             onClick={() => this.setState({ isCategoryFormOpen: true })}
           >
             Add Offer Category
-          </Button>
+          </Button> */}
         </Box>
         <MUIDataTable
           title="Premium Offers List"
