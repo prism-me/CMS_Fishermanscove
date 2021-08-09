@@ -137,9 +137,9 @@ const App = connect(
     useEffect(() => {
         console.log(props)
         if (!props.user?.isAuthenticated) {
-            hist.replace("/login");
+            // hist.replace("/login");
         } else {
-            hist.replace("/admin/dashboard");
+            // hist.replace("/admin/dashboard");
         }
     }, [props.user]);
 
