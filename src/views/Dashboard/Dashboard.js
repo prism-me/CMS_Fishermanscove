@@ -95,13 +95,16 @@ export default function Dashboard() {
   const handleTaskDelete = (id) => {
     API.delete(`/todo/${id}`).then(response => {
       if (response.status === 200) {
+        
         // alert("Task deleted successfully.");
         // this.setState({currentFiles: []})
       }
     }).then(() => {
       API.get('/todo').then(response => {
         if (response.status === 200) {
-          setTodos(response.data)
+
+          setTodos(response.data);
+          window.location.reload(true);
         }
       })
     })
@@ -174,8 +177,8 @@ export default function Dashboard() {
               <CardIcon color="info">
                 <Accessibility />
               </CardIcon>
-              <p className={classes.cardCategory}>Analytics</p>
-              <h3 className={classes.cardTitle}>{recents.analytics_count}</h3>
+              <p className={classes.cardCategory}>Dining</p>
+              <h3 className={classes.cardTitle}>{recents.dining}</h3>
             </CardHeader>
             {/* <CardFooter stats>
               <div className={classes.stats}>
