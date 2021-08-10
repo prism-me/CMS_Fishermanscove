@@ -134,28 +134,31 @@ class DiningList extends Component {
   };
 
   componentDidMount() {
-    API.get("/dining").then((response) => {
-      let rows = response.data;
-      this.setState({ rows: rows.filter((x) => x.post_type === "page") });
-    });
+    this.getData()
   }
-
+getData(){
+  API.get("/dining").then((response) => {
+    let rows = response.data;
+    this.setState({ rows: rows.filter((x) => x.post_type === "page") });
+  });
+}
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
       API.delete(`/dining/${id}`)
         .then((response) => {
           if (response.status === 200) {
             alert("Restaurant deleted successfully !");
+            this.getData();
           }
         })
-        .then(() => {
-          API.get(`/dining`).then((response) => {
-            if (response.status === 200) {
-              let rows = response.data;
-              this.setState({ rows });
-            }
-          });
-        })
+        // .then(() => {
+        //   API.get(`/dining`).then((response) => {
+        //     if (response.status === 200) {
+        //       let rows = response.data;
+        //       this.setState({ rows });
+        //     }
+        //   });
+        // })
         .catch((err) => console.log(err));
     }
   };

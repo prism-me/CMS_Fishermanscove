@@ -125,26 +125,29 @@ class RoomsList extends Component {
   };
 
   componentDidMount() {
-    API.get("/rooms").then((response) => {
-      let rows = response.data;
-      this.setState({ rows: rows.filter((x) => x.post_type === "page") });
-    });
+    this.getData()
   }
-
+getData(){
+  API.get("/rooms").then((response) => {
+    let rows = response.data;
+    this.setState({ rows: rows.filter((x) => x.post_type === "page") });
+  });
+}
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
       API.delete(`/rooms/${id}`)
         .then((response) => {
           if (response.status === 200) {
             alert("Room deleted successfully !");
+            this.getData();
           }
         })
-        .then(() => {
-          API.get("/rooms").then((response) => {
-            let rows = response.data;
-            this.setState({ rows });
-          });
-        })
+        // .then(() => {
+        //   API.get("/rooms").then((response) => {
+        //     let rows = response.data;
+        //     this.setState({ rows });
+        //   });
+        // })
         .catch((err) => console.log(err));
     }
   };
