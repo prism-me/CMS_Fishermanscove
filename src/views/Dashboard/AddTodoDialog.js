@@ -24,6 +24,7 @@ export default function AddTodoDialog(props) {
             if (response.status === 200) {
                 alert(response.data?.message || "Success");
                 props.success();
+                window.location.reload(true);
             }
         }).catch(err => alert("Something went wrong"));
 
