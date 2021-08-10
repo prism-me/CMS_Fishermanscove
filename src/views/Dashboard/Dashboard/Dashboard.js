@@ -77,7 +77,9 @@ export default function Dashboard() {
 
   const handleStatusChange = (e, index) => {
     let updatedTodo = todos[index];
+    debugger;
     updatedTodo.is_read = e.target.checked;
+    
     API.put(`/todo/${todos[index].id}`, updatedTodo)
       .then(response => {
         if (response?.status === 200) {
