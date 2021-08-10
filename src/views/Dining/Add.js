@@ -211,21 +211,19 @@ export default withRouter(function DiningAdd(props) {
     }
   };
 
-
   const handleSubmit = () => {
-    const newImageList = [...JSON.parse(dining.images_list), ...selectedImages]
     let finalDining = dining;
-    finalDining.route = finalDining.route.split(website_url)?.[1];
+    finalDining.route = dining.route.split(website_url)?.[1];
     finalDining.inner_route = append_url;
     finalDining.images_list = JSON.stringify([...new Set(selectedImages)]);
-    finalDining.is_indexed_or_is_followed = `${ finalDining.is_indexed ? "1" : "0"
+    finalDining.is_indexed_or_is_followed = `${
+        finalDining.is_indexed ? "1" : "0"
     },${finalDining.is_followed ? "1" : "0"}`;
     if (isEdit) {
-      // console.log("finalRoom",finalRoom)
       API.put(`/dining/${id}`, finalDining).then((response) => {
         if (response.status === 200) {
           alert("Record Updated");
-          setDining({ ...initialObject }); //clear all fields
+          setDining({...initialObject}); //clear all fields
           props.history.push("/admin/dining");
         }
       });
@@ -234,13 +232,42 @@ export default withRouter(function DiningAdd(props) {
         if (response.status === 200) {
           setPostId(response.data?.post_id);
           alert("Record Updated");
-          setDining({ ...initialObject });
+          setDining({...initialObject});
           props.history.push("/admin/dining");
         }
       });
     }
   };
 
+  // const handleSubmit = () => {
+  //   const newImageList = [...JSON.parse(dining.images_list), ...selectedImages]
+  //   let finalDining = dining;
+  //   finalDining.route = finalDining.route.split(website_url)?.[1];
+  //   finalDining.inner_route = append_url;
+  //   finalDining.images_list = JSON.stringify([...new Set(selectedImages)]);
+  //   finalDining.is_indexed_or_is_followed = `${ finalDining.is_indexed ? "1" : "0"
+  //   },${finalDining.is_followed ? "1" : "0"}`;
+  //   if (isEdit) {
+  //     // console.log("finalRoom",finalRoom)
+  //     API.put(`/dining/${id}`, finalDining).then((response) => {
+  //       if (response.status === 200) {
+  //         alert("Record Updated");
+  //         setDining({ ...initialObject }); //clear all fields
+  //         props.history.push("/admin/dining");
+  //       }
+  //     });
+  //   } else {
+  //     API.post("/dining", finalDining).then((response) => {
+  //       if (response.status === 200) {
+  //         setPostId(response.data?.post_id);
+  //         alert("Record Updated");
+  //         setDining({ ...initialObject });
+  //         props.history.push("/admin/dining");
+  //       }
+  //     });
+  //   }
+  // };
+// debugger;
   const handleRemoveSelectedImage = (x, arrayListType) => {
     switch (arrayListType) {
       case "uploadsPreview" :
@@ -270,7 +297,6 @@ export default withRouter(function DiningAdd(props) {
         return setUploadsPreview(uploadsPreview.filter((u) => u.id !== x.id))
     }
   }
-
   return (
     <div>
       <div className={classes.root}>
