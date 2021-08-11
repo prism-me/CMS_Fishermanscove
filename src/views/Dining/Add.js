@@ -540,17 +540,36 @@ export default withRouter(function DiningAdd(props) {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="route"
-                  name="route"
-                  label="Permalink"
-                  value={dining.route}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleRouteChange}
-                  size="small"
-                />
+                {
+                  isEdit? <TextField
+                      required
+                      id="route"
+                      name="route"
+                      label="Permalink"
+                      value={dining.route}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleRouteChange}
+                      size="small"
+                      InputProps={{
+                        disabled: true,
+                      }}
+                  />:
+                      <TextField
+                          required
+                          id="route"
+                          name="route"
+                          label="Permalink"
+                          value={dining.route}
+                          variant="outlined"
+                          fullWidth
+                          onChange={handleRouteChange}
+                          size="small"
+                          InputProps={{
+                            disabled: false,
+                          }}
+                      />
+                }
               </Grid>
               <Grid item xs={12} sm={12}>
                 <TextField
