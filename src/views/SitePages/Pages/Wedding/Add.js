@@ -23,7 +23,7 @@ import FAQSection from "../Common/FAQSection";
 import { Image } from "@material-ui/icons";
 import GalleryDialog from "views/Common/GalleryDialog";
 
-const website_url = "/";
+// const website_url = "/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,7 +83,7 @@ export default function AddWedding() {
     post_id: pageId || 0,
     meta_title: '',
     meta_description: '',
-    route: website_url,
+    // route: website_url,
     schema_markup: '',
     is_followed: true,
     is_indexed: true,
@@ -132,20 +132,35 @@ export default function AddWedding() {
       }
     })
   }
+
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {
       if (response.status === 200) {
         let seoInfoData = response.data;
         if (seoInfoData) {
-          seoInfoData.route = website_url + seoInfoData.route;
-          setSeoInfo({ ...seoInfo, ...seoInfoData });
+          setSeoInfo(seoInfoData);
         }
         else {
-          seoInfoData(seoInfoData)
+          seoInfoData(seoInfo);
         }
       }
     })
   }
+
+  // const getSEOInfo = () => {
+  //   API.get(`/meta/${pageId}`).then(response => {
+  //     if (response.status === 200) {
+  //       let seoInfoData = response.data;
+  //       if (seoInfoData) {
+  //         seoInfoData.route = website_url + seoInfoData.route;
+  //         setSeoInfo({ ...seoInfo, ...seoInfoData });
+  //       }
+  //       else {
+  //         seoInfoData(seoInfoData)
+  //       }
+  //     }
+  //   })
+  // }
 
   const handleInputChange = (e, section) => {
     let updatedWedding = { ...wedding };
@@ -204,14 +219,14 @@ export default function AddWedding() {
   }
 
 
-  const handleRouteChange = (e) => {
-    let updatedSeoInfo = { ...seoInfo };
-    let splitValues = e.target.value.split(website_url);
-    let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
-    updatedValue = updatedValue.replace(/--/g, '-')
-    updatedSeoInfo[e.target.name] = website_url + updatedValue;
-    setSeoInfo(updatedSeoInfo);
-  }
+  // const handleRouteChange = (e) => {
+  //   let updatedSeoInfo = { ...seoInfo };
+  //   let splitValues = e.target.value.split(website_url);
+  //   let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
+  //   updatedValue = updatedValue.replace(/--/g, '-')
+  //   updatedSeoInfo[e.target.name] = website_url + updatedValue;
+  //   setSeoInfo(updatedSeoInfo);
+  // }
 
   //faq section methods
   const removeQuestion = (id) => {
@@ -229,11 +244,9 @@ export default function AddWedding() {
     setWedding({ ...wedding, faq: { ...wedding.faq, section_content } })
   }
   //end faq section methods
-
+  //
   const handleSEOSubmit = () => {
     let updatedSeoInfo = seoInfo;
-    updatedSeoInfo.route = updatedSeoInfo.route.split(website_url)?.[1];
-
     updatedSeoInfo.is_indexed_or_is_followed = `${updatedSeoInfo.is_indexed},${updatedSeoInfo.is_followed}`;
 
     if (updatedSeoInfo.id > 0) {
@@ -251,6 +264,27 @@ export default function AddWedding() {
 
     }
   }
+  // const handleSEOSubmit = () => {
+  //   let updatedSeoInfo = seoInfo;
+  //   updatedSeoInfo.route = updatedSeoInfo.route.split(website_url)?.[1];
+  //
+  //   updatedSeoInfo.is_indexed_or_is_followed = `${updatedSeoInfo.is_indexed},${updatedSeoInfo.is_followed}`;
+  //
+  //   if (updatedSeoInfo.id > 0) {
+  //     API.put(`/meta/${pageId}`, updatedSeoInfo).then(response => {
+  //       if (response.status === 200) {
+  //         alert("Section updated successfully !");
+  //       }
+  //     }).catch(err => console.log(err))
+  //   } else {
+  //     API.post(`/meta`, updatedSeoInfo).then(response => {
+  //       if (response.status === 200) {
+  //         alert("Section updated successfully !");
+  //       }
+  //     }).catch(err => console.log(err))
+  //
+  //   }
+  // }
 
   const handleSubmit = (id, name) => {
     let updatedWedding = { ...wedding };
@@ -395,7 +429,7 @@ export default function AddWedding() {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={12}>
                     <TextField
                       required
                       id="meta_title"
@@ -408,22 +442,22 @@ export default function AddWedding() {
                       size="small"
                     />
                   </Grid>
-                    <Grid item xs={12} sm={3}>
-                        <span>https://fishermanscove-resort.com</span>
-                    </Grid>
-                    <Grid item xs={12} sm={3}>
-                    <TextField
-                      required
-                      id="route"
-                      name="route"
-                      label="Permalink"
-                      value={seoInfo.route}
-                      variant="outlined"
-                      fullWidth
-                      onChange={handleRouteChange}
-                      size="small"
-                    />
-                  </Grid>
+                  {/*  <Grid item xs={12} sm={3}>*/}
+                  {/*      <span>https://fishermanscove-resort.com</span>*/}
+                  {/*  </Grid>*/}
+                  {/*  <Grid item xs={12} sm={3}>*/}
+                  {/*  <TextField*/}
+                  {/*    required*/}
+                  {/*    id="route"*/}
+                  {/*    name="route"*/}
+                  {/*    label="Permalink"*/}
+                  {/*    value={seoInfo.route}*/}
+                  {/*    variant="outlined"*/}
+                  {/*    fullWidth*/}
+                  {/*    onChange={handleRouteChange}*/}
+                  {/*    size="small"*/}
+                  {/*  />*/}
+                  {/*</Grid>*/}
                   <Grid item xs={12} sm={12}>
                     <TextField
                       required
@@ -496,12 +530,12 @@ export default function AddWedding() {
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={12}>
                     FAQ ITEM
-                    {/*<FAQSection*/}
-                    {/*  removeQuestion={removeQuestion}*/}
-                    {/*  section_content={wedding.faq.section_content}*/}
-                    {/*  handleQuestionChange={handleQuestionChange}*/}
-                    {/*  handleAnswerChange={handleAnswerChange}*/}
-                    {/*/>*/}
+                    <FAQSection
+                      removeQuestion={removeQuestion}
+                      section_content={wedding.faq.section_content}
+                      handleQuestionChange={handleQuestionChange}
+                      handleAnswerChange={handleAnswerChange}
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <MaterialButton

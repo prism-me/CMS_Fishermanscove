@@ -44,7 +44,7 @@ import { useParams } from "react-router-dom";
 import API from "utils/http";
 import GalleryDialog from "../../../Common/GalleryDialog";
 
-const website_url = "/";
+// const website_url = "/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -92,7 +92,7 @@ export default function AddPrivacyPolicy() {
     post_id: pageId || 0,
     meta_title: '',
     meta_description: '',
-    route: website_url,
+    // route: website_url,
     schema_markup: '',
     is_followed: true,
     is_indexed: true,
@@ -200,14 +200,14 @@ export default function AddPrivacyPolicy() {
     setSeoInfo(updatedSeoInfo);
   }
 
-  const handleRouteChange = (e) => {
-    let updatedSeoInfo = { ...seoInfo };
-    let splitValues = e.target.value.split(website_url);
-    let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
-    updatedValue = updatedValue.replace(/--/g, '-')
-    updatedSeoInfo[e.target.name] = website_url + updatedValue;
-    setSeoInfo(updatedSeoInfo);
-  }
+  // const handleRouteChange = (e) => {
+  //   let updatedSeoInfo = { ...seoInfo };
+  //   let splitValues = e.target.value.split(website_url);
+  //   let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
+  //   updatedValue = updatedValue.replace(/--/g, '-')
+  //   updatedSeoInfo[e.target.name] = website_url + updatedValue;
+  //   setSeoInfo(updatedSeoInfo);
+  // }
 
   const handleSEOSubmit = () => {
     let updatedSeoInfo = seoInfo;
@@ -359,7 +359,7 @@ export default function AddPrivacyPolicy() {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={12}>
                     <TextField
                         required
                         id="meta_title"
@@ -372,22 +372,22 @@ export default function AddPrivacyPolicy() {
                         size="small"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <span>https://fishermanscove-resort.com</span>
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <TextField
-                        required
-                        id="route"
-                        name="route"
-                        label="Permalink"
-                        value={seoInfo.route}
-                        variant="outlined"
-                        fullWidth
-                        onChange={handleRouteChange}
-                        size="small"
-                    />
-                  </Grid>
+                  {/*<Grid item xs={12} sm={3}>*/}
+                  {/*  <span>https://fishermanscove-resort.com</span>*/}
+                  {/*</Grid>*/}
+                  {/*<Grid item xs={12} sm={3}>*/}
+                  {/*  <TextField*/}
+                  {/*      required*/}
+                  {/*      id="route"*/}
+                  {/*      name="route"*/}
+                  {/*      label="Permalink"*/}
+                  {/*      value={seoInfo.route}*/}
+                  {/*      variant="outlined"*/}
+                  {/*      fullWidth*/}
+                  {/*      onChange={handleRouteChange}*/}
+                  {/*      size="small"*/}
+                  {/*  />*/}
+                  {/*</Grid>*/}
                   <Grid item xs={12} sm={12}>
                     <TextField
                         required

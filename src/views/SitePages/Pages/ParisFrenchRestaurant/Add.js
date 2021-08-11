@@ -36,7 +36,7 @@ import FAQSection from "../Common/FAQSection";
 import GalleryDialog from "views/Common/GalleryDialog";
 
 // const website_url = "https://fishermanscove-resort.com/";
-const website_url = "/";
+// const website_url = "/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -118,7 +118,7 @@ export default function ParisFrenchRestaurant() {
     post_id: pageId || 0,
     meta_title: '',
     meta_description: '',
-    route: website_url,
+    // route: website_url,
     schema_markup: '',
     is_followed: true,
     is_indexed: true,
@@ -253,14 +253,14 @@ export default function ParisFrenchRestaurant() {
     setSeoInfo(updatedSeoInfo);
   }
 
-  const handleRouteChange = (e) => {
-    let updatedSeoInfo = { ...seoInfo };
-    let splitValues = e.target.value.split(website_url);
-    let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
-    updatedValue = updatedValue.replace(/--/g, '-')
-    updatedSeoInfo[e.target.name] = website_url + updatedValue;
-    setSeoInfo(updatedSeoInfo);
-  }
+  // const handleRouteChange = (e) => {
+  //   let updatedSeoInfo = { ...seoInfo };
+  //   let splitValues = e.target.value.split(website_url);
+  //   let updatedValue = splitValues[1] ? splitValues[1].replace(/\s+/g, '-') : ""
+  //   updatedValue = updatedValue.replace(/--/g, '-')
+  //   updatedSeoInfo[e.target.name] = website_url + updatedValue;
+  //   setSeoInfo(updatedSeoInfo);
+  // }
 
   const handleSEOSubmit = () => {
     let updatedSeoInfo = seoInfo;
