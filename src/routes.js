@@ -555,15 +555,15 @@ const dashboardRoutes = [
     exact: true,
     hide:true
   },
-  // {
-  //   path: "/faq",
-  //   name: "F.A.Q's",
-  //   rtlName: "ملف تعريفي للمستخدم",
-  //   icon: QuestionAnswerOutlined,
-  //   component: FAQList,
-  //   layout: "/admin",
-  //   exact: true
-  // },
+  {
+    path: "/faq",
+    name: "F.A.Q's",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: QuestionAnswerOutlined,
+    component: FAQList,
+    layout: "/admin",
+    exact: true
+  },
   // {
   //   path: "/user",
   //   name: "User Profile",

@@ -26,7 +26,7 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
-  Avatar,
+  Avatar, Typography,
 } from "@material-ui/core";
 import CKEditor from "ckeditor4-react";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -36,6 +36,7 @@ import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 import SelectedImagesThumbnails from "../Common/SelectedImagesThumbnails";
+import AddFAQDialog from "../FAQ/AddFAQDialog";
 
 const website_url = "https://fishermanscove-resort.com/dining/";
 const append_url = "dining-inner";
@@ -80,15 +81,20 @@ export default withRouter(function DiningAdd(props) {
     section_slug: "",
     section_name:"",
     section_dress_code: "<p>Dress Code </p>",
-    section_opening_hours : "<p>Opening Hours</p>"
-
+    section_opening_hours : "<p>Opening Hours</p>",
+    faqs_content: [
+      {
+        question: "",
+        answer: "",
+      },
+    ]
   };
   const [dining, setDining] = useState({ ...initialObject });
 
   const [diningImages, setDiningImages] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [post_id, setPostId] = useState(-1);
-
+  const [showFAQ, setShowFAQ] = useState(false);
   const [imagesData, setImagesData] = useState([]);
   const [uploadsPreview, setUploadsPreview] = useState(null);
   const [selectedImages, setSelectedImages] = useState([]);
@@ -128,6 +134,18 @@ export default withRouter(function DiningAdd(props) {
       }
     });
   };
+
+  const handleQuestionChange = (e, index) => {
+    let faqs_content = [...dining.faqs_content];
+    faqs_content[0].question = e.target.value;
+    setDining({ ...dining, faqs_content });
+  };
+  const handleAnswerChange = (data, index) => {
+    let faqs_content = [...dining.faqs_content];
+    faqs_content[0].answer = data;
+    setDining({ ...dining, faqs_content });
+  };
+  //en
 
   const handleInputChange = (e) => {
     let updatedDining = { ...dining };
@@ -500,6 +518,54 @@ export default withRouter(function DiningAdd(props) {
                         setDining({ ...dining, section_opening_hours: e.editor.getData() })
                     }
                 />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <hr />
+                <h4 style={{ fontWeight: "400" }} className="mt-2">
+                  FAQ
+                </h4>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => {
+                      // setCurrentFAQ({ ...faq, index: i });
+                      setShowFAQ(true);
+                    }}
+                >
+                  Add New F.A.Q Item
+                </Button>
+                {
+                  <AddFAQDialog
+                      // currentFAQ={currentFAQ}
+                      // section_content={faq.section_content[0]}
+                      handleQuestionChange={handleQuestionChange}
+                      handleAnswerChange={handleAnswerChange}
+                      onClose={() => setShowFAQ(false)}
+                      handleSubmit={handleSubmit}
+                      open={showFAQ}
+                  />
+                }
+                {/*<TextField*/}
+                {/*    required*/}
+                {/*    id={`question`}*/}
+                {/*    name={`question`}*/}
+                {/*    label="Section Title"*/}
+                {/*    value={dining.question}*/}
+                {/*    variant="outlined"*/}
+                {/*    fullWidth*/}
+                {/*    onChange={(e) => handleQuestionChange(e)}*/}
+                {/*    size="small"*/}
+                {/*    style={{ marginBottom: '1rem' }}*/}
+                {/*/>*/}
+                {/*<CKEditor*/}
+                {/*    config={ckEditorConfig}*/}
+                {/*    onBeforeLoad={(CKEDITOR) =>*/}
+                {/*        (CKEDITOR.disableAutoInline = true)*/}
+                {/*    }*/}
+                {/*    data={dining.answer}*/}
+                {/*    onChange={(e) => handleAnswerChange(e.editor.getData())}*/}
+                {/*/>*/}
               </Grid>
             </Grid>
             <hr />

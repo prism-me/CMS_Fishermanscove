@@ -159,6 +159,7 @@ const FAQList = (props) => {
                   variant="contained"
                   color="primary"
                   size="small"
+                  style={{marginBottom:"1rem"}}
                   onClick={() => {
                     setCurrentFAQ({ ...faq, index: i });
                     setShowFAQ(true);

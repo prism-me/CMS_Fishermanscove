@@ -8,7 +8,6 @@ import { ckEditorConfig } from "utils/data";
 import Typography from "@material-ui/core/Typography";
 
 export default function FAQSection(props) {
-  // const SectionContent = JSON.parse(props.section_content);
   return (
 
       props.section_content?.length > 0 &&

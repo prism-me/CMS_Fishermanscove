@@ -484,45 +484,45 @@ export default function AddWedding() {
             {/* ******************* */}
             {/* SECTION 3 */}
             {/* ******************* */}
-            {/*<Accordion>*/}
-            {/*  <AccordionSummary*/}
-            {/*    expandIcon={<ExpandMoreIcon />}*/}
-            {/*    aria-controls="panel2a-content"*/}
-            {/*    id="panel2a-header"*/}
-            {/*  >*/}
-            {/*    <Typography className={classes.heading}>F.A.Q's</Typography>*/}
-            {/*  </AccordionSummary>*/}
-            {/*  <AccordionDetails>*/}
-            {/*    <Grid container spacing={2}>*/}
-            {/*      <Grid item xs={12}>*/}
-            {/*        <MaterialButton*/}
-            {/*          variant="outlined"*/}
-            {/*          component="span"*/}
-            {/*          className={classes.button}*/}
-            {/*          size="small"*/}
-            {/*          color="primary"*/}
-            {/*          onClick={() => setWedding({ ...wedding, faq: { ...wedding.faq, section_content: [...wedding.faq.section_content, { id: wedding.faq.section_content?.length + 1, question: '', answer: '' }] } })}*/}
-            {/*        >*/}
-            {/*          Add a New Link*/}
-            {/*        </MaterialButton>*/}
-            {/*      </Grid>*/}
-                  {/*<Grid item xs={12} sm={12}>*/}
-                  {/*  FAQ ITEM*/}
-                    {/*<FAQSection*/}
-                    {/*  removeQuestion={removeQuestion}*/}
-                    {/*  section_content={wedding.faq.section_content}*/}
-                    {/*  handleQuestionChange={handleQuestionChange}*/}
-                    {/*  handleAnswerChange={handleAnswerChange}*/}
-                    {/*/>*/}
-                  {/*</Grid>*/}
-            {/*      <Grid item xs={12} sm={12}>*/}
-            {/*        <MaterialButton onClick={() => handleSubmit(wedding.faq.id, "faq")} size="large" color="primary" variant="contained">*/}
-            {/*          Update Section*/}
-            {/*        </MaterialButton>*/}
-            {/*      </Grid>*/}
-            {/*    </Grid>*/}
-            {/*  </AccordionDetails>*/}
-            {/*</Accordion>*/}
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>F.A.Q's</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    FAQ ITEM
+                    <FAQSection
+                      removeQuestion={removeQuestion}
+                      section_content={wedding.faq.section_content}
+                      handleQuestionChange={handleQuestionChange}
+                      handleAnswerChange={handleAnswerChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <MaterialButton
+                        variant="outlined"
+                        component="span"
+                        className={classes.button}
+                        size="small"
+                        color="primary"
+                        onClick={() => setWedding({ ...wedding, faq: { ...wedding.faq, section_content: [...wedding.faq.section_content, { id: wedding.faq.section_content?.length + 1, question: '', answer: '' }] } })}
+                    >
+                      Add a New Link
+                    </MaterialButton>
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <MaterialButton onClick={() => handleSubmit(wedding.faq.id, "faq")} size="large" color="primary" variant="contained">
+                      Update Section
+                    </MaterialButton>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
           </CardBody>
         </Card>
       </div>
