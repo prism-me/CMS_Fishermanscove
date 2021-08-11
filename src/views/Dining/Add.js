@@ -37,6 +37,7 @@ import { useParams, withRouter } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 import SelectedImagesThumbnails from "../Common/SelectedImagesThumbnails";
 import AddFAQDialog from "../FAQ/AddFAQDialog";
+import FAQSection from "../SitePages/Pages/Common/FAQSection";
 
 const website_url = "https://fishermanscove-resort.com/dining/";
 const append_url = "dining-inner";
@@ -82,12 +83,12 @@ export default withRouter(function DiningAdd(props) {
     section_name:"",
     section_dress_code: "<p>Dress Code </p>",
     section_opening_hours : "<p>Opening Hours</p>",
-    faqs_content: [
-      {
-        question: "",
-        answer: "",
-      },
-    ]
+    // faqs_content: [
+    //   {
+    //     question: "",
+    //     answer: "",
+    //   },
+    // ]
   };
   const [dining, setDining] = useState({ ...initialObject });
 
@@ -519,54 +520,6 @@ export default withRouter(function DiningAdd(props) {
                     }
                 />
               </Grid>
-              <Grid item xs={12} sm={12}>
-                <hr />
-                <h4 style={{ fontWeight: "400" }} className="mt-2">
-                  FAQ
-                </h4>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={() => {
-                      // setCurrentFAQ({ ...faq, index: i });
-                      setShowFAQ(true);
-                    }}
-                >
-                  Add New F.A.Q Item
-                </Button>
-                {
-                  <AddFAQDialog
-                      // currentFAQ={currentFAQ}
-                      // section_content={faq.section_content[0]}
-                      handleQuestionChange={handleQuestionChange}
-                      handleAnswerChange={handleAnswerChange}
-                      onClose={() => setShowFAQ(false)}
-                      handleSubmit={handleSubmit}
-                      open={showFAQ}
-                  />
-                }
-                {/*<TextField*/}
-                {/*    required*/}
-                {/*    id={`question`}*/}
-                {/*    name={`question`}*/}
-                {/*    label="Section Title"*/}
-                {/*    value={dining.question}*/}
-                {/*    variant="outlined"*/}
-                {/*    fullWidth*/}
-                {/*    onChange={(e) => handleQuestionChange(e)}*/}
-                {/*    size="small"*/}
-                {/*    style={{ marginBottom: '1rem' }}*/}
-                {/*/>*/}
-                {/*<CKEditor*/}
-                {/*    config={ckEditorConfig}*/}
-                {/*    onBeforeLoad={(CKEDITOR) =>*/}
-                {/*        (CKEDITOR.disableAutoInline = true)*/}
-                {/*    }*/}
-                {/*    data={dining.answer}*/}
-                {/*    onChange={(e) => handleAnswerChange(e.editor.getData())}*/}
-                {/*/>*/}
-              </Grid>
             </Grid>
             <hr />
             <h4 style={{ fontWeight: "400" }} className="mt-2">
@@ -685,7 +638,35 @@ export default withRouter(function DiningAdd(props) {
           </CardBody>
         </Card>
 
-        {/* ******************************** */}
+        {/* ***************FAQ Section***************** */}
+        {/*<Grid container spacing={2}>*/}
+        {/*  <Card>*/}
+        {/*    <CardBody>*/}
+        {/*      <h4 style={{ fontWeight: "400" }}>F.A.Q'S</h4>*/}
+        {/*  <Grid item xs={12} sm={12}>*/}
+        {/*    FAQ ITEM*/}
+        {/*    <FAQSection*/}
+        {/*        // removeQuestion={removeQuestion}*/}
+        {/*        section_content={dining.faqs_content}*/}
+        {/*        handleQuestionChange={handleQuestionChange}*/}
+        {/*        handleAnswerChange={handleAnswerChange}*/}
+        {/*    />*/}
+        {/*  </Grid>*/}
+        {/*  <Grid item xs={12}>*/}
+        {/*    <MaterialButton*/}
+        {/*        variant="outlined"*/}
+        {/*        component="span"*/}
+        {/*        className={classes.button}*/}
+        {/*        size="small"*/}
+        {/*        color="primary"*/}
+        {/*        // onClick={() => dining({ ...dining, faq: { ...dining.faq, section_content: [...dining.faq.section_content, { id: dining.faq.section_content?.length + 1, question: '', answer: '' }] } })}*/}
+        {/*    >*/}
+        {/*      Add a New Link*/}
+        {/*    </MaterialButton>*/}
+        {/*  </Grid>*/}
+        {/*    </CardBody>*/}
+        {/*  </Card>*/}
+        {/*</Grid>*/}
         {/* ********* SLIDER IMAGES ******** */}
         {/* ******************************** */}
         <Card>
