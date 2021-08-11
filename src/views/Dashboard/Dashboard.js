@@ -57,7 +57,8 @@ export default function Dashboard() {
   useEffect(() => {
     API.get('/dashboard_apis').then(response => {
       if (response?.status === 200) {
-        setRecents(response.data)
+        setRecents(response.data);
+        setTodos(response.data)
       }
     })
 
@@ -72,9 +73,10 @@ export default function Dashboard() {
   }
 
   const handleStatusChange = (e, index) => {
-    let updatedTodo = todos[index];
+ 
+    let updatedTodo = todos.Todo_lists[index];  
     updatedTodo.is_read = e.target.checked;
-    API.put(`/todo/${todos[index].id}`, updatedTodo)
+    API.put(`/todo/${todos.Todo_lists[index].id}`, updatedTodo)
       .then(response => {
         if (response?.status === 200) {
           // alert("Updated")
