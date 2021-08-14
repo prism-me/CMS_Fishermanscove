@@ -83,12 +83,12 @@ export default withRouter(function DiningAdd(props) {
     section_name:"",
     section_dress_code: "<p>Dress Code </p>",
     section_opening_hours : "<p>Opening Hours</p>",
-    // faqs_content: [
-    //   {
-    //     question: "",
-    //     answer: "",
-    //   },
-    // ]
+    faqs_content: [
+      {
+        question: "",
+        answer: "",
+      },
+    ]
   };
   const [dining, setDining] = useState({ ...initialObject });
 
@@ -136,17 +136,22 @@ export default withRouter(function DiningAdd(props) {
     });
   };
 
-  const handleQuestionChange = (e, index) => {
-    let faqs_content = [...dining.faqs_content];
-    faqs_content[0].question = e.target.value;
-    setDining({ ...dining, faqs_content });
-  };
-  const handleAnswerChange = (data, index) => {
-    let faqs_content = [...dining.faqs_content];
-    faqs_content[0].answer = data;
-    setDining({ ...dining, faqs_content });
-  };
-  //en
+  //faq section methods
+  const removeQuestion = (id) => {
+    setDining({ ...dining, initialObject: { ...dining.initialObject, faqs_content: dining.initialObject.faqs_content.filter(x => x.id !== id) } })
+  }
+
+  const handleQuestionChange = (e, section, index) => {
+    let faqs_content = [...dining.initialObject.faqs_content];
+    faqs_content[index].question = e.target.value;
+    setDining({ ...dining, initialObject: { ...dining.initialObject, faqs_content } })
+  }
+  const handleAnswerChange = (data, section, index) => {
+    let faqs_content = [...dining.initialObject.faqs_content];
+    faqs_content[index].answer = data;
+    setDining({ ...dining, initialObject: { ...dining.initialObject, faqs_content } })
+  }
+  //end faq section methods
 
   const handleInputChange = (e) => {
     let updatedDining = { ...dining };
@@ -231,6 +236,10 @@ export default withRouter(function DiningAdd(props) {
   };
 
   const handleSubmit = () => {
+    let updateddining = { ...dining };
+    if (initialObject === "faqs_content") {
+      updateddining.initialObject.faqs_content = JSON.stringify(updateddining.initialObject.faqs_content)
+    }
     let finalDining = dining;
     finalDining.route = dining.route.split(website_url)?.[1];
     finalDining.inner_route = append_url;
@@ -638,15 +647,15 @@ export default withRouter(function DiningAdd(props) {
           <Card>
             <CardBody>
               <h4 style={{ fontWeight: "400" }}>F.A.Q'S</h4>
-          <Grid item xs={12} sm={12}>
-            FAQ ITEM
-            <FAQSection
-                // removeQuestion={removeQuestion}
-                section_content={dining.faqs_content}
-                handleQuestionChange={handleQuestionChange}
-                handleAnswerChange={handleAnswerChange}
-            />
-          </Grid>
+          {/*<Grid item xs={12} sm={12}>*/}
+          {/*  FAQ ITEM*/}
+          {/*  <FAQSection*/}
+          {/*      removeQuestion={removeQuestion}*/}
+          {/*      section_content={dining.initialObject.faqs_content}*/}
+          {/*      handleQuestionChange={handleQuestionChange}*/}
+          {/*      handleAnswerChange={handleAnswerChange}*/}
+          {/*  />*/}
+          {/*</Grid>*/}
           <Grid item xs={12}>
             <MaterialButton
                 variant="outlined"
@@ -654,7 +663,7 @@ export default withRouter(function DiningAdd(props) {
                 className={classes.button}
                 size="small"
                 color="primary"
-                // onClick={() => dining({ ...dining, faq: { ...dining.faq, section_content: [...dining.faq.section_content, { id: dining.faq.section_content?.length + 1, question: '', answer: '' }] } })}
+                onClick={() => dining({ ...dining, initialObject: { ...dining.initialObject, faqs_content: [...dining.initialObject.faqs_content, { id: dining.initialObject.faqs_content?.length + 1, question: '', answer: '' }] } })}
             >
               Add a New Link
             </MaterialButton>

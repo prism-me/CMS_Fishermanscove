@@ -294,10 +294,10 @@ export default function UpdateFooter() {
               <AccordionDetails>
                 {/* <h4 className="mt-4"></h4> */}
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={8}>
+                  <Grid item xs={12} sm={12}>
                     <Grid container spacing={2}>
                       {footerContent.second?.links
-                        ?.sort((a, b) => a.order - b.order)
+                        // ?.sort((a, b) => a.order - b.order)
                         .map((x, index) => (
                           <React.Fragment key={x.temp_id}>
                             <Grid item xs={12} sm={4}>
@@ -413,36 +413,36 @@ export default function UpdateFooter() {
                     </Grid>
                   </Grid>
 
-                  <Grid item xs={12} sm={4}>
-                    <p>Drag and Drop the items to Re-Arrange the order</p>
-                    {footerContent.second?.links?.length > 0 ? (
-                      <Paper>
-                        <List component="nav" aria-label="main mailbox folders">
-                          {footerContent.second?.links
-                            ?.sort((a, b) => a.order - b.order)
-                            .map((x) => (
-                              <ListItem
-                                key={x.text}
-                                style={{
-                                  borderBottom: "1px solid #ddd",
-                                  zIndex: 9999,
-                                }}
-                                button
-                                id={x.temp_id}
-                                draggable
-                                onDragStart={handleDrag}
-                                onDrop={handleDrop}
-                                onDragOver={(ev) => ev.preventDefault()}
-                              >
-                                <ListItemText primary={x.text} />
-                              </ListItem>
-                            ))}
-                        </List>
-                      </Paper>
-                    ) : (
-                      <em>No items added yet</em>
-                    )}
-                  </Grid>
+                  {/*<Grid item xs={12} sm={4}>*/}
+                  {/*  <p>Drag and Drop the items to Re-Arrange the order</p>*/}
+                  {/*  {footerContent.second?.links?.length > 0 ? (*/}
+                  {/*    <Paper>*/}
+                  {/*      <List component="nav" aria-label="main mailbox folders">*/}
+                  {/*        {footerContent.second?.links*/}
+                  {/*          ?.sort((a, b) => a.order - b.order)*/}
+                  {/*          .map((x) => (*/}
+                  {/*            <ListItem*/}
+                  {/*              key={x.text}*/}
+                  {/*              style={{*/}
+                  {/*                borderBottom: "1px solid #ddd",*/}
+                  {/*                zIndex: 9999,*/}
+                  {/*              }}*/}
+                  {/*              button*/}
+                  {/*              id={x.temp_id}*/}
+                  {/*              draggable*/}
+                  {/*              onDragStart={handleDrag}*/}
+                  {/*              onDrop={handleDrop}*/}
+                  {/*              onDragOver={(ev) => ev.preventDefault()}*/}
+                  {/*            >*/}
+                  {/*              <ListItemText primary={x.text} />*/}
+                  {/*            </ListItem>*/}
+                  {/*          ))}*/}
+                  {/*      </List>*/}
+                  {/*    </Paper>*/}
+                  {/*  ) : (*/}
+                  {/*    <em>No items added yet</em>*/}
+                  {/*  )}*/}
+                  {/*</Grid>*/}
                 </Grid>
                 {/* <Grid container spacing={2}>
                   <Grid item xs={12}>
