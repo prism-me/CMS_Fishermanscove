@@ -470,18 +470,6 @@ export default withRouter(function DiningAdd(props) {
                 <h4 style={{ fontWeight: "400" }} className="mt-2">
                   Dress Code
                 </h4>
-                {/* <TextField
-                    required
-                    id="banner_text"
-                    name="banner_text"
-                    label="Section Title"
-                    value={dining.section_name}
-                    variant="outlined"
-                    fullWidth
-                    onChange={handleInputChange}
-                    size="small"
-                    style={{ marginBottom: '1rem' }}
-                /> */}
                 <CKEditor
                     config={ckEditorConfig}
                     onBeforeLoad={(CKEDITOR) =>
@@ -497,18 +485,6 @@ export default withRouter(function DiningAdd(props) {
                 <h4 style={{ fontWeight: "400" }} className="mt-2">
                   Opening hours
                 </h4>
-                {/*   <TextField
-                    required
-                    id="banner_text"
-                    name="banner_text"
-                    label="Section Title"
-                    value={dining.section_name}
-                    variant="outlined"
-                    fullWidth
-                    onChange={handleInputChange}
-                    size="small"
-                    style={{ marginBottom: '1rem' }}
-                /> */}
                 <CKEditor
                     config={ckEditorConfig}
                     onBeforeLoad={(CKEDITOR) =>
@@ -658,34 +634,34 @@ export default withRouter(function DiningAdd(props) {
         </Card>
 
         {/* ***************FAQ Section***************** */}
-        {/*<Grid container spacing={2}>*/}
-        {/*  <Card>*/}
-        {/*    <CardBody>*/}
-        {/*      <h4 style={{ fontWeight: "400" }}>F.A.Q'S</h4>*/}
-        {/*  <Grid item xs={12} sm={12}>*/}
-        {/*    FAQ ITEM*/}
-        {/*    <FAQSection*/}
-        {/*        // removeQuestion={removeQuestion}*/}
-        {/*        section_content={dining.faqs_content}*/}
-        {/*        handleQuestionChange={handleQuestionChange}*/}
-        {/*        handleAnswerChange={handleAnswerChange}*/}
-        {/*    />*/}
-        {/*  </Grid>*/}
-        {/*  <Grid item xs={12}>*/}
-        {/*    <MaterialButton*/}
-        {/*        variant="outlined"*/}
-        {/*        component="span"*/}
-        {/*        className={classes.button}*/}
-        {/*        size="small"*/}
-        {/*        color="primary"*/}
-        {/*        // onClick={() => dining({ ...dining, faq: { ...dining.faq, section_content: [...dining.faq.section_content, { id: dining.faq.section_content?.length + 1, question: '', answer: '' }] } })}*/}
-        {/*    >*/}
-        {/*      Add a New Link*/}
-        {/*    </MaterialButton>*/}
-        {/*  </Grid>*/}
-        {/*    </CardBody>*/}
-        {/*  </Card>*/}
-        {/*</Grid>*/}
+        <Grid container spacing={2}>
+          <Card>
+            <CardBody>
+              <h4 style={{ fontWeight: "400" }}>F.A.Q'S</h4>
+          <Grid item xs={12} sm={12}>
+            FAQ ITEM
+            <FAQSection
+                // removeQuestion={removeQuestion}
+                section_content={dining.faqs_content}
+                handleQuestionChange={handleQuestionChange}
+                handleAnswerChange={handleAnswerChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <MaterialButton
+                variant="outlined"
+                component="span"
+                className={classes.button}
+                size="small"
+                color="primary"
+                // onClick={() => dining({ ...dining, faq: { ...dining.faq, section_content: [...dining.faq.section_content, { id: dining.faq.section_content?.length + 1, question: '', answer: '' }] } })}
+            >
+              Add a New Link
+            </MaterialButton>
+          </Grid>
+            </CardBody>
+          </Card>
+        </Grid>
         {/* ********* SLIDER IMAGES ******** */}
         {/* ******************************** */}
         <Card>
