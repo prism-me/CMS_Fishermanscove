@@ -41,7 +41,6 @@ export default function UpdateGalleryDialog(props) {
             alt_tag,
             is360
         }));
-
         // props.onClose();
         // return;
         API.post(`/upload_edit`, imagesFormData, {

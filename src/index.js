@@ -153,7 +153,7 @@ const App = connect(
                 props.user?.isAuthenticated ?
                     <Switch>
                         <Route path="/login" component={SignInSide} />
-                        <Route path="/" component={Admin} />
+                        <Route path="/admin" component={Admin} />
                         <Route path="/rtl" component={RTL} />
                         {/* <Route path="/" exact component={Admin} /> */}
                         <Redirect exact from="/" to="/admin/dashboard" />
