@@ -92,6 +92,7 @@ const FAQList = (props) => {
   const handleDelete = (sectionIndex, contentIndex) => {
     let updatedFAQ = faqList[sectionIndex];
     //parsing to JSON as the data is stringified
+    debugger;
     let updatedSectionContent = JSON.parse(updatedFAQ.section_content);
     //deleting index item
     updatedSectionContent = updatedSectionContent.filter(

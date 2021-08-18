@@ -40,7 +40,7 @@ import AddFAQDialog from "../FAQ/AddFAQDialog";
 import FAQSection from "../SitePages/Pages/Common/FAQSection";
 
 const website_url = "https://fishermanscove-resort.com/dining/";
-const append_url = "dining-inner";
+const append_url = "dining";
 
 const useStyles = makeStyles((theme) => ({
   root: {
