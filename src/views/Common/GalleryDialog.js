@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -15,19 +15,21 @@ import API from 'utils/http';
 export default function GalleryDialog(props) {
     const [currentFiles, setCurrentFiles] = useState([]);
 
-    useMemo(()=>{
-        if(props.data !== undefined && props.selectedData !== undefined)
-        if(props.data.length > 0 && props.selectedData.length > 0){
-            props.data.map(x => {
-                props.selectedData.filter(d => {
-                    if(d === x.id){
-                        x.isChecked = true
-                    }
+    useMemo(() => {
+        if (props.data !== undefined && props.selectedData !== undefined)
+            if (props.data.length > 0 && props.selectedData.length > 0) {
+                props.data.map(x => {
+                    props.selectedData.filter(d => {
+                        if (d === x.id) {
+                            x.isChecked = true
+                        }
+                    })
+                    return x
                 })
-                return x
-            })
-        }
-    },[props])
+            }
+    }, [props])
+
+    console.log("imageDAta", props)
 
     const handleFileDrop = (files) => {
         let updatedFiles = files.map(x => (
@@ -153,7 +155,8 @@ export default function GalleryDialog(props) {
                                                                 </FormControl>
                                                             </Grid>
                                                             <Grid item xs={12} sm={1}>
-                                                                <Button variant="outlined" color="secondary" onClick={() => setCurrentFiles([...currentFiles.filter((z, index) => index !== i)])}>
+                                                                <Button variant="outlined" color="secondary"
+                                                                    onClick={() => setCurrentFiles([...currentFiles.filter((z, index) => index !== i)])}>
                                                                     <DeleteOutlined />
                                                                 </Button>
                                                             </Grid>
@@ -163,7 +166,8 @@ export default function GalleryDialog(props) {
                                                 {
                                                     currentFiles.length > 0 &&
                                                     <Grid item xs={12} sm={12}>
-                                                        <Button variant="contained" size="small" color="primary" onClick={handleMultipleSubmit} style={{ float: 'right', marginTop: '1rem' }} >
+                                                        <Button variant="contained" size="small" color="primary"
+                                                            onClick={handleMultipleSubmit} style={{ float: 'right', marginTop: '1rem' }} >
                                                             Upload New Images
                                                         </Button>
                                                     </Grid>
@@ -197,7 +201,7 @@ export default function GalleryDialog(props) {
                 <DialogActions>
                     <Button onClick={props.handleClose} variant="contained" color="primary">
                         Done
-                     </Button>
+                    </Button>
                 </DialogActions>
             </Dialog>
         </div>
