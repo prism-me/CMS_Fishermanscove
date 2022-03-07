@@ -93,6 +93,7 @@ const FAQList = (props) => {
     let updatedFAQ = faqList[sectionIndex];
     debugger;
     //parsing to JSON as the data is stringified
+    debugger;
     let updatedSectionContent = JSON.parse(updatedFAQ.section_content);
     //deleting index item
     updatedSectionContent = updatedSectionContent.filter(
