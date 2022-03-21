@@ -68,12 +68,12 @@ class OffersList extends Component {
           sort: false,
           customBodyRender: val => (
             <div className="d-flex nowrap">
-              <Link title="View Details" to={`/admin/offers/${val}`} >
+              {/* <Link title="View Details" to={`/admin/offers/${val}`} >
                 <VisibilityOutlined fontSize="small" color="action" />
               </Link>
               <Link className="ml-2" title="Edit" to={`/admin/offers/edit/${val}`} >
                 <EditOutlined fontSize="small" color="primary" />
-              </Link>
+              </Link> */}
               <Link className="ml-2" title="Delete" to={`#`} onClick={() => this.handleDelete(val)} >
                 <DeleteOutlined fontSize="small" color="secondary" />
               </Link>
@@ -104,9 +104,9 @@ class OffersList extends Component {
     API.post('/offer_categories/offers', { category_name }).then(response => {
       if (response?.status === 200) {
         alert(response.data?.message);
-        this.setState({isCategoryFormOpen: false})
+        this.setState({ isCategoryFormOpen: false })
       }
-    }).catch(err=> {
+    }).catch(err => {
       alert("Something went wrong.");
     })
   }
@@ -118,13 +118,13 @@ class OffersList extends Component {
           alert("Offer deleted successfully !");
         }
       })
-      .then(()=>{
-        API.get('/offers').then(response => {
-          let rows = response.data;
-          this.setState({ rows })
+        .then(() => {
+          API.get('/offers').then(response => {
+            let rows = response.data;
+            this.setState({ rows })
+          })
         })
-      })
-      .catch(err => console.log(err))
+        .catch(err => console.log(err))
     }
   }
 

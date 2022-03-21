@@ -91,7 +91,7 @@ class RoomsList extends Component {
             <div className="d-flex nowrap">
               <Link
                 title="View Details"
-                title="Details"
+                // title="Details"
                 to={`/admin/room-suites/${val}`}
               >
                 <VisibilityOutlined fontSize="small" color="action" />
@@ -127,12 +127,12 @@ class RoomsList extends Component {
   componentDidMount() {
     this.getData()
   }
-getData(){
-  API.get("/rooms").then((response) => {
-    let rows = response.data;
-    this.setState({ rows: rows.filter((x) => x.post_type === "page") });
-  });
-}
+  getData() {
+    API.get("/rooms").then((response) => {
+      let rows = response.data;
+      this.setState({ rows: rows.filter((x) => x.post_type === "page") });
+    });
+  }
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
       API.delete(`/rooms/${id}`)
