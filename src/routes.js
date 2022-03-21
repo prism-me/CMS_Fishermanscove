@@ -43,6 +43,9 @@ import OffersList from "views/Offers/List";
 import RoomsList from "views/RoomsSuites/List";
 import RoomDetail from "views/RoomsSuites/Details";
 import AddRoom from "views/RoomsSuites/Add";
+import BlogsList from "views/Blogs/List";
+import BlogDetail from "views/Blogs/Details";
+import AddBlog from "views/Blogs/Add";
 import DiningList from "views/Dining/List";
 import DiningDetail from "views/Dining/Details";
 import DiningAdd from "views/Dining/Add";
@@ -126,6 +129,36 @@ const dashboardRoutes = [
   {
     path: "/room-suites/:id",
     component: RoomDetail,
+    layout: "/admin",
+    hide: true,
+    exact: true
+  },
+  {
+    path: "/blogs",
+    name: "Blogs",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: HotelOutlined,
+    component: BlogsList,
+    layout: "/admin",
+    exact: true
+  },
+  {
+    path: "/blogs/add",
+    component: AddBlog,
+    layout: "/admin",
+    hide: true,
+    exact: true
+  },
+  {
+    path: "/blogs/edit/:id",
+    component: AddBlog,
+    layout: "/admin",
+    hide: true,
+    exact: true
+  },
+  {
+    path: "/blogs/:id",
+    component: BlogDetail,
     layout: "/admin",
     hide: true,
     exact: true
@@ -553,7 +586,7 @@ const dashboardRoutes = [
     component: UpdateHeader,
     layout: "/admin",
     exact: true,
-    hide:true
+    hide: true
   },
   {
     path: "/faq",
