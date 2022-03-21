@@ -1,6 +1,6 @@
-import React, {Fragment, useEffect, useState} from "react"; //Suspense
+import React, { Fragment, useEffect, useState } from "react"; //Suspense
 // @material-ui/core components
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 // core components
 // import GridItem from "components/Grid/GridItem.js";
@@ -17,16 +17,16 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 
 // import avatar from "assets/img/faces/marc.jpg";
-import {FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField,} from "@material-ui/core";
+import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField, } from "@material-ui/core";
 import CKEditor from "ckeditor4-react";
 import { ckEditorConfig } from "utils/data";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 // import ClassicEditor from "../../plugins/ckeditor.js";
 // import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock";
-import {Image} from "@material-ui/icons";
+import { Image } from "@material-ui/icons";
 import API from "utils/http";
-import {useParams, withRouter} from "react-router-dom";
+import { useParams, withRouter } from "react-router-dom";
 
 // ClassicEditor.b
 // import FormGroup from '@material-ui/core/FormGroup';
@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 export default withRouter(function AddRoom(props) {
     const classes = useStyles();
     //check if edit or add request
-    let {id} = useParams();
+    let { id } = useParams();
 
     const initialObject = {
         post_name: "",
@@ -80,7 +80,7 @@ export default withRouter(function AddRoom(props) {
         is_indexed_or_is_followed: "0,0",
         images_list: [],
     };
-    const [room, setRoom] = useState({...initialObject});
+    const [room, setRoom] = useState({ ...initialObject });
 
     const [roomImages, setRoomImages] = useState([]);
     const [maskedRoute, setMaskedRoute] = useState(website_url);
@@ -103,9 +103,9 @@ export default withRouter(function AddRoom(props) {
             setPostId(id);
             API.get(`/rooms/${id}/edit`).then((response) => {
                 if (response.status === 200) {
-                    let data = {...response?.data?.content[0]};
+                    let data = { ...response?.data?.content[0] };
                     data.route = website_url + data.route;
-                    setRoom({...room, ...data});
+                    setRoom({ ...room, ...data });
                     setUploadsPreview(response.data?.uploads);
                     setSelectedImages(response.data?.uploads.map(x => x.id))
                 }
@@ -117,13 +117,13 @@ export default withRouter(function AddRoom(props) {
     const getGalleryImages = () => {
         API.get(`/uploads`).then((response) => {
             if (response.status === 200) {
-                setImagesData(response.data?.map((x) => ({...x, isChecked: false})));
+                setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
             }
         });
     };
 
     const handleInputChange = (e) => {
-        let updatedRoom = {...room};
+        let updatedRoom = { ...room };
         updatedRoom[e.target.name] = e.target.value;
         if (e.target.name === "post_name" && !isEdit) {
             let updatedValue = e.target.value.replace(/\s+/g, "-");
@@ -134,7 +134,7 @@ export default withRouter(function AddRoom(props) {
     };
 
     const handleRouteChange = (e) => {
-        let updatedRoom = {...room};
+        let updatedRoom = { ...room };
         let splitValues = e.target.value.split(website_url);
         let updatedValue = splitValues[1]
             ? splitValues[1].replace(/\s+/g, "-")
@@ -151,13 +151,13 @@ export default withRouter(function AddRoom(props) {
             //   return;
             // } else {
             if (isSingle && !isBanner) {
-                setRoom({...room, thumbnail: imagesData[index].id});
+                setRoom({ ...room, thumbnail: imagesData[index].id });
                 setThumbnailPreview(imagesData[index].avatar);
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
             } else if (isSingle && isBanner) {
-                setRoom({...room, banner_img: imagesData[index].id});
+                setRoom({ ...room, banner_img: imagesData[index].id });
                 setBannerThumbnailPreview(imagesData[index].avatar);
                 setTimeout(() => {
                     setShowGallery(false);
@@ -179,10 +179,10 @@ export default withRouter(function AddRoom(props) {
             // }
         } else {
             if (isSingle && !isBanner) {
-                setRoom({...room, thumbnail: ""});
+                setRoom({ ...room, thumbnail: "" });
                 setThumbnailPreview("");
             } else if (isSingle && isBanner) {
-                setRoom({...room, banner_img: ""});
+                setRoom({ ...room, banner_img: "" });
                 setBannerThumbnailPreview("");
             } else {
                 setSelectedImages(
@@ -209,14 +209,13 @@ export default withRouter(function AddRoom(props) {
         finalRoom.route = finalRoom.route.split(website_url)?.[1];
         finalRoom.inner_route = append_url;
         finalRoom.images_list = JSON.stringify([...new Set(selectedImages)]);
-        finalRoom.is_indexed_or_is_followed = `${
-            finalRoom.is_indexed ? "1" : "0"
-        },${finalRoom.is_followed ? "1" : "0"}`;
+        finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed ? "1" : "0"
+            },${finalRoom.is_followed ? "1" : "0"}`;
         if (isEdit) {
             API.put(`/rooms/${id}`, finalRoom).then((response) => {
                 if (response.status === 200) {
                     alert("Record Updated");
-                    setRoom({...initialObject}); //clear all fields
+                    setRoom({ ...initialObject }); //clear all fields
                     props.history.push("/admin/room-suites");
                 }
             });
@@ -225,7 +224,7 @@ export default withRouter(function AddRoom(props) {
                 if (response.status === 200) {
                     setPostId(response.data?.post_id);
                     alert("Record Updated");
-                    setRoom({...initialObject});
+                    setRoom({ ...initialObject });
                     props.history.push("/admin/room-suites");
                 }
             });
@@ -234,30 +233,28 @@ export default withRouter(function AddRoom(props) {
 
     const handleRemoveSelectedImage = (x, arrayListType) => {
         switch (arrayListType) {
-            case "uploadsPreview" :
+            case "uploadsPreview":
                 let updatePreview = uploadsPreview.filter((u) => u.id !== x.id)
                 setUploadsPreview(updatePreview);
                 setImagesData(imagesData.map(im => {
-                    if(im.id === x.id)
-                    {
+                    if (im.id === x.id) {
                         im.isChecked = false
                     }
                     return im
                 }))
-                setSelectedImages(updatePreview.map((u) => u.id ));
+                setSelectedImages(updatePreview.map((u) => u.id));
                 break;
-            case "selectedImages" :
+            case "selectedImages":
                 let updateData = selectedImages.filter((u) => u !== x.id);
                 setImagesData(imagesData.map(im => {
-                    if(im.id === x.id)
-                    {
+                    if (im.id === x.id) {
                         im.isChecked = false
                     }
                     return im
                 }))
                 setSelectedImages(updateData);
                 break;
-            default :
+            default:
                 return setUploadsPreview(uploadsPreview.filter((u) => u.id !== x.id))
         }
     }
@@ -266,16 +263,16 @@ export default withRouter(function AddRoom(props) {
         <div className={classes.root}>
             <Card>
                 <CardHeader color="primary">
-                    <h4 style={{fontWeight: "400"}} className="mb-0">
+                    <h4 style={{ fontWeight: "400" }} className="mb-0">
                         Add Room/Suite
                     </h4>
                     {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
                 </CardHeader>
                 <CardBody>
-                    <h4 style={{fontWeight: "400"}} className="mt-3">
+                    <h4 style={{ fontWeight: "400" }} className="mt-3">
                         General Information
                     </h4>
-                    <Grid container spacing={2} style={{display: "flex"}}>
+                    <Grid container spacing={2} style={{ display: "flex" }}>
                         <Grid item xs={12} sm={6}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={12}>
@@ -295,7 +292,7 @@ export default withRouter(function AddRoom(props) {
                                     <div className="thumbnail-preview-wrapper img-thumbnail">
                                         {!isEdit ? (
                                             thumbnailPreview && thumbnailPreview !== "" ? (
-                                                <img src={thumbnailPreview} alt={room.alt_text || ""}/>
+                                                <img src={thumbnailPreview} alt={room.alt_text || ""} />
                                             ) : (
                                                 <img
                                                     src={require("./../../assets/img/placeholder.png")}
@@ -304,16 +301,16 @@ export default withRouter(function AddRoom(props) {
                                             )
                                         ) : typeof room.thumbnail === typeof 0 ? (
                                             // room.thumbnail && room.thumbnail !== "" ?
-                                            <img src={thumbnailPreview} alt={room.alt_text || ""}/>
+                                            <img src={thumbnailPreview} alt={room.alt_text || ""} />
                                         ) : (
-                                            <img src={room.thumbnail} alt={room.alt_text || ""}/>
+                                            <img src={room.thumbnail} alt={room.alt_text || ""} />
                                         )}
                                     </div>
                                     <Fragment>
                                         <MaterialButton
                                             variant="outlined"
                                             color="primary"
-                                            startIcon={<Image/>}
+                                            startIcon={<Image />}
                                             className="mt-1"
                                             fullWidth
                                             onClick={() => {
@@ -347,7 +344,7 @@ export default withRouter(function AddRoom(props) {
                                     <div className="thumbnail-preview-wrapper img-thumbnail">
                                         {!isEdit ? (
                                             bannerThumbnailPreview &&
-                                            bannerThumbnailPreview !== "" ? (
+                                                bannerThumbnailPreview !== "" ? (
                                                 <img
                                                     src={bannerThumbnailPreview}
                                                     alt={room.alt_text || ""}
@@ -365,14 +362,14 @@ export default withRouter(function AddRoom(props) {
                                                 alt={room.alt_text || ""}
                                             />
                                         ) : (
-                                            <img src={room.banner_img} alt={room.alt_text || ""}/>
+                                            <img src={room.banner_img} alt={room.alt_text || ""} />
                                         )}
                                     </div>
                                     <Fragment>
                                         <MaterialButton
                                             variant="outlined"
                                             color="primary"
-                                            startIcon={<Image/>}
+                                            startIcon={<Image />}
                                             className="mt-1"
                                             fullWidth
                                             onClick={() => {
@@ -431,32 +428,32 @@ export default withRouter(function AddRoom(props) {
                         </Grid>
 
                         <Grid item xs={12} sm={12}>
-                            <hr/>
-                            <h4 style={{fontWeight: "400"}}>Short Description</h4>
+                            <hr />
+                            <h4 style={{ fontWeight: "400" }}>Short Description</h4>
                             <CKEditor
                                 onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)}
                                 data={room.short_description}
                                 onChange={(e) =>
-                                    setRoom({...room, short_description: e.editor.getData()})
+                                    setRoom({ ...room, short_description: e.editor.getData() })
                                 }
                             />
                         </Grid>
                         <Grid item xs={12} sm={12}>
-                            <hr/>
-                            <h4 style={{fontWeight: "400"}}>Detailed Content</h4>
+                            <hr />
+                            <h4 style={{ fontWeight: "400" }}>Detailed Content</h4>
 
                             <CKEditor
                                 onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)}
                                 data={room.post_content}
                                 onChange={(e) =>
-                                    setRoom({...room, post_content: e.editor.getData()})
+                                    setRoom({ ...room, post_content: e.editor.getData() })
                                 }
                             />
                         </Grid>
                     </Grid>
-                    <hr/>
+                    <hr />
 
-                    <h4 style={{fontWeight: "400"}} className="mt-2">
+                    <h4 style={{ fontWeight: "400" }} className="mt-2">
                         SEO Information
                     </h4>
                     <Grid container spacing={2}>
@@ -475,7 +472,7 @@ export default withRouter(function AddRoom(props) {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             {
-                                isEdit?
+                                isEdit ?
                                     <TextField
                                         required
                                         id="route"
@@ -489,7 +486,7 @@ export default withRouter(function AddRoom(props) {
                                         InputProps={{
                                             disabled: true,
                                         }}
-                                    />:
+                                    /> :
                                     <TextField
                                         required
                                         id="route"
@@ -544,17 +541,17 @@ export default withRouter(function AddRoom(props) {
                                     name="is_followed"
                                     value={room.is_followed}
                                     onChange={(e) => {
-                                        setRoom({...room, is_followed: !room.is_followed});
+                                        setRoom({ ...room, is_followed: !room.is_followed });
                                     }}
                                 >
                                     <FormControlLabel
                                         value={true}
-                                        control={<Radio/>}
+                                        control={<Radio />}
                                         label="Follow"
                                     />
                                     <FormControlLabel
                                         value={false}
-                                        control={<Radio/>}
+                                        control={<Radio />}
                                         label="No Follow"
                                     />
                                 </RadioGroup>
@@ -569,17 +566,17 @@ export default withRouter(function AddRoom(props) {
                                     name="is_indexed"
                                     value={room.is_indexed}
                                     onChange={(e) => {
-                                        setRoom({...room, is_indexed: !room.is_indexed});
+                                        setRoom({ ...room, is_indexed: !room.is_indexed });
                                     }}
                                 >
                                     <FormControlLabel
                                         value={true}
-                                        control={<Radio/>}
+                                        control={<Radio />}
                                         label="Index"
                                     />
                                     <FormControlLabel
                                         value={false}
-                                        control={<Radio/>}
+                                        control={<Radio />}
                                         label="No Index"
                                     />
                                 </RadioGroup>
@@ -616,39 +613,39 @@ export default withRouter(function AddRoom(props) {
                             </MaterialButton>
                         </Grid>
                         {renderPreviews &&
-                        imagesData
-                            ?.filter(function (array_el) {
-                                return (
-                                    selectedImages.filter(function (menuItems_el) {
-                                        return menuItems_el === array_el.id;
-                                    }).length !== 0
-                                );
-                            })
-                            ?.map((x) => (
-                                <SelectedImagesThumbnails x={x}
-                                                          handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")}/>
-                                // <Grid item xs={12} sm={2}>
-                                //     <div style={{height: "120px"}}>
-                                //         <div className="d-flex position-absolute" style={{cursor: "pointer"}}>
-                                //             <CancelIcon/>
-                                //         </div>
-                                //         <img
-                                //             width="100%"
-                                //             src={x.avatar}
-                                //             className="img-thumbnail position-relative"
-                                //             alt=""
-                                //             style={{height: "90%", objectFit: "cover"}}
-                                //         />
-                                //         <p style={{fontSize: "12px"}} className="text-center">
-                                //             {x.alt_tag}
-                                //         </p>
-                                //     </div>
-                                // </Grid>
-                            ))}
+                            imagesData
+                                ?.filter(function (array_el) {
+                                    return (
+                                        selectedImages.filter(function (menuItems_el) {
+                                            return menuItems_el === array_el.id;
+                                        }).length !== 0
+                                    );
+                                })
+                                ?.map((x) => (
+                                    <SelectedImagesThumbnails x={x}
+                                        handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")} />
+                                    // <Grid item xs={12} sm={2}>
+                                    //     <div style={{height: "120px"}}>
+                                    //         <div className="d-flex position-absolute" style={{cursor: "pointer"}}>
+                                    //             <CancelIcon/>
+                                    //         </div>
+                                    //         <img
+                                    //             width="100%"
+                                    //             src={x.avatar}
+                                    //             className="img-thumbnail position-relative"
+                                    //             alt=""
+                                    //             style={{height: "90%", objectFit: "cover"}}
+                                    //         />
+                                    //         <p style={{fontSize: "12px"}} className="text-center">
+                                    //             {x.alt_tag}
+                                    //         </p>
+                                    //     </div>
+                                    // </Grid>
+                                ))}
                         {uploadsPreview &&
-                        uploadsPreview?.map((x) => (
-                            <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r)=>handleRemoveSelectedImage(r,"uploadsPreview")}/>
-                        ))}
+                            uploadsPreview?.map((x) => (
+                                <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "uploadsPreview")} />
+                            ))}
                         <div className="clearfix clear-fix"></div>
                         {/* GALLERY DIALOG BOX START */}
                         <GalleryDialog
@@ -674,7 +671,7 @@ export default withRouter(function AddRoom(props) {
                 <Grid item xs={12} sm={12}>
                     <MaterialButton
                         onClick={handleSubmit}
-                        style={{float: "right"}}
+                        style={{ float: "right" }}
                         variant="contained"
                         color="primary"
                         size="large"

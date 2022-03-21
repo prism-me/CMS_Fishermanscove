@@ -15,7 +15,7 @@ class RoomsList extends Component {
     offers: [],
     columns: [
       {
-        name: "thumbnail",
+        name: "img",
         label: "Image",
         options: {
           filter: false,
@@ -29,7 +29,7 @@ class RoomsList extends Component {
         },
       },
       {
-        name: "post_name",
+        name: "title",
         label: "Name",
         options: {
           filter: true,
@@ -37,42 +37,8 @@ class RoomsList extends Component {
         },
       },
       {
-        name: "room_type",
-        label: "Room Type",
-        options: {
-          filter: true,
-          sort: false,
-          customBodyRender: (val) => {
-            return val === 1 ? (
-              <span className="badge badge-primary">Room</span>
-            ) : (
-              <span className="badge badge-warning">Suite</span>
-            ); //1 for room, 2 for suite
-          },
-        },
-      },
-      {
-        name: "category_name",
-        label: "Category",
-        options: {
-          filter: true,
-          sort: false,
-        },
-      },
-      // {
-      //   name: "short_description",
-      //   label: "Description",
-      //   options: {
-      //     filter: true,
-      //     sort: false,
-      //     customBodyRender: val => (
-      //       val.length > 100 ? val.substr(0, 100) + '...' : val
-      //     )
-      //   }
-      // },
-      {
-        name: "post_content",
-        label: "Content",
+        name: "short_description",
+        label: "Description",
         options: {
           filter: true,
           sort: false,
@@ -82,7 +48,7 @@ class RoomsList extends Component {
         },
       },
       {
-        name: "route",
+        name: "slug",
         label: "Actions",
         options: {
           filter: false,
@@ -124,23 +90,23 @@ class RoomsList extends Component {
   };
 
   componentDidMount() {
-    API.get("/rooms").then((response) => {
-      let rows = response.data;
-      this.setState({ rows: rows.filter((x) => x.post_type === "page") });
+    API.get("/blogs").then((response) => {
+      let rows = response.data?.data;
+      this.setState({ rows });
     });
   }
 
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
-      API.delete(`/rooms/${id}`)
+      API.delete(`/blogs/${id}`)
         .then((response) => {
           if (response.status === 200) {
-            alert("Room deleted successfully !");
+            alert("Blog deleted successfully !");
           }
         })
         .then(() => {
-          API.get("/rooms").then((response) => {
-            let rows = response.data;
+          API.get("/blogs").then((response) => {
+            let rows = response.data?.data;
             this.setState({ rows });
           });
         })
@@ -163,7 +129,7 @@ class RoomsList extends Component {
           </Link>
         </Box>
         <MUIDataTable
-          title="Rooms &amp; Suites"
+          title="Blogs"
           columns={this.state.columns}
           data={this.state.rows}
           options={this.options}

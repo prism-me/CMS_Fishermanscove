@@ -37,7 +37,7 @@ import DashboardPage from "views/Dashboard/Dashboard.js";
 
 // core components/views for RTL layout
 // import RTLPage from "views/RTLPage/RTLPage.js";
-import { HotelOutlined, RestaurantOutlined, CardGiftcardOutlined, SpaOutlined, ViewCarouselOutlined, FavoriteBorderOutlined, PoolOutlined, InsertDriveFileOutlined, PostAddOutlined, QuestionAnswerOutlined, ViewStreamOutlined, ArtTrackOutlined, HorizontalSplitOutlined } from "@material-ui/icons";
+import { AttachFileRounded, HotelOutlined, RestaurantOutlined, CardGiftcardOutlined, SpaOutlined, ViewCarouselOutlined, FavoriteBorderOutlined, PoolOutlined, InsertDriveFileOutlined, PostAddOutlined, QuestionAnswerOutlined, ViewStreamOutlined, ArtTrackOutlined, HorizontalSplitOutlined } from "@material-ui/icons";
 import AddOffer from "views/Offers/Add";
 import OffersList from "views/Offers/List";
 import RoomsList from "views/RoomsSuites/List";
@@ -65,7 +65,7 @@ import Footer from "views/Footer/Add";
 import UpdateHeader from "views/Header/Add";
 import AddSustainability from "views/SitePages/Pages/Sustainability/Add";
 import AddRoomsSuites from "views/SitePages/Pages/RoomsSuites/Add";
-import LeisureActivities from  "views/SitePages/Pages/leisureActivities/Add";
+import LeisureActivities from "views/SitePages/Pages/leisureActivities/Add";
 import AddLeisureInner from "views/SitePages/Pages/LeisureInner/Add";
 import AddDiningInner from "views/SitePages/Pages/DiningInner/Add";
 import AddAboutUs from "views/SitePages/Pages/About/Add";
@@ -137,7 +137,7 @@ const dashboardRoutes = [
     path: "/blogs",
     name: "Blogs",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: HotelOutlined,
+    icon: AttachFileRounded,
     component: BlogsList,
     layout: "/admin",
     exact: true

@@ -7,11 +7,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Rating from '@material-ui/lab/Rating';
-// import IconButton from '@material-ui/core/IconButton';
-// import LocationOn from '@material-ui/icons/LocationOn';
-// import MoreHoriz from '@material-ui/icons/MoreHoriz';
-// import Favorite from '@material-ui/icons/Favorite';
-// import FaceGroup from '@mui-treasury/components/group/face';
 import { useWideCardMediaStyles } from '@mui-treasury/styles/cardMedia/wide';
 import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
 import { usePushingGutterStyles } from '@mui-treasury/styles/gutter/pushing';
@@ -23,8 +18,6 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
-
-// import { FaceOutlined } from '@material-ui/icons';
 import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -82,7 +75,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const RoomDetail = React.memo(function ReviewCard() {
-  let params = useParams();
+  let { id } = useParams();
+
   const styles = useStyles();
   const classes = useStyles();
   const mediaStyles = useWideCardMediaStyles();
@@ -109,9 +103,9 @@ export const RoomDetail = React.memo(function ReviewCard() {
   ]);
 
   useEffect(() => {
-    API.get(`/rooms/${params.id}`).then(response => {
+    API.get(`/blogs/${id}`).then(response => {
       if (response.status === 200) {
-        setRoom(response.data)
+        setRoom(response.data?.data)
       }
     })
   }, [])
@@ -121,66 +115,34 @@ export const RoomDetail = React.memo(function ReviewCard() {
       <CardMedia
         classes={mediaStyles}
         image={
-          room?.thumbnail
+          room?.img
           // 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80'
         }
       />
       <CardContent className={cx(shadowStyles.root, styles.content)}>
         <h3 className={styles.title}>
           {
-            room?.post_name
+            room?.title
           }
         </h3>
-        <Box color={'grey.500'} display={'flex'} alignItems={'center'} mb={1}>
-          <Chip
-            // icon={<FaceOutlined />}
-            label={room?.room_type === 1 ? 'Room' : 'Suite'}
-            clickable={false}
-            size="small"
-            color="primary"
-          />
-        </Box>
-        <Box color={'grey.500'} display={'flex'} alignItems={'center'} mb={1}>
-          <Chip
-            // icon={<FaceOutlined />}
-            label={room?.post_category?.[0]?.category_name}
-            clickable={false}
-            size="small"
-          // color="primary"
-          />
-        </Box>
-        <Box
-          display={'flex'}
-          alignItems={'center'}
-          mb={1}
-          className={gutterStyles.parent}
-        >
-          <Rating name={'rating'} value={2} size={'small'} />
-          <Typography variant={'body2'} className={styles.rateValue}>
-            4.0
-          </Typography>
-        </Box>
-        {/* <Typography color={'textSecondary'} variant={'body2'}>
+        <h4>
           {
-            room?.short_description
+            room?.sub_title
           }
-        </Typography> */}
+        </h4>
         <div dangerouslySetInnerHTML={{ __html: room?.short_description }}>
 
         </div>
         <Box
           mt={2}
-        // display={'flex'}
-        // justifyContent={'space-between'}
-        // alignItems={'center'}
         >
           <Typography color={'primary'} variant="h5">
             Details
-        </Typography>
-          <div dangerouslySetInnerHTML={{ __html: room?.post_content }}></div>
+          </Typography>
+          <div dangerouslySetInnerHTML={{ __html: room?.long_description }}></div>
         </Box>
 
-        <Box mt={4}>
+        {/* <Box mt={4}>
           <div className={classes.imagesWrapper}>
             <GridList className={classes.gridList} cols={2.5}>
               {room?.uploads?.map((tile) => (
@@ -199,7 +161,7 @@ export const RoomDetail = React.memo(function ReviewCard() {
               ))}
             </GridList>
           </div>
-        </Box>
+        </Box> */}
       </CardContent>
     </Card>
   );

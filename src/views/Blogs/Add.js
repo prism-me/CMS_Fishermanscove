@@ -1,51 +1,24 @@
 import React, { Fragment, useEffect, useState } from "react"; //Suspense
-// @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
-// core components
-// import GridItem from "components/Grid/GridItem.js";
-// import GridContainer from "components/Grid/GridContainer.js";
-// import CustomInput from "components/CustomInput/CustomInput.js";
 import Grid from "@material-ui/core/Grid";
-// import Paper from '@material-ui/core/Paper';
 import MaterialButton from "@material-ui/core/Button";
-
-// import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-// import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
-
-// import avatar from "assets/img/faces/marc.jpg";
 import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField, } from "@material-ui/core";
 import CKEditor from "ckeditor4-react";
-
-// import { CKEditor } from '@ckeditor/ckeditor5-react';
-// import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
-// import ClassicEditor from "../../plugins/ckeditor.js";
-// import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock";
 import { Image } from "@material-ui/icons";
 import API from "utils/http";
 import { useParams, withRouter } from "react-router-dom";
-
-// ClassicEditor.b
-// import FormGroup from '@material-ui/core/FormGroup';
-// import Checkbox from '@material-ui/core/Checkbox';
-// import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-// import CheckBoxIcon from '@material-ui/icons/CheckBox';
-// import Favorite from '@material-ui/icons/Favorite';
-// import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import GalleryDialog from "views/Common/GalleryDialog";
-import SelectedImagesThumbnails from "../Common/SelectedImagesThumbnails";
 
-const website_url = "https://fishermanscove-resort.com/rooms-inner/";
-const append_url = "rooms-inner";
+const website_url = "https://fishermanscove-resort.com/blog-inner/";
+const append_url = "blog-inner";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
-        // width:'60%',
-        // margin:'auto'
     },
     paper: {
         padding: theme.spacing(2),
@@ -60,39 +33,31 @@ export default withRouter(function AddRoom(props) {
     let { id } = useParams();
 
     const initialObject = {
-        post_name: "",
-        post_content: "<p>Detailed content goes here!</p>",
+        title: "",
+        long_description: "<p>Detailed content goes here!</p>",
         short_description: "<p>Short description goes here!</p>",
-        room_type: -1,
-        parent_id: -1,
-        thumbnail: "",
+        img: "",
         banner_img: "",
-        banner_text: "",
-        alt_text: "",
-        meta_title: "",
-        meta_description: "",
-        schema_markup: "",
-        post_url: "",
-        route: website_url,
-        inner_route: append_url,
-        is_followed: true,
-        is_indexed: true,
-        is_indexed_or_is_followed: "0,0",
-        images_list: [],
+        sub_title: "",
+        posted_by: "",
+        slug: "",
+
+        // meta_title: "",
+        // meta_description: "",
+        // schema_markup: "",
+        // route: website_url,
+        // inner_route: append_url,
+        // is_followed: true,
+        // is_indexed: true,
+        // is_indexed_or_is_followed: "0,0",
     };
     const [room, setRoom] = useState({ ...initialObject });
 
-    const [roomImages, setRoomImages] = useState([]);
-    const [maskedRoute, setMaskedRoute] = useState(website_url);
     const [isEdit, setIsEdit] = useState(false);
-    const [post_id, setPostId] = useState(-1);
 
     const [imagesData, setImagesData] = useState([]);
-    const [uploadsPreview, setUploadsPreview] = useState(null);
-    const [selectedImages, setSelectedImages] = useState([]);
     const [showGallery, setShowGallery] = useState(false);
     const [isSingle, setIsSingle] = useState(false);
-    const [renderPreviews, setRenderPreviews] = useState(false);
     const [thumbnailPreview, setThumbnailPreview] = useState("");
     const [isBanner, setIsBanner] = useState(false);
     const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState("");
@@ -100,14 +65,11 @@ export default withRouter(function AddRoom(props) {
     useEffect(() => {
         if (id && id != null) {
             setIsEdit(true);
-            setPostId(id);
-            API.get(`/rooms/${id}/edit`).then((response) => {
+            API.get(`/blogs/${id}`).then((response) => {
                 if (response.status === 200) {
-                    let data = { ...response?.data?.content[0] };
-                    data.route = website_url + data.route;
+                    let data = { ...response?.data?.data };
+                    // data.route = website_url + data.route;
                     setRoom({ ...room, ...data });
-                    setUploadsPreview(response.data?.uploads);
-                    setSelectedImages(response.data?.uploads.map(x => x.id))
                 }
             });
         }
@@ -125,11 +87,19 @@ export default withRouter(function AddRoom(props) {
     const handleInputChange = (e) => {
         let updatedRoom = { ...room };
         updatedRoom[e.target.name] = e.target.value;
-        if (e.target.name === "post_name" && !isEdit) {
-            let updatedValue = e.target.value.replace(/\s+/g, "-");
-            updatedValue = updatedValue.replace(/--/g, "-");
-            updatedRoom["route"] = website_url + updatedValue.toLowerCase();
-        }
+        // if (e.target.name === "title" && !isEdit) {
+        //     let updatedValue = e.target.value.replace(/\s+/g, "-");
+        //     updatedValue = updatedValue.replace(/--/g, "-");
+        //     updatedRoom["route"] = website_url + updatedValue.toLowerCase();
+        // }
+        setRoom(updatedRoom);
+    };
+
+    const handleSlugChange = (e) => {
+        let updatedRoom = { ...room };
+        let updatedValue = e.target.value.replace(/\s+/g, "-");
+        updatedValue = updatedValue.replace(/--/g, "-");
+        updatedRoom[e.target.name] = updatedValue.toLowerCase();
         setRoom(updatedRoom);
     };
 
@@ -146,24 +116,18 @@ export default withRouter(function AddRoom(props) {
 
     const handleImageSelect = (e, index) => {
         if (e.target.checked) {
-            // if (isSingle && thumbnailPreview !== "") {
-            //   alert("You can only select 1 image for thumbnail. If you want to change image, deselect the image and then select a new one");
-            //   return;
-            // } else {
             if (isSingle && !isBanner) {
-                setRoom({ ...room, thumbnail: imagesData[index].id });
+                setRoom({ ...room, img: imagesData[index].avatar });
                 setThumbnailPreview(imagesData[index].avatar);
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
             } else if (isSingle && isBanner) {
-                setRoom({ ...room, banner_img: imagesData[index].id });
+                setRoom({ ...room, banner_img: imagesData[index].avatar });
                 setBannerThumbnailPreview(imagesData[index].avatar);
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
-            } else {
-                setSelectedImages([...selectedImages, imagesData[index].id]);
             }
             let imagesDataUpdated = imagesData.map((x, i) => {
                 if (i === index) {
@@ -179,15 +143,11 @@ export default withRouter(function AddRoom(props) {
             // }
         } else {
             if (isSingle && !isBanner) {
-                setRoom({ ...room, thumbnail: "" });
+                setRoom({ ...room, img: "" });
                 setThumbnailPreview("");
             } else if (isSingle && isBanner) {
                 setRoom({ ...room, banner_img: "" });
                 setBannerThumbnailPreview("");
-            } else {
-                setSelectedImages(
-                    selectedImages.filter((x) => x !== imagesData[index].id)
-                );
             }
             setImagesData(
                 imagesData.map((x, i) => {
@@ -206,13 +166,12 @@ export default withRouter(function AddRoom(props) {
 
     const handleSubmit = () => {
         let finalRoom = room;
-        finalRoom.route = finalRoom.route.split(website_url)?.[1];
-        finalRoom.inner_route = append_url;
-        finalRoom.images_list = JSON.stringify([...new Set(selectedImages)]);
-        finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed ? "1" : "0"
-            },${finalRoom.is_followed ? "1" : "0"}`;
+        // finalRoom.route = finalRoom.route.split(website_url)?.[1];
+        // finalRoom.inner_route = append_url;
+        // finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed ? "1" : "0"
+        //     },${finalRoom.is_followed ? "1" : "0"}`;
         if (isEdit) {
-            API.put(`/rooms/${id}`, finalRoom).then((response) => {
+            API.put(`/blogs/${id}`, finalRoom).then((response) => {
                 if (response.status === 200) {
                     alert("Record Updated");
                     setRoom({ ...initialObject }); //clear all fields
@@ -220,9 +179,8 @@ export default withRouter(function AddRoom(props) {
                 }
             });
         } else {
-            API.post("/rooms", finalRoom).then((response) => {
+            API.post("/blogs", finalRoom).then((response) => {
                 if (response.status === 200) {
-                    setPostId(response.data?.post_id);
                     alert("Record Updated");
                     setRoom({ ...initialObject });
                     props.history.push("/admin/blogs");
@@ -231,34 +189,6 @@ export default withRouter(function AddRoom(props) {
         }
     };
 
-    const handleRemoveSelectedImage = (x, arrayListType) => {
-        switch (arrayListType) {
-            case "uploadsPreview":
-                let updatePreview = uploadsPreview.filter((u) => u.id !== x.id)
-                setUploadsPreview(updatePreview);
-                setImagesData(imagesData.map(im => {
-                    if (im.id === x.id) {
-                        im.isChecked = false
-                    }
-                    return im
-                }))
-                setSelectedImages(updatePreview.map((u) => u.id));
-                break;
-            case "selectedImages":
-                let updateData = selectedImages.filter((u) => u !== x.id);
-                setImagesData(imagesData.map(im => {
-                    if (im.id === x.id) {
-                        im.isChecked = false
-                    }
-                    return im
-                }))
-                setSelectedImages(updateData);
-                break;
-            default:
-                return setUploadsPreview(uploadsPreview.filter((u) => u.id !== x.id))
-        }
-    }
-
     return (
         <div className={classes.root}>
             <Card>
@@ -266,29 +196,71 @@ export default withRouter(function AddRoom(props) {
                     <h4 style={{ fontWeight: "400" }} className="mb-0">
                         Add Blogs
                     </h4>
-                    {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
                 </CardHeader>
                 <CardBody>
                     <h4 style={{ fontWeight: "400" }} className="mt-3">
                         General Information
                     </h4>
                     <Grid container spacing={2} style={{ display: "flex" }}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={12}>
                             <Grid container spacing={2}>
-                                <Grid item xs={12} sm={12}>
+                                <Grid item xs={12} sm={6}>
                                     <TextField
                                         required
-                                        id="post_name"
-                                        name="post_name"
+                                        id="title"
+                                        name="title"
                                         label="Name"
-                                        value={room.post_name}
+                                        value={room.title}
                                         variant="outlined"
                                         fullWidth
                                         onChange={handleInputChange}
                                         size="small"
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={12}>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        required
+                                        id="sub_title"
+                                        name="sub_title"
+                                        label="Sub_Title"
+                                        value={room.sub_title}
+                                        variant="outlined"
+                                        fullWidth
+                                        onChange={handleInputChange}
+                                        size="small"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        required
+                                        id="posted_by"
+                                        name="posted_by"
+                                        label="posted_by"
+                                        value={room.posted_by}
+                                        variant="outlined"
+                                        fullWidth
+                                        onChange={handleInputChange}
+                                        size="small"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        required
+                                        id="slug"
+                                        name="slug"
+                                        label="Slug"
+                                        value={room.slug}
+                                        variant="outlined"
+                                        fullWidth
+                                        onChange={handleSlugChange}
+                                        size="small"
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={6}>
                                     <div className="thumbnail-preview-wrapper img-thumbnail">
                                         {!isEdit ? (
                                             thumbnailPreview && thumbnailPreview !== "" ? (
@@ -299,11 +271,11 @@ export default withRouter(function AddRoom(props) {
                                                     alt=""
                                                 />
                                             )
-                                        ) : typeof room.thumbnail === typeof 0 ? (
+                                        ) : typeof room.img === typeof 0 ? (
                                             // room.thumbnail && room.thumbnail !== "" ?
                                             <img src={thumbnailPreview} alt={room.alt_text || ""} />
                                         ) : (
-                                            <img src={room.thumbnail} alt={room.alt_text || ""} />
+                                            <img src={room.img} alt={room.alt_text || ""} />
                                         )}
                                     </div>
                                     <Fragment>
@@ -323,24 +295,7 @@ export default withRouter(function AddRoom(props) {
                                         </MaterialButton>
                                     </Fragment>
                                 </Grid>
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={12}>
-                                    <TextField
-                                        required
-                                        id="banner_text"
-                                        name="banner_text"
-                                        label="Banner Text"
-                                        value={room.banner_text}
-                                        variant="outlined"
-                                        fullWidth
-                                        onChange={handleInputChange}
-                                        size="small"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={12}>
+                                <Grid item xs={12} sm={6}>
                                     <div className="thumbnail-preview-wrapper img-thumbnail">
                                         {!isEdit ? (
                                             bannerThumbnailPreview &&
@@ -384,48 +339,6 @@ export default withRouter(function AddRoom(props) {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item xs={12} sm={12}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
-                                    <FormControl
-                                        variant="outlined"
-                                        size="small"
-                                        fullWidth
-                                        className={classes.formControl}
-                                    >
-                                        <InputLabel id="room_type-label">Type</InputLabel>
-                                        <Select
-                                            labelId="room_type-label"
-                                            id="room_type"
-                                            name="room_type"
-                                            value={room.room_type}
-                                            onChange={handleInputChange}
-                                            label="Type"
-                                            fullWidth
-                                        >
-                                            <MenuItem value={-1}>
-                                                <em>Select</em>
-                                            </MenuItem>
-                                            <MenuItem value={1}>Room</MenuItem>
-                                            <MenuItem value={2}>Suite</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        id="post_url"
-                                        name="post_url"
-                                        label="Synesis Link"
-                                        value={room.post_url}
-                                        variant="outlined"
-                                        fullWidth
-                                        onChange={handleInputChange}
-                                        size="small"
-                                    />
-                                </Grid>
-                            </Grid>
-                        </Grid>
 
                         <Grid item xs={12} sm={12}>
                             <hr />
@@ -444,16 +357,28 @@ export default withRouter(function AddRoom(props) {
 
                             <CKEditor
                                 onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)}
-                                data={room.post_content}
+                                data={room.long_description}
                                 onChange={(e) =>
-                                    setRoom({ ...room, post_content: e.editor.getData() })
+                                    setRoom({ ...room, long_description: e.editor.getData() })
                                 }
                             />
                         </Grid>
+                        <div className="clearfix clear-fix"></div>
+                        {/* GALLERY DIALOG BOX START */}
+
+                        <GalleryDialog
+                            isSingle={isSingle}
+                            isBanner={isBanner}
+                            open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
+                                setShowGallery(false);
+                            }}
+                            refreshGallery={getGalleryImages}
+                            data={imagesData} />
+                        {/* GALLERY DIALOG BOX END */}
                     </Grid>
                     <hr />
 
-                    <h4 style={{ fontWeight: "400" }} className="mt-2">
+                    {/* <h4 style={{ fontWeight: "400" }} className="mt-2">
                         SEO Information
                     </h4>
                     <Grid container spacing={2}>
@@ -562,88 +487,7 @@ export default withRouter(function AddRoom(props) {
                                 </RadioGroup>
                             </FormControl>
                         </Grid>
-                        {/* <Grid item xs={12} sm={12}>
-              <MaterialButton onClick={handleSubmit} style={{ float: 'right' }} variant="contained" color="primary" size="large">
-                Submit
-              </MaterialButton>
-            </Grid> */}
-                    </Grid>
-                </CardBody>
-            </Card>
-            {/* {isEdit && */}
-            <Card>
-                <CardBody>
-                    <h3>Room Images</h3>
-                    <p>
-                        <em>Please select images from gallery.</em>
-                    </p>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={12}>
-                            <MaterialButton
-                                variant="outlined"
-                                color="primary"
-                                onClick={() => {
-                                    setRenderPreviews(false);
-                                    setIsSingle(false);
-                                    setIsBanner(false);
-                                    setShowGallery(true);
-                                }}
-                            >
-                                Select Gallery Images
-                            </MaterialButton>
-                        </Grid>
-                        {renderPreviews &&
-                            imagesData
-                                ?.filter(function (array_el) {
-                                    return (
-                                        selectedImages.filter(function (menuItems_el) {
-                                            return menuItems_el === array_el.id;
-                                        }).length !== 0
-                                    );
-                                })
-                                ?.map((x) => (
-                                    <SelectedImagesThumbnails x={x}
-                                        handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")} />
-                                    // <Grid item xs={12} sm={2}>
-                                    //     <div style={{height: "120px"}}>
-                                    //         <div className="d-flex position-absolute" style={{cursor: "pointer"}}>
-                                    //             <CancelIcon/>
-                                    //         </div>
-                                    //         <img
-                                    //             width="100%"
-                                    //             src={x.avatar}
-                                    //             className="img-thumbnail position-relative"
-                                    //             alt=""
-                                    //             style={{height: "90%", objectFit: "cover"}}
-                                    //         />
-                                    //         <p style={{fontSize: "12px"}} className="text-center">
-                                    //             {x.alt_tag}
-                                    //         </p>
-                                    //     </div>
-                                    // </Grid>
-                                ))}
-                        {uploadsPreview &&
-                            uploadsPreview?.map((x) => (
-                                <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "uploadsPreview")} />
-                            ))}
-                        <div className="clearfix clear-fix"></div>
-                        {/* GALLERY DIALOG BOX START */}
-                        <GalleryDialog
-                            isSingle={isSingle}
-                            isBanner={isBanner}
-                            open={showGallery}
-                            handleImageSelect={handleImageSelect}
-                            handleClose={() => {
-                                setShowGallery(false);
-                                setRenderPreviews(true);
-                                setUploadsPreview([])
-                            }}
-                            refreshGallery={getGalleryImages}
-                            data={imagesData}
-                            selectedData={selectedImages}
-                        />
-                        {/* GALLERY DIALOG BOX END */}
-                    </Grid>
+                    </Grid> */}
                 </CardBody>
             </Card>
 
@@ -660,7 +504,6 @@ export default withRouter(function AddRoom(props) {
                     </MaterialButton>
                 </Grid>
             </Grid>
-            {/* } */}
         </div>
     );
 });
