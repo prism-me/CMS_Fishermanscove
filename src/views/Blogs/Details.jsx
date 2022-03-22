@@ -6,18 +6,11 @@ import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import Rating from '@material-ui/lab/Rating';
 import { useWideCardMediaStyles } from '@mui-treasury/styles/cardMedia/wide';
 import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
 import { usePushingGutterStyles } from '@mui-treasury/styles/gutter/pushing';
 import API from 'utils/http';
-import { Chip } from '@material-ui/core';
-
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
+import { Grid } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -131,7 +124,6 @@ export const RoomDetail = React.memo(function ReviewCard() {
           }
         </h4>
         <div dangerouslySetInnerHTML={{ __html: room?.short_description }}>
-
         </div>
         <Box
           mt={2}
@@ -142,26 +134,28 @@ export const RoomDetail = React.memo(function ReviewCard() {
           <div dangerouslySetInnerHTML={{ __html: room?.long_description }}></div>
         </Box>
 
-        {/* <Box mt={4}>
-          <div className={classes.imagesWrapper}>
-            <GridList className={classes.gridList} cols={2.5}>
-              {room?.uploads?.map((tile) => (
-                <GridListTile key={tile.alt_tag}>
-                  <img src={tile.avatar} alt={tile.alt_tag} />
-                  <GridListTileBar
-                    title={tile.alt_tag}
-                    // subtitle={<span>by: {tile.author}</span>}
-                    actionIcon={
-                      <IconButton aria-label={`info about ${tile.alt_tag}`} className={classes.icon}>
-                        <InfoIcon />
-                      </IconButton>
-                    }
-                  />
-                </GridListTile>
-              ))}
-            </GridList>
-          </div>
-        </Box> */}
+        <Box
+          mt={2}
+        >
+          <Typography color={'primary'} variant="h5">
+            Author Details
+          </Typography>
+          <h4>
+            Written By {
+              room?.posted_by
+            }
+          </h4>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={3}>
+              <img src={room?.author_img} alt={"img"} className={"img-fluid"} />
+            </Grid>
+            <Grid item xs={12} sm={9}>
+              <p dangerouslySetInnerHTML={{ __html: room?.author_details }}>
+              </p>
+            </Grid>
+          </Grid>
+        </Box>
+
       </CardContent>
     </Card>
   );

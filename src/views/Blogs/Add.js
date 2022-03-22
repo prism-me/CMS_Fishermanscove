@@ -40,6 +40,8 @@ export default withRouter(function AddRoom(props) {
         banner_img: "",
         sub_title: "",
         posted_by: "",
+        author_img: "",
+        author_details: "",
         slug: "",
 
         // meta_title: "",
@@ -58,6 +60,8 @@ export default withRouter(function AddRoom(props) {
     const [imagesData, setImagesData] = useState([]);
     const [showGallery, setShowGallery] = useState(false);
     const [isSingle, setIsSingle] = useState(false);
+    const [isAuthorImg, setIsAuthorImg] = useState(false);
+    const [authorthumbnailPreview, setAuthorThumbnailPreview] = useState("");
     const [thumbnailPreview, setThumbnailPreview] = useState("");
     const [isBanner, setIsBanner] = useState(false);
     const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState("");
@@ -116,15 +120,23 @@ export default withRouter(function AddRoom(props) {
 
     const handleImageSelect = (e, index) => {
         if (e.target.checked) {
-            if (isSingle && !isBanner) {
+            if (isSingle && !isBanner && !isAuthorImg) {
                 setRoom({ ...room, img: imagesData[index].avatar });
                 setThumbnailPreview(imagesData[index].avatar);
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
-            } else if (isSingle && isBanner) {
+            }
+            else if (isBanner && !isSingle && !isAuthorImg) {
                 setRoom({ ...room, banner_img: imagesData[index].avatar });
                 setBannerThumbnailPreview(imagesData[index].avatar);
+                setTimeout(() => {
+                    setShowGallery(false);
+                }, 500);
+            }
+            else if (isAuthorImg && !isSingle && !isBanner) {
+                setRoom({ ...room, author_img: imagesData[index].avatar });
+                setAuthorThumbnailPreview(imagesData[index].avatar);
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
@@ -142,12 +154,17 @@ export default withRouter(function AddRoom(props) {
             setImagesData(imagesDataUpdated);
             // }
         } else {
-            if (isSingle && !isBanner) {
+            if (isSingle && !isBanner && !isAuthorImg) {
                 setRoom({ ...room, img: "" });
                 setThumbnailPreview("");
-            } else if (isSingle && isBanner) {
+            }
+            else if (isBanner && !isSingle && !isAuthorImg) {
                 setRoom({ ...room, banner_img: "" });
                 setBannerThumbnailPreview("");
+            }
+            else if (isAuthorImg && !isSingle && !isBanner) {
+                setRoom({ ...room, author_img: "" });
+                setAuthorThumbnailPreview("");
             }
             setImagesData(
                 imagesData.map((x, i) => {
@@ -173,7 +190,7 @@ export default withRouter(function AddRoom(props) {
         if (isEdit) {
             API.put(`/blogs/${id}`, finalRoom).then((response) => {
                 if (response.status === 200) {
-                    alert("Record Updated");
+                    alert("Blog Updated");
                     setRoom({ ...initialObject }); //clear all fields
                     props.history.push("/admin/blogs");
                 }
@@ -181,7 +198,7 @@ export default withRouter(function AddRoom(props) {
         } else {
             API.post("/blogs", finalRoom).then((response) => {
                 if (response.status === 200) {
-                    alert("Record Updated");
+                    alert("Blog Added");
                     setRoom({ ...initialObject });
                     props.history.push("/admin/blogs");
                 }
@@ -235,7 +252,7 @@ export default withRouter(function AddRoom(props) {
                                         required
                                         id="posted_by"
                                         name="posted_by"
-                                        label="posted_by"
+                                        label="Written By"
                                         value={room.posted_by}
                                         variant="outlined"
                                         fullWidth
@@ -255,6 +272,53 @@ export default withRouter(function AddRoom(props) {
                                         onChange={handleSlugChange}
                                         size="small"
                                     />
+                                </Grid>
+                                <Grid item xs={12} sm={9}>
+                                    <h4 style={{ fontWeight: "400" }}>Writer Details</h4>
+
+                                    <CKEditor
+                                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)}
+                                        data={room.author_details}
+                                        onChange={(e) =>
+                                            setRoom({ ...room, author_details: e.editor.getData() })
+                                        }
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={3}>
+                                    <div className="thumbnail-preview-wrapper img-thumbnail mt-4">
+                                        {!isEdit ? (
+                                            authorthumbnailPreview && authorthumbnailPreview !== "" ? (
+                                                <img src={authorthumbnailPreview} alt={room.alt_text || ""} />
+                                            ) : (
+                                                <img
+                                                    src={require("./../../assets/img/placeholder.png")}
+                                                    alt=""
+                                                />
+                                            )
+                                        ) : typeof room.author_img === typeof 0 ? (
+                                            // room.thumbnail && room.thumbnail !== "" ?
+                                            <img src={authorthumbnailPreview} alt={room.alt_text || ""} />
+                                        ) : (
+                                            <img src={room.author_img} alt={room.alt_text || ""} />
+                                        )}
+                                    </div>
+                                    <Fragment>
+                                        <MaterialButton
+                                            variant="outlined"
+                                            color="primary"
+                                            startIcon={<Image />}
+                                            className="mt-1"
+                                            fullWidth
+                                            onClick={() => {
+                                                setIsSingle(false);
+                                                setIsAuthorImg(true);
+                                                setIsBanner(false);
+                                                setShowGallery(true);
+                                            }}
+                                        >
+                                            {isEdit ? "Change" : "Upload"} Writer Image
+                                        </MaterialButton>
+                                    </Fragment>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -287,6 +351,7 @@ export default withRouter(function AddRoom(props) {
                                             fullWidth
                                             onClick={() => {
                                                 setIsSingle(true);
+                                                setIsAuthorImg(false);
                                                 setIsBanner(false);
                                                 setShowGallery(true);
                                             }}
@@ -328,7 +393,8 @@ export default withRouter(function AddRoom(props) {
                                             className="mt-1"
                                             fullWidth
                                             onClick={() => {
-                                                setIsSingle(true);
+                                                setIsSingle(false);
+                                                setIsAuthorImg(false);
                                                 setIsBanner(true);
                                                 setShowGallery(true);
                                             }}
@@ -367,8 +433,6 @@ export default withRouter(function AddRoom(props) {
                         {/* GALLERY DIALOG BOX START */}
 
                         <GalleryDialog
-                            isSingle={isSingle}
-                            isBanner={isBanner}
                             open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
                                 setShowGallery(false);
                             }}

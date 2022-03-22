@@ -68,12 +68,12 @@ class OffersList extends Component {
           sort: false,
           customBodyRender: val => (
             <div className="d-flex nowrap">
-              {/* <Link title="View Details" to={`/admin/offers/${val}`} >
+              <Link title="View Details" to={`/admin/offers/${val}`} >
                 <VisibilityOutlined fontSize="small" color="action" />
               </Link>
               <Link className="ml-2" title="Edit" to={`/admin/offers/edit/${val}`} >
                 <EditOutlined fontSize="small" color="primary" />
-              </Link> */}
+              </Link>
               <Link className="ml-2" title="Delete" to={`#`} onClick={() => this.handleDelete(val)} >
                 <DeleteOutlined fontSize="small" color="secondary" />
               </Link>
