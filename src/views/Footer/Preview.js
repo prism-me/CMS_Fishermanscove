@@ -85,6 +85,7 @@ export default function FooterPreview(props) {
                         <li><Link to="/spa-wellness">Spa</Link></li>
                         <li><Link to="/faq">FAQs</Link></li>
                         <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+                        <li><Link to="/terms-of-use">Terms Of Use</Link></li>
                         <li><Link to="/cancellation-policy">Cancellation Policy</Link></li>
                         <li><Link to="/covid-policy">Covid-19 Policy</Link></li>
                       </ul>
@@ -139,9 +140,9 @@ export default function FooterPreview(props) {
                   <a href="/"><img className="px-2" src={require('./../../assets/img/footer/logo-fisher.png')} alt="fishermanscove footer" /></a>
                 </div>
                 <div className="social-icons py-2">
-                  <a href="https://www.facebook.com/fishermanscoveresort/"><Facebook/></a>
-                  <a href="https://twitter.com/fisherman_cove"><Twitter/></a>
-                  <a href="https://www.instagram.com/fishermanscove.resort/"><Instagram/></a>
+                  <a href="https://www.facebook.com/fishermanscoveresort/"><Facebook /></a>
+                  <a href="https://twitter.com/fisherman_cove"><Twitter /></a>
+                  <a href="https://www.instagram.com/fishermanscove.resort/"><Instagram /></a>
                 </div>
               </div>
             </div>

@@ -71,6 +71,7 @@ import AddDiningInner from "views/SitePages/Pages/DiningInner/Add";
 import AddAboutUs from "views/SitePages/Pages/About/Add";
 import AddSpaWellness from "views/SitePages/Pages/SpaWellness/Add";
 import AddPrivacyPolicy from "views/SitePages/Pages/PrivacyPolicy/Add";
+import AddTermsOfUse from "views/SitePages/Pages/TermsOfUse/Add"
 import AddCovidPolicy from "views/SitePages/Pages/CovidPolicy/Add";
 import AddCancellationPolicy from "views/SitePages/Pages/CancellationPolicy/Add";
 import AddWedding from "views/SitePages/Pages/Wedding/Add";
@@ -457,6 +458,16 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
     component: AddPrivacyPolicy,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/pages/terms-of-use/add/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: AddTermsOfUse,
     layout: "/admin",
     exact: true,
     hide: true
