@@ -209,10 +209,39 @@ export default withRouter(function AddRoom(props) {
     return (
         <div className={classes.root}>
             <Card>
-                <CardHeader color="primary">
+                <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
+                    {/* <div className="d-flex justify-content-between align-items-center"> */}
                     <h4 style={{ fontWeight: "400" }} className="mb-0">
                         Add Blogs
                     </h4>
+                    <FormControl
+                        variant="outlined"
+                        size="small"
+                        style={{ width: "20%" }}
+                    // fullWidth
+                    >
+                        <InputLabel id="language">Select Language</InputLabel>
+                        <Select
+                            labelId="language"
+                            id="language"
+                            name="language"
+                            // value={room.room_type}
+                            // onChange={handleInputChange}
+                            label="Select Language"
+                            fullWidth
+                            style={{ color: "white" }}
+                        >
+                            <MenuItem value={-1}>
+                                <em>Select Language</em>
+                            </MenuItem>
+                            <MenuItem value={'en'}>En</MenuItem>
+                            <MenuItem value={'fr'}>FR</MenuItem>
+                            <MenuItem value={'de'}>DE</MenuItem>
+
+                        </Select>
+                    </FormControl>
+                    {/* </div> */}
+
                 </CardHeader>
                 <CardBody>
                     <h4 style={{ fontWeight: "400" }} className="mt-3">
