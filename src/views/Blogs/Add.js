@@ -9,7 +9,9 @@ import CardBody from "components/Card/CardBody.js";
 import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField, } from "@material-ui/core";
 import CKEditor from "ckeditor4-react";
 import { Image } from "@material-ui/icons";
+import LangAPI from "langapi/http";
 import API from "utils/http";
+
 import { useParams, withRouter } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 
@@ -70,7 +72,7 @@ export default withRouter(function AddRoom(props) {
     useEffect(() => {
         if (id && id != null) {
             setIsEdit(true);
-            API.get(`/blogs/${id}`).then((response) => {
+            LangAPI.get(`/blogs/${id}?lang=${selectedLang}`).then((response) => {
                 if (response.status === 200) {
                     let data = { ...response?.data?.data };
                     // data.route = website_url + data.route;
@@ -79,7 +81,7 @@ export default withRouter(function AddRoom(props) {
             });
         }
         getGalleryImages();
-    }, []);
+    }, [selectedLang]);
 
     const getGalleryImages = () => {
         API.get(`/uploads`).then((response) => {
@@ -189,7 +191,7 @@ export default withRouter(function AddRoom(props) {
         // finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed ? "1" : "0"
         //     },${finalRoom.is_followed ? "1" : "0"}`;
         if (isEdit) {
-            API.put(`/blogs/${id}?lang=${selectedLang}`, finalRoom).then((response) => {
+            LangAPI.put(`/blogs/${id}?lang=${selectedLang}`, finalRoom).then((response) => {
                 if (response.status === 200) {
                     alert("Blog Updated");
                     setRoom({ ...initialObject }); //clear all fields
@@ -197,7 +199,7 @@ export default withRouter(function AddRoom(props) {
                 }
             });
         } else {
-            API.post(`/blogs?lang=${selectedLang}`, finalRoom).then((response) => {
+            LangAPI.post(`/blogs?lang=${selectedLang}`, finalRoom).then((response) => {
                 if (response.status === 200) {
                     alert("Blog Added");
                     setRoom({ ...initialObject });
@@ -209,11 +211,11 @@ export default withRouter(function AddRoom(props) {
 
     const handleChange = (event) => {
         // setAge(event.target.value as string);
-        if(event.target.value != selectedLang){
+        if (event.target.value != selectedLang) {
             setSelectedLang(event.target.value)
         }
-        console.log(event.target.value,"event.target.value")
-      };
+        console.log(event.target.value, "event.target.value")
+    };
     return (
         <div className={classes.root}>
             <Card>
@@ -225,24 +227,22 @@ export default withRouter(function AddRoom(props) {
                     <FormControl
                         variant="outlined"
                         size="small"
-                        style={{ width: "20%" }}
+                        style={{ width: "20%", color: "white" }}
                     // fullWidth
                     >
-                        <InputLabel id="language">Select Language</InputLabel>
+                        <InputLabel id="language"
+                            style={{ color: "white" }}
+                        >Select Language</InputLabel>
                         <Select
                             labelId="language"
                             id="language"
                             name="language"
                             value={selectedLang}
-                            // onChange={handleInputChange}
                             label="Select Language"
                             fullWidth
                             style={{ color: "white" }}
                             onChange={handleChange}
                         >
-                            {/* <MenuItem value={-1}>
-                                <em>Select Language</em>
-                            </MenuItem> */}
                             <MenuItem value={'en'}>En</MenuItem>
                             <MenuItem value={'fr'}>FR</MenuItem>
                             <MenuItem value={'de'}>DE</MenuItem>

@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import MUIDataTable from "mui-datatables";
-import API from "utils/http";
+import API from "langapi/http";
 import InputLabel from "@material-ui/core/InputLabel";
 import { Avatar, Box, Button } from "@material-ui/core";
 import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField, } from "@material-ui/core";
-
 import { Link } from "react-router-dom";
 import {
   AddOutlined,
@@ -15,7 +14,7 @@ import {
 
 class RoomsList extends Component {
   state = {
-    selectedLang:"en",
+    selectedLang: "en",
     offers: [],
     columns: [
       {
@@ -94,7 +93,7 @@ class RoomsList extends Component {
   };
 
   componentDidMount() {
-    API.get("/blogs").then((response) => {
+    API.get(`/blogs?lang=${this.state.selectedLang}`).then((response) => {
       let rows = response.data?.data;
       this.setState({ rows });
     });
@@ -102,14 +101,14 @@ class RoomsList extends Component {
 
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
-      API.delete(`/blogs/${id}`)
+      API.delete(`/blogs/${id}?lang=${this.state.selectedLang}`)
         .then((response) => {
           if (response.status === 200) {
             alert("Blog deleted successfully !");
           }
         })
         .then(() => {
-          API.get("/blogs").then((response) => {
+          API.get(`/blogs?lang=${this.state.selectedLang}`).then((response) => {
             let rows = response.data?.data;
             this.setState({ rows });
           });
@@ -120,10 +119,10 @@ class RoomsList extends Component {
 
   handleChange = (event) => {
     // setAge(event.target.value as string);
-    if(event.target.value != this.state.selectedLang){
-        this.setState({selectedLang:event.target.value})
+    if (event.target.value != this.state.selectedLang) {
+      this.setState({ selectedLang: event.target.value })
     }
-    console.log(event.target.value,"event.target.value")
+    console.log(event.target.value, "event.target.value")
   };
 
 
@@ -131,42 +130,43 @@ class RoomsList extends Component {
     return (
       <div>
         <Box marginBottom={4}>
-          <Link to="/admin/blogs/add">
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddOutlined />}
-            >
-              Add Blog
-            </Button>
-          </Link>
-          <FormControl
+          <div className="d-flex justify-content-between align-items-center">
+            <Link to="/admin/blogs/add">
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddOutlined />}
+              >
+                Add Blog
+              </Button>
+            </Link>
+            <FormControl
               variant="outlined"
               size="small"
               style={{ width: "20%" }}
-          // fullWidth
-          >
+            // fullWidth
+            >
               <InputLabel id="language">Select Language</InputLabel>
               <Select
-                  labelId="language"
-                  id="language"
-                  name="language"
-                  value={this.state.selectedLang}
-                  // onChange={handleInputChange}
-                  label="Select Language"
-                  fullWidth
-                  style={{ color: "white" }}
-                  onChange={this.handleChange}
+                labelId="language"
+                id="language"
+                name="language"
+                value={this.state.selectedLang}
+                // onChange={handleInputChange}
+                label="Select Language"
+                fullWidth
+                onChange={this.handleChange}
               >
-                  {/* <MenuItem value={-1}>
+                {/* <MenuItem value={-1}>
                       <em>Select Language</em>
                   </MenuItem> */}
-                  <MenuItem value={'en'}>En</MenuItem>
-                  <MenuItem value={'fr'}>FR</MenuItem>
-                  <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
 
               </Select>
-          </FormControl>
+            </FormControl>
+          </div>
         </Box>
         <MUIDataTable
           title="Blogs"

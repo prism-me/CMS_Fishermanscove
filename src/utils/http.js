@@ -15,8 +15,8 @@ API.interceptors.request.use((request) => {
   }
   return {
     ...request,
-    onUploadProgress: function(progressEvent){
-      console.log(Math.round( (progressEvent.loaded * 100) / progressEvent.total ))
+    onUploadProgress: function (progressEvent) {
+      console.log(Math.round((progressEvent.loaded * 100) / progressEvent.total))
     }
   };
 }, (error) => {
