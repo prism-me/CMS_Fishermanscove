@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import MUIDataTable from "mui-datatables";
 import API from "utils/http";
+import InputLabel from "@material-ui/core/InputLabel";
 import { Avatar, Box, Button } from "@material-ui/core";
+import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField, } from "@material-ui/core";
+
 import { Link } from "react-router-dom";
 import {
   AddOutlined,
@@ -12,6 +15,7 @@ import {
 
 class RoomsList extends Component {
   state = {
+    selectedLang:"en",
     offers: [],
     columns: [
       {
@@ -114,6 +118,15 @@ class RoomsList extends Component {
     }
   };
 
+  handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if(event.target.value != this.state.selectedLang){
+        this.setState({selectedLang:event.target.value})
+    }
+    console.log(event.target.value,"event.target.value")
+  };
+
+
   render() {
     return (
       <div>
@@ -127,6 +140,33 @@ class RoomsList extends Component {
               Add Blog
             </Button>
           </Link>
+          <FormControl
+              variant="outlined"
+              size="small"
+              style={{ width: "20%" }}
+          // fullWidth
+          >
+              <InputLabel id="language">Select Language</InputLabel>
+              <Select
+                  labelId="language"
+                  id="language"
+                  name="language"
+                  value={this.state.selectedLang}
+                  // onChange={handleInputChange}
+                  label="Select Language"
+                  fullWidth
+                  style={{ color: "white" }}
+                  onChange={this.handleChange}
+              >
+                  {/* <MenuItem value={-1}>
+                      <em>Select Language</em>
+                  </MenuItem> */}
+                  <MenuItem value={'en'}>En</MenuItem>
+                  <MenuItem value={'fr'}>FR</MenuItem>
+                  <MenuItem value={'de'}>DE</MenuItem>
+
+              </Select>
+          </FormControl>
         </Box>
         <MUIDataTable
           title="Blogs"

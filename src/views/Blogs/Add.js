@@ -61,6 +61,7 @@ export default withRouter(function AddRoom(props) {
     const [showGallery, setShowGallery] = useState(false);
     const [isSingle, setIsSingle] = useState(false);
     const [isAuthorImg, setIsAuthorImg] = useState(false);
+    const [selectedLang, setSelectedLang] = useState("en");
     const [authorthumbnailPreview, setAuthorThumbnailPreview] = useState("");
     const [thumbnailPreview, setThumbnailPreview] = useState("");
     const [isBanner, setIsBanner] = useState(false);
@@ -188,7 +189,7 @@ export default withRouter(function AddRoom(props) {
         // finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed ? "1" : "0"
         //     },${finalRoom.is_followed ? "1" : "0"}`;
         if (isEdit) {
-            API.put(`/blogs/${id}`, finalRoom).then((response) => {
+            API.put(`/blogs/${id}?lang=${selectedLang}`, finalRoom).then((response) => {
                 if (response.status === 200) {
                     alert("Blog Updated");
                     setRoom({ ...initialObject }); //clear all fields
@@ -196,7 +197,7 @@ export default withRouter(function AddRoom(props) {
                 }
             });
         } else {
-            API.post("/blogs", finalRoom).then((response) => {
+            API.post(`/blogs?lang=${selectedLang}`, finalRoom).then((response) => {
                 if (response.status === 200) {
                     alert("Blog Added");
                     setRoom({ ...initialObject });
@@ -206,6 +207,13 @@ export default withRouter(function AddRoom(props) {
         }
     };
 
+    const handleChange = (event) => {
+        // setAge(event.target.value as string);
+        if(event.target.value != selectedLang){
+            setSelectedLang(event.target.value)
+        }
+        console.log(event.target.value,"event.target.value")
+      };
     return (
         <div className={classes.root}>
             <Card>
@@ -225,15 +233,16 @@ export default withRouter(function AddRoom(props) {
                             labelId="language"
                             id="language"
                             name="language"
-                            // value={room.room_type}
+                            value={selectedLang}
                             // onChange={handleInputChange}
                             label="Select Language"
                             fullWidth
                             style={{ color: "white" }}
+                            onChange={handleChange}
                         >
-                            <MenuItem value={-1}>
+                            {/* <MenuItem value={-1}>
                                 <em>Select Language</em>
-                            </MenuItem>
+                            </MenuItem> */}
                             <MenuItem value={'en'}>En</MenuItem>
                             <MenuItem value={'fr'}>FR</MenuItem>
                             <MenuItem value={'de'}>DE</MenuItem>
