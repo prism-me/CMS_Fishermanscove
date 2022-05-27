@@ -29,8 +29,6 @@ export default function GalleryDialog(props) {
             }
     }, [props])
 
-    console.log("imageDAta", props)
-
     const handleFileDrop = (files) => {
         let updatedFiles = files.map(x => (
             {

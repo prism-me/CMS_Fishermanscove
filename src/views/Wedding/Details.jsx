@@ -11,8 +11,9 @@ import { useWideCardMediaStyles } from '@mui-treasury/styles/cardMedia/wide';
 import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
 import { usePushingGutterStyles } from '@mui-treasury/styles/gutter/pushing';
 import API from 'utils/http';
+import LangAPI from "langapi/http";
 // import { Chip } from '@material-ui/core';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -76,6 +77,10 @@ const useStyles = makeStyles((theme) => ({
 
 export const WeddingDetail = React.memo(function ReviewCard() {
   let params = useParams();
+  let { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const lang = query.get('lang');
+  
   const styles = useStyles();
   const classes = useStyles();
   const mediaStyles = useWideCardMediaStyles();
@@ -103,9 +108,9 @@ export const WeddingDetail = React.memo(function ReviewCard() {
   ]);
 
   useEffect(() => {
-    API.get(`/wedding/${params.id}`).then(response => {
+    LangAPI.get(`/weddings/${params.id}?lang=${lang}`).then(response => {
       if (response.status === 200) {
-        setWedding(response.data?.category_details[0])
+        setWedding(response.data?.data)
         setUploads(response.data?.uploads)
       }
     })
@@ -116,7 +121,7 @@ export const WeddingDetail = React.memo(function ReviewCard() {
       <CardMedia
         classes={mediaStyles}
         image={
-          wedding?.thumbnail
+          wedding?.thumbnailPreview
           // 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80'
         }
       />
@@ -172,13 +177,13 @@ export const WeddingDetail = React.memo(function ReviewCard() {
           <Typography color={'primary'} variant="h5">
             Details
         </Typography>
-          <div dangerouslySetInnerHTML={{ __html: wedding?.post_content }}></div>
+          <div dangerouslySetInnerHTML={{ __html: wedding?.detailed_content }}></div>
         </Box>
 
         <Box mt={4}>
           <div className={classes.imagesWrapper}>
             <GridList className={classes.gridList} cols={2.5}>
-              {uploads.map((tile) => (
+              {uploads?.map((tile) => (
                 <GridListTile key={tile.avatar}>
                   <img src={tile.avatar} alt={tile.alt_tag} />
                   <GridListTileBar

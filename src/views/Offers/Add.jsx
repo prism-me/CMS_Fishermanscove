@@ -9,13 +9,13 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import MaterialButton from "@material-ui/core/Button";
-
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
+import LangAPI from "langapi/http";
 
 import avatar from "assets/img/faces/marc.jpg";
 import {
@@ -36,7 +36,7 @@ import { ckEditorConfig } from "utils/data";
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { DeleteOutlined, Image } from "@material-ui/icons";
 import API from "utils/http";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 import SelectedImagesThumbnails from "../Common/SelectedImagesThumbnails";
 
@@ -60,6 +60,9 @@ export default function AddOffer(props) {
   const classes = useStyles();
   //check if edit or add request
   let { id } = useParams();
+  let { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const lang = query.get('lang');
 
   const initialObject = {
     post_name: "",
@@ -74,6 +77,7 @@ export default function AddOffer(props) {
     meta_description: "",
     schema_markup: "",
     post_url: "",
+    slug:"",
     route: website_url,
     is_followed: true,
     is_indexed: true,
@@ -97,12 +101,13 @@ export default function AddOffer(props) {
   const [thumbnailPreview, setThumbnailPreview] = useState("");
   const [isBanner, setIsBanner] = useState(false);
   const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState("");
+  const [selectedLang, setSelectedLang] = useState(lang ||"en");
 
   useEffect(() => {
     if (id && id != null) {
       setIsEdit(true);
       setPostId(id);
-      API.get(`/offers/${id}/edit`).then((response) => {
+      LangAPI.get(`/offers/${id}?lang=${selectedLang}`).then((response) => {
         if (response.status === 200) {
           let data = { ...response?.data?.category_details[0] };
           data.route = website_url + data.route;
@@ -111,13 +116,15 @@ export default function AddOffer(props) {
         }
       });
     }
-    API.get("/offer_categories/offers").then((response) => {
-      if (response?.status === 200) {
-        setCategories(response.data);
-      }
-    });
-    getGalleryImages();
-  }, []);
+    // LangAPI.get("/offer_categories/offers").then((response) => {
+    //   if (response?.status === 200) {
+    //     setCategories(response.data);
+    //   }
+    // });
+    if(!imagesData.length > 0){
+      getGalleryImages();
+    }
+  }, [selectedLang]);
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then((response) => {
@@ -162,31 +169,32 @@ export default function AddOffer(props) {
       //   return;
       // } else {
       if (isSingle && !isBanner) {
-        setOffer({ ...offer, thumbnail: imagesData[index].id });
+        setOffer({ ...offer, thumbnail: imagesData[index].id, thumbnailPreview: imagesData[index].avatar});
         setThumbnailPreview(imagesData[index].avatar);
         setTimeout(() => {
           setShowGallery(false);
         }, 500);
       } else if (!isSingle && isBanner) {
-        setOffer({ ...offer, banner_img: imagesData[index].id });
+        setOffer({ ...offer, banner_img: imagesData[index].id, banner_imgPreview: imagesData[index].avatar});
         setBannerThumbnailPreview(imagesData[index].avatar);
         setTimeout(() => {
           setShowGallery(false);
         }, 500);
       } else {
-        setSelectedImages([...selectedImages, imagesData[index].id]);
+        setSelectedImages([...selectedImages, imagesData[index]]);
+        let imagesDataUpdated = imagesData.map((x, i) => {
+          if (i === index) {
+            return {
+              ...x,
+              isChecked: true,
+            };
+          } else {
+            return x;
+          }
+        });
+        setImagesData(imagesDataUpdated);
       }
-      let imagesDataUpdated = imagesData.map((x, i) => {
-        if (i === index) {
-          return {
-            ...x,
-            isChecked: true,
-          };
-        } else {
-          return x;
-        }
-      });
-      setImagesData(imagesDataUpdated);
+
       // }
     } else {
       if (isSingle && !isBanner) {
@@ -219,9 +227,11 @@ export default function AddOffer(props) {
     let finalOffer = offer;
     finalOffer.route = finalOffer.route.split(website_url)?.[1];
 
-    // finalOffer.images_list = JSON.stringify(selectedImages);
+    finalOffer.images_list = JSON.stringify(selectedImages);
 
     finalOffer.is_indexed_or_is_followed = `${finalOffer.is_indexed},${finalOffer.is_followed}`;
+    console.log("====finalOffer====",finalOffer)
+    return false;
 
     if (isEdit) {
       finalOffer.images_list = [
@@ -286,15 +296,46 @@ export default function AddOffer(props) {
     }
   }
 
+  const handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != selectedLang) {
+        setSelectedLang(event.target.value)
+    }
+};
+
   return (
     <div>
       <div className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
             <h4 style={{ fontWeight: "400" }} className="mb-0">
               Add an Offer
             </h4>
-            {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+            <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", color: "white" }}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                    style={{ color: "white" }}
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    style={{ color: "white" }}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
           </CardHeader>
           <CardBody>
             <h4 style={{ fontWeight: "400" }} className="mt-1">
@@ -381,7 +422,7 @@ export default function AddOffer(props) {
                 </Grid>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Grid container spacing={2}>
+                <Grid container spacing={1}>
                   <Grid item xs={12} sm={12}>
                     <TextField
                       required
@@ -395,7 +436,27 @@ export default function AddOffer(props) {
                       size="small"
                     />
                   </Grid>
-                  
+                  <Grid item xs={12} sm={12}>
+                    <FormControl
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      className={classes.formControl}
+                    >
+                    
+                      <TextField
+                        required
+                        id="slug"
+                        name="slug"
+                        label="Slug"
+                        value={offer.slug}
+                        variant="outlined"
+                        fullWidth
+                        onChange={handleInputChange}
+                        size="small"
+                      />
+                    </FormControl>
+                  </Grid>
                   <Grid item xs={12} sm={12}>
                     <div className="thumbnail-preview-wrapper img-thumbnail">
                       {!isEdit ? (
@@ -617,13 +678,12 @@ export default function AddOffer(props) {
                   ?.filter(function (array_el) {
                     return (
                       selectedImages.filter(function (menuItems_el) {
-                        return menuItems_el == array_el.id;
+                        return menuItems_el.id == array_el.id;
                       }).length !== 0
                     );
                   })
                   ?.map((x) => (
-                      <SelectedImagesThumbnails x={x}
-                                                handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")}/>
+                      <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")}/>
                     // <Grid item xs={12} sm={2}>
                     //   <div style={{ height: "120px" }}>
                     //     <img

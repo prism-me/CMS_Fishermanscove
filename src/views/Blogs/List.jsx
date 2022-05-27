@@ -60,14 +60,14 @@ class RoomsList extends Component {
             <div className="d-flex nowrap">
               <Link
                 title="View Details"
-                to={`/admin/blogs/${val}`}
+                to={`/admin/blogs/${val}?lang=${this.state.selectedLang}`}
               >
                 <VisibilityOutlined fontSize="small" color="action" />
               </Link>
               <Link
                 className="ml-2"
                 title="Edit"
-                to={`/admin/blogs/edit/${val}`}
+                to={`/admin/blogs/edit/${val}?lang=${this.state.selectedLang}`}
               >
                 <EditOutlined fontSize="small" color="primary" />
               </Link>
@@ -98,6 +98,18 @@ class RoomsList extends Component {
       this.setState({ rows });
     });
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.selectedLang !== this.state.selectedLang) {
+      API.get(`/blogs?lang=${this.state.selectedLang}`).then((response) => {
+        let rows = response.data?.data;
+        if(this.state.rows != rows){
+            this.setState({ rows });
+        }
+      });
+    }
+  }
+  
 
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {

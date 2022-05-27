@@ -11,7 +11,8 @@ import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
 import { usePushingGutterStyles } from '@mui-treasury/styles/gutter/pushing';
 import API from 'utils/http';
 import { Grid } from '@material-ui/core';
-import { useParams } from 'react-router-dom';
+import { useParams, withRouter, useLocation } from "react-router-dom";
+import LangAPI from "langapi/http";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,6 +70,10 @@ const useStyles = makeStyles((theme) => ({
 
 export const RoomDetail = React.memo(function ReviewCard() {
   let { id } = useParams();
+  let { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const lang = query.get('lang');
+  
 
   const styles = useStyles();
   const classes = useStyles();
@@ -96,11 +101,24 @@ export const RoomDetail = React.memo(function ReviewCard() {
   ]);
 
   useEffect(() => {
-    API.get(`/blogs/${id}`).then(response => {
+    // API.get(`/blogs/${id}`).then(response => {
+    //   if (response.status === 200) {
+    //     setRoom(response.data?.data)
+    //   }
+    // })
+    LangAPI.get(`/blogs/${id}?lang=${lang}`).then((response) => {
       if (response.status === 200) {
-        setRoom(response.data?.data)
+          let data = { ...response?.data?.data };
+          console.log("response?.data?.data",response?.data?.data)
+          setRoom(response.data?.data)
+          // data.route = website_url + data.route;
+          // if(response?.data?.data){
+            
+          // } else {
+          //   setRoom({ ...initialObject });
+          // }
       }
-    })
+  });
   }, [])
 
   return (

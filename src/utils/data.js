@@ -7,7 +7,7 @@ export const ckEditorConfig = {
     { name: 'paragraph', items: ['NumberedList', 'BulletedList', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
     { name: 'source', items: ['Source'] }
   ],
-  extraPlugins: 'easyimage',
+  // extraPlugins: 'easyimage',
   format_tags: 'p;h1;h2;h3;h4;h5;h6',
   // removePlugins: 'image',
   //cloudServices_uploadUrl: 'https://33333.cke-cs.com/easyimage/upload/', //this is a demo ckeditor cloud service URL

@@ -12,7 +12,7 @@ import { Image } from "@material-ui/icons";
 import LangAPI from "langapi/http";
 import API from "utils/http";
 
-import { useParams, withRouter } from "react-router-dom";
+import { useParams, withRouter, useLocation } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 
 const website_url = "https://fishermanscove-resort.com/blog-inner/";
@@ -30,14 +30,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default withRouter(function AddRoom(props) {
+    let { search } = useLocation();
+    const query = new URLSearchParams(search);
+    const lang = query.get('lang');
     const classes = useStyles();
-    //check if edit or add request
     let { id } = useParams();
 
     const initialObject = {
         title: "",
-        long_description: "<p>Detailed content goes here!</p>",
-        short_description: "<p>Short description goes here!</p>",
+        long_description: "",
+        short_description: "",
         img: "",
         banner_img: "",
         sub_title: "",
@@ -63,7 +65,7 @@ export default withRouter(function AddRoom(props) {
     const [showGallery, setShowGallery] = useState(false);
     const [isSingle, setIsSingle] = useState(false);
     const [isAuthorImg, setIsAuthorImg] = useState(false);
-    const [selectedLang, setSelectedLang] = useState("en");
+    const [selectedLang, setSelectedLang] = useState(lang ||"en");
     const [authorthumbnailPreview, setAuthorThumbnailPreview] = useState("");
     const [thumbnailPreview, setThumbnailPreview] = useState("");
     const [isBanner, setIsBanner] = useState(false);
@@ -75,18 +77,27 @@ export default withRouter(function AddRoom(props) {
             LangAPI.get(`/blogs/${id}?lang=${selectedLang}`).then((response) => {
                 if (response.status === 200) {
                     let data = { ...response?.data?.data };
+                    console.log("response?.data?.data",response?.data?.data)
                     // data.route = website_url + data.route;
-                    setRoom({ ...room, ...data });
+                    if(response?.data?.data){
+                        setRoom({ ...room, ...data });
+                    } else {
+                        setRoom({ ...initialObject });
+                    }
                 }
             });
         }
-        getGalleryImages();
+        if(!imagesData.length > 0){
+            getGalleryImages();
+        }
     }, [selectedLang]);
 
     const getGalleryImages = () => {
         API.get(`/uploads`).then((response) => {
             if (response.status === 200) {
-                setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
+                if(response.data.length > 0){
+                    setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
+                }
             }
         });
     };
@@ -186,12 +197,46 @@ export default withRouter(function AddRoom(props) {
 
     const handleSubmit = () => {
         let finalRoom = room;
+        // console.log("finalRoom",finalRoom) ;return false
+        if(!finalRoom.title || finalRoom.title == ""){
+            alert("Please Enter Name before Submiting")
+            return false;
+        }
+        if(!finalRoom.sub_title || finalRoom.sub_title == ""){
+            alert("Please Enter Sub Title before Submiting")
+            return false;
+        }
+        if(!finalRoom.posted_by || finalRoom.posted_by == ""){
+            alert("Please Enter Writer Name before Submiting")
+            return false;
+        }
+        if(!finalRoom.slug || finalRoom.slug == ""){
+            alert("Please Enter Slug before Submiting")
+            return false;
+        }
+        if(!finalRoom.author_img || finalRoom.author_img == ""){
+            alert("Please Select Writer Image before Submiting")
+            return false;
+        }
+        if(!finalRoom.img || finalRoom.img == ""){
+            alert("Please Select Featured Image before Submiting")
+            return false;
+        }
+        if(!finalRoom.banner_img || finalRoom.banner_img == ""){
+            alert("Please Select Banner Image before Submiting")
+            return false;
+        }
+        if(!finalRoom.short_description || finalRoom.short_description == ""){
+            alert("Please Enter Short Description before Submiting")
+            return false;
+        }
+
         // finalRoom.route = finalRoom.route.split(website_url)?.[1];
         // finalRoom.inner_route = append_url;
         // finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed ? "1" : "0"
         //     },${finalRoom.is_followed ? "1" : "0"}`;
         if (isEdit) {
-            LangAPI.put(`/blogs/${id}?lang=${selectedLang}`, finalRoom).then((response) => {
+            LangAPI.post(`/blogs?lang=${selectedLang}`, finalRoom).then((response) => {
                 if (response.status === 200) {
                     alert("Blog Updated");
                     setRoom({ ...initialObject }); //clear all fields
@@ -270,6 +315,7 @@ export default withRouter(function AddRoom(props) {
                                         fullWidth
                                         onChange={handleInputChange}
                                         size="small"
+                                        helperText={''}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
@@ -283,6 +329,7 @@ export default withRouter(function AddRoom(props) {
                                         fullWidth
                                         onChange={handleInputChange}
                                         size="small"
+                                        helperText={''}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
@@ -296,11 +343,11 @@ export default withRouter(function AddRoom(props) {
                                         fullWidth
                                         onChange={handleInputChange}
                                         size="small"
+                                        helperText={''}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <TextField
-                                        required
                                         id="slug"
                                         name="slug"
                                         label="Slug"
@@ -309,6 +356,7 @@ export default withRouter(function AddRoom(props) {
                                         fullWidth
                                         onChange={handleSlugChange}
                                         size="small"
+                                        helperText={''}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={9}>
@@ -320,6 +368,7 @@ export default withRouter(function AddRoom(props) {
                                         onChange={(e) =>
                                             setRoom({ ...room, author_details: e.editor.getData() })
                                         }
+                                        
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={3}>

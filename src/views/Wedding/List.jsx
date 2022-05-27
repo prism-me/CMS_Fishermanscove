@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import MUIDataTable from "mui-datatables";
-import API from "utils/http";
-import { Avatar, Box, Button } from "@material-ui/core";
+import LangAPI from "langapi/http";
+import InputLabel from "@material-ui/core/InputLabel";
+import { Avatar, Box, Button, Select, MenuItem, FormControl } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import {
   AddOutlined,
@@ -12,10 +13,11 @@ import {
 
 class WeddingList extends Component {
   state = {
+    selectedLang: "en",
     offers: [],
     columns: [
       {
-        name: "thumbnail",
+        name: "thumbnailPreview",
         label: "Image",
         options: {
           filter: false,
@@ -29,7 +31,7 @@ class WeddingList extends Component {
         },
       },
       {
-        name: "post_name",
+        name: "name",
         label: "Name",
         options: {
           filter: true,
@@ -67,31 +69,31 @@ class WeddingList extends Component {
       //   }
       // },
       {
-        name: "post_content",
-        label: "Content",
+        name: "short_description",
+        label: "Short Description",
         options: {
           filter: true,
           sort: false,
           customBodyRender: (val) => (
-            <code>{val.length > 100 ? val.substr(0, 100) + "..." : val}</code>
+            <code>{val && val.length > 100 ? val.substr(0, 100) + "..." : val}</code>
           ),
         },
       },
       {
-        name: "id",
+        name: "slug",
         label: "Actions",
         options: {
           filter: false,
           sort: false,
           customBodyRender: (val) => (
             <div className="d-flex nowrap">
-              <Link to={`/admin/weddings/${val}`}>
+              <Link to={`/admin/weddings/${val}?lang=${this.state.selectedLang}`}>
                 <VisibilityOutlined fontSize="small" color="action" />
               </Link>
               <Link
                 className="ml-2"
                 title="Edit"
-                to={`/admin/weddings/edit/${val}`}
+                to={`/admin/weddings/edit/${val}?lang=${this.state.selectedLang}`}
               >
                 <EditOutlined fontSize="small" color="primary" />
               </Link>
@@ -117,15 +119,30 @@ class WeddingList extends Component {
   };
 
   componentDidMount() {
-    API.get("/wedding").then((response) => {
-      let rows = response.data;
-      this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
+    LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then((response) => {
+      let rows = response?.data?.data;
+      console.log(rows,"rowsrowsrows")
+      // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
+      this.setState({ rows });
     });
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.selectedLang !== this.state.selectedLang) {
+      LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then((response) => {
+        let rows = response?.data?.data;
+        if(this.state.rows != rows){
+          // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
+          this.setState({ rows });
+        }
+      });
+    }
+  }
+
+
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
-      API.delete(`/wedding/${id}`)
+      LangAPI.delete(`/weddings/${id}?lang=${this.state.selectedLang}`)
         .then((response) => {
           if (response.status === 200) {
             alert("Wedding Item deleted successfully !");
@@ -133,28 +150,65 @@ class WeddingList extends Component {
         })
         .then(() => {
           // debugger;
-          API.get("/wedding").then((response) => {
-            let rows = response.data;
-            this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
+          LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then((response) => {
+            let rows = response?.data?.data;
+            // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
+            this.setState({ rows });
           });
         })
         .catch((err) => console.log(err));
     }
   };
 
+  handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != this.state.selectedLang) {
+      this.setState({ selectedLang: event.target.value })
+    }
+    console.log(event.target.value, "event.target.value")
+  };
+
   render() {
     return (
       <div>
         <Box marginBottom={4}>
-          <Link to="/admin/weddings/add">
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddOutlined />}
-            >
-              Add Wedding
-            </Button>
-          </Link>
+          <div className="d-flex justify-content-between align-items-center">
+            <Link to="/admin/weddings/add">
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddOutlined />}
+              >
+                Add Wedding
+              </Button>
+            </Link>
+            <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%" }}
+              // fullWidth
+              >
+                <InputLabel id="language">Select Language</InputLabel>
+                <Select
+                  labelId="language"
+                  id="language"
+                  name="language"
+                  value={this.state.selectedLang}
+                  // onChange={handleInputChange}
+                  label="Select Language"
+                  fullWidth
+                  onChange={this.handleChange}
+                >
+                  {/* <MenuItem value={-1}>
+                        <em>Select Language</em>
+                    </MenuItem> */}
+                  <MenuItem value={'en'}>En</MenuItem>
+                  <MenuItem value={'fr'}>FR</MenuItem>
+                  <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
+          </div>
         </Box>
         <MUIDataTable
           title="Weddings"
