@@ -65,7 +65,7 @@ export default withRouter(function AddRoom(props) {
     const [showGallery, setShowGallery] = useState(false);
     const [isSingle, setIsSingle] = useState(false);
     const [isAuthorImg, setIsAuthorImg] = useState(false);
-    const [selectedLang, setSelectedLang] = useState(lang ||"en");
+    const [selectedLang, setSelectedLang] = useState(lang || "en");
     const [authorthumbnailPreview, setAuthorThumbnailPreview] = useState("");
     const [thumbnailPreview, setThumbnailPreview] = useState("");
     const [isBanner, setIsBanner] = useState(false);
@@ -77,9 +77,9 @@ export default withRouter(function AddRoom(props) {
             LangAPI.get(`/blogs/${id}?lang=${selectedLang}`).then((response) => {
                 if (response.status === 200) {
                     let data = { ...response?.data?.data };
-                    console.log("response?.data?.data",response?.data?.data)
+                    console.log("response?.data?.data", response?.data?.data)
                     // data.route = website_url + data.route;
-                    if(response?.data?.data){
+                    if (response?.data?.data) {
                         setRoom({ ...room, ...data });
                     } else {
                         setRoom({ ...initialObject });
@@ -87,7 +87,7 @@ export default withRouter(function AddRoom(props) {
                 }
             });
         }
-        if(!imagesData.length > 0){
+        if (!imagesData.length > 0) {
             getGalleryImages();
         }
     }, [selectedLang]);
@@ -95,7 +95,7 @@ export default withRouter(function AddRoom(props) {
     const getGalleryImages = () => {
         API.get(`/uploads`).then((response) => {
             if (response.status === 200) {
-                if(response.data.length > 0){
+                if (response.data.length > 0) {
                     setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
                 }
             }
@@ -198,35 +198,27 @@ export default withRouter(function AddRoom(props) {
     const handleSubmit = () => {
         let finalRoom = room;
         // console.log("finalRoom",finalRoom) ;return false
-        if(!finalRoom.title || finalRoom.title == ""){
+        if (!finalRoom.title || finalRoom.title == "") {
             alert("Please Enter Name before Submiting")
             return false;
         }
-        if(!finalRoom.sub_title || finalRoom.sub_title == ""){
-            alert("Please Enter Sub Title before Submiting")
-            return false;
-        }
-        if(!finalRoom.posted_by || finalRoom.posted_by == ""){
+        if (!finalRoom.posted_by || finalRoom.posted_by == "") {
             alert("Please Enter Writer Name before Submiting")
             return false;
         }
-        if(!finalRoom.slug || finalRoom.slug == ""){
+        if (!finalRoom.slug || finalRoom.slug == "") {
             alert("Please Enter Slug before Submiting")
             return false;
         }
-        if(!finalRoom.author_img || finalRoom.author_img == ""){
-            alert("Please Select Writer Image before Submiting")
-            return false;
-        }
-        if(!finalRoom.img || finalRoom.img == ""){
+        if (!finalRoom.img || finalRoom.img == "") {
             alert("Please Select Featured Image before Submiting")
             return false;
         }
-        if(!finalRoom.banner_img || finalRoom.banner_img == ""){
+        if (!finalRoom.banner_img || finalRoom.banner_img == "") {
             alert("Please Select Banner Image before Submiting")
             return false;
         }
-        if(!finalRoom.short_description || finalRoom.short_description == ""){
+        if (!finalRoom.short_description || finalRoom.short_description == "") {
             alert("Please Enter Short Description before Submiting")
             return false;
         }
@@ -318,7 +310,7 @@ export default withRouter(function AddRoom(props) {
                                         helperText={''}
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                {/* <Grid item xs={12} sm={6}>
                                     <TextField
                                         required
                                         id="sub_title"
@@ -331,7 +323,7 @@ export default withRouter(function AddRoom(props) {
                                         size="small"
                                         helperText={''}
                                     />
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={12} sm={6}>
                                     <TextField
                                         required
@@ -359,7 +351,7 @@ export default withRouter(function AddRoom(props) {
                                         helperText={''}
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={9}>
+                                {/* <Grid item xs={12} sm={9}>
                                     <h4 style={{ fontWeight: "400" }}>Writer Details</h4>
 
                                     <CKEditor
@@ -368,10 +360,10 @@ export default withRouter(function AddRoom(props) {
                                         onChange={(e) =>
                                             setRoom({ ...room, author_details: e.editor.getData() })
                                         }
-                                        
+
                                     />
-                                </Grid>
-                                <Grid item xs={12} sm={3}>
+                                </Grid> */}
+                                {/* <Grid item xs={12} sm={3}>
                                     <div className="thumbnail-preview-wrapper img-thumbnail mt-4">
                                         {!isEdit ? (
                                             authorthumbnailPreview && authorthumbnailPreview !== "" ? (
@@ -406,7 +398,7 @@ export default withRouter(function AddRoom(props) {
                                             {isEdit ? "Change" : "Upload"} Writer Image
                                         </MaterialButton>
                                     </Fragment>
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                         </Grid>
                         <Grid item xs={12} sm={12}>
