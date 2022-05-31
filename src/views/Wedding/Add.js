@@ -44,12 +44,12 @@ export default withRouter(function WeddingAdd(props) {
   const initialObject = {
     name: '',
     short_description: "",
-    detailed_content:"",
-    slug:"",
+    detailed_content: "",
+    slug: "",
     img_directory: "wedding",
     images_list: '',
-    thumbnailPreview:"",
-    thumbnail:""
+    thumbnailPreview: "",
+    thumbnail: ""
 
   }
   const [wedding, setWedding] = useState({ ...initialObject });
@@ -64,7 +64,7 @@ export default withRouter(function WeddingAdd(props) {
   const [isSingle, setIsSingle] = useState(false)
   const [renderPreviews, setRenderPreviews] = useState(false)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
-  const [selectedLang, setSelectedLang] = useState(lang ||"en");
+  const [selectedLang, setSelectedLang] = useState(lang || "en");
 
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export default withRouter(function WeddingAdd(props) {
           // return false;
           // let data = { ...response?.data?.wedding_details };
           // data.route = website_url + data.route;
-          if(response?.data?.data){
+          if (response?.data?.data) {
             setWedding(response?.data?.data);
             setThumbnailPreview(response?.data?.data.thumbnailPreview)
           } else {
@@ -90,9 +90,9 @@ export default withRouter(function WeddingAdd(props) {
       })
     }
 
-    if(!imagesData.length > 0){
+    if (!imagesData.length > 0) {
       getGalleryImages();
-  }
+    }
   }, [selectedLang])
 
   const getGalleryImages = () => {
@@ -112,27 +112,27 @@ export default withRouter(function WeddingAdd(props) {
 
   const handleImageSelect = (e, index) => {
     if (e.target.checked) {
-        if (isSingle) {
-          setWedding({ ...wedding, thumbnail: imagesData[index].avatar })
-          setThumbnailPreview(imagesData[index].avatar)
-          setSelectedImages(imagesData[index]);
-          setTimeout(() => {
-            setShowGallery(false);
+      if (isSingle) {
+        setWedding({ ...wedding, thumbnail: imagesData[index].avatar })
+        setThumbnailPreview(imagesData[index].avatar)
+        setSelectedImages(imagesData[index]);
+        setTimeout(() => {
+          setShowGallery(false);
         }, 500);
-        } else {
-          setSelectedImages([...selectedImages, imagesData[index].id]);
-        }
-        let imagesDataUpdated = imagesData.map((x, i) => {
-          if (i === index) {
-            return {
-              ...x,
-              isChecked: true
-            }
-          } else {
-            return x
+      } else {
+        setSelectedImages([...selectedImages, imagesData[index].id]);
+      }
+      let imagesDataUpdated = imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: true
           }
-        });
-        setImagesData(imagesDataUpdated);
+        } else {
+          return x
+        }
+      });
+      setImagesData(imagesDataUpdated);
     } else {
       if (isSingle) {
         setWedding({ ...wedding, thumbnail: "" })
@@ -159,23 +159,23 @@ export default withRouter(function WeddingAdd(props) {
     finalWedding.images_list = JSON.stringify(selectedImages);
     finalWedding.thumbnailPreview = thumbnailPreview;
     // finalWedding.is_indexed_or_is_followed = `${finalWedding.is_indexed},${finalWedding.is_followed}`;
-    if(!finalWedding.name || finalWedding.name == ""){
+    if (!finalWedding.name || finalWedding.name == "") {
       alert("Please Enter Name before Submiting")
       return false;
     }
-    if(!finalWedding.slug || finalWedding.slug == ""){
+    if (!finalWedding.slug || finalWedding.slug == "") {
       alert("Please Enter Slug before Submiting")
       return false;
     }
-    if(!finalWedding.thumbnailPreview || finalWedding.thumbnailPreview == ""){
+    if (!finalWedding.thumbnailPreview || finalWedding.thumbnailPreview == "") {
       alert("Please Select Image before Submiting")
       return false;
     }
-    if(!finalWedding.short_description || finalWedding.short_description == ""){
-      alert("Please Enter Short Description before Submiting")
-      return false;
-    }
-    
+    // if(!finalWedding.short_description || finalWedding.short_description == ""){
+    //   alert("Please Enter Short Description before Submiting")
+    //   return false;
+    // }
+
     if (isEdit) {
       LangAPI.post(`/weddings?lang=${selectedLang}`, finalWedding).then(response => {
         console.log(response);
@@ -201,9 +201,9 @@ export default withRouter(function WeddingAdd(props) {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
-};
+  };
 
 
   return (
@@ -213,29 +213,29 @@ export default withRouter(function WeddingAdd(props) {
           <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
             <h4 className="mb-0">Add Wedding Place</h4>
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </CardHeader>
           <CardBody>
@@ -302,19 +302,19 @@ export default withRouter(function WeddingAdd(props) {
                   </MaterialButton>
                 </Fragment>
               </Grid>
-              <Grid item xs={12} sm={12}>
+              {/* <Grid item xs={12} sm={12}>
                 <hr />
 
                 <h4>Short Description</h4>
                 <CKEditor config={ckEditorConfig} onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding?.short_description} onChange={(e) => setWedding({ ...wedding, short_description: e.editor.getData() })}
                 />
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={12} sm={12}>
-                <hr />
+                {/* <hr /> */}
                 <h4>Detailed Content</h4>
 
-                <CKEditor config={ckEditorConfig} onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding?.detailed_content} type="classic"  onChange={(e) => setWedding({ ...wedding, detailed_content: e.editor.getData() })} />
+                <CKEditor config={ckEditorConfig} onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding?.detailed_content} type="classic" onChange={(e) => setWedding({ ...wedding, detailed_content: e.editor.getData() })} />
 
               </Grid>
               <Grid item xs={12} sm={12}>
