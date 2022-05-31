@@ -116,6 +116,7 @@ export default function AddAboutSeychelles() {
     API.get(`/all_sections/${pageId}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
+        console.log(data,"data for page==============");
         setAboutSeychelles(
           {
             intro: data.find(x => x.section_slug === "intro") || initialObject.intro,

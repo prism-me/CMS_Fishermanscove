@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import MUIDataTable from "mui-datatables";
 import API from 'utils/http';
-import { Avatar, Box, Button } from '@material-ui/core';
+import LangAPI from "langapi/http";
+import { Avatar, Box, Button, Select, MenuItem, FormControl } from "@material-ui/core";
+import InputLabel from "@material-ui/core/InputLabel";
 import { AddOutlined, DeleteOutlined, EditOutlined, ListOutlined, VisibilityOutlined } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import CategoryDialog from './CategoryDialog';
@@ -9,10 +11,11 @@ import CategoryDialog from './CategoryDialog';
 class OffersList extends Component {
   state = {
     isCategoryFormOpen: false,
+    selectedLang: "en",
     offers: [],
     columns: [
       {
-        name: "thumbnail",
+        name: "thumbnailPreview",
         label: "Image",
         options: {
           filter: false,
@@ -61,17 +64,17 @@ class OffersList extends Component {
       //   }
       // },
       {
-        name: "route",
+        name: "slug",
         label: "Actions",
         options: {
           filter: false,
           sort: false,
           customBodyRender: val => (
             <div className="d-flex nowrap">
-              <Link title="View Details" to={`/admin/offers/${val}`} >
+              <Link title="View Details" to={`/admin/offers/${val}?lang=${this.state.selectedLang}`} >
                 <VisibilityOutlined fontSize="small" color="action" />
               </Link>
-              <Link className="ml-2" title="Edit" to={`/admin/offers/edit/${val}`} >
+              <Link className="ml-2" title="Edit" to={`/admin/offers/edit/${val}?lang=${this.state.selectedLang}`} >
                 <EditOutlined fontSize="small" color="primary" />
               </Link>
               <Link className="ml-2" title="Delete" to={`#`} onClick={() => this.handleDelete(val)} >
@@ -91,36 +94,49 @@ class OffersList extends Component {
   };
 
   componentDidMount() {
-    API.get('/offers').then(response => {
-      let rows = response.data;
+    LangAPI.get(`/offers?lang=${this.state.selectedLang}`).then(response => {
+      let rows = response?.data?.data;
       this.setState({ rows })
     })
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.selectedLang !== this.state.selectedLang) {
+      LangAPI.get(`/offers?lang=${this.state.selectedLang}`).then((response) => {
+        let rows = response?.data?.data;
+        if(this.state.rows != rows){
+          // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
+          this.setState({ rows });
+        }
+      });
+    }
+  }
+
   handleCategorySubmit = (category_name) => {
     if (!category_name || category_name === "") {
       alert("Please enter category name");
       return;
     }
-    API.post('/offer_categories/offers', { category_name }).then(response => {
-      if (response?.status === 200) {
-        alert(response.data?.message);
-        this.setState({ isCategoryFormOpen: false })
-      }
-    }).catch(err => {
-      alert("Something went wrong.");
-    })
+    // API.post('/offer_categories/offers', { category_name }).then(response => {
+    //   if (response?.status === 200) {
+    //     alert(response.data?.message);
+    //     this.setState({ isCategoryFormOpen: false })
+    //   }
+    // }).catch(err => {
+    //   alert("Something went wrong.");
+    // })
   }
 
   handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this ?')) {
-      API.delete(`/offers/${id}`).then(response => {
+      LangAPI.delete(`/offers/${id}?lang=${this.state.selectedLang}`).then(response => {
         if (response.status === 200) {
           alert("Offer deleted successfully !");
         }
       })
         .then(() => {
-          API.get('/offers').then(response => {
-            let rows = response.data;
+          LangAPI.get(`/offers?lang=${this.state.selectedLang}`).then(response => {
+            let rows = response?.data?.data;
             this.setState({ rows })
           })
         })
@@ -128,11 +144,20 @@ class OffersList extends Component {
     }
   }
 
+  handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != this.state.selectedLang) {
+      this.setState({ selectedLang: event.target.value })
+    }
+    console.log(event.target.value, "event.target.value")
+  };
+
   render() {
     const { isCategoryFormOpen } = this.state
     return (
       <div>
         <Box marginBottom={4}>
+        <div className="d-flex justify-content-between align-items-center">
           <Link to="/admin/offers/add">
             <Button
               variant="contained"
@@ -143,6 +168,33 @@ class OffersList extends Component {
               Add Offer
             </Button>
           </Link>
+          <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%" }}
+              // fullWidth
+              >
+                <InputLabel id="language">Select Language</InputLabel>
+                <Select
+                  labelId="language"
+                  id="language"
+                  name="language"
+                  value={this.state.selectedLang}
+                  // onChange={handleInputChange}
+                  label="Select Language"
+                  fullWidth
+                  onChange={this.handleChange}
+                >
+                  {/* <MenuItem value={-1}>
+                        <em>Select Language</em>
+                    </MenuItem> */}
+                  <MenuItem value={'en'}>En</MenuItem>
+                  <MenuItem value={'fr'}>FR</MenuItem>
+                  <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
+          </div>
           {/* <Button
             variant="outlined"
             className="ml-3"

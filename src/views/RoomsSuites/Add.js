@@ -18,6 +18,7 @@ import CardBody from "components/Card/CardBody.js";
 
 // import avatar from "assets/img/faces/marc.jpg";
 import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField, } from "@material-ui/core";
+import LangAPI from "langapi/http";
 import CKEditor from "ckeditor4-react";
 import { ckEditorConfig } from "utils/data";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -26,7 +27,7 @@ import { ckEditorConfig } from "utils/data";
 // import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock";
 import { Image } from "@material-ui/icons";
 import API from "utils/http";
-import { useParams, withRouter } from "react-router-dom";
+import { useParams, withRouter, useLocation } from "react-router-dom";
 
 // ClassicEditor.b
 // import FormGroup from '@material-ui/core/FormGroup';
@@ -58,12 +59,16 @@ export default withRouter(function AddRoom(props) {
     const classes = useStyles();
     //check if edit or add request
     let { id } = useParams();
+    let { search } = useLocation();
+    const query = new URLSearchParams(search);
+    const lang = query.get('lang');
 
     const initialObject = {
         post_name: "",
-        post_content: "<p>Detailed content goes here!</p>",
-        short_description: "<p>Short description goes here!</p>",
+        post_content: "",
+        short_description: "",
         room_type: -1,
+        slug:"",
         parent_id: -1,
         thumbnail: "",
         banner_img: "",
@@ -96,23 +101,38 @@ export default withRouter(function AddRoom(props) {
     const [thumbnailPreview, setThumbnailPreview] = useState("");
     const [isBanner, setIsBanner] = useState(false);
     const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState("");
+    const [selectedLang, setSelectedLang] = useState(lang ||"en");
+
 
     useEffect(() => {
         if (id && id != null) {
             setIsEdit(true);
-            setPostId(id);
-            API.get(`/rooms/${id}/edit`).then((response) => {
+            // setPostId(id);
+            LangAPI.get(`/rooms/${id}?lang=${selectedLang}`).then((response) => {
                 if (response.status === 200) {
-                    let data = { ...response?.data?.content[0] };
+
+                    let data = { ...response?.data?.data };
                     data.route = website_url + data.route;
-                    setRoom({ ...room, ...data });
-                    setUploadsPreview(response.data?.uploads);
-                    setSelectedImages(response.data?.uploads.map(x => x.id))
+                    if(response?.data?.data){
+                        setRoom({ ...room, ...data });
+                        // setUploadsPreview(response.data?.uploads);
+                        let images = JSON.parse(response?.data?.data.images_list)
+                        setSelectedImages(images)
+                        setThumbnailPreview(response?.data?.data?.thumbnailPreview)
+                        setBannerThumbnailPreview(response?.data?.data?.banner_imgPreview)
+                    } else {
+                        setRoom(initialObject);
+                        setUploadsPreview(false);
+                        setSelectedImages([])
+                    }
                 }
             });
         }
-        getGalleryImages();
-    }, []);
+        
+        if(!imagesData.length > 0){
+            getGalleryImages();
+        }
+    }, [selectedLang]);
 
     const getGalleryImages = () => {
         API.get(`/uploads`).then((response) => {
@@ -151,31 +171,32 @@ export default withRouter(function AddRoom(props) {
             //   return;
             // } else {
             if (isSingle && !isBanner) {
-                setRoom({ ...room, thumbnail: imagesData[index].id });
+                setRoom({ ...room, thumbnail: imagesData[index].id,thumbnailPreview: imagesData[index].avatar});
                 setThumbnailPreview(imagesData[index].avatar);
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
             } else if (isSingle && isBanner) {
-                setRoom({ ...room, banner_img: imagesData[index].id });
+                setRoom({ ...room, banner_img: imagesData[index].id, banner_imgPreview: imagesData[index].avatar});
                 setBannerThumbnailPreview(imagesData[index].avatar);
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
             } else {
-                setSelectedImages([...selectedImages, imagesData[index].id]);
+                setSelectedImages([...selectedImages, imagesData[index]]);
+                let imagesDataUpdated = imagesData.map((x, i) => {
+                    if (i === index) {
+                        return {
+                            ...x,
+                            isChecked: true,
+                        };
+                    } else {
+                        return x;
+                    }
+                });
+                setImagesData(imagesDataUpdated);
             }
-            let imagesDataUpdated = imagesData.map((x, i) => {
-                if (i === index) {
-                    return {
-                        ...x,
-                        isChecked: true,
-                    };
-                } else {
-                    return x;
-                }
-            });
-            setImagesData(imagesDataUpdated);
+
             // }
         } else {
             if (isSingle && !isBanner) {
@@ -206,13 +227,54 @@ export default withRouter(function AddRoom(props) {
 
     const handleSubmit = () => {
         let finalRoom = room;
-        finalRoom.route = finalRoom.route.split(website_url)?.[1];
+        finalRoom.route = finalRoom?.route?.split(website_url)?.[1];
         finalRoom.inner_route = append_url;
-        finalRoom.images_list = JSON.stringify([...new Set(selectedImages)]);
-        finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed ? "1" : "0"
-            },${finalRoom.is_followed ? "1" : "0"}`;
+        finalRoom.images_list = JSON.stringify(selectedImages);
+        finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed ? "1" : "0"},${finalRoom.is_followed ? "1" : "0"}`;
+        
+        if(!finalRoom.post_name || finalRoom.post_name == ""){
+            alert("Please Add Room/Suite Name");
+            return false;
+        }
+        if(!finalRoom.banner_text || finalRoom.banner_text == ""){
+            alert("Please Add Banner Text");
+            return false;
+        }
+        if(!finalRoom.thumbnailPreview || finalRoom.thumbnailPreview == ""){
+            alert("Please Select Featured Image");
+            return false;
+        }
+        if(!finalRoom.banner_imgPreview || finalRoom.banner_imgPreview == ""){
+            alert("Please Select Banner Image");
+            return false;
+        }
+        if(!finalRoom.room_type || finalRoom.room_type =="" ){
+            alert("Please Select Room/Suite Type");
+            return false;
+        }
+        if(!finalRoom.slug || finalRoom.slug == ""){
+            alert("Please Select Slug for The Room/Suite");
+            return false;
+        }
+        if(!finalRoom.post_url || finalRoom.post_url == ""){
+            alert("Please Select Synesis Link");
+            return false;
+        }
+        if(!finalRoom.short_description || finalRoom.short_description == ""){
+            alert("Please Add Short Description");
+            return false;
+        }
+        if(!finalRoom.post_content || finalRoom.post_content == ""){
+            alert("Please Add Detailed Content");
+            return false;
+        }
+        if(!selectedImages.length > 0){
+            alert("Please Select Room Images");
+            return false;
+        }
+
         if (isEdit) {
-            API.put(`/rooms/${id}`, finalRoom).then((response) => {
+            LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
                 if (response.status === 200) {
                     alert("Record Updated");
                     setRoom({ ...initialObject }); //clear all fields
@@ -220,7 +282,7 @@ export default withRouter(function AddRoom(props) {
                 }
             });
         } else {
-            API.post("/rooms", finalRoom).then((response) => {
+            LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
                 if (response.status === 200) {
                     setPostId(response.data?.post_id);
                     alert("Record Updated");
@@ -245,7 +307,7 @@ export default withRouter(function AddRoom(props) {
                 setSelectedImages(updatePreview.map((u) => u.id));
                 break;
             case "selectedImages":
-                let updateData = selectedImages.filter((u) => u !== x.id);
+                let updateData = selectedImages.filter((u) => u.id !== x.id);
                 setImagesData(imagesData.map(im => {
                     if (im.id === x.id) {
                         im.isChecked = false
@@ -258,14 +320,47 @@ export default withRouter(function AddRoom(props) {
                 return setUploadsPreview(uploadsPreview.filter((u) => u.id !== x.id))
         }
     }
+    
+    const handleChange = (event) => {
+        // setAge(event.target.value as string);
+        if (event.target.value != selectedLang) {
+            setSelectedLang(event.target.value)
+        }
+    };
 
     return (
         <div className={classes.root}>
             <Card>
-                <CardHeader color="primary">
-                    <h4 style={{ fontWeight: "400" }} className="mb-0">
+                <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
+                    {/* <h4 style={{ fontWeight: "400" }} className="mb-0">
                         Add Room/Suite
-                    </h4>
+                    </h4> */}
+                    <h4 className="mb-0">Add Room/Suite</h4>
+                    <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", color: "white" }}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                    style={{ color: "white" }}
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    style={{ color: "white" }}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
                     {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
                 </CardHeader>
                 <CardBody>
@@ -410,6 +505,19 @@ export default withRouter(function AddRoom(props) {
                                             <MenuItem value={2}>Suite</MenuItem>
                                         </Select>
                                     </FormControl>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                            required
+                                            id="slug"
+                                            name="slug"
+                                            label="Slug"
+                                            value={room.slug}
+                                            variant="outlined"
+                                            fullWidth
+                                            onChange={handleInputChange}
+                                            size="small"
+                                        />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <TextField
@@ -612,12 +720,11 @@ export default withRouter(function AddRoom(props) {
                                 Select Gallery Images
                             </MaterialButton>
                         </Grid>
-                        {renderPreviews &&
-                            imagesData
+                        { imagesData
                                 ?.filter(function (array_el) {
                                     return (
                                         selectedImages.filter(function (menuItems_el) {
-                                            return menuItems_el === array_el.id;
+                                            return menuItems_el.id === array_el.id;
                                         }).length !== 0
                                     );
                                 })

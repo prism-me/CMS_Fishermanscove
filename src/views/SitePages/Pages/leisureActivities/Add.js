@@ -161,6 +161,7 @@ export default function LeisureActivities() {
     API.get(`/all_sections/${pageId}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
+        console.log(data,"datadata for leasure act")
         setLeisure(
             {
               banner: data.find(x => x.section_slug === "banner") || leisure.banner,

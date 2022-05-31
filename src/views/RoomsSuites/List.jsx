@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import MUIDataTable from "mui-datatables";
+import InputLabel from "@material-ui/core/InputLabel";
 import API from "utils/http";
-import { Avatar, Box, Button } from "@material-ui/core";
+import LangAPI from "langapi/http";
+import { Avatar, Box, Button, Select, MenuItem, FormControl } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import {
   AddOutlined,
@@ -13,6 +15,7 @@ import {
 class RoomsList extends Component {
   state = {
     offers: [],
+    selectedLang: "en",
     columns: [
       {
         name: "thumbnail",
@@ -51,14 +54,14 @@ class RoomsList extends Component {
           },
         },
       },
-      {
-        name: "category_name",
-        label: "Category",
-        options: {
-          filter: true,
-          sort: false,
-        },
-      },
+      // {
+      //   name: "category_name",
+      //   label: "Category",
+      //   options: {
+      //     filter: true,
+      //     sort: false,
+      //   },
+      // },
       // {
       //   name: "short_description",
       //   label: "Description",
@@ -82,7 +85,7 @@ class RoomsList extends Component {
         },
       },
       {
-        name: "route",
+        name: "slug",
         label: "Actions",
         options: {
           filter: false,
@@ -92,14 +95,14 @@ class RoomsList extends Component {
               <Link
                 title="View Details"
                 // title="Details"
-                to={`/admin/room-suites/${val}`}
+                to={`/admin/room-suites/${val}?lang=${this.state.selectedLang}`}
               >
                 <VisibilityOutlined fontSize="small" color="action" />
               </Link>
               <Link
                 className="ml-2"
                 title="Edit"
-                to={`/admin/room-suites/edit/${val}`}
+                to={`/admin/room-suites/edit/${val}?lang=${this.state.selectedLang}`}
               >
                 <EditOutlined fontSize="small" color="primary" />
               </Link>
@@ -127,15 +130,24 @@ class RoomsList extends Component {
   componentDidMount() {
     this.getData()
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.selectedLang !== this.state.selectedLang) {
+        this.getData();
+    }
+  }
+  
   getData() {
-    API.get("/rooms").then((response) => {
-      let rows = response.data;
-      this.setState({ rows: rows.filter((x) => x.post_type === "page") });
+    LangAPI.get(`/rooms?lang=${this.state.selectedLang}`).then((response) => {
+      let rows = response?.data?.data;
+      console.log(rows,"rows")
+      this.setState({ rows: rows });
     });
   }
+
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
-      API.delete(`/rooms/${id}`)
+      LangAPI.delete(`/rooms/${id}?lang=${this.state.selectedLang}`)
         .then((response) => {
           if (response.status === 200) {
             alert("Room deleted successfully !");
@@ -152,19 +164,55 @@ class RoomsList extends Component {
     }
   };
 
+  handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != this.state.selectedLang) {
+      this.setState({ selectedLang: event.target.value })
+    }
+    console.log(event.target.value, "event.target.value")
+  };
+
   render() {
     return (
       <div>
         <Box marginBottom={4}>
-          <Link to="/admin/room-suites/add">
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddOutlined />}
-            >
-              Add Room
-            </Button>
-          </Link>
+          <div className="d-flex justify-content-between align-items-center">
+            <Link to="/admin/room-suites/add">
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddOutlined />}
+              >
+                Add Room
+              </Button>
+            </Link>
+            <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%" }}
+              // fullWidth
+              >
+                <InputLabel id="language">Select Language</InputLabel>
+                <Select
+                  labelId="language"
+                  id="language"
+                  name="language"
+                  value={this.state.selectedLang}
+                  // onChange={handleInputChange}
+                  label="Select Language"
+                  fullWidth
+                  onChange={this.handleChange}
+                >
+                  {/* <MenuItem value={-1}>
+                        <em>Select Language</em>
+                    </MenuItem> */}
+                  <MenuItem value={'en'}>En</MenuItem>
+                  <MenuItem value={'fr'}>FR</MenuItem>
+                  <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
+          </div>
         </Box>
         <MUIDataTable
           title="Rooms &amp; Suites"
