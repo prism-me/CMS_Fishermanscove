@@ -1,7 +1,6 @@
 import React, { Fragment, Suspense, useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
 // core components
 // import GridItem from "components/Grid/GridItem.js";
 // import GridContainer from "components/Grid/GridContainer.js";
@@ -18,26 +17,20 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import { ckEditorConfig } from "utils/data";
 // import avatar from "assets/img/faces/marc.jpg";
-import {
-  MenuItem,
-  Select,
-  FormControl,
-  TextField,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  Avatar, Typography,
-} from "@material-ui/core";
+import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField } from "@material-ui/core";
+
 import CKEditor from "ckeditor4-react";
+import InputLabel from "@material-ui/core/InputLabel";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { DeleteOutlined, Image } from "@material-ui/icons";
 import API from "utils/http";
-import { useParams, withRouter } from "react-router-dom";
+import { useParams, withRouter, useLocation } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
 import SelectedImagesThumbnails from "../Common/SelectedImagesThumbnails";
 import AddFAQDialog from "../FAQ/AddFAQDialog";
 import FAQSection from "../SitePages/Pages/Common/FAQSection";
+import LangAPI from "langapi/http";
 
 const website_url = "https://fishermanscove-resort.com/dining/";
 const append_url = "dining";
@@ -58,11 +51,14 @@ export default withRouter(function DiningAdd(props) {
 
   //check if edit or add request
   let { id } = useParams();
+  let { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const lang = query.get('lang');
 
   const initialObject = {
     post_name: "",
-    post_content: "<p>Detailed content goes here!</p>",
-    short_description: "<p>Short description goes here!</p>",
+    post_content: "",
+    short_description: "",
     room_type: -1,
     parent_id: -1,
     thumbnail: "",
@@ -81,8 +77,9 @@ export default withRouter(function DiningAdd(props) {
     images_list: [],
     section_slug: "",
     section_name:"",
-    section_dress_code: "<p>Dress Code </p>",
-    section_opening_hours : "<p>Opening Hours</p>",
+    section_dress_code: "",
+    section_opening_hours : "",
+    slug:""
     // faqs_content: [
     //   {
     //     question: "",
@@ -106,28 +103,40 @@ export default withRouter(function DiningAdd(props) {
   const [thumbnailPreview, setThumbnailPreview] = useState("");
   const [isBanner, setIsBanner] = useState(false);
   const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState("");
+  const [selectedLang, setSelectedLang] = useState(lang ||"en");
 
   useEffect(() => {
     if (id && id != null) {
       setIsEdit(true);
-      setPostId(id);
-      API.get(`/dining/${id}/edit`).then((response) => {
+      // setPostId(id);
+      LangAPI.get(`/dining/${id}?lang=${selectedLang}`).then((response) => {
         if (response.status === 200) {
-          let data = { ...response?.data?.category_details?.[0] };
-          let meta = { ...response?.data?.meta[0] };
-          data.meta_title = meta.meta_title;
-          data.is_indexed_or_is_followed = meta.is_indexed_or_is_followed;
-          data.meta_description = meta.meta_description;
-          data.schema_markup = meta.schema_markup;
-          data.route = website_url + data.route;
-          setDining({ ...dining, ...data });
-          setUploadsPreview(response.data?.uploads);
-          setSelectedImages(response.data?.uploads.map(x => x.id))
+
+          if(response?.data?.data){
+            let data = { ...response?.data?.data };
+            let meta = { ...response?.data?.meta[0] };
+            data.meta_title = meta.meta_title;
+            data.is_indexed_or_is_followed = meta.is_indexed_or_is_followed;
+            data.meta_description = meta.meta_description;
+            data.schema_markup = meta.schema_markup;
+            data.route = website_url + data.route;
+            setDining(data);
+            setUploadsPreview(response.data?.data?.images_list);
+            setSelectedImages(response.data?.data?.images_list)
+          } else {
+            setDining(initialObject);
+            setUploadsPreview([]);
+            setSelectedImages([])
+          }
+          
         }
       });
     }
-    getGalleryImages();
-  }, []);
+
+    if(!imagesData.length > 0){
+      getGalleryImages();
+    }
+  }, [selectedLang]);
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then((response) => {
@@ -136,24 +145,6 @@ export default withRouter(function DiningAdd(props) {
       }
     });
   };
-  console.log(initialObject)
-
-  // //faq section methods
-  // const removeQuestion = (id) => {
-  //   setDining({ ...dining, initialObject: { ...dining.initialObject, faqs_content: dining.initialObject.faqs_content.filter(x => x.id !== id) } })
-  // }
-  // const handleQuestionChange = (e, section, index) => {
-  //   let faqs_content = [...dining.initialObject.faqs_content];
-  //   faqs_content[index].question = e.target.value;
-  //   setDining({ ...dining, initialObject: { ...dining.initialObject, faqs_content } })
-  // }
-  // const handleAnswerChange = (data, section, index) => {
-  //   let faqs_content = [...dining.initialObject.faqs_content];
-  //   faqs_content[index].answer = data;
-  //   setDining({ ...dining, banner_img: "" });
-  //   setDining({ ...dining, initialObject: { ...dining.initialObject, faqs_content } })
-  // }
-  // // end faq section methods
 
   const handleInputChange = (e) => {
     let updatedDining = { ...dining };
@@ -184,31 +175,31 @@ export default withRouter(function DiningAdd(props) {
       //   return;
       // } else {
       if (isSingle && !isBanner) {
-        setDining({ ...dining, thumbnail: imagesData[index].id });
+        setDining({ ...dining, thumbnail: imagesData[index].id,thumbnailPreview:imagesData[index].avatar });
         setThumbnailPreview(imagesData[index].avatar);
         setTimeout(() => {
           setShowGallery(false);
         }, 500);
       } else if (isSingle && isBanner) {
-        setDining({ ...dining, banner_img: imagesData[index].id });
+        setDining({ ...dining, banner_img: imagesData[index].id, banner_imgPreview: imagesData[index].avatar});
         setBannerThumbnailPreview(imagesData[index].avatar);
         setTimeout(() => {
           setShowGallery(false);
         }, 500);
       } else {
-        setSelectedImages([...selectedImages, imagesData[index].id]);
+        setSelectedImages([...selectedImages, imagesData[index]]);
+        let imagesDataUpdated = imagesData.map((x, i) => {
+          if (i === index) {
+            return {
+              ...x,
+              isChecked: true,
+            };
+          } else {
+            return x;
+          }
+        });
+        setImagesData(imagesDataUpdated);
       }
-      let imagesDataUpdated = imagesData.map((x, i) => {
-        if (i === index) {
-          return {
-            ...x,
-            isChecked: true,
-          };
-        } else {
-          return x;
-        }
-      });
-      setImagesData(imagesDataUpdated);
       // }
     } else {
       if (isSingle && !isBanner) {
@@ -250,7 +241,7 @@ export default withRouter(function DiningAdd(props) {
         finalDining.is_indexed ? "1" : "0"
     },${finalDining.is_followed ? "1" : "0"}`;
     if (isEdit) {
-      API.put(`/dining/${id}`, finalDining).then((response) => {
+      LangAPI.post(`/dining/?lang=${selectedLang}`, finalDining).then((response) => {
         if (response.status === 200) {
           alert("Record Updated");
           setDining({...initialObject}); //clear all fields
@@ -258,9 +249,9 @@ export default withRouter(function DiningAdd(props) {
         }
       });
     } else {
-      API.post("/dining", finalDining).then((response) => {
+      LangAPI.post(`/dining?lang=${selectedLang}`, finalDining).then((response) => {
         if (response.status === 200) {
-          setPostId(response.data?.post_id);
+          // setPostId(response.data?.post_id);
           alert("Record Updated");
           setDining({...initialObject});
           props.history.push("/admin/dining");
@@ -269,35 +260,6 @@ export default withRouter(function DiningAdd(props) {
     }
   };
 
-  // const handleSubmit = () => {
-  //   const newImageList = [...JSON.parse(dining.images_list), ...selectedImages]
-  //   let finalDining = dining;
-  //   finalDining.route = finalDining.route.split(website_url)?.[1];
-  //   finalDining.inner_route = append_url;
-  //   finalDining.images_list = JSON.stringify([...new Set(selectedImages)]);
-  //   finalDining.is_indexed_or_is_followed = `${ finalDining.is_indexed ? "1" : "0"
-  //   },${finalDining.is_followed ? "1" : "0"}`;
-  //   if (isEdit) {
-  //     // console.log("finalRoom",finalRoom)
-  //     API.put(`/dining/${id}`, finalDining).then((response) => {
-  //       if (response.status === 200) {
-  //         alert("Record Updated");
-  //         setDining({ ...initialObject }); //clear all fields
-  //         props.history.push("/admin/dining");
-  //       }
-  //     });
-  //   } else {
-  //     API.post("/dining", finalDining).then((response) => {
-  //       if (response.status === 200) {
-  //         setPostId(response.data?.post_id);
-  //         alert("Record Updated");
-  //         setDining({ ...initialObject });
-  //         props.history.push("/admin/dining");
-  //       }
-  //     });
-  //   }
-  // };
-// debugger;
   const handleRemoveSelectedImage = (x, arrayListType) => {
     switch (arrayListType) {
       case "uploadsPreview" :
@@ -313,7 +275,7 @@ export default withRouter(function DiningAdd(props) {
         setSelectedImages(updatePreview.map((u) => u.id ));
         break;
       case "selectedImages" :
-        let updateData = selectedImages.filter((u) => u !== x.id);
+        let updateData = selectedImages.filter((u) => u.id !== x.id);
         setImagesData(imagesData.map(im => {
           if(im.id === x.id)
           {
@@ -327,14 +289,47 @@ export default withRouter(function DiningAdd(props) {
         return setUploadsPreview(uploadsPreview.filter((u) => u.id !== x.id))
     }
   }
+
+  const handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != selectedLang) {
+        setSelectedLang(event.target.value)
+    }
+  };
+
   return (
     <div>
       <div className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
             <h4 style={{ fontWeight: "400" }} className="my-0">
               Add Dining/Suite
             </h4>
+            <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", color: "white" }}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                    style={{ color: "white" }}
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    style={{ color: "white" }}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
           <CardBody>
@@ -386,6 +381,18 @@ export default withRouter(function DiningAdd(props) {
                   >
                     {isEdit ? "Change" : "Upload"} Featured Image
                   </MaterialButton>
+                  <TextField
+                  required
+                  id="slug"
+                  name="slug"
+                  label="Slug"
+                  value={dining.slug}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                  size="small"
+                  style={{ marginTop: '1rem' }}
+                />
                 </Fragment>
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -699,18 +706,16 @@ export default withRouter(function DiningAdd(props) {
                   Select Gallery Images
                 </MaterialButton>
               </Grid>
-              {renderPreviews &&
+              {
                 imagesData
                   ?.filter(function (array_el) {
                     return (
                       selectedImages.filter(function (menuItems_el) {
-                        return menuItems_el == array_el.id;
+                        return menuItems_el.id == array_el.id;
                       }).length !== 0
                     );
                   })
-                  ?.map((x) => (
-                      <SelectedImagesThumbnails x={x}
-                                                handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")}/>
+                  ?.map((x) => ( <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")}/>
                     // <Grid item xs={12} sm={2}>
                     //   <div style={{ height: "120px" }}>
                     //     <img

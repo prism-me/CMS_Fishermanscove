@@ -66,8 +66,8 @@ export default function AddOffer(props) {
 
   const initialObject = {
     post_name: "",
-    post_content: "<p>Detailed content goes here!</p>",
-    short_description: "<p>Short description goes here!</p>",
+    post_content: "",
+    short_description: "",
     room_type: -1,
     thumbnail: "",
     banner_img: "",
@@ -106,14 +106,24 @@ export default function AddOffer(props) {
   useEffect(() => {
     if (id && id != null) {
       setIsEdit(true);
-      setPostId(id);
+      // setPostId(id);
       LangAPI.get(`/offers/${id}?lang=${selectedLang}`).then((response) => {
         if (response.status === 200) {
-          let data = { ...response?.data?.category_details[0] };
+          let data = response?.data?.data;
           data.route = website_url + data.route;
-          setOffer({ ...offer, ...data });
-          setUploadsPreview(response.data?.uploads);
-        }
+          if(response?.data?.data){
+            setOffer(response?.data?.data);
+          let images = JSON.parse(response.data?.data?.images_list)
+          setSelectedImages(images);
+          setThumbnailPreview(response.data?.data?.thumbnailPreview);
+          setBannerThumbnailPreview(response?.data?.data?.banner_imgPreview);
+          } else {
+            setSelectedImages([]);
+            setThumbnailPreview("");
+            setBannerThumbnailPreview("");
+            setOffer(initialObject);
+          }
+        } 
       });
     }
     // LangAPI.get("/offer_categories/offers").then((response) => {
@@ -230,17 +240,17 @@ export default function AddOffer(props) {
     finalOffer.images_list = JSON.stringify(selectedImages);
 
     finalOffer.is_indexed_or_is_followed = `${finalOffer.is_indexed},${finalOffer.is_followed}`;
-    console.log("====finalOffer====",finalOffer)
-    return false;
+    // console.log("====finalOffer====",finalOffer)
+    // return false;
 
     if (isEdit) {
-      finalOffer.images_list = [
-        ...JSON.parse(finalOffer.images_list),
-        ...selectedImages,
-      ];
-      finalOffer.images_list = JSON.stringify(finalOffer.images_list);
+      // finalOffer.images_list = [
+      //   ...JSON.parse(finalOffer.images_list),
+      //   ...selectedImages,
+      // ];
+      // finalOffer.images_list = JSON.stringify(finalOffer.images_list);
 
-      API.put(`/offers/${id}`, finalOffer)
+      LangAPI.post(`/offers?lang=${selectedLang}`, finalOffer)
         .then((response) => {
           if (response.status === 200) {
             alert("Record Updated");
@@ -251,13 +261,13 @@ export default function AddOffer(props) {
         })
         .catch((err) => alert("Something went wrong"));
     } else {
-      finalOffer.images_list = JSON.stringify(selectedImages);
+      // finalOffer.images_list = JSON.stringify(selectedImages);
 
-      API.post("/offers", finalOffer)
+      LangAPI.post(`/offers?lang=${selectedLang}`, finalOffer)
         .then((response) => {
           if (response.status === 200) {
             alert("Record Added");
-            setPostId(response.data?.post_id);
+            // setPostId(response.data?.post_id);
             // setOffer({ ...initialObject });
             props.history.push("/admin/offers");
           }
@@ -281,7 +291,8 @@ export default function AddOffer(props) {
         setSelectedImages(updatePreview.map((u) => u.id ));
         break;
       case "selectedImages" :
-        let updateData = selectedImages.filter((u) => u !== x.id);
+        console.log('selectedImages',x)
+        let updateData = selectedImages.filter((u) => u.id !== x.id);
         setImagesData(imagesData.map(im => {
           if(im.id === x.id)
           {
@@ -673,7 +684,7 @@ export default function AddOffer(props) {
                   Select Gallery Images
                 </MaterialButton>
               </Grid>
-              {renderPreviews &&
+              {
                 imagesData
                   ?.filter(function (array_el) {
                     return (

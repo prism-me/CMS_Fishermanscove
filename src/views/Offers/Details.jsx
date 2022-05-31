@@ -23,9 +23,11 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
+import LangAPI from "langapi/http";
 
 // import { FaceOutlined } from '@material-ui/icons';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,6 +85,9 @@ const useStyles = makeStyles((theme) => ({
 
 export const OfferDetail = React.memo(function ReviewCard() {
   let params = useParams();
+  let { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const lang = query.get('lang');
   const styles = useStyles();
   const classes = useStyles();
   const mediaStyles = useWideCardMediaStyles();
@@ -110,10 +115,10 @@ export const OfferDetail = React.memo(function ReviewCard() {
   ]);
 
   useEffect(() => {
-    API.get(`/offers/${params.id}`).then(response => {
-      if (response.status === 200) {
-        setRoom(response.data.offer_details)
-        setUploads(response.data?.uploads)
+    LangAPI.get(`/offers/${params.id}?lang=${lang}`).then(response => {
+      if (response?.data?.data) {
+        setRoom(response?.data?.data)
+        setUploads(JSON.parse(response?.data?.data?.images_list))
       }
     })
   }, [])
@@ -123,7 +128,7 @@ export const OfferDetail = React.memo(function ReviewCard() {
       <CardMedia
         classes={mediaStyles}
         image={
-          room?.thumbnail
+          room?.thumbnailPreview
         }
       />
       <CardContent className={cx(shadowStyles.root, styles.content)}>
@@ -166,7 +171,7 @@ export const OfferDetail = React.memo(function ReviewCard() {
         <Box mt={4}>
           <div className={classes.imagesWrapper}>
             <GridList className={classes.gridList} cols={2.5}>
-              {uploads.map((tile) => (
+              {uploads?.map((tile) => (
                 <GridListTile key={tile.avatar}>
                   <img src={tile.avatar} alt={tile.alt_tag} />
                   <GridListTileBar

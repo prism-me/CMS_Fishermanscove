@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import MUIDataTable from "mui-datatables";
 import API from "utils/http";
-import { Avatar, Box, Button } from "@material-ui/core";
+import LangAPI from "langapi/http";
+import { Avatar, Box, Button, Select, MenuItem, FormControl } from "@material-ui/core";
+
 import { Link } from "react-router-dom";
 import {
   AddOutlined,
@@ -10,9 +12,12 @@ import {
   VisibilityOutlined,
 } from "@material-ui/icons";
 
+import InputLabel from "@material-ui/core/InputLabel";
+
 class DiningList extends Component {
   state = {
     offers: [],
+    selectedLang: "en",
     columns: [
       {
         name: "thumbnail",
@@ -95,20 +100,20 @@ class DiningList extends Component {
         },
       },
       {
-        name: "route",
+        name: "slug",
         label: "Actions",
         options: {
           filter: false,
           sort: false,
           customBodyRender: (val) => (
             <div className="d-flex nowrap">
-              <Link to={`/admin/dining/${val}`}>
+              <Link to={`/admin/dining/${val}?lang=${this.state.selectedLang}`}>
                 <VisibilityOutlined fontSize="small" color="action" />
               </Link>
               <Link
                 className="ml-2"
                 title="Edit"
-                to={`/admin/dining/edit/${val}`}
+                to={`/admin/dining/edit/${val}?lang=${this.state.selectedLang}`}
               >
                 <EditOutlined fontSize="small" color="primary" />
               </Link>
@@ -134,17 +139,24 @@ class DiningList extends Component {
   };
 
   componentDidMount() {
-    this.getData()
+    this.getData();
   }
-getData(){
-  API.get("/dining").then((response) => {
-    let rows = response.data;
-    this.setState({ rows: rows.filter((x) => x.post_type === "page") });
-  });
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.selectedLang !== this.state.selectedLang) {
+      this.getData();
+    }
+  }
+
+  getData(){
+    LangAPI.get(`/dining?lang=${this.state.selectedLang}`).then((response) => {
+      let rows = response?.data?.data;
+      this.setState({ rows: rows });
+    });
 }
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
-      API.delete(`/dining/${id}`)
+      LangAPI.delete(`/dining/${id}?lang=${this.state.selectedLang}`)
         .then((response) => {
           if (response.status === 200) {
             alert("Restaurant deleted successfully !");
@@ -163,19 +175,56 @@ getData(){
     }
   };
 
+  handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != this.state.selectedLang) {
+      this.setState({ selectedLang: event.target.value })
+    }
+    console.log(event.target.value, "event.target.value")
+  };
+
+
   render() {
     return (
       <div>
         <Box marginBottom={4}>
-          <Link to="/admin/dining/add">
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddOutlined />}
-            >
-              Add Restaurant
-            </Button>
-          </Link>
+          <div className="d-flex justify-content-between align-items-center">
+              <Link to="/admin/dining/add">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<AddOutlined />}
+                >
+                  Add Restaurant
+                </Button>
+              </Link>
+              <FormControl
+                    variant="outlined"
+                    size="small"
+                    style={{ width: "20%" }}
+                  // fullWidth
+                  >
+                    <InputLabel id="language">Select Language</InputLabel>
+                    <Select
+                      labelId="language"
+                      id="language"
+                      name="language"
+                      value={this.state.selectedLang}
+                      // onChange={handleInputChange}
+                      label="Select Language"
+                      fullWidth
+                      onChange={this.handleChange}
+                    >
+                      {/* <MenuItem value={-1}>
+                            <em>Select Language</em>
+                        </MenuItem> */}
+                      <MenuItem value={'en'}>En</MenuItem>
+                      <MenuItem value={'fr'}>FR</MenuItem>
+                      <MenuItem value={'de'}>DE</MenuItem>
+
+                    </Select>
+                </FormControl>
+            </div>
         </Box>
         <MUIDataTable
           title="Restaurants &amp; Bars"

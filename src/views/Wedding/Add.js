@@ -70,7 +70,7 @@ export default withRouter(function WeddingAdd(props) {
   useEffect(() => {
     if (id && id != null) {
       setIsEdit(true);
-      setPostId(id);
+      // setPostId(id);
       // LangAPI.get(`/weddings/${id}/edit`).then(response => {
       LangAPI.get(`/weddings/${id}?lang=${selectedLang}`).then(response => {
         if (response?.data?.status === '200') {

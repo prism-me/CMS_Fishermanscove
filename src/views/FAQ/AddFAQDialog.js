@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+// import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -8,14 +8,21 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Image } from '@material-ui/icons';
 import API from 'utils/http';
-import { Typography, Grid, FormControl, FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
+// import { Typography, Grid, FormControl, FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
+import { Typography, FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField, } from "@material-ui/core";
+import InputLabel from "@material-ui/core/InputLabel";
+import LangAPI from "langapi/http";
+
+
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
 export default function AddFAQDialog(props) {
-    const [id, set_id] = React.useState(-1);
-    const [alt_tag, set_alt_tag] = React.useState("");
-    const [avatar, set_avatar] = React.useState("");
-    const [is360, set_is360] = React.useState(false);
+    let { selectedLang, handleChange, page, handleChangePage} = props
+    const [id, set_id] = useState(-1);
+    const [alt_tag, set_alt_tag] = useState("");
+    const [avatar, set_avatar] = useState("");
+    const [is360, set_is360] = useState(false);
+    // const [selectedLang, setSelectedLang] = useState("en");
 
     useEffect(() => {
         if (props.image) {
@@ -26,7 +33,6 @@ export default function AddFAQDialog(props) {
         }
     }, [props.image])
 
-
     return (
         <div>
             <Dialog open={props.open} onClose={props.handleClose} maxWidth="sm" fullWidth aria-labelledby="form-dialog-title">
@@ -36,6 +42,59 @@ export default function AddFAQDialog(props) {
                         <Typography className="mb-2 font-weight-bold" variant="body2">
                             Question
                         </Typography>
+                        <FormControl
+                            variant="outlined"
+                            size="small"
+                            // style={{ color: "white" }}
+                            fullWidth
+                            style={{ marginBottom: '1rem' }}
+                        >
+                            <InputLabel id="language"
+                                // style={{ color: "white" }}
+                            >Select Language</InputLabel>
+                            <Select
+                                labelId="language"
+                                id="language"
+                                name="language"
+                                value={selectedLang}
+                                label="Select Language"
+                                fullWidth
+                                // style={{ color: "white" }}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value={'en'}>En</MenuItem>
+                                <MenuItem value={'fr'}>FR</MenuItem>
+                                <MenuItem value={'de'}>DE</MenuItem>
+
+                            </Select>
+                        </FormControl>
+                        <FormControl
+                            variant="outlined"
+                            size="small"
+                            // style={{ color: "white" }}
+                            fullWidth
+                            style={{ marginBottom: '1rem' }}
+                        >
+                            <InputLabel id="language"
+                                // style={{ color: "white" }}
+                            >Select Page</InputLabel>
+                            <Select
+                                labelId="page"
+                                id="page"
+                                name="page"
+                                value={page}
+                                label="Select page"
+                                fullWidth
+                                // style={{ color: "white" }}
+                                onChange={handleChangePage}
+                            >
+                                <MenuItem value={'wedding'}>Wedding</MenuItem>
+                                <MenuItem value={'dining'}>Dining</MenuItem>
+                                <MenuItem value={'rooms'}>Rooms</MenuItem>
+                                <MenuItem value={'gardens'}>Gardens</MenuItem>
+                            </Select>
+                        </FormControl>
+                        
                         <TextField
                             required
                             id={`question`}
@@ -45,6 +104,18 @@ export default function AddFAQDialog(props) {
                             variant="outlined"
                             fullWidth
                             onChange={(e) => props.handleQuestionChange(e)}
+                            size="small"
+                            style={{ marginBottom: '1rem' }}
+                        />
+                        <TextField
+                            required
+                            id={`slug`}
+                            name={`slug`}
+                            label="Slug"
+                            value={props.slug}
+                            variant="outlined"
+                            fullWidth
+                            onChange={(e) => props.handleSlugChange(e)}
                             size="small"
                             style={{ marginBottom: '1rem' }}
                         />
