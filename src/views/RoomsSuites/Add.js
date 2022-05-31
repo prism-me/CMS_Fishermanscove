@@ -68,7 +68,7 @@ export default withRouter(function AddRoom(props) {
         post_content: "",
         short_description: "",
         room_type: -1,
-        slug:"",
+        slug: "",
         parent_id: -1,
         thumbnail: "",
         banner_img: "",
@@ -101,7 +101,7 @@ export default withRouter(function AddRoom(props) {
     const [thumbnailPreview, setThumbnailPreview] = useState("");
     const [isBanner, setIsBanner] = useState(false);
     const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState("");
-    const [selectedLang, setSelectedLang] = useState(lang ||"en");
+    const [selectedLang, setSelectedLang] = useState(lang || "en");
 
 
     useEffect(() => {
@@ -113,7 +113,7 @@ export default withRouter(function AddRoom(props) {
 
                     let data = { ...response?.data?.data };
                     data.route = website_url + data.route;
-                    if(response?.data?.data){
+                    if (response?.data?.data) {
                         setRoom({ ...room, ...data });
                         // setUploadsPreview(response.data?.uploads);
                         let images = JSON.parse(response?.data?.data.images_list)
@@ -128,8 +128,8 @@ export default withRouter(function AddRoom(props) {
                 }
             });
         }
-        
-        if(!imagesData.length > 0){
+
+        if (!imagesData.length > 0) {
             getGalleryImages();
         }
     }, [selectedLang]);
@@ -171,13 +171,13 @@ export default withRouter(function AddRoom(props) {
             //   return;
             // } else {
             if (isSingle && !isBanner) {
-                setRoom({ ...room, thumbnail: imagesData[index].id,thumbnailPreview: imagesData[index].avatar});
+                setRoom({ ...room, thumbnail: imagesData[index].id, thumbnailPreview: imagesData[index].avatar });
                 setThumbnailPreview(imagesData[index].avatar);
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
             } else if (isSingle && isBanner) {
-                setRoom({ ...room, banner_img: imagesData[index].id, banner_imgPreview: imagesData[index].avatar});
+                setRoom({ ...room, banner_img: imagesData[index].id, banner_imgPreview: imagesData[index].avatar });
                 setBannerThumbnailPreview(imagesData[index].avatar);
                 setTimeout(() => {
                     setShowGallery(false);
@@ -231,44 +231,44 @@ export default withRouter(function AddRoom(props) {
         finalRoom.inner_route = append_url;
         finalRoom.images_list = JSON.stringify(selectedImages);
         finalRoom.is_indexed_or_is_followed = `${finalRoom.is_indexed ? "1" : "0"},${finalRoom.is_followed ? "1" : "0"}`;
-        
-        if(!finalRoom.post_name || finalRoom.post_name == ""){
+
+        if (!finalRoom.post_name || finalRoom.post_name == "") {
             alert("Please Add Room/Suite Name");
             return false;
         }
-        if(!finalRoom.banner_text || finalRoom.banner_text == ""){
+        if (!finalRoom.banner_text || finalRoom.banner_text == "") {
             alert("Please Add Banner Text");
             return false;
         }
-        if(!finalRoom.thumbnailPreview || finalRoom.thumbnailPreview == ""){
+        if (!finalRoom.thumbnailPreview || finalRoom.thumbnailPreview == "") {
             alert("Please Select Featured Image");
             return false;
         }
-        if(!finalRoom.banner_imgPreview || finalRoom.banner_imgPreview == ""){
+        if (!finalRoom.banner_imgPreview || finalRoom.banner_imgPreview == "") {
             alert("Please Select Banner Image");
             return false;
         }
-        if(!finalRoom.room_type || finalRoom.room_type =="" ){
+        if (!finalRoom.room_type || finalRoom.room_type == "") {
             alert("Please Select Room/Suite Type");
             return false;
         }
-        if(!finalRoom.slug || finalRoom.slug == ""){
+        if (!finalRoom.slug || finalRoom.slug == "") {
             alert("Please Select Slug for The Room/Suite");
             return false;
         }
-        if(!finalRoom.post_url || finalRoom.post_url == ""){
+        if (!finalRoom.post_url || finalRoom.post_url == "") {
             alert("Please Select Synesis Link");
             return false;
         }
-        if(!finalRoom.short_description || finalRoom.short_description == ""){
+        if (!finalRoom.short_description || finalRoom.short_description == "") {
             alert("Please Add Short Description");
             return false;
         }
-        if(!finalRoom.post_content || finalRoom.post_content == ""){
+        if (!finalRoom.post_content || finalRoom.post_content == "") {
             alert("Please Add Detailed Content");
             return false;
         }
-        if(!selectedImages.length > 0){
+        if (!selectedImages.length > 0) {
             alert("Please Select Room Images");
             return false;
         }
@@ -320,7 +320,7 @@ export default withRouter(function AddRoom(props) {
                 return setUploadsPreview(uploadsPreview.filter((u) => u.id !== x.id))
         }
     }
-    
+
     const handleChange = (event) => {
         // setAge(event.target.value as string);
         if (event.target.value != selectedLang) {
@@ -337,30 +337,30 @@ export default withRouter(function AddRoom(props) {
                     </h4> */}
                     <h4 className="mb-0">Add Room/Suite</h4>
                     <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
-            // fullWidth
-            >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+                        variant="outlined"
+                        size="small"
+                        style={{ width: "20%", color: "white" }}
+                    // fullWidth
+                    >
+                        <InputLabel id="language"
+                            style={{ color: "white" }}
+                        >Select Language</InputLabel>
+                        <Select
+                            labelId="language"
+                            id="language"
+                            name="language"
+                            value={selectedLang}
+                            label="Select Language"
+                            fullWidth
+                            style={{ color: "white" }}
+                            onChange={handleChange}
+                        >
+                            <MenuItem value={'en'}>En</MenuItem>
+                            <MenuItem value={'fr'}>FR</MenuItem>
+                            <MenuItem value={'de'}>DE</MenuItem>
 
-                </Select>
-            </FormControl>
+                        </Select>
+                    </FormControl>
                     {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
                 </CardHeader>
                 <CardBody>
@@ -508,16 +508,16 @@ export default withRouter(function AddRoom(props) {
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <TextField
-                                            required
-                                            id="slug"
-                                            name="slug"
-                                            label="Slug"
-                                            value={room.slug}
-                                            variant="outlined"
-                                            fullWidth
-                                            onChange={handleInputChange}
-                                            size="small"
-                                        />
+                                        required
+                                        id="slug"
+                                        name="slug"
+                                        label="Slug"
+                                        value={room.slug}
+                                        variant="outlined"
+                                        fullWidth
+                                        onChange={handleInputChange}
+                                        size="small"
+                                    />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <TextField
@@ -720,35 +720,35 @@ export default withRouter(function AddRoom(props) {
                                 Select Gallery Images
                             </MaterialButton>
                         </Grid>
-                        { imagesData
-                                ?.filter(function (array_el) {
-                                    return (
-                                        selectedImages.filter(function (menuItems_el) {
-                                            return menuItems_el.id === array_el.id;
-                                        }).length !== 0
-                                    );
-                                })
-                                ?.map((x) => (
-                                    <SelectedImagesThumbnails x={x}
-                                        handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")} />
-                                    // <Grid item xs={12} sm={2}>
-                                    //     <div style={{height: "120px"}}>
-                                    //         <div className="d-flex position-absolute" style={{cursor: "pointer"}}>
-                                    //             <CancelIcon/>
-                                    //         </div>
-                                    //         <img
-                                    //             width="100%"
-                                    //             src={x.avatar}
-                                    //             className="img-thumbnail position-relative"
-                                    //             alt=""
-                                    //             style={{height: "90%", objectFit: "cover"}}
-                                    //         />
-                                    //         <p style={{fontSize: "12px"}} className="text-center">
-                                    //             {x.alt_tag}
-                                    //         </p>
-                                    //     </div>
-                                    // </Grid>
-                                ))}
+                        {imagesData
+                            ?.filter(function (array_el) {
+                                return (
+                                    selectedImages.filter(function (menuItems_el) {
+                                        return menuItems_el.id === array_el.id;
+                                    }).length !== 0
+                                );
+                            })
+                            ?.map((x) => (
+                                <SelectedImagesThumbnails x={x}
+                                    handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")} />
+                                // <Grid item xs={12} sm={2}>
+                                //     <div style={{height: "120px"}}>
+                                //         <div className="d-flex position-absolute" style={{cursor: "pointer"}}>
+                                //             <CancelIcon/>
+                                //         </div>
+                                //         <img
+                                //             width="100%"
+                                //             src={x.avatar}
+                                //             className="img-thumbnail position-relative"
+                                //             alt=""
+                                //             style={{height: "90%", objectFit: "cover"}}
+                                //         />
+                                //         <p style={{fontSize: "12px"}} className="text-center">
+                                //             {x.alt_tag}
+                                //         </p>
+                                //     </div>
+                                // </Grid>
+                            ))}
                         {uploadsPreview &&
                             uploadsPreview?.map((x) => (
                                 <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "uploadsPreview")} />

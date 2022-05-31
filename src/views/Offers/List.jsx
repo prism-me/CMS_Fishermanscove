@@ -104,7 +104,7 @@ class OffersList extends Component {
     if (prevState.selectedLang !== this.state.selectedLang) {
       LangAPI.get(`/offers?lang=${this.state.selectedLang}`).then((response) => {
         let rows = response?.data?.data;
-        if(this.state.rows != rows){
+        if (this.state.rows != rows) {
           // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
           this.setState({ rows });
         }
@@ -157,42 +157,42 @@ class OffersList extends Component {
     return (
       <div>
         <Box marginBottom={4}>
-        <div className="d-flex justify-content-between align-items-center">
-          <Link to="/admin/offers/add">
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddOutlined />}
-              disableElevation
-            >
-              Add Offer
-            </Button>
-          </Link>
-          <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%" }}
-              // fullWidth
+          <div className="d-flex justify-content-between align-items-center">
+            <Link to="/admin/offers/add">
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddOutlined />}
+                disableElevation
               >
-                <InputLabel id="language">Select Language</InputLabel>
-                <Select
-                  labelId="language"
-                  id="language"
-                  name="language"
-                  value={this.state.selectedLang}
-                  // onChange={handleInputChange}
-                  label="Select Language"
-                  fullWidth
-                  onChange={this.handleChange}
-                >
-                  {/* <MenuItem value={-1}>
+                Add Offer
+              </Button>
+            </Link>
+            <FormControl
+              variant="outlined"
+              size="small"
+              style={{ width: "20%" }}
+            // fullWidth
+            >
+              <InputLabel id="language">Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={this.state.selectedLang}
+                // onChange={handleInputChange}
+                label="Select Language"
+                fullWidth
+                onChange={this.handleChange}
+              >
+                {/* <MenuItem value={-1}>
                         <em>Select Language</em>
                     </MenuItem> */}
-                  <MenuItem value={'en'}>En</MenuItem>
-                  <MenuItem value={'fr'}>FR</MenuItem>
-                  <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </div>
           {/* <Button
