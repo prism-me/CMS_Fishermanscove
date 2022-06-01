@@ -4,7 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-
 import MaterialButton from "@material-ui/core/Button";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
@@ -12,9 +11,9 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-
+import LangAPI from "langapi/http";
 import avatar from "assets/img/faces/marc.jpg";
-import { FormControl, FormControlLabel, Radio, RadioGroup, Select, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
+import { FormControl, FormControlLabel, Radio, RadioGroup, Select, TextField, CardMedia, CardActionArea, CardContent, CardActions, MenuItem } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
 import { Image } from "@material-ui/icons";
@@ -45,9 +44,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function LeisureActivities() {
-  const pageId = parseInt(useParams().id);
+  const pageId = useParams().id;
   const classes = useStyles();
-  const [leisure, setLeisure] = useState({
+  let initObj = {
     banner: {
       id: 0,
       section_name: '',
@@ -125,7 +124,9 @@ export default function LeisureActivities() {
       section_avtar_alt: '',
       section_slug: 'Water'
     },
-  })
+  }
+
+  const [leisure, setLeisure] = useState(initObj)
 
   const [seoInfo, setSeoInfo] = useState({
     id: 0,
@@ -147,6 +148,7 @@ export default function LeisureActivities() {
   const [showGallery, setShowGallery] = useState(false)
   const [isSingle, setIsSingle] = useState(true)
   // const [renderPreviews, setRenderPreviews] = useState(false)
+  const [selectedLang, setSelectedLang] = useState("en");
   const [thumbnailPreview, setThumbnailPreview] = useState({
     banner: "",
     activities: "",
@@ -158,26 +160,47 @@ export default function LeisureActivities() {
   })
 
   useEffect(() => {
-    API.get(`/all_sections/${pageId}`).then(response => {
+    LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
         console.log(data,"datadata for leasure act")
-        setLeisure(
-            {
-              banner: data.find(x => x.section_slug === "banner") || leisure.banner,
-              activities: data.find(x => x.section_slug === "activities") || leisure.activities,
-              awards: data.find(x => x.section_slug === "awards") || leisure.awards,
-              excellence: data.find(x => x.section_slug === "excellence") || leisure.excellence,
-              Fishing: data.find(x => x.section_slug === "Fishing") || leisure.Fishing,
-              Unlock: data.find(x => x.section_slug === "Unlock") || leisure.Unlock,
-              Water: data.find(x => x.section_slug === "Water") || leisure.Water,
-            }
-        )
+        // setLeisure(
+        //     {
+        //       banner: data.find(x => x.section_slug === "banner") || leisure.banner,
+        //       activities: data.find(x => x.section_slug === "activities") || leisure.activities,
+        //       awards: data.find(x => x.section_slug === "awards") || leisure.awards,
+        //       excellence: data.find(x => x.section_slug === "excellence") || leisure.excellence,
+        //       Fishing: data.find(x => x.section_slug === "Fishing") || leisure.Fishing,
+        //       Unlock: data.find(x => x.section_slug === "Unlock") || leisure.Unlock,
+        //       Water: data.find(x => x.section_slug === "Water") || leisure.Water,
+        //     }
+        // )
+        if(response.data.data[0]){
+          setLeisure(response.data.data[0])
+          setSeoInfo(response?.data?.data[0]?.meta)
+        } else {
+          setSeoInfo({
+            id: 0,
+            post_id: pageId || 0,
+            meta_title: '',
+            meta_description: '',
+            // route: website_url,
+            schema_markup: '',
+            is_followed: true,
+            is_indexed: true,
+            is_indexed_or_is_followed: '1,1',
+          })
+          setLeisure(initObj)
+        }
       }
     });
-    getGalleryImages();
-    getSEOInfo();
-  }, [])
+    
+    if(!imagesData.length > 0){
+      getGalleryImages();
+    }
+
+    // getSEOInfo();
+  }, [selectedLang])
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then(response => {
@@ -209,26 +232,30 @@ export default function LeisureActivities() {
   }
 
   const handleImageSelect = (e, index, section) => {
+    setTimeout(() => {
+      setShowGallery(false);
+    }, 500);
+
     if (e.target.checked) {
       // if (isSingle && thumbnailPreview !== "") {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-      setLeisure({ ...leisure, [section]: { ...leisure[section], section_avatar: imagesData[index].id } })
+      setLeisure({ ...leisure, [section]: { ...leisure[section], section_avatar: imagesData[index] } })
       // setThumbnailPreview(imagesData[index].avatar)
       setThumbnailPreview({...thumbnailPreview, [section]: imagesData[index].avatar })
 
-      let imagesDataUpdated = imagesData.map((x, i) => {
-        if (i === index) {
-          return {
-            ...x,
-            isChecked: true
-          }
-        } else {
-          return x
-        }
-      });
-      setImagesData(imagesDataUpdated);
+      // let imagesDataUpdated = imagesData.map((x, i) => {
+      //   if (i === index) {
+      //     return {
+      //       ...x,
+      //       isChecked: true
+      //     }
+      //   } else {
+      //     return x
+      //   }
+      // });
+      // setImagesData(imagesDataUpdated);
       // }
     } else {
       setLeisure({ ...leisure, [section]: { ...leisure[section], section_avatar: "" } })
@@ -263,41 +290,86 @@ export default function LeisureActivities() {
   //   setSeoInfo(updatedSeoInfo);
   // }
 
-  const handleSEOSubmit = () => {
-    let updatedSeoInfo = seoInfo;
-    updatedSeoInfo.is_indexed_or_is_followed = `${updatedSeoInfo.is_indexed},${updatedSeoInfo.is_followed}`;
+  // const handleSEOSubmit = () => {
+  //   let updatedSeoInfo = seoInfo;
+  //   updatedSeoInfo.is_indexed_or_is_followed = `${updatedSeoInfo.is_indexed},${updatedSeoInfo.is_followed}`;
 
-    if (updatedSeoInfo.id > 0) {
-      API.put(`/meta/${pageId}`, updatedSeoInfo).then(response => {
-        if (response.status === 200) {
-          alert("Section updated successfully !");
-        }
-      }).catch(err => console.log(err))
-    } else {
-      API.post(`/meta`, updatedSeoInfo).then(response => {
-        if (response.status === 200) {
-          alert("Section updated successfully !");
-        }
-      }).catch(err => console.log(err))
+  //   if (updatedSeoInfo.id > 0) {
+  //     API.put(`/meta/${pageId}`, updatedSeoInfo).then(response => {
+  //       if (response.status === 200) {
+  //         alert("Section updated successfully !");
+  //       }
+  //     }).catch(err => console.log(err))
+  //   } else {
+  //     API.post(`/meta`, updatedSeoInfo).then(response => {
+  //       if (response.status === 200) {
+  //         alert("Section updated successfully !");
+  //       }
+  //     }).catch(err => console.log(err))
 
-    }
-  }
+  //   }
+  // }
 
   const handleSubmit = (id, name) => {
-    API.post(`/add_section`, leisure[name]).then(response => {
+
+    let updatedLeisure = { ...leisure };
+    updatedLeisure.meta = {...seoInfo};
+    updatedLeisure.page_id = pageId
+    updatedLeisure.slug="leisure-sections"
+    // console.log("updatedLeisure",updatedLeisure); return false;
+
+    LangAPI.post(`/add-section?lang=${selectedLang}`, updatedLeisure).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
     }).catch(err => console.log(err))
+
+    // API.post(`/add_section`, leisure[name]).then(response => {
+    //   if (response.status === 200) {
+    //     alert("Section updated successfully !");
+    //   }
+    // }).catch(err => console.log(err))
   }
+
+  const handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != selectedLang) {
+        setSelectedLang(event.target.value)
+    }
+  };
 
   return (
       <div>
         <div className={classes.root}>
           <Card>
-            <CardHeader color="primary">
+            <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
               <h4 className="mb-0">Add Leisure Activities</h4>
               {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+              <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", color: "white" }}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                    style={{ color: "white" }}
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    style={{ color: "white" }}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
             </CardHeader>
             <CardBody>
               {/* ******************* */}
@@ -331,8 +403,8 @@ export default function LeisureActivities() {
                       <div className="thumbnail-preview-wrapper-large img-thumbnail">
                         {
                           !leisure.banner.id > 0 ?
-                              thumbnailPreview["banner"] !== "" ?
-                                  <img src={thumbnailPreview["banner"]} alt={leisure.banner.section_avtar_alt || ""} />
+                            leisure.banner?.section_avatar?.avatar !== "" ?
+                                  <img src={leisure.banner?.section_avatar?.avatar} alt={leisure.banner.section_avtar_alt || ""} />
                                   :
                                   <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
@@ -361,11 +433,11 @@ export default function LeisureActivities() {
                         </MaterialButton>
                       </Fragment>
                     </Grid>
-                    <Grid item xs={12} sm={12}>
+                    {/* <Grid item xs={12} sm={12}>
                       <MaterialButton onClick={() => handleSubmit(leisure.banner.id, "banner")} size="large" color="primary" variant="contained">
                         Update Section
                       </MaterialButton>
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                 </AccordionDetails>
               </Accordion>
@@ -416,8 +488,8 @@ export default function LeisureActivities() {
                           <div className="thumbnail-preview-wrapper-large img-thumbnail">
                             {
                               !leisure.activities.id > 0 ?
-                                  thumbnailPreview["activities"] !== "" ?
-                                      <img src={thumbnailPreview["activities"]} alt={leisure.activities.section_avtar_alt || ""} />
+                                leisure.activities?.section_avatar?.avatar !== "" ?
+                                      <img src={leisure.activities?.section_avatar?.avatar} alt={leisure.activities.section_avtar_alt || ""} />
                                       :
                                       <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                                   :
@@ -425,7 +497,7 @@ export default function LeisureActivities() {
                                       // dining.thumbnail && dining.thumbnail !== "" ?
                                       <img src={thumbnailPreview["activities"]} alt={leisure.activities.section_avtar_alt || ""} />
                                       :
-                                      <img src={leisure.activities.section_avatar} alt={leisure.activities.section_avtar_alt || ""} />
+                                      <img src={leisure.activities.section_avatar?.avatar} alt={leisure.activities.section_avtar_alt || ""} />
                             }
                           </div>
                         </CardActionArea>
@@ -449,11 +521,11 @@ export default function LeisureActivities() {
                         </CardActions>
                       </Card>
                     </Grid>
-                    <Grid item xs={12} sm={12}>
+                    {/* <Grid item xs={12} sm={12}>
                       <MaterialButton onClick={() => handleSubmit(leisure.activities.id, "activities")} size="large" color="primary" variant="contained">
                         Update Section
                       </MaterialButton>
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                 </AccordionDetails>
               </Accordion>
@@ -501,8 +573,8 @@ export default function LeisureActivities() {
                           <div className="thumbnail-preview-wrapper-large img-thumbnail">
                             {
                               !leisure.Fishing.id > 0 ?
-                                  thumbnailPreview["Fishing"] !== "" ?
-                                      <img src={thumbnailPreview["Fishing"]} alt={leisure.Fishing.section_avtar_alt || ""} />
+                                leisure.Fishing?.section_avatar?.avatar !== "" ?
+                                      <img src={leisure.Fishing?.section_avatar?.avatar} alt={leisure.Fishing.section_avtar_alt || ""} />
                                       :
                                       <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                                   :
@@ -510,7 +582,7 @@ export default function LeisureActivities() {
                                       // dining.thumbnail && dining.thumbnail !== "" ?
                                       <img src={thumbnailPreview["Fishing"]} alt={leisure.Fishing.section_avtar_alt || ""} />
                                       :
-                                      <img src={leisure.Fishing.section_avatar} alt={leisure.Fishing.section_avtar_alt || ""} />
+                                      <img src={leisure.Fishing?.section_avatar} alt={leisure.Fishing.section_avtar_alt || ""} />
                             }
                           </div>
                         </CardActionArea>
@@ -534,11 +606,11 @@ export default function LeisureActivities() {
                         </CardActions>
                       </Card>
                     </Grid>
-                    <Grid item xs={12} sm={12}>
+                    {/* <Grid item xs={12} sm={12}>
                       <MaterialButton onClick={() => handleSubmit(leisure.Fishing.id, "Fishing")} size="large" color="primary" variant="contained">
                         Update Section
                       </MaterialButton>
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                 </AccordionDetails>
               </Accordion>
@@ -586,8 +658,8 @@ export default function LeisureActivities() {
                           <div className="thumbnail-preview-wrapper-large img-thumbnail">
                             {
                               !leisure.Unlock.id > 0 ?
-                                  thumbnailPreview["Unlock"] !== "" ?
-                                      <img src={thumbnailPreview["Unlock"]} alt={leisure.Unlock.section_avtar_alt || ""} />
+                                leisure.Unlock.section_avatar?.avatar !== "" ?
+                                      <img src={leisure.Unlock.section_avatar?.avatar} alt={leisure.Unlock.section_avtar_alt || ""} />
                                       :
                                       <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                                   :
@@ -619,11 +691,11 @@ export default function LeisureActivities() {
                         </CardActions>
                       </Card>
                     </Grid>
-                    <Grid item xs={12} sm={12}>
+                    {/* <Grid item xs={12} sm={12}>
                       <MaterialButton onClick={() => handleSubmit(leisure.Unlock.id, "Unlock")} size="large" color="primary" variant="contained">
                         Update Section
                       </MaterialButton>
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                 </AccordionDetails>
               </Accordion>
@@ -671,8 +743,8 @@ export default function LeisureActivities() {
                           <div className="thumbnail-preview-wrapper-large img-thumbnail">
                             {
                               !leisure.Water.id > 0 ?
-                                  thumbnailPreview["Water"] !== "" ?
-                                      <img src={thumbnailPreview["Water"]} alt={leisure.Water.section_avtar_alt || ""} />
+                                leisure.Water.section_avatar?.avatar !== "" ?
+                                      <img src={leisure.Water.section_avatar?.avatar} alt={leisure.Water.section_avtar_alt || ""} />
                                       :
                                       <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                                   :
@@ -703,11 +775,6 @@ export default function LeisureActivities() {
                           </Fragment>
                         </CardActions>
                       </Card>
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                      <MaterialButton onClick={() => handleSubmit(leisure.Water.id, "Water")} size="large" color="primary" variant="contained">
-                        Update Section
-                      </MaterialButton>
                     </Grid>
                   </Grid>
                 </AccordionDetails>
@@ -742,8 +809,8 @@ export default function LeisureActivities() {
                           <div className="thumbnail-preview-wrapper-small img-thumbnail">
                             {
                               !leisure.awards.id > 0 ?
-                                  thumbnailPreview["awards"] !== "" ?
-                                      <img src={thumbnailPreview["awards"]} alt={leisure.awards.section_avtar_alt || ""} />
+                                leisure.awards?.section_avatar?.avatar !== "" ?
+                                      <img src={leisure.awards.section_avatar?.avatar} alt={leisure.awards.section_avtar_alt || ""} />
                                       :
                                       <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                                   :
@@ -775,11 +842,6 @@ export default function LeisureActivities() {
                         </CardActions>
                       </Card>
                     </Grid>
-                    <Grid item xs={12} sm={12}>
-                      <MaterialButton onClick={() => handleSubmit(leisure.awards.id, "awards")} size="large" color="primary" variant="contained">
-                        Update Section
-                      </MaterialButton>
-                    </Grid>
                   </Grid>
                   <Grid container>
                     <Grid item xs={12} sm={12}>
@@ -799,8 +861,8 @@ export default function LeisureActivities() {
                           <div className="thumbnail-preview-wrapper-small img-thumbnail">
                             {
                               !leisure.excellence.id > 0 ?
-                                  thumbnailPreview["excellence"] !== "" ?
-                                      <img src={thumbnailPreview["excellence"]} alt={leisure.excellence.section_avtar_alt || ""} />
+                              leisure.excellence?.section_avatar?.avatar !== "" ?
+                                      <img src={leisure.excellence?.section_avatar?.avatar} alt={leisure.excellence.section_avtar_alt || ""} />
                                       :
                                       <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                                   :
@@ -808,7 +870,7 @@ export default function LeisureActivities() {
                                       // dining.thumbnail && dining.thumbnail !== "" ?
                                       <img src={thumbnailPreview["snorkeling"]} alt={leisure.excellence.section_avtar_alt || ""} />
                                       :
-                                      <img src={leisure.excellence.section_avatar} alt={leisure.excellence.section_avtar_alt || ""} />
+                                      <img src={leisure.excellence?.section_avatar?.avatar} alt={leisure.excellence.section_avtar_alt || ""} />
                             }
                           </div>
                         </CardActionArea>
@@ -831,11 +893,6 @@ export default function LeisureActivities() {
                           </Fragment>
                         </CardActions>
                       </Card>
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                      <MaterialButton onClick={() => handleSubmit(leisure.excellence.id, "excellence")} size="large" color="primary" variant="contained">
-                        Update Section
-                      </MaterialButton>
                     </Grid>
                   </Grid>
                 </AccordionDetails>
@@ -928,16 +985,16 @@ export default function LeisureActivities() {
                         </RadioGroup>
                       </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={12}>
-                      <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
-                        Update Section
-                      </MaterialButton>
-                    </Grid>
                   </Grid>
                 </AccordionDetails>
               </Accordion>
             </CardBody>
           </Card>
+          <Grid item xs={12} sm={12}>
+            <MaterialButton onClick={() => handleSubmit()} size="large" color="primary" variant="contained">
+              Update Section
+            </MaterialButton>
+          </Grid>
         </div>
         <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
           setShowGallery(false);

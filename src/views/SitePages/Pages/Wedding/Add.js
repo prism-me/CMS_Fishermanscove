@@ -115,10 +115,60 @@ export default function AddWedding() {
     LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
           console.log(response.data.data[0],"response.data.data")
+          if(response.data.data[0]){
+            setWedding(response.data.data[0])
+            setThumbnailPreview(response?.data?.data[0]?.banner?.section_avatar?.avatar || "")
+            setSeoInfo(response?.data?.data[0]?.meta)
+          } else {
+            setWedding({
+              banner: {
+                id: 0,
+                section_name: '',
+                section_content: "<p>Detailed content goes here!</p>",
+                page_id: pageId,
+                section_avatar: '',
+                section_col_arr: 0,
+                section_prior: 1,
+                section_avtar_alt: '',
+                section_slug: 'banner'
+              },
+              intro: {
+                id: 0,
+                section_name: '',
+                section_content: "<p>Detailed content goes here!</p>",
+                page_id: pageId,
+                section_avatar: '',
+                section_col_arr: 0,
+                section_prior: 1,
+                section_avtar_alt: '',
+                section_slug: 'intro'
+              },
+              faq: {
+                id: 0,
+                section_name: '',
+                section_content: [],
+                page_id: pageId,
+                section_avatar: '',
+                section_col_arr: 0,
+                section_prior: 1,
+                section_avtar_alt: '',
+                section_slug: 'faq'
+              },
+            })
+            setThumbnailPreview("")
+            setSeoInfo({
+              id: 0,
+              post_id: pageId || 0,
+              meta_title: '',
+              meta_description: '',
+              // route: website_url,
+              schema_markup: '',
+              is_followed: true,
+              is_indexed: true,
+              is_indexed_or_is_followed: '1,1',
+            })
+          }
           
-          setWedding(response.data.data[0])
-          setThumbnailPreview(response?.data?.data[0]?.banner?.section_avatar?.avatar || "")
-          setSeoInfo(response?.data?.data[0]?.meta)
         // const { data } = response;
         // const banner = data?.find(x => x.section_slug === "banner")
         // const intro = data?.find(x => x.section_slug === "intro")
