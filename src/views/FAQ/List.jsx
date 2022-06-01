@@ -6,6 +6,9 @@ import { useParams } from "react-router-dom";
 import API from "utils/http";
 import LangAPI from "langapi/http";
 import AddFAQDialog from "./AddFAQDialog";
+import InputLabel from "@material-ui/core/InputLabel";
+import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField, } from "@material-ui/core";
+
 
 function ContextAwareToggle({
   children,
@@ -36,7 +39,7 @@ function ContextAwareToggle({
       <i
         style={{ width: "5%", color: "#ff0000" }}
         className={`fa fa-trash float-right d-block`}
-        onClick={() => handleDelete(sectionIndex, contentIndex)}
+        onClick={() => handleDelete(sectionIndex)}
       />
     </div>
   );
@@ -73,13 +76,12 @@ const FAQList = (props) => {
       .then((response) => {
         if (response.status === 200) {
           setFaqList(response?.data?.data);
-          console.log(response?.data?.data,"response?.data?.data")
         }
       })
       .catch((err) => {
         alert("Something went wrong");
       });
-  }, []);
+  }, [selectedLang]);
 
   //faq section methods
   const handleQuestionChange = (e, index) => {
@@ -116,33 +118,48 @@ const FAQList = (props) => {
   };
 
 
-  const handleDelete = (sectionIndex, contentIndex) => {
-    let updatedFAQ = faqList[sectionIndex];
-    debugger;
-    //parsing to JSON as the data is stringified
-    debugger;
-    let updatedSectionContent = JSON.parse(updatedFAQ.section_content);
-    //deleting index item
-    updatedSectionContent = updatedSectionContent.filter(
-      (x, i) => i !== contentIndex
-    );
-    //replacing section content with modified array
-    updatedFAQ.section_content = updatedSectionContent;
+  const handleDelete = (sectionIndex) => {
+      if (window.confirm("Are you sure you want to delete this ?")) {
 
-    API.put(`/add_section/${updatedFAQ.page_id}`, updatedFAQ)
-      .then((response) => {
-        if (response.status === 200) {
-          alert("FAQ added successfully !");
-        }
-      })
-      .then(() => {
-        API.get("/faqs").then((response) => {
-          if (response.status === 200) {
-            setFaqList(response.data);
-          }
-        });
-      })
-      .catch((err) => console.log(err));
+        LangAPI.delete(`/faqs/${sectionIndex}?lang=${selectedLang}`)
+          .then((response) => {
+            if (response.status === 200) {
+
+              LangAPI.get(`/faqs?lang=${selectedLang}`).then((response) => {
+                  if (response.status === 200) {
+                    setFaqList(response?.data?.data);
+                    alert("FAQ Deleted Successfully")
+                  }
+                })
+                .catch((err) => {
+                  alert("Something went wrong");
+                });
+            }
+          }).catch((err) => console.log(err));
+      }
+      
+    // let updatedSectionContent = JSON.parse(updatedFAQ.section_content);
+    //deleting index item
+    // updatedSectionContent = updatedSectionContent.filter(
+    //   (x, i) => i !== contentIndex
+    // );
+    //replacing section content with modified array
+    // updatedFAQ.section_content = updatedSectionContent;
+
+    // API.put(`/add_section/${'updatedFAQ.page_id'}`, 'updatedFAQ')
+    //   .then((response) => {
+    //     if (response.status === 200) {
+    //       alert("FAQ added successfully !");
+    //     }
+    //   })
+    //   .then(() => {
+    //     API.get(`/faqs?lang=${selectedLang}`).then((response) => {
+    //       if (response.status === 200) {
+    //         setFaqList(response.data);
+    //       }
+    //     });
+    //   })
+    //   .catch((err) => console.log(err));
   };
 
   const handleSubmit = () => {
@@ -177,21 +194,49 @@ const FAQList = (props) => {
     //   })
     //   .catch((err) => console.log(err));
 
+    if(!faqObj.page || faqObj.page == ""){
+      alert("Please Select FAQ Page")
+      return false;
+    }
+    if(!faqObj.question || faqObj.question == ""){
+      alert("Please Select FAQ Title")
+      return false;
+    }
+    if(!faqObj.slug || faqObj.slug == ""){
+      alert("Please Add FAQ Slug")
+      return false;
+    }
+    if(!faqObj.answer || faqObj.answer == ""){
+      alert("Please Add FAQ Answer")
+      return false;
+    }
+
     LangAPI.post(`/faqs?lang=${selectedLang}`, faqObj)
       .then((response) => {
         if (response.status === 200) {
           alert("FAQ Added Successfully")
-          // setFaqList(response?.data?.data);{
-            let section_content = {}
-            section_content.answer = "";
-            section_content.question = "";
-            section_content.slug = "";
-            section_content.page = "";
-            setFAQ({ ...faq, section_content });
-            setShowFAQ(false)
-            if(response?.data?.data.length > 0){
-              setFaqList(response?.data?.data)
-            }
+
+            let section_content = [
+              {
+                question: "",
+                answer: "",
+                slug:"",
+                page:""
+              },
+            ]
+
+            LangAPI.get(`/faqs?lang=${selectedLang}`)
+            .then((response) => {
+              if (response.status === 200) {
+                setFaqList(response?.data?.data);
+                setFAQ({ ...faq, section_content });
+                setShowFAQ(false)
+              }
+            })
+            .catch((err) => {
+              alert("Something went wrong");
+            });
+            
           }
       })
       .catch((err) => {
@@ -207,8 +252,8 @@ const FAQList = (props) => {
           Frequently Asked Questions (F.A.Q's)
         </h3>
           <div key={faq.id}>
-              <div className="d-flex justify-content-between align-items-center">
-                <h5 className="my-3">{faq.post_name}</h5>
+              <div className="d-flex justify-content-between">
+                {/* <h5 className="my-3">{faq.post_name}</h5> */}
                 <Button
                   variant="contained"
                   color="primary"
@@ -221,6 +266,29 @@ const FAQList = (props) => {
                 >
                   Add New F.A.Q Item
                 </Button>
+                <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", marginBottom:'1rem'}}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
               </div>
             {faqList.map((x, ind) => (
               <Accordion key={x.id}>
@@ -232,7 +300,7 @@ const FAQList = (props) => {
                   >
                     <ContextAwareToggle
                       eventKey={`${ind}`}
-                      sectionIndex={ind}
+                      sectionIndex={x.slug}
                       contentIndex={ind}
                       handleDelete={handleDelete}
                     >

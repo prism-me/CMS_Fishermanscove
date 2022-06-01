@@ -312,7 +312,7 @@ export default function AddOffer(props) {
     if (event.target.value != selectedLang) {
         setSelectedLang(event.target.value)
     }
-};
+  };
 
   return (
     <div>

@@ -4,6 +4,7 @@ import API from 'utils/http';
 import { Avatar, Box, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { AddOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
+import LangAPI from "langapi/http";
 
 class PageList extends Component {
   state = {
@@ -21,7 +22,7 @@ class PageList extends Component {
       //   }
       // },
       {
-        name: "post_name",
+        name: "name",
         label: "Name",
         options: {
           filter: true,
@@ -74,13 +75,13 @@ class PageList extends Component {
       //   }
       // },
       {
-        name: "id",
+        name: "_id",
         label: "Actions",
         options: {
           filter: false,
           sort: false,
           customBodyRender: (val, row) => {
-            return <Link to={`/admin/pages/${row.tableData?.[row.rowIndex]?.inner_route}/add/${val}`} >
+            return <Link to={`/admin/pages/${row.tableData?.[row.rowIndex]?.slug}/add/${val}`} >
               {/* <EditOutlined color="primary" /> */}
               <Button size="small" color="primary" variant="outlined">
                 Update Sections
@@ -99,8 +100,9 @@ class PageList extends Component {
   };
 
   componentDidMount() {
-    API.get('/pages').then(response => {
-      let rows = response.data?.filter(x=> x.customized_page == 1);
+    LangAPI.get('/pages').then(response => {
+      console.log(response?.data?.data,"response?.data?.data")
+      let rows = response?.data?.data;
       // let rows = data.map(x=> {
       //   return {
 

@@ -22,6 +22,8 @@ import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
+import LangAPI from "langapi/http";
+
 import { Image } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -41,8 +43,9 @@ const useStyles = makeStyles((theme) => ({
 export default function PageAdd() {
   const classes = useStyles();
   const [leisure, setLeisure] = useState({
-    post_name: '',
-    post_content: "<p>Detailed content goes here!</p>",
+    name: '',
+    slug:'',
+    content: "<p>Detailed content goes here!</p>",
     short_description: "<p>Short description goes here!</p>",
     category_id: -1,
     thumbnail:''
@@ -54,6 +57,16 @@ export default function PageAdd() {
     setLeisure(updatedLeisure);
   }
 
+  const handleSubmit = () => {
+    LangAPI.post(`/pages`, leisure).then(response => {
+      console.log(response);
+      if (response.status === 200) {
+        alert("Record Updated");
+        // setWedding({ ...initialObject }); //resetting the form
+        // props.history.push('/admin/weddings');
+      }
+    }).catch(err => alert("Something went wrong"));
+  }
   return (
     <div>
       <div className={classes.root}>
@@ -67,17 +80,26 @@ export default function PageAdd() {
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
-                  id="post_name"
-                  name="post_name"
+                  id="name"
+                  name="name"
                   label="Name"
-                  value={leisure.post_name}
+                  value={leisure.name}
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
                 />
               </Grid>
               <Grid item xs={6} sm={6}>
-                
+              <TextField
+                  required
+                  id="slug"
+                  name="slug"
+                  label="Slug"
+                  value={leisure.slug}
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleInputChange}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl variant="outlined" fullWidth className={classes.formControl}>
@@ -136,12 +158,12 @@ export default function PageAdd() {
                 <p>Detailed Content</p>
                 <CKEditor
                     config={ckEditorConfig}
-                    onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.post_content} onChange={(e)=> setLeisure({...leisure, post_content: e.editor.getData()})} />
-
+                    onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.content} onChange={(e)=> setLeisure({...leisure, content: e.editor.getData()})} />
               </Grid>
             </Grid>
           </CardBody>
         </Card>
+        <Button color="primary" variant="contained" onClick={handleSubmit}>Add Page</Button>
       </div>
     </div>
   );

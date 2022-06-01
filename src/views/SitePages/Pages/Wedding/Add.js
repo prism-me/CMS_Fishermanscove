@@ -3,13 +3,21 @@ import React, { Fragment, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 // core components
 import Grid from '@material-ui/core/Grid';
-
+import InputLabel from "@material-ui/core/InputLabel";
 import MaterialButton from "@material-ui/core/Button";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-
-import { FormControl, FormControlLabel, Radio, RadioGroup, TextField } from "@material-ui/core";
+import {
+  MenuItem,
+  Select,
+  FormControl,
+  TextField,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+  Avatar,
+} from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
 import Accordion from '@material-ui/core/Accordion';
@@ -19,6 +27,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
+import LangAPI from "langapi/http";
 import FAQSection from "../Common/FAQSection";
 import { Image } from "@material-ui/icons";
 import GalleryDialog from "views/Common/GalleryDialog";
@@ -40,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function AddWedding() {
-  const pageId = parseInt(useParams().id);
+  const pageId = useParams().id;
   const classes = useStyles();
   const [wedding, setWedding] = useState({
     banner: {
@@ -100,29 +109,38 @@ export default function AddWedding() {
   const [isSingle, setIsSingle] = useState(true)
   // const [renderPreviews, setRenderPreviews] = useState(false)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
+  const [selectedLang, setSelectedLang] = useState("en");
 
   useEffect(() => {
-    API.get(`/all_sections/${pageId}`).then(response => {
+    LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        const { data } = response;
-        const banner = data.find(x => x.section_slug === "banner")
-        const intro = data.find(x => x.section_slug === "intro")
-        const faq = data.find(x => x.section_slug === "faq")
-        if (faq && faq.section_content) {
-          faq.section_content = JSON.parse(faq.section_content);
-        }
-        setWedding(
-          {
-            intro: intro || wedding.intro,
-            faq: faq || wedding.faq,
-            banner: banner || wedding.banner
-          }
-        )
+          console.log(response.data.data[0],"response.data.data")
+          
+          setWedding(response.data.data[0])
+          setThumbnailPreview(response?.data?.data[0]?.banner?.section_avatar?.avatar || "")
+          setSeoInfo(response?.data?.data[0]?.meta)
+        // const { data } = response;
+        // const banner = data?.find(x => x.section_slug === "banner")
+        // const intro = data?.find(x => x.section_slug === "intro")
+        // const faq = data?.find(x => x.section_slug === "faq")
+        // if (faq && faq.section_content) {
+        //   faq.section_content = JSON.parse(faq.section_content);
+        // }
+        // setWedding(
+        //   {
+        //     intro: intro || wedding.intro,
+        //     faq: faq || wedding.faq,
+        //     banner: banner || wedding.banner
+        //   }
+        // )
       }
     });
-    getGalleryImages();
-    getSEOInfo();
-  }, [])
+
+    if(!imagesData.length > 0){
+      getGalleryImages();
+    }
+    // getSEOInfo();
+  }, [selectedLang])
 
 
   const getGalleryImages = () => {
@@ -133,19 +151,19 @@ export default function AddWedding() {
     })
   }
 
-  const getSEOInfo = () => {
-    API.get(`/meta/${pageId}`).then(response => {
-      if (response.status === 200) {
-        let seoInfoData = response.data;
-        if (seoInfoData) {
-          setSeoInfo(seoInfoData);
-        }
-        else {
-          seoInfoData(seoInfo);
-        }
-      }
-    })
-  }
+  // const getSEOInfo = () => {
+  //   API.get(`/meta/${pageId}`).then(response => {
+  //     if (response.status === 200) {
+  //       let seoInfoData = response.data;
+  //       if (seoInfoData) {
+  //         setSeoInfo(seoInfoData);
+  //       }
+  //       else {
+  //         seoInfoData(seoInfo);
+  //       }
+  //     }
+  //   })
+  // }
 
   // const getSEOInfo = () => {
   //   API.get(`/meta/${pageId}`).then(response => {
@@ -181,11 +199,11 @@ export default function AddWedding() {
     }, 500);
 
     if (e.target.checked) {
-      if (isSingle && thumbnailPreview !== "") {
-        alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
-        return;
-      } else {
-        setWedding({ ...wedding, [section]: { ...wedding[section], section_avatar: imagesData[index].id } })
+      // if (isSingle && thumbnailPreview !== "") {
+      //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
+      //   return;
+      // } else {
+        setWedding({ ...wedding, [section]: { ...wedding[section], section_avatar: imagesData[index] } })
         setThumbnailPreview(imagesData[index].avatar)
 
         let imagesDataUpdated = imagesData.map((x, i) => {
@@ -199,7 +217,7 @@ export default function AddWedding() {
           }
         });
         setImagesData(imagesDataUpdated);
-      }
+      // }
     }
     else {
       setWedding({ ...wedding, [section]: { ...wedding[section], section_avatar: "" } })
@@ -245,25 +263,25 @@ export default function AddWedding() {
   }
   //end faq section methods
   //
-  const handleSEOSubmit = () => {
-    let updatedSeoInfo = seoInfo;
-    updatedSeoInfo.is_indexed_or_is_followed = `${updatedSeoInfo.is_indexed},${updatedSeoInfo.is_followed}`;
+  // const handleSEOSubmit = () => {
+  //   let updatedSeoInfo = seoInfo;
+  //   updatedSeoInfo.is_indexed_or_is_followed = `${updatedSeoInfo.is_indexed},${updatedSeoInfo.is_followed}`;
 
-    if (updatedSeoInfo.id > 0) {
-      API.put(`/meta/${pageId}`, updatedSeoInfo).then(response => {
-        if (response.status === 200) {
-          alert("Section updated successfully !");
-        }
-      }).catch(err => console.log(err))
-    } else {
-      API.post(`/meta`, updatedSeoInfo).then(response => {
-        if (response.status === 200) {
-          alert("Section updated successfully !");
-        }
-      }).catch(err => console.log(err))
+  //   if (updatedSeoInfo.id > 0) {
+  //     API.put(`/meta/${pageId}`, updatedSeoInfo).then(response => {
+  //       if (response.status === 200) {
+  //         alert("Section updated successfully !");
+  //       }
+  //     }).catch(err => console.log(err))
+  //   } else {
+  //     API.post(`/meta`, updatedSeoInfo).then(response => {
+  //       if (response.status === 200) {
+  //         alert("Section updated successfully !");
+  //       }
+  //     }).catch(err => console.log(err))
 
-    }
-  }
+  //   }
+  // }
   // const handleSEOSubmit = () => {
   //   let updatedSeoInfo = seoInfo;
   //   updatedSeoInfo.route = updatedSeoInfo.route.split(website_url)?.[1];
@@ -288,23 +306,57 @@ export default function AddWedding() {
 
   const handleSubmit = (id, name) => {
     let updatedWedding = { ...wedding };
-    if (name === "faq") {
-      updatedWedding.faq.section_content = JSON.stringify(updatedWedding.faq.section_content)
-    }
-    API.post(`/add_section`, updatedWedding[name]).then(response => {
+    updatedWedding.meta = {...seoInfo};
+    updatedWedding.page_id = pageId
+    updatedWedding.slug="wedding-sections"
+    // console.log("updatedWedding",updatedWedding); return false;
+
+    LangAPI.post(`/add-section?lang=${selectedLang}`, updatedWedding).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
     }).catch(err => console.log(err))
   }
 
+  const handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != selectedLang) {
+        setSelectedLang(event.target.value)
+    }
+  };
+
   return (
     <div>
       <div className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
             <h4 className="mb-0">Add Wedding Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+            <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", color: "white" }}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                    style={{ color: "white" }}
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    style={{ color: "white" }}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
           </CardHeader>
           <CardBody>
             {/* ******************* */}
@@ -368,11 +420,7 @@ export default function AddWedding() {
                           </MaterialButton>
                     </Fragment>
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(wedding.banner.id, "banner")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
+                  
                 </Grid>
               </AccordionDetails>
             </Accordion>
@@ -407,11 +455,6 @@ export default function AddWedding() {
                     <CKEditor
                         config={ckEditorConfig}
                         onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.intro.section_content} onChange={(e) => setWedding({ ...wedding, intro: { ...wedding.intro, section_content: e.editor.getData() } })} />
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(wedding.intro.id, "intro")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -507,11 +550,6 @@ export default function AddWedding() {
                       </RadioGroup>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
@@ -549,16 +587,16 @@ export default function AddWedding() {
                       Add a New Link
                     </MaterialButton>
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(wedding.faq.id, "faq")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
           </CardBody>
         </Card>
+        <Grid item xs={12} sm={12}>
+          <MaterialButton onClick={() => handleSubmit()} size="large" color="primary" variant="contained">
+            Update Section
+          </MaterialButton>
+        </Grid>
       </div>
       {/* GALLERY DIALOG BOX START */}
       <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {

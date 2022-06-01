@@ -149,14 +149,14 @@ class DiningList extends Component {
   }
 
   getData(){
-    LangAPI.get(`/dining?lang=${this.state.selectedLang}`).then((response) => {
+    LangAPI.get(`/dinings?lang=${this.state.selectedLang}`).then((response) => {
       let rows = response?.data?.data;
       this.setState({ rows: rows });
     });
 }
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
-      LangAPI.delete(`/dining/${id}?lang=${this.state.selectedLang}`)
+      LangAPI.delete(`/dinings/${id}?lang=${this.state.selectedLang}`)
         .then((response) => {
           if (response.status === 200) {
             alert("Restaurant deleted successfully !");

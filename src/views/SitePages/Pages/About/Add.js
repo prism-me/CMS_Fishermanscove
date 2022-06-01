@@ -1,14 +1,13 @@
 import React, { Fragment, useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
 // core components
 // import GridItem from "components/Grid/GridItem.js";
 // import GridContainer from "components/Grid/GridContainer.js";
 // import CustomInput from "components/CustomInput/CustomInput.js";
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-
+import InputLabel from "@material-ui/core/InputLabel";
 import MaterialButton from "@material-ui/core/Button";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
@@ -16,7 +15,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-
+import LangAPI from "langapi/http";
 import avatar from "assets/img/faces/marc.jpg";
 import { FormControl, FormControlLabel, Radio, RadioGroup, Select, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
@@ -51,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function AddAboutUs() {
-  const pageId = parseInt(useParams().id);
+  const pageId = useParams().id;
   const classes = useStyles();
   const [about, setAbout] = useState({
     banner: {
@@ -110,23 +109,33 @@ export default function AddAboutUs() {
   const [isSingle, setIsSingle] = useState(true)
   // const [renderPreviews, setRenderPreviews] = useState(false)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
+  const [selectedLang, setSelectedLang] = useState("en");
 
   useEffect(() => {
-    API.get(`/all_sections/${pageId}`).then(response => {
+    // API.get(`/all_sections/${pageId}`).then(response => {
+    LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        const { data } = response;
-        setAbout(
-          {
-            intro: data.find(x => x.section_slug === "intro") || about.intro,
-            dine: data.find(x => x.section_slug === "dine") || about.dine,
-            banner: data.find(x => x.section_slug === "banner") || about.banner,
-          }
-        )
+        // const { data } = response;
+        // setAbout(
+        //   {
+        //     intro: data.find(x => x.section_slug === "intro") || about.intro,
+        //     dine: data.find(x => x.section_slug === "dine") || about.dine,
+        //     banner: data.find(x => x.section_slug === "banner") || about.banner,
+        //   }
+        // )
+        if(response.data.data[0]){
+          setAbout(response.data.data[0])
+        setThumbnailPreview(response?.data?.data[0]?.banner?.section_avatar?.avatar || "")
+        setSeoInfo(response?.data?.data[0]?.meta)
+        }
       }
     });
-    getGalleryImages();
-    getSEOInfo();
-  }, []);
+
+    if(!imagesData.length > 0){
+      getGalleryImages();
+    }
+    // getSEOInfo();
+  }, [selectedLang]);
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then(response => {
@@ -136,19 +145,19 @@ export default function AddAboutUs() {
     })
   }
 
-  const getSEOInfo = () => {
-    API.get(`/meta/${pageId}`).then(response => {
-      if (response.status === 200) {
-        let seoInfoData = response.data;
-        if (seoInfoData) {
-          setSeoInfo(seoInfoData);
-        }
-        else {
-          seoInfoData(seoInfo);
-        }
-      }
-    })
-  }
+  // const getSEOInfo = () => {
+  //   API.get(`/meta/${pageId}`).then(response => {
+  //     if (response.status === 200) {
+  //       let seoInfoData = response.data;
+  //       if (seoInfoData) {
+  //         setSeoInfo(seoInfoData);
+  //       }
+  //       else {
+  //         seoInfoData(seoInfo);
+  //       }
+  //     }
+  //   })
+  // }
 
   const handleInputChange = (e, section) => {
     let updatedAbout = { ...about };
@@ -166,7 +175,7 @@ export default function AddAboutUs() {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-        setAbout({ ...about, [section]: { ...about[section], section_avatar: imagesData[index].id } })
+        setAbout({ ...about, [section]: { ...about[section], section_avatar: imagesData[index] } })
         setThumbnailPreview(imagesData[index].avatar)
 
         let imagesDataUpdated = imagesData.map((x, i) => {
@@ -240,6 +249,13 @@ export default function AddAboutUs() {
       }
     }).catch(err => console.log(err))
   }
+
+  const handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != selectedLang) {
+        setSelectedLang(event.target.value)
+    }
+  };
 
   return (
     <div>

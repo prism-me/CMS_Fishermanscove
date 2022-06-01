@@ -80,12 +80,6 @@ export default withRouter(function DiningAdd(props) {
     section_dress_code: "",
     section_opening_hours : "",
     slug:""
-    // faqs_content: [
-    //   {
-    //     question: "",
-    //     answer: "",
-    //   },
-    // ]
   };
 
   const [dining, setDining] = useState({ ...initialObject });
@@ -109,23 +103,27 @@ export default withRouter(function DiningAdd(props) {
     if (id && id != null) {
       setIsEdit(true);
       // setPostId(id);
-      LangAPI.get(`/dining/${id}?lang=${selectedLang}`).then((response) => {
+      LangAPI.get(`/dinings/${id}?lang=${selectedLang}`).then((response) => {
         if (response.status === 200) {
 
           if(response?.data?.data){
             let data = { ...response?.data?.data };
-            let meta = { ...response?.data?.meta[0] };
-            data.meta_title = meta.meta_title;
-            data.is_indexed_or_is_followed = meta.is_indexed_or_is_followed;
-            data.meta_description = meta.meta_description;
-            data.schema_markup = meta.schema_markup;
-            data.route = website_url + data.route;
+            // let meta = { ...response?.data?.meta[0] };
+            // data.meta_title = meta.meta_title;
+            // data.is_indexed_or_is_followed = meta.is_indexed_or_is_followed;
+            // data.meta_description = meta.meta_description;
+            // data.schema_markup = meta.schema_markup;
+            // data.route = website_url + data.route;
             setDining(data);
-            setUploadsPreview(response.data?.data?.images_list);
-            setSelectedImages(response.data?.data?.images_list)
+            // setUploadsPreview(response.data?.data?.images_list);
+            // console.log(response.data?.data?.images_list,"response.data?.data?.images_list");return false;
+            let images = JSON.parse(response.data?.data?.images_list)
+            setSelectedImages(images)
+            setThumbnailPreview(response?.data?.data?.thumbnailPreview)
+            setBannerThumbnailPreview(response?.data?.data?.banner_imgPreview)
           } else {
             setDining(initialObject);
-            setUploadsPreview([]);
+            // setUploadsPreview([]);
             setSelectedImages([])
           }
           
@@ -229,19 +227,74 @@ export default withRouter(function DiningAdd(props) {
   };
 
   const handleSubmit = () => {
-    // let updateddining = { ...dining };
-    // if (initialObject === "faqs_content") {
-    //   updateddining.initialObject.faqs_content = JSON.stringify(updateddining.initialObject.faqs_content)
-    // }
+
     let finalDining = dining;
-    finalDining.route = dining.route.split(website_url)?.[1];
-    finalDining.inner_route = append_url;
+    finalDining.route = dining?.route?.split(website_url)?.[1] || "";
+    finalDining.inner_route = append_url || "";
     finalDining.images_list = JSON.stringify([...new Set(selectedImages)]);
     finalDining.is_indexed_or_is_followed = `${
         finalDining.is_indexed ? "1" : "0"
     },${finalDining.is_followed ? "1" : "0"}`;
+
+    const initialObject = {
+      post_name: "",
+      post_content: "",
+      short_description: "",
+      room_type: -1,
+      parent_id: -1,
+      thumbnail: "",
+      banner_img: "",
+      banner_text: "",
+      alt_text: "",
+      meta_title: "",
+      meta_description: "",
+      schema_markup: "",
+      post_url: "",
+      route: website_url,
+      inner_route: append_url,
+      is_followed: true,
+      is_indexed: true,
+      is_indexed_or_is_followed: "1,1",
+      images_list: [],
+      section_slug: "",
+      section_name:"",
+      section_dress_code: "",
+      section_opening_hours : "",
+      slug:""
+    };
+
+    if(!finalDining.post_name || finalDining.post_name == ""){
+      alert("Please Add Title Before Submiting")
+      return false;
+    }
+    if(!finalDining.banner_text || finalDining.banner_text == ""){
+      alert("Please Add Banner Text Before Submiting")
+      return false;
+    }
+    if(!finalDining.thumbnailPreview || finalDining.thumbnailPreview == ""){
+      alert("Please select Featured Image Before Submiting")
+      return false;
+    }
+    if(!finalDining.banner_imgPreview || finalDining.banner_imgPreview == ""){
+      alert("Please select Add Banner Image Before Submiting")
+      return false;
+    }
+    if(!finalDining.slug || finalDining.slug == ""){
+      alert("Please select Add Slug Before Submiting")
+      return false;
+    }
+    if(!finalDining.short_description || finalDining.short_description == ""){
+      alert("Please Add Short Description Before Submiting")
+      return false;
+    }
+    if(!selectedImages || selectedImages.length <= 0){
+      alert("Please select Images List Before Submiting")
+      return false;
+    }
+
+
     if (isEdit) {
-      LangAPI.post(`/dining/?lang=${selectedLang}`, finalDining).then((response) => {
+      LangAPI.post(`/dinings?lang=${selectedLang}`, finalDining).then((response) => {
         if (response.status === 200) {
           alert("Record Updated");
           setDining({...initialObject}); //clear all fields
@@ -249,7 +302,7 @@ export default withRouter(function DiningAdd(props) {
         }
       });
     } else {
-      LangAPI.post(`/dining?lang=${selectedLang}`, finalDining).then((response) => {
+      LangAPI.post(`/dinings?lang=${selectedLang}`, finalDining).then((response) => {
         if (response.status === 200) {
           // setPostId(response.data?.post_id);
           alert("Record Updated");

@@ -11,8 +11,9 @@ import { useWideCardMediaStyles } from '@mui-treasury/styles/cardMedia/wide';
 import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
 import { usePushingGutterStyles } from '@mui-treasury/styles/gutter/pushing';
 import API from 'utils/http';
+import LangAPI from "langapi/http";
 // import { Chip } from '@material-ui/core';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 
 import GridList from '@material-ui/core/GridList';
@@ -76,6 +77,10 @@ const useStyles = makeStyles((theme) => ({
 
 export const DiningDetail = React.memo(function ReviewCard() {
   let params = useParams();
+  let { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const lang = query.get('lang');
+
   const styles = useStyles();
   const classes = useStyles();
   const mediaStyles = useWideCardMediaStyles();
@@ -102,10 +107,11 @@ export const DiningDetail = React.memo(function ReviewCard() {
     },
   ]);
   useEffect(() => {
-    API.get(`/dining/${params.id}`).then(response => {
+    LangAPI.get(`/dinings/${params.id}?lang=${lang}`).then(response => {
       if (response.status === 200) {
-        setDining(response.data?.category_details[0])
-        setUploads(response.data?.uploads)
+        setDining(response?.data?.data)
+        let imgs = JSON.parse(response?.data?.data.images_list)
+        setUploads(imgs)
       }
     })
   }, [])
@@ -115,7 +121,7 @@ export const DiningDetail = React.memo(function ReviewCard() {
       <CardMedia
         classes={mediaStyles}
         image={
-          dining?.thumbnail
+          dining?.thumbnailPreview
           // 'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80'
         }
       />
