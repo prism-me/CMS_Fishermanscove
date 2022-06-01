@@ -16,9 +16,9 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-
+import LangAPI from "langapi/http";
 import avatar from "assets/img/faces/marc.jpg";
-import { FormControl, FormControlLabel, Radio, RadioGroup, Select, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
+import { FormControl, FormControlLabel, Radio, RadioGroup, Select, TextField, MenuItem, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -51,77 +51,84 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function AddSustainability() {
-  const pageId = parseInt(useParams().id);
-  const classes = useStyles();
-  const [sustainability, setSustainability] = useState({
-    banner: {
-      id: 0,
-      section_name: '',
-      section_content: "<p>Detailed content goes here!</p>",
-      page_id: pageId,
-      section_avatar: '',
-      section_col_arr: 0,
-      section_prior: 1,
-      section_avtar_alt: '',
-      section_slug: 'banner'
-    },
-    intro: {
-      id: 0,
-      section_name: '',
-      section_content: "<p>Detailed content goes here!</p>",
-      page_id: pageId,
-      section_avatar: '',
-      section_col_arr: 0,
-      section_prior: 1,
-      section_avtar_alt: '',
-      section_slug: 'intro'
-    },
-    pillars: {
-      id: 0,
-      section_name: '',
-      section_content: "<p>Detailed content goes here!</p>",
-      page_id: pageId,
-      section_avatar: '',
-      section_col_arr: 0,
-      section_prior: 1,
-      section_avtar_alt: '',
-      section_slug: 'pillars'
-    },
-    projects: {
-      id: 0,
-      section_name: '',
-      section_content: "<p>Detailed content goes here!</p>",
-      page_id: pageId,
-      section_avatar: '',
-      section_col_arr: 0,
-      section_prior: 1,
-      section_avtar_alt: '',
-      section_slug: 'projects'
-    },
-    energy: {
-      id: 0,
-      section_name: '',
-      section_content: "<p>Detailed content goes here!</p>",
-      page_id: pageId,
-      section_avatar: '',
-      section_col_arr: 0,
-      section_prior: 1,
-      section_avtar_alt: '',
-      section_slug: 'energy'
-    },
-  })
+  const pageId = useParams().id;
 
-  const [seoInfo, setSeoInfo] = useState({
+  
+let initObj = {
+  banner: {
     id: 0,
-    post_id: pageId || 0,
-    meta_title: '',
-    meta_description: '',
-    // route: website_url,
-    schema_markup: '',
-    is_followed: true,
-    is_indexed: true,
-    is_indexed_or_is_followed: '1,1',
-  })
+    section_name: '',
+    section_content: "<p>Detailed content goes here!</p>",
+    page_id: pageId,
+    section_avatar: '',
+    section_col_arr: 0,
+    section_prior: 1,
+    section_avtar_alt: '',
+    section_slug: 'banner'
+  },
+  intro: {
+    id: 0,
+    section_name: '',
+    section_content: "<p>Detailed content goes here!</p>",
+    page_id: pageId,
+    section_avatar: '',
+    section_col_arr: 0,
+    section_prior: 1,
+    section_avtar_alt: '',
+    section_slug: 'intro'
+  },
+  pillars: {
+    id: 0,
+    section_name: '',
+    section_content: "<p>Detailed content goes here!</p>",
+    page_id: pageId,
+    section_avatar: '',
+    section_col_arr: 0,
+    section_prior: 1,
+    section_avtar_alt: '',
+    section_slug: 'pillars'
+  },
+  projects: {
+    id: 0,
+    section_name: '',
+    section_content: "<p>Detailed content goes here!</p>",
+    page_id: pageId,
+    section_avatar: '',
+    section_col_arr: 0,
+    section_prior: 1,
+    section_avtar_alt: '',
+    section_slug: 'projects'
+  },
+  energy: {
+    id: 0,
+    section_name: '',
+    section_content: "<p>Detailed content goes here!</p>",
+    page_id: pageId,
+    section_avatar: '',
+    section_col_arr: 0,
+    section_prior: 1,
+    section_avtar_alt: '',
+    section_slug: 'energy'
+  },
+}
+
+let seoObj = {
+  id: 0,
+  post_id: pageId || 0,
+  meta_title: '',
+  meta_description: '',
+  // route: website_url,
+  schema_markup: '',
+  is_followed: true,
+  is_indexed: true,
+  is_indexed_or_is_followed: '1,1',
+}
+
+
+  const classes = useStyles();
+  const [sustainability, setSustainability] = useState(initObj)
+
+  const [seoInfo, setSeoInfo] = useState(seoObj)
 
   const [currentSection, setCurrentSection] = useState("")
 
@@ -131,6 +138,7 @@ export default function AddSustainability() {
   const [showGallery, setShowGallery] = useState(false)
   const [isSingle, setIsSingle] = useState(true)
   // const [renderPreviews, setRenderPreviews] = useState(false)
+  const [selectedLang, setSelectedLang] = useState("en");
   const [thumbnailPreview, setThumbnailPreview] = useState({
     banner: "",
     intro: "",
@@ -140,24 +148,24 @@ export default function AddSustainability() {
   })
 
   useEffect(() => {
-    API.get(`/all_sections/${pageId}`).then(response => {
+    LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
-        setSustainability(
-          {
-            intro: data.find(x => x.section_slug === "intro") || sustainability.intro,
-            projects: data.find(x => x.section_slug === "projects") || sustainability.projects,
-            pillars: data.find(x => x.section_slug === "pillars") || sustainability.pillars,
-            energy: data.find(x => x.section_slug === "energy") || sustainability.energy,
-            banner: data.find(x => x.section_slug === "banner") || sustainability.banner,
-
-          }
-        )
+        if(response.data.data[0]){
+          setSustainability(response.data.data[0])
+          setSeoInfo(response?.data?.data[0]?.meta)
+        } else {
+          setSustainability(initObj)
+          setSeoInfo(seoInfo)
+        }
+        
       }
     });
-    getGalleryImages();
-    getSEOInfo();
-  }, [])
+
+    if(!imagesData.length > 0){
+      getGalleryImages();
+    }
+  }, [selectedLang])
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then(response => {
@@ -196,20 +204,20 @@ export default function AddSustainability() {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-      setSustainability({ ...sustainability, [section]: { ...sustainability[section], section_avatar: imagesData[index].id } })
-      setThumbnailPreview({ ...thumbnailPreview, [section]: imagesData[index].avatar })
+      setSustainability({ ...sustainability, [section]: { ...sustainability[section], section_avatar: imagesData[index] } })
+      // setThumbnailPreview({ ...thumbnailPreview, [section]: imagesData[index].avatar })
 
-      let imagesDataUpdated = imagesData.map((x, i) => {
-        if (i === index) {
-          return {
-            ...x,
-            isChecked: true
-          }
-        } else {
-          return x
-        }
-      });
-      setImagesData(imagesDataUpdated);
+      // let imagesDataUpdated = imagesData.map((x, i) => {
+      //   if (i === index) {
+      //     return {
+      //       ...x,
+      //       isChecked: true
+      //     }
+      //   } else {
+      //     return x
+      //   }
+      // });
+      // setImagesData(imagesDataUpdated);
       // }
     } else {
       setSustainability({ ...sustainability, [section]: { ...sustainability[section], section_avatar: "" } })
@@ -265,20 +273,67 @@ export default function AddSustainability() {
   }
 
   const handleSubmit = (id, name) => {
-    API.post(`/add_section`, sustainability[name]).then(response => {
+    // API.post(`/add_section`, sustainability[name]).then(response => {
+    //   if (response.status === 200) {
+    //     alert("Section updated successfully !");
+    //   }
+    // }).catch(err => console.log(err))
+
+    let updatedSustainability = { ...sustainability };
+    updatedSustainability.meta = {...seoInfo};
+    updatedSustainability.page_id = pageId
+    updatedSustainability.slug="sustainability-sections"
+    // console.log("updatedSustainability",updatedSustainability); return false;
+
+    LangAPI.post(`/add-section?lang=${selectedLang}`, updatedSustainability).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
     }).catch(err => console.log(err))
+
   }
+
+  const handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != selectedLang) {
+        setSelectedLang(event.target.value)
+    }
+  };
+
+
 
   return (
     <div>
       <div className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
             <h4 className="mb-0">Add Sustainability Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+            <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", color: "white" }}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                    style={{ color: "white" }}
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    style={{ color: "white" }}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
           </CardHeader>
           <CardBody>
             {/* ******************* */}
@@ -312,16 +367,16 @@ export default function AddSustainability() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !sustainability.banner.id > 0 ?
-                          thumbnailPreview["banner"] !== "" ?
-                            <img src={thumbnailPreview["banner"]} alt={sustainability.banner.section_avtar_alt || ""} />
+                          sustainability.banner.section_avatar.avatar !== "" ?
+                            <img src={sustainability.banner?.section_avatar?.avatar} alt={sustainability.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
-                          typeof (sustainability.banner.section_avatar) === typeof (0) ?
+                          typeof (sustainability.banner.section_avatar.avatar) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img src={thumbnailPreview["banner"]} alt={sustainability.banner.section_avtar_alt || ""} />
                             :
-                            <img src={sustainability.banner.section_avatar} alt={sustainability.banner.section_avtar_alt || ""} />
+                            <img src={sustainability.banner.section_avatar.avatar} alt={sustainability.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
@@ -341,11 +396,6 @@ export default function AddSustainability() {
                         Upload Featured Image
                           </MaterialButton>
                     </Fragment>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(sustainability.banner.id, "banner")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -399,8 +449,8 @@ export default function AddSustainability() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !sustainability.intro.id > 0 ?
-                              thumbnailPreview["intro"] !== "" ?
-                                <img src={thumbnailPreview["intro"]} alt={sustainability.intro.section_avtar_alt || ""} />
+                              sustainability.intro.section_avatar.avatar !== "" ?
+                                <img src={sustainability.intro.section_avatar.avatar} alt={sustainability.intro.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
@@ -408,7 +458,7 @@ export default function AddSustainability() {
                                 // dining.thumbnail && dining.thumbnail !== "" ?
                                 <img src={thumbnailPreview["intro"]} alt={sustainability.intro.section_avtar_alt || ""} />
                                 :
-                                <img src={sustainability.intro.section_avatar} alt={sustainability.intro.section_avtar_alt || ""} />
+                                <img src={sustainability.intro.section_avatar.avatar} alt={sustainability.intro.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>
@@ -431,11 +481,6 @@ export default function AddSustainability() {
                         </Fragment>
                       </CardActions>
                     </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(sustainability.intro.id, "intro")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -489,16 +534,16 @@ export default function AddSustainability() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !sustainability.projects.id > 0 ?
-                              thumbnailPreview["projects"] !== "" ?
-                                <img src={thumbnailPreview["projects"]} alt={sustainability.projects.section_avtar_alt || ""} />
+                              sustainability.projects.section_avatar?.avatar !== "" ?
+                                <img src={sustainability.projects.section_avatar?.avatar} alt={sustainability.projects.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
-                              typeof (sustainability.projects.section_avatar) === typeof (0) ?
+                              typeof (sustainability.projects.section_avatar?.avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
                                 <img src={thumbnailPreview["projects"]} alt={sustainability.projects.section_avtar_alt || ""} />
                                 :
-                                <img src={sustainability.projects.section_avatar} alt={sustainability.projects.section_avtar_alt || ""} />
+                                <img src={sustainability.projects.section_avatar?.avatar} alt={sustainability.projects.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>
@@ -521,11 +566,6 @@ export default function AddSustainability() {
                         </Fragment>
                       </CardActions>
                     </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(sustainability.projects.id, "projects")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -579,16 +619,16 @@ export default function AddSustainability() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !sustainability.pillars.id > 0 ?
-                              thumbnailPreview["pillars"] !== "" ?
-                                <img src={thumbnailPreview["pillars"]} alt={sustainability.pillars.section_avtar_alt || ""} />
+                              sustainability.pillars.section_avatar?.avatar !== "" ?
+                                <img src={sustainability.pillars.section_avatar?.avatar} alt={sustainability.pillars.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
-                              typeof (sustainability.pillars.section_avatar) === typeof (0) ?
+                              typeof (sustainability.pillars.section_avatar?.avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
                                 <img src={thumbnailPreview["pillars"]} alt={sustainability.pillars.section_avtar_alt || ""} />
                                 :
-                                <img src={sustainability.pillars.section_avatar} alt={sustainability.pillars.section_avtar_alt || ""} />
+                                <img src={sustainability.pillars.section_avatar?.avatar} alt={sustainability.pillars.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>
@@ -611,11 +651,6 @@ export default function AddSustainability() {
                         </Fragment>
                       </CardActions>
                     </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(sustainability.pillars.id, "pillars")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -669,16 +704,16 @@ export default function AddSustainability() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !sustainability.energy.id > 0 ?
-                              thumbnailPreview["energy"] !== "" ?
-                                <img src={thumbnailPreview["energy"]} alt={sustainability.energy.section_avtar_alt || ""} />
+                            sustainability.energy.section_avatar?.avatar !== "" ?
+                                <img src={sustainability.energy.section_avatar?.avatar} alt={sustainability.energy.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
-                              typeof (sustainability.energy.section_avatar) === typeof (0) ?
+                              typeof (sustainability.energy.section_avatar?.avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
                                 <img src={thumbnailPreview["energy"]} alt={sustainability.energy.section_avtar_alt || ""} />
                                 :
-                                <img src={sustainability.energy.section_avatar} alt={sustainability.energy.section_avtar_alt || ""} />
+                                <img src={sustainability.energy.section_avatar?.avatar} alt={sustainability.energy.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>
@@ -701,11 +736,6 @@ export default function AddSustainability() {
                         </Fragment>
                       </CardActions>
                     </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(sustainability.energy.id, "energy")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -809,6 +839,11 @@ export default function AddSustainability() {
             </Accordion>
           </CardBody>
         </Card>
+        <Grid item xs={12} sm={12}>
+          <MaterialButton onClick={() => handleSubmit()} size="large" color="primary" variant="contained">
+            Update Section
+          </MaterialButton>
+        </Grid>
       </div>
       <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
         setShowGallery(false);

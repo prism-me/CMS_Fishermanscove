@@ -17,7 +17,7 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import LangAPI from "langapi/http";
 import avatar from "assets/img/faces/marc.jpg";
-import { FormControl, FormControlLabel, Radio, RadioGroup, Select, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
+import { FormControl, FormControlLabel, Radio, MenuItem, RadioGroup, Select, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -125,8 +125,56 @@ export default function AddAboutUs() {
         // )
         if(response.data.data[0]){
           setAbout(response.data.data[0])
-        setThumbnailPreview(response?.data?.data[0]?.banner?.section_avatar?.avatar || "")
-        setSeoInfo(response?.data?.data[0]?.meta)
+          // setThumbnailPreview(response?.data?.data[0]?.banner?.section_avatar?.avatar || "")
+          setSeoInfo(response?.data?.data[0]?.meta)
+        } else {
+          setAbout({
+            banner: {
+              id: 0,
+              section_name: '',
+              section_content: "<p>Detailed content goes here!</p>",
+              page_id: pageId,
+              section_avatar: '',
+              section_col_arr: 0,
+              section_prior: 1,
+              section_avtar_alt: '',
+              section_slug: 'banner'
+            },
+            intro: {
+              id: 0,
+              section_name: '',
+              section_content: "<p>Detailed content goes here!</p>",
+              page_id: pageId,
+              section_avatar: '',
+              section_col_arr: 0,
+              section_prior: 1,
+              section_avtar_alt: '',
+              section_slug: 'intro'
+            },
+            dine: {
+              id: 0,
+              section_name: '',
+              section_content: "<p>Detailed content goes here!</p>",
+              page_id: pageId,
+              section_avatar: '',
+              section_col_arr: 0,
+              section_prior: 1,
+              section_avtar_alt: '',
+              section_slug: 'dine'
+            },
+          })
+          setSeoInfo({
+            id: 0,
+            post_id: pageId || 0,
+            meta_title: '',
+            meta_description: '',
+            // route: website_url,
+            schema_markup: '',
+            is_followed: true,
+            is_indexed: true,
+            is_indexed_or_is_followed: '1,1',
+          })
+
         }
       }
     });
@@ -176,19 +224,19 @@ export default function AddAboutUs() {
       //   return;
       // } else {
         setAbout({ ...about, [section]: { ...about[section], section_avatar: imagesData[index] } })
-        setThumbnailPreview(imagesData[index].avatar)
+        // setThumbnailPreview(imagesData[index].avatar)
 
-        let imagesDataUpdated = imagesData.map((x, i) => {
-          if (i === index) {
-            return {
-              ...x,
-              isChecked: true
-            }
-          } else {
-            return x
-          }
-        });
-        setImagesData(imagesDataUpdated);
+        // let imagesDataUpdated = imagesData.map((x, i) => {
+        //   if (i === index) {
+        //     return {
+        //       ...x,
+        //       isChecked: true
+        //     }
+        //   } else {
+        //     return x
+        //   }
+        // });
+        // setImagesData(imagesDataUpdated);
       // }
     } else {
       setAbout({ ...about, [section]: { ...about[section], section_avatar: "" } })
@@ -243,11 +291,24 @@ export default function AddAboutUs() {
   }
 
   const handleSubmit = (id, name) => {
-    API.post(`/add_section`, about[name]).then(response => {
+    // API.post(`/add_section`, about[name]).then(response => {
+    //   if (response.status === 200) {
+    //     alert("Section updated successfully !");
+    //   }
+    // }).catch(err => console.log(err))
+
+    let updatedAbout = { ...about };
+    updatedAbout.meta = {...seoInfo};
+    updatedAbout.page_id = pageId
+    updatedAbout.slug="about-sections"
+    // console.log("updatedAbout",updatedAbout); return false;
+
+    LangAPI.post(`/add-section?lang=${selectedLang}`, updatedAbout).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
     }).catch(err => console.log(err))
+
   }
 
   const handleChange = (event) => {
@@ -261,9 +322,34 @@ export default function AddAboutUs() {
     <div>
       <div className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
             <h4 className="mb-0">Add About-Us Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+            <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", color: "white" }}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                    style={{ color: "white" }}
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    style={{ color: "white" }}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
           </CardHeader>
           <CardBody>
             {/* ******************* */}
@@ -297,8 +383,8 @@ export default function AddAboutUs() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !about.banner.id > 0 ?
-                          thumbnailPreview && thumbnailPreview !== "" ?
-                            <img src={thumbnailPreview} alt={about.banner.section_avtar_alt || ""} />
+                          about.banner.section_avatar && about.banner.section_avatar.avatar !== "" ?
+                            <img src={about.banner.section_avatar.avatar} alt={about.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
@@ -326,11 +412,6 @@ export default function AddAboutUs() {
                         Upload Featured Image
                           </MaterialButton>
                     </Fragment>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(about.banner.id, "banner")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -384,8 +465,8 @@ export default function AddAboutUs() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !about.intro.id > 0 ?
-                              thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={about.intro.section_avtar_alt || ""} />
+                              about.intro.section_avatar && about.intro.section_avatar.avatar !== "" ?
+                                <img src={about.intro.section_avatar.avatar} alt={about.intro.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
@@ -416,11 +497,6 @@ export default function AddAboutUs() {
                         </Fragment>
                       </CardActions>
                     </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(about.intro.id, "intro")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -474,8 +550,8 @@ export default function AddAboutUs() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !about.dine.id > 0 ?
-                              thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={about.dine.section_avtar_alt || ""} />
+                              about.dine.section_avatar && about.dine.section_avatar.avatar !== "" ?
+                                <img src={about.dine.section_avatar.avatar} alt={about.dine.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
@@ -506,11 +582,6 @@ export default function AddAboutUs() {
                         </Fragment>
                       </CardActions>
                     </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(about.dine.id, "dine")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -603,16 +674,16 @@ export default function AddAboutUs() {
                       </RadioGroup>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
           </CardBody>
         </Card>
+        <Grid item xs={12} sm={12}>
+          <MaterialButton onClick={() => handleSubmit()} size="large" color="primary" variant="contained">
+            Update Section
+          </MaterialButton>
+        </Grid>
       </div>
       <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
         setShowGallery(false);
