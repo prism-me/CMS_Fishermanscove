@@ -69,8 +69,8 @@ class WeddingList extends Component {
       //   }
       // },
       {
-        name: "short_description",
-        label: "Short Description",
+        name: "detailed_content",
+        label: "Description",
         options: {
           filter: true,
           sort: false,
@@ -121,7 +121,7 @@ class WeddingList extends Component {
   componentDidMount() {
     LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then((response) => {
       let rows = response?.data?.data;
-      console.log(rows,"rowsrowsrows")
+      console.log(rows, "rowsrowsrows")
       // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
       this.setState({ rows });
     });
@@ -131,7 +131,7 @@ class WeddingList extends Component {
     if (prevState.selectedLang !== this.state.selectedLang) {
       LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then((response) => {
         let rows = response?.data?.data;
-        if(this.state.rows != rows){
+        if (this.state.rows != rows) {
           // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
           this.setState({ rows });
         }
@@ -183,30 +183,30 @@ class WeddingList extends Component {
               </Button>
             </Link>
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%" }}
-              // fullWidth
+              variant="outlined"
+              size="small"
+              style={{ width: "20%" }}
+            // fullWidth
+            >
+              <InputLabel id="language">Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={this.state.selectedLang}
+                // onChange={handleInputChange}
+                label="Select Language"
+                fullWidth
+                onChange={this.handleChange}
               >
-                <InputLabel id="language">Select Language</InputLabel>
-                <Select
-                  labelId="language"
-                  id="language"
-                  name="language"
-                  value={this.state.selectedLang}
-                  // onChange={handleInputChange}
-                  label="Select Language"
-                  fullWidth
-                  onChange={this.handleChange}
-                >
-                  {/* <MenuItem value={-1}>
+                {/* <MenuItem value={-1}>
                         <em>Select Language</em>
                     </MenuItem> */}
-                  <MenuItem value={'en'}>En</MenuItem>
-                  <MenuItem value={'fr'}>FR</MenuItem>
-                  <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </div>
         </Box>
