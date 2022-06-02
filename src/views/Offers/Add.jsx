@@ -68,7 +68,7 @@ export default function AddOffer(props) {
     post_name: "",
     post_content: "",
     short_description: "",
-    offer_type: -1,
+    is_premium: 0,
     thumbnail: "",
     banner_img: "",
     banner_text: "",
