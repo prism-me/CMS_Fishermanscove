@@ -16,12 +16,15 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
-import API from "utils/http";
+// import API from "utils/http";
+import API from "langapi/http";
 import {
   AddCircleOutline,
   CloseOutlined,
   DragHandleOutlined,
 } from "@material-ui/icons";
+import { Select, MenuItem, FormControl } from "@material-ui/core";
+import InputLabel from "@material-ui/core/InputLabel";
 
 const append_url_dining = "dining";
 const append_url_room = "rooms";
@@ -46,6 +49,7 @@ export default function UpdateHeader() {
     menuItems: [],
     menuId: null,
     contactId: null,
+    type: "header",
     contact: {
       phone: "",
       email: "",
@@ -58,58 +62,50 @@ export default function UpdateHeader() {
   const [headerContent, setHeaderContent] = useState({ ...initialObject });
   const [pages, setPages] = useState([]);
   const [pagesFilter, setPagesFilter] = useState([]);
+  const [selectedLang, setSelectedLang] = useState("en");
 
   useEffect(() => {
-    async function getData() {
-      let menuItems = await getWidgetData();
 
-      API.get("/pages").then((response) => {
-        setPages(response.data);
-        let filteredArray = response.data?.filter(function (array_el) {
-          return (
-            menuItems.filter(function (menuItems_el) {
-              return menuItems_el.text == array_el.post_name;
-            }).length == 0
-          );
-        });
-        setPagesFilter(filteredArray);
-        // })
-      });
-    }
-    getData();
+    API.get(`/pages?lang=${selectedLang}`).then((response) => {
+      setPages(response?.data?.data);
+      // // let filteredArray = response.data?.data?.filter(function (array_el) {
+      // //   return (
+      // //     menuItems.filter(function (menuItems_el) {
+      // //       return menuItems_el.text == array_el.name;
+      // //     }).length == 0
+      // //   );
+      // // });
+      setPagesFilter(response?.data?.data);
+    });
   }, []);
 
-  const getWidgetData = async () => {
-    const response = await API.get("/get_widgets/header");
-    if (response.status === 200) {
-      const { data } = response;
-      const menuItems = data.find((x) => x.widget_name === "menuItems");
-      const contact = data.find((x) => x.widget_name === "contact");
-      setHeaderContent({
-        menuItems: menuItems
-          ? JSON.parse(menuItems?.items)
-          : initialObject.menuItems,
-        menuId: menuItems ? menuItems.id : initialObject.menuId,
-        contact: contact ? JSON.parse(contact?.items) : initialObject.contact,
-        contactId: contact ? contact.id : initialObject.contactId,
-      });
-      return menuItems ? JSON.parse(menuItems?.items) : initialObject.menuItems;
-    } else {
-      return [];
+  useEffect(() => {
+
+    API.get(`/common?lang=${selectedLang}`).then(response => {
+
+      const contactdata = response?.data?.data.find((x) => x.type === "header");
+
+      setHeaderContent(contactdata);
+
+    });
+
+  }, [selectedLang]);
+
+  const handleChange = (event) => {
+    if (event.target.value != selectedLang) {
+      setSelectedLang(event.target.value)
     }
-    // });
   };
 
-  const handleMenuItemChange = (e, route, index, inner_route) => {
+  const handleMenuItemChange = (e, slug, index) => {
     let updatedItems = [...headerContent.menuItems];
     updatedItems[index][e.target.name] = e.target.value;
-    updatedItems[index]["address"] = route;
-    updatedItems[index]["inner_route"] = inner_route;
+    updatedItems[index]["slug"] = slug;
     setHeaderContent({ ...headerContent, menuItems: updatedItems });
-    // setPagesFilter(pagesFilter.filter(x => x.post_name !== e.target.value))
+    // setPagesFilter(pagesFilter.filter(x => x.name !== e.target.value))
   };
 
-  const handleSubMenuItemChange = (e, route, index, ind, inner_route) => {
+  const handleSubMenuItemChange = (e, slug, index, ind) => {
     // eslint-disable-next-line no-debugger
     // debugger;
     let updatedHeaderContent = { ...headerContent };
@@ -121,13 +117,11 @@ export default function UpdateHeader() {
     }
 
     updatedSubMenu[ind][e.target.name] = e.target.value;
-    updatedSubMenu[ind]["address"] = route;
-    updatedSubMenu[ind]["inner_route"] = inner_route;
-    updatedSubMenu[ind]["base_url"] = inner_route;
+    updatedSubMenu[ind]["slug"] = slug;
 
     updatedHeaderContent.menuItems[index].subMenu = updatedSubMenu;
     setHeaderContent(updatedHeaderContent);
-    // setPagesFilter(pagesFilter.filter(x => x.post_name !== e.target.value))
+    // setPagesFilter(pagesFilter.filter(x => x.name !== e.target.value))
   };
 
   const handleContactItemChange = (e) => {
@@ -137,29 +131,29 @@ export default function UpdateHeader() {
   };
 
   const addNewLink = () => {
-    if (headerContent.menuItems?.length > 0) {
+    if (headerContent?.menuItems?.length > 0) {
       setPagesFilter(
         pagesFilter.filter(
           (x) =>
-            x.post_name !==
-            headerContent.menuItems[headerContent.menuItems.length - 1]?.text
+            x.name !==
+            headerContent?.menuItems[headerContent?.menuItems?.length - 1]?.text
         )
       );
     }
     setHeaderContent({
       ...headerContent,
       menuItems: [
-        ...headerContent.menuItems,
+        ...headerContent?.menuItems,
         {
           text: "",
           address: "",
           temp_id:
-            headerContent.menuItems[headerContent.menuItems.length - 1].order +
+            headerContent?.menuItems[headerContent?.menuItems?.length - 1].order +
             1,
           order:
-            headerContent.menuItems[headerContent.menuItems.length - 1].order +
+            headerContent?.menuItems[headerContent?.menuItems?.length - 1].order +
             1,
-          inner_route: "",
+          slug: "",
         },
       ],
     });
@@ -175,7 +169,7 @@ export default function UpdateHeader() {
           address: "",
           temp_id: headerContent.menuItems.length + 1,
           order: headerContent.menuItems.length + 1,
-          inner_route: "",
+          slug: "",
         },
       ],
     });
@@ -192,7 +186,7 @@ export default function UpdateHeader() {
         base_url: "",
         temp_id: subMenu.length + 1,
         order: subMenu.length + 1,
-        inner_route: "",
+        slug: "",
       },
     ];
 
@@ -272,36 +266,75 @@ export default function UpdateHeader() {
     setHeaderContent(updatedHeaderContent);
   };
 
-  const handleSubmit = (section) => {
-    let updatedHeaderContent = {
-      ...headerContent,
-      menuItems: headerContent.menuItems.filter((x) => x.text !== ""),
-    };
-    let id =
-      section === "menuItems"
-        ? updatedHeaderContent.menuId
-        : updatedHeaderContent.contactId;
-    API[id ? "put" : "post"](id ? `/widget/${id}` : `/widget`, {
-      widget_type: "header",
-      widget_name: section,
-      items: updatedHeaderContent[section],
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          alert(response.data.message);
-          // window.location.reload();
-          // setHeaderContent({ ...initialObject }); //resetting the form
-        }
-      })
-      .catch((err) => alert("Something went wrong"));
+  const handleSubmit = () => {
+
+    let updatedHeaderContent = { ...headerContent };
+
+    API.post(`/common?lang=${selectedLang}`, updatedHeaderContent).then(response => {
+      if (response.status === 200) {
+        alert("Section updated successfully !");
+      }
+    }).catch(err => console.log(err))
+
+
+
+    // let updatedHeaderContent = {
+    //   ...headerContent,
+    //   menuItems: headerContent.menuItems.filter((x) => x.text !== ""),
+    // };
+    // let id =
+    //   section === "menuItems"
+    //     ? updatedHeaderContent.menuId
+    //     : updatedHeaderContent.contactId;
+    // API[id ? "put" : "post"](id ? `/common?lang=${selectedLang}` : `/common?lang=${selectedLang}`, {
+    //   type: "header",
+    //   widget_name: section,
+    //   items: updatedHeaderContent[section],
+    // })
+    //   .then((response) => {
+    //     if (response.status === 200) {
+    //       alert(response.data.message);
+    //       // window.location.reload();
+    //       // setHeaderContent({ ...initialObject }); //resetting the form
+    //     }
+    //   })
+    //   .catch((err) => alert("Something went wrong"));
+
   };
 
   return (
     <div>
       <div className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="primary" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h4 className="mb-0">Update Site Header</h4>
+            <FormControl
+              variant="outlined"
+              size="small"
+              style={{ width: "20%" }}
+            >
+
+              <InputLabel
+                id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                onChange={handleChange}
+                style={{ color: "white" }}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+
+              </Select>
+
+            </FormControl>
           </CardHeader>
           <CardBody className="">
             <Accordion>
@@ -361,29 +394,29 @@ export default function UpdateHeader() {
                                         value={
                                           pages.find(
                                             (p) =>
-                                              p.post_name?.toLowerCase() ===
+                                              p.name?.toLowerCase() ===
                                               x.text?.toLowerCase()
-                                          ) || { post_name: "" }
+                                          ) || { name: "" }
                                         }
                                         onChange={(e, newValue) =>
                                           handleMenuItemChange(
                                             {
                                               target: {
-                                                value: newValue?.post_name,
+                                                value: newValue?.name,
                                                 name: "text",
                                               },
                                             },
-                                            newValue?.route,
+                                            newValue?.slug,
                                             index,
                                             pages.find(
                                               (p) =>
-                                                p.post_name?.toLowerCase() ===
-                                                newValue?.post_name?.toLowerCase()
-                                            )?.inner_route
+                                                p.name?.toLowerCase() ===
+                                                newValue?.name?.toLowerCase()
+                                            )?.slug
                                           ) || ""
                                         }
                                         getOptionLabel={(option) =>
-                                          option.post_name
+                                          option.name
                                         }
                                         // style={{ width: 300 }}
                                         renderInput={(params) => (
@@ -406,9 +439,9 @@ export default function UpdateHeader() {
                                       value={
                                         pages.find(
                                           (p) =>
-                                            p.post_name?.toLowerCase() ===
+                                            p.name?.toLowerCase() ===
                                             x.text?.toLowerCase()
-                                        )?.route || ""
+                                        )?.slug || ""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -522,31 +555,31 @@ export default function UpdateHeader() {
                                                 value={
                                                   pages.find(
                                                     (p) =>
-                                                      p.post_name?.toLowerCase() ===
+                                                      p.name?.toLowerCase() ===
                                                       y.text?.toLowerCase()
-                                                  ) || { post_name: "" }
+                                                  ) || { name: "" }
                                                 }
                                                 onChange={(e, newValue) =>
                                                   handleSubMenuItemChange(
                                                     {
                                                       target: {
                                                         value:
-                                                          newValue?.post_name,
+                                                          newValue?.name,
                                                         name: "text",
                                                       },
                                                     },
-                                                    newValue.route,
+                                                    newValue.slug,
                                                     index,
                                                     ind,
                                                     pages.find(
                                                       (p) =>
-                                                        p.post_name?.toLowerCase() ===
-                                                        newValue?.post_name?.toLowerCase()
-                                                    )?.inner_route
+                                                        p.name?.toLowerCase() ===
+                                                        newValue?.name?.toLowerCase()
+                                                    )?.slug
                                                   ) || ""
                                                 }
                                                 getOptionLabel={(option) =>
-                                                  option.post_name
+                                                  option.name
                                                 }
                                                 // style={{ width: 300 }}
                                                 renderInput={(params) => (
@@ -569,9 +602,9 @@ export default function UpdateHeader() {
                                               value={
                                                 pages.find(
                                                   (p) =>
-                                                    p.post_name?.toLowerCase() ===
+                                                    p.name?.toLowerCase() ===
                                                     y.text?.toLowerCase()
-                                                )?.route || ""
+                                                )?.slug || ""
                                               }
                                               variant="outlined"
                                               fullWidth
@@ -629,7 +662,7 @@ export default function UpdateHeader() {
                           Add a New Link
                         </MaterialButton>
                       </Grid>
-                      <Grid
+                      {/* <Grid
                         item
                         xs={12}
                         style={{
@@ -646,7 +679,7 @@ export default function UpdateHeader() {
                         >
                           Update Section
                         </MaterialButton>
-                      </Grid>
+                      </Grid> */}
                     </Grid>
                   </Grid>
                   {/* <Grid item xs={12} sm={4}>
@@ -691,7 +724,7 @@ export default function UpdateHeader() {
                       id="phone"
                       name="phone"
                       label="Phone Number"
-                      value={headerContent.contact.phone}
+                      value={headerContent?.contact?.phone}
                       variant="outlined"
                       fullWidth
                       onChange={handleContactItemChange}
@@ -704,7 +737,7 @@ export default function UpdateHeader() {
                       id="email"
                       name="email"
                       label="Email Address"
-                      value={headerContent.contact.email}
+                      value={headerContent?.contact?.email}
                       variant="outlined"
                       fullWidth
                       onChange={handleContactItemChange}
@@ -717,7 +750,7 @@ export default function UpdateHeader() {
                       id="whatsapp"
                       name="whatsapp"
                       label="Whatsapp"
-                      value={headerContent.contact.whatsapp}
+                      value={headerContent?.contact?.whatsapp}
                       variant="outlined"
                       fullWidth
                       onChange={handleContactItemChange}
@@ -730,25 +763,27 @@ export default function UpdateHeader() {
                       id="address"
                       name="address"
                       label="Location"
-                      value={headerContent.contact.address}
+                      value={headerContent?.contact?.address}
                       variant="outlined"
                       fullWidth
                       onChange={handleContactItemChange}
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton
-                      onClick={() => handleSubmit("contact")}
-                      color="primary"
-                      variant="contained"
-                    >
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
+            <Grid container spacing={2} style={{ marginTop: '30px' }}>
+              <Grid item xs={12} sm={12}>
+                <MaterialButton
+                  onClick={() => handleSubmit()}
+                  color="primary"
+                  variant="contained"
+                >
+                  Update Section
+                </MaterialButton>
+              </Grid>
+            </Grid>
           </CardBody>
         </Card>
       </div>
