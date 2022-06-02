@@ -8,7 +8,6 @@ import InputLabel from "@material-ui/core/InputLabel";
 // import CustomInput from "components/CustomInput/CustomInput.js";
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-
 import MaterialButton from "@material-ui/core/Button";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
@@ -16,9 +15,9 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-
+import LangAPI from "langapi/http";
 import avatar from "assets/img/faces/marc.jpg";
-import { FormControl, FormControlLabel, Radio, RadioGroup, Select, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
+import { FormControl, FormControlLabel, Radio, RadioGroup, Select, TextField, CardMedia, CardActionArea, CardContent, CardActions, MenuItem } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -51,9 +50,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function AddLeisureInner() {
-  const pageId = parseInt(useParams().id);
+  const pageId = useParams().id;
   const classes = useStyles();
-  const [leisureInner, setLeisureInner] = useState({
+  let leisureObj = {
     banner: {
       id: 0,
       section_name: '',
@@ -120,9 +119,9 @@ export default function AddLeisureInner() {
       section_avtar_alt: '',
       section_slug: 'others'
     },
-  })
+  }
 
-  const [seoInfo, setSeoInfo] = useState({
+  let seoObj = {
     id: 0,
     post_id: pageId || 0,
     meta_title: '',
@@ -132,7 +131,11 @@ export default function AddLeisureInner() {
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: '1,1',
-  })
+  }
+
+  const [leisureInner, setLeisureInner] = useState(leisureObj)
+
+  const [seoInfo, setSeoInfo] = useState(seoObj)
 
   const [currentSection, setCurrentSection] = useState("")
 
@@ -142,6 +145,7 @@ export default function AddLeisureInner() {
   const [showGallery, setShowGallery] = useState(false)
   const [isSingle, setIsSingle] = useState(true)
   // const [renderPreviews, setRenderPreviews] = useState(false)
+  const [selectedLang, setSelectedLang] = useState("en");
   const [thumbnailPreview, setThumbnailPreview] = useState({
     banner: "",
     lounge: "",
@@ -152,24 +156,22 @@ export default function AddLeisureInner() {
   })
 
   useEffect(() => {
-    API.get(`/all_sections/${pageId}`).then(response => {
+    LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        const { data } = response;
-        setLeisureInner(
-          {
-            banner: data.find(x => x.section_slug === "banner") || leisureInner.banner,
-            lounge: data.find(x => x.section_slug === "lounge") || leisureInner.lounge,
-            kayaking: data.find(x => x.section_slug === "kayaking") || leisureInner.kayaking,
-            snorkeling: data.find(x => x.section_slug === "snorkeling") || leisureInner.snorkeling,
-            marine: data.find(x => x.section_slug === "marine") || leisureInner.marine,
-            others: data.find(x => x.section_slug === "others") || leisureInner.others,
-          }
-        )
+        if(response?.data?.data[0]){
+          setLeisureInner(response.data.data[0])
+          setSeoInfo(response?.data?.data[0]?.meta)
+        } else {
+          setLeisureInner(leisureObj)
+          setSeoInfo(seoObj)
+        }
+        
       }
     });
-    getGalleryImages();
-    getSEOInfo();
-  }, [])
+    if(!imagesData.length > 0){
+      getGalleryImages();
+    }
+  }, [selectedLang])
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then(response => {
@@ -187,7 +189,8 @@ export default function AddLeisureInner() {
           setSeoInfo(seoInfoData);
         }
         else {
-          seoInfoData({...seoInfo});
+          // seoInfoData({...seoInfo});
+          setSeoInfo(seoInfoData);
         }
       }
     })
@@ -201,26 +204,18 @@ export default function AddLeisureInner() {
   }
 
   const handleImageSelect = (e, index, section) => {
+    setTimeout(() => {
+      setShowGallery(false);
+    }, 500);
+
     if (e.target.checked) {
       // if (isSingle && thumbnailPreview !== "") {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-        setLeisureInner({ ...leisureInner, [section]: { ...leisureInner[section], section_avatar: imagesData[index].id } })
+        setLeisureInner({ ...leisureInner, [section]: { ...leisureInner[section], section_avatar: imagesData[index] } })
         // setThumbnailPreview(imagesData[index].avatar)
         setThumbnailPreview({...thumbnailPreview, [section]: imagesData[index].avatar })
-
-        let imagesDataUpdated = imagesData.map((x, i) => {
-          if (i === index) {
-            return {
-              ...x,
-              isChecked: true
-            }
-          } else {
-            return x
-          }
-        });
-        setImagesData(imagesDataUpdated);
       // }
     } else {
       setLeisureInner({ ...leisureInner, [section]: { ...leisureInner[section], section_avatar: "" } })
@@ -276,20 +271,61 @@ export default function AddLeisureInner() {
   }
 
   const handleSubmit = (id, name) => {
-    API.post(`/add_section`, leisureInner[name]).then(response => {
+
+    let updatedAbout = { ...leisureInner };
+    updatedAbout.meta = {...seoInfo};
+    updatedAbout.page_id = pageId
+    updatedAbout.slug="liesureInner-sections"
+    // console.log("updatedAbout",updatedAbout); return false;
+
+    LangAPI.post(`/add-section?lang=${selectedLang}`, updatedAbout).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
     }).catch(err => console.log(err))
+
   }
+
+  const handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != selectedLang) {
+        setSelectedLang(event.target.value)
+    }
+  };
+
 
   return (
     <div>
       <div className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
             <h4 className="mb-0">Add Leisure Inner Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+            <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", color: "white" }}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                    style={{ color: "white" }}
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    style={{ color: "white" }}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
           </CardHeader>
           <CardBody>
             {/* ******************* */}
@@ -323,16 +359,16 @@ export default function AddLeisureInner() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !leisureInner.banner.id > 0 ?
-                          thumbnailPreview["banner"] !== "" ?
-                            <img src={thumbnailPreview["banner"]} alt={leisureInner.banner.section_avtar_alt || ""} />
+                        leisureInner.banner.section_avatar?.avatar !== "" ?
+                            <img src={leisureInner.banner.section_avatar?.avatar} alt={leisureInner.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
-                          typeof (leisureInner.banner.section_avatar) === typeof (0) ?
+                          typeof (leisureInner.banner.section_avatar?.avatar) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img src={thumbnailPreview["banner"]} alt={leisureInner.banner.section_avtar_alt || ""} />
                             :
-                            <img src={leisureInner.banner.section_avatar} alt={leisureInner.banner.section_avtar_alt || ""} />
+                            <img src={leisureInner.banner.section_avatar?.avatar} alt={leisureInner.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
@@ -352,11 +388,6 @@ export default function AddLeisureInner() {
                         Upload Featured Image
                           </MaterialButton>
                     </Fragment>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(leisureInner.banner.id, "banner")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -410,16 +441,16 @@ export default function AddLeisureInner() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !leisureInner.lounge.id > 0 ?
-                              thumbnailPreview["lounge"] !== "" ?
-                                <img src={thumbnailPreview["lounge"]} alt={leisureInner.lounge.section_avtar_alt || ""} />
+                              leisureInner.lounge.section_avatar?.avatar !== "" ?
+                                <img src={leisureInner.lounge.section_avatar?.avatar} alt={leisureInner.lounge.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
-                              typeof (leisureInner.lounge.section_avatar) === typeof (0) ?
+                              typeof (leisureInner.lounge.section_avatar?.avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
                                 <img src={thumbnailPreview["lounge"]} alt={leisureInner.lounge.section_avtar_alt || ""} />
                                 :
-                                <img src={leisureInner.lounge.section_avatar} alt={leisureInner.lounge.section_avtar_alt || ""} />
+                                <img src={leisureInner.lounge.section_avatar?.avatar} alt={leisureInner.lounge.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>
@@ -442,11 +473,6 @@ export default function AddLeisureInner() {
                         </Fragment>
                       </CardActions>
                     </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(leisureInner.lounge.id, "lounge")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -500,16 +526,16 @@ export default function AddLeisureInner() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !leisureInner.kayaking.id > 0 ?
-                              thumbnailPreview["kayaking"] !== "" ?
-                                <img src={thumbnailPreview["kayaking"]} alt={leisureInner.kayaking.section_avtar_alt || ""} />
+                              leisureInner.kayaking.section_avatar?.avatar !== "" ?
+                                <img src={leisureInner.kayaking.section_avatar?.avatar} alt={leisureInner.kayaking.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
-                              typeof (leisureInner.kayaking.section_avatar) === typeof (0) ?
+                              typeof (leisureInner.kayaking.section_avatar?.avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
                                 <img src={thumbnailPreview["kayaking"]} alt={leisureInner.kayaking.section_avtar_alt || ""} />
                                 :
-                                <img src={leisureInner.kayaking.section_avatar} alt={leisureInner.kayaking.section_avtar_alt || ""} />
+                                <img src={leisureInner.kayaking.section_avatar?.avatar} alt={leisureInner.kayaking.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>
@@ -532,11 +558,6 @@ export default function AddLeisureInner() {
                         </Fragment>
                       </CardActions>
                     </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(leisureInner.kayaking.id, "kayaking")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -590,16 +611,16 @@ export default function AddLeisureInner() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !leisureInner.snorkeling.id > 0 ?
-                              thumbnailPreview["snorkeling"] !== "" ?
-                                <img src={thumbnailPreview["snorkeling"]} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
+                              leisureInner.snorkeling.section_avatar?.avatar !== "" ?
+                                <img src={leisureInner.snorkeling.section_avatar?.avatar} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
-                              typeof (leisureInner.snorkeling.section_avatar) === typeof (0) ?
+                              typeof (leisureInner.snorkeling.section_avatar?.avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
                                 <img src={thumbnailPreview["snorkeling"]} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
                                 :
-                                <img src={leisureInner.snorkeling.section_avatar} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
+                                <img src={leisureInner.snorkeling.section_avatar?.avatar} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>
@@ -622,11 +643,6 @@ export default function AddLeisureInner() {
                         </Fragment>
                       </CardActions>
                     </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(leisureInner.snorkeling.id, "snorkeling")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -680,16 +696,16 @@ export default function AddLeisureInner() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !leisureInner.marine.id > 0 ?
-                              thumbnailPreview["marine"] !== "" ?
-                                <img src={thumbnailPreview["marine"]} alt={leisureInner.marine.section_avtar_alt || ""} />
+                            leisureInner.marine.section_avatar?.avatar !== "" ?
+                                <img src={leisureInner.marine.section_avatar?.avatar} alt={leisureInner.marine.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
-                              typeof (leisureInner.marine.section_avatar) === typeof (0) ?
+                              typeof (leisureInner.marine.section_avatar?.avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
                                 <img src={thumbnailPreview["marine"]} alt={leisureInner.marine.section_avtar_alt || ""} />
                                 :
-                                <img src={leisureInner.marine.section_avatar} alt={leisureInner.marine.section_avtar_alt || ""} />
+                                <img src={leisureInner.marine.section_avatar?.avatar} alt={leisureInner.marine.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>
@@ -712,11 +728,6 @@ export default function AddLeisureInner() {
                         </Fragment>
                       </CardActions>
                     </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(leisureInner.marine.id, "marine")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -773,8 +784,8 @@ export default function AddLeisureInner() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !leisureInner.others.id > 0 ?
-                              thumbnailPreview["others"] !== "" ?
-                                <img src={thumbnailPreview["others"]} alt={leisureInner.others.section_avtar_alt || ""} />
+                              leisureInner.others.section_avatar?.avatar !== "" ?
+                                <img src={leisureInner.others.section_avatar?.avatar} alt={leisureInner.others.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
@@ -782,7 +793,7 @@ export default function AddLeisureInner() {
                                 // dining.thumbnail && dining.thumbnail !== "" ?
                                 <img src={thumbnailPreview["others"]} alt={leisureInner.others.section_avtar_alt || ""} />
                                 :
-                                <img src={leisureInner.others.section_avatar} alt={leisureInner.others.section_avtar_alt || ""} />
+                                <img src={leisureInner.others.section_avatar?.avatar} alt={leisureInner.others.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>
@@ -805,11 +816,6 @@ export default function AddLeisureInner() {
                         </Fragment>
                       </CardActions>
                     </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(leisureInner.others.id, "others")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -902,16 +908,16 @@ export default function AddLeisureInner() {
                       </RadioGroup>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
           </CardBody>
         </Card>
+        <Grid item xs={12} sm={12}>
+          <MaterialButton onClick={() => handleSubmit(leisureInner.marine.id, "marine")} size="large" color="primary" variant="contained">
+            Update Section
+          </MaterialButton>
+        </Grid>
       </div>
       <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
         setShowGallery(false);
