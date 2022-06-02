@@ -68,7 +68,7 @@ export default function AddOffer(props) {
     post_name: "",
     post_content: "",
     short_description: "",
-    room_type: -1,
+    offer_type: -1,
     thumbnail: "",
     banner_img: "",
     banner_text: "",
@@ -77,7 +77,7 @@ export default function AddOffer(props) {
     meta_description: "",
     schema_markup: "",
     post_url: "",
-    slug:"",
+    slug: "",
     route: website_url,
     is_followed: true,
     is_indexed: true,
@@ -101,7 +101,7 @@ export default function AddOffer(props) {
   const [thumbnailPreview, setThumbnailPreview] = useState("");
   const [isBanner, setIsBanner] = useState(false);
   const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState("");
-  const [selectedLang, setSelectedLang] = useState(lang ||"en");
+  const [selectedLang, setSelectedLang] = useState(lang || "en");
 
   useEffect(() => {
     if (id && id != null) {
@@ -111,19 +111,19 @@ export default function AddOffer(props) {
         if (response.status === 200) {
           let data = response?.data?.data;
           data.route = website_url + data.route;
-          if(response?.data?.data){
+          if (response?.data?.data) {
             setOffer(response?.data?.data);
-          let images = JSON.parse(response.data?.data?.images_list)
-          setSelectedImages(images);
-          setThumbnailPreview(response.data?.data?.thumbnailPreview);
-          setBannerThumbnailPreview(response?.data?.data?.banner_imgPreview);
+            let images = JSON.parse(response.data?.data?.images_list)
+            setSelectedImages(images);
+            setThumbnailPreview(response.data?.data?.thumbnailPreview);
+            setBannerThumbnailPreview(response?.data?.data?.banner_imgPreview);
           } else {
             setSelectedImages([]);
             setThumbnailPreview("");
             setBannerThumbnailPreview("");
             setOffer(initialObject);
           }
-        } 
+        }
       });
     }
     // LangAPI.get("/offer_categories/offers").then((response) => {
@@ -131,7 +131,7 @@ export default function AddOffer(props) {
     //     setCategories(response.data);
     //   }
     // });
-    if(!imagesData.length > 0){
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
   }, [selectedLang]);
@@ -179,13 +179,13 @@ export default function AddOffer(props) {
       //   return;
       // } else {
       if (isSingle && !isBanner) {
-        setOffer({ ...offer, thumbnail: imagesData[index].id, thumbnailPreview: imagesData[index].avatar});
+        setOffer({ ...offer, thumbnail: imagesData[index].id, thumbnailPreview: imagesData[index].avatar });
         setThumbnailPreview(imagesData[index].avatar);
         setTimeout(() => {
           setShowGallery(false);
         }, 500);
       } else if (!isSingle && isBanner) {
-        setOffer({ ...offer, banner_img: imagesData[index].id, banner_imgPreview: imagesData[index].avatar});
+        setOffer({ ...offer, banner_img: imagesData[index].id, banner_imgPreview: imagesData[index].avatar });
         setBannerThumbnailPreview(imagesData[index].avatar);
         setTimeout(() => {
           setShowGallery(false);
@@ -278,31 +278,29 @@ export default function AddOffer(props) {
 
   const handleRemoveSelectedImage = (x, arrayListType) => {
     switch (arrayListType) {
-      case "uploadsPreview" :
+      case "uploadsPreview":
         let updatePreview = uploadsPreview.filter((u) => u.id !== x.id)
         setUploadsPreview(updatePreview);
         setImagesData(imagesData.map(im => {
-          if(im.id === x.id)
-          {
+          if (im.id === x.id) {
             im.isChecked = false
           }
           return im
         }))
-        setSelectedImages(updatePreview.map((u) => u.id ));
+        setSelectedImages(updatePreview.map((u) => u.id));
         break;
-      case "selectedImages" :
-        console.log('selectedImages',x)
+      case "selectedImages":
+        console.log('selectedImages', x)
         let updateData = selectedImages.filter((u) => u.id !== x.id);
         setImagesData(imagesData.map(im => {
-          if(im.id === x.id)
-          {
+          if (im.id === x.id) {
             im.isChecked = false
           }
           return im
         }))
         setSelectedImages(updateData);
         break;
-      default :
+      default:
         return setUploadsPreview(uploadsPreview.filter((u) => u.id !== x.id))
     }
   }
@@ -310,7 +308,7 @@ export default function AddOffer(props) {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
@@ -323,29 +321,29 @@ export default function AddOffer(props) {
               Add an Offer
             </h4>
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </CardHeader>
           <CardBody>
@@ -375,7 +373,7 @@ export default function AddOffer(props) {
                       fullWidth
                       className={classes.formControl}
                     >
-                    
+
                       <TextField
                         required
                         id="post_url"
@@ -454,7 +452,7 @@ export default function AddOffer(props) {
                       fullWidth
                       className={classes.formControl}
                     >
-                    
+
                       <TextField
                         required
                         id="slug"
@@ -472,7 +470,7 @@ export default function AddOffer(props) {
                     <div className="thumbnail-preview-wrapper img-thumbnail">
                       {!isEdit ? (
                         bannerThumbnailPreview &&
-                        bannerThumbnailPreview !== "" ? (
+                          bannerThumbnailPreview !== "" ? (
                           <img
                             src={bannerThumbnailPreview}
                             alt={offer.alt_text || ""}
@@ -515,13 +513,37 @@ export default function AddOffer(props) {
                   </Grid>
                 </Grid>
               </Grid>
-
+              <Grid item xs={12} sm={12}>
+                <FormControl
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  className={classes.formControl}
+                >
+                  <InputLabel id="offer_type-label">Type</InputLabel>
+                  <Select
+                    labelId="offer_type-label"
+                    id="offer_type"
+                    name="offer_type"
+                    value={offer.offer_type}
+                    onChange={handleInputChange}
+                    label="Type"
+                    fullWidth
+                  >
+                    <MenuItem value={-1}>
+                      <em>Select</em>
+                    </MenuItem>
+                    <MenuItem value={1}>Preminum Offer</MenuItem>
+                    <MenuItem value={2}>Other Offer</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
               <Grid item xs={12} sm={12}>
                 <hr />
                 <h4 style={{ fontWeight: "400" }}>Short Description</h4>
                 <CKEditor
-                    config={ckEditorConfig}
-                    onBeforeLoad={(CKEDITOR) =>
+                  config={ckEditorConfig}
+                  onBeforeLoad={(CKEDITOR) =>
                     (CKEDITOR.disableAutoInline = true)
                   }
                   data={offer.short_description}
@@ -537,8 +559,8 @@ export default function AddOffer(props) {
                 <hr />
                 <h4 style={{ fontWeight: "400" }}>Detailed Content</h4>
                 <CKEditor
-                    config={ckEditorConfig}
-                    onBeforeLoad={(CKEDITOR) =>
+                  config={ckEditorConfig}
+                  onBeforeLoad={(CKEDITOR) =>
                     (CKEDITOR.disableAutoInline = true)
                   }
                   data={offer.post_content}
@@ -694,7 +716,7 @@ export default function AddOffer(props) {
                     );
                   })
                   ?.map((x) => (
-                      <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")}/>
+                    <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")} />
                     // <Grid item xs={12} sm={2}>
                     //   <div style={{ height: "120px" }}>
                     //     <img
@@ -712,7 +734,7 @@ export default function AddOffer(props) {
                   ))}
               {uploadsPreview &&
                 uploadsPreview?.map((x) => (
-                    <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r)=>handleRemoveSelectedImage(r,"uploadsPreview")}/>
+                  <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "uploadsPreview")} />
                   // <Grid item xs={12} sm={2}>
                   //   <div style={{ height: "120px" }}>
                   //     <img
