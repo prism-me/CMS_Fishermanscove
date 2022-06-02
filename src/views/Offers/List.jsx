@@ -34,13 +34,13 @@ class OffersList extends Component {
         }
       },
       {
-        name: "offer_type",
+        name: "is_premium",
         label: "Room Type",
         options: {
           filter: true,
           sort: false,
           customBodyRender: (val) => {
-            return val === 0 ? 'Premium Offer' : 'Other Offer'
+            return val === 0 ? 'Other Offer' : 'Premium Offer'
           }
         }
       },
