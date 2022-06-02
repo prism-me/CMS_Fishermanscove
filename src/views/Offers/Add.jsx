@@ -68,7 +68,7 @@ export default function AddOffer(props) {
     post_name: "",
     post_content: "",
     short_description: "",
-    offer_type: -1,
+    is_premium: 0,
     thumbnail: "",
     banner_img: "",
     banner_text: "",
@@ -530,6 +530,7 @@ export default function AddOffer(props) {
                   fullWidth
                   className={classes.formControl}
                 >
+                  
                   <InputLabel id="is_premium-label">Type</InputLabel>
                   <Select
                     labelId="is_premium-label"
