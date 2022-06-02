@@ -308,7 +308,7 @@ export default function AddAboutUs() {
         alert("Section updated successfully !");
       }
     }).catch(err => console.log(err))
-
+    
   }
 
   const handleChange = (event) => {

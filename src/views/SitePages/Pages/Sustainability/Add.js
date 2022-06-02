@@ -156,7 +156,7 @@ let seoObj = {
           setSeoInfo(response?.data?.data[0]?.meta)
         } else {
           setSustainability(initObj)
-          setSeoInfo(seoInfo)
+          setSeoInfo(seoObj)
         }
         
       }
@@ -828,11 +828,6 @@ let seoObj = {
                         <FormControlLabel value={false} control={<Radio />} label="No Index" />
                       </RadioGroup>
                     </FormControl>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>

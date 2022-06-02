@@ -31,7 +31,7 @@ import {
 } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
-
+import LangAPI from "langapi/http";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@arslanshahab/ckeditor5-build-classic';
 import { Image } from "@material-ui/icons";
@@ -61,9 +61,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function AddPrivacyPolicy() {
-  const pageId = parseInt(useParams().id);
+  const pageId = useParams().id;
   const classes = useStyles();
-  const [privacyPolicy, setPrivacyPolicy] = useState({
+  let initObj = {
     intro: {
       id: 0,
       section_name: '',
@@ -86,8 +86,9 @@ export default function AddPrivacyPolicy() {
       section_avtar_alt: '',
       section_slug: 'banner'
     },
-  });
-  const [seoInfo, setSeoInfo] = useState({
+  }
+
+  let seoObj = {
     id: 0,
     post_id: pageId || 0,
     meta_title: '',
@@ -97,7 +98,10 @@ export default function AddPrivacyPolicy() {
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: '1,1',
-  })
+  }
+
+  const [privacyPolicy, setPrivacyPolicy] = useState(initObj);
+  const [seoInfo, setSeoInfo] = useState(seoObj)
   const [currentSection, setCurrentSection] = useState("")
 
   const [imagesData, setImagesData] = useState([])
@@ -107,22 +111,31 @@ export default function AddPrivacyPolicy() {
   const [isSingle, setIsSingle] = useState(true)
   // const [renderPreviews, setRenderPreviews] = useState(false)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
+  const [selectedLang, setSelectedLang] = useState("en");
 
   useEffect(() => {
-    API.get(`/all_sections/${pageId}`).then(response => {
+    LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        const { data } = response;
-        setPrivacyPolicy(
-            {
-              intro: data.find(x => x.section_slug === "intro") || privacyPolicy.intro,
-              banner: data.find(x => x.section_slug === "banner") || privacyPolicy.banner,
-            }
-        )
+        // const { data } = response;
+        // setPrivacyPolicy(
+        //     {
+        //       intro: data.find(x => x.section_slug === "intro") || privacyPolicy.intro,
+        //       banner: data.find(x => x.section_slug === "banner") || privacyPolicy.banner,
+        //     }
+        // )
+        if(response.data?.data[0]){
+          setPrivacyPolicy(response.data.data[0])
+          setSeoInfo(response.data.data[0].meta)
+        } else {
+          setPrivacyPolicy(initObj)
+          setSeoInfo(seoObj)
+        }
       }
     });
-    getGalleryImages();
-    getSEOInfo();
-  }, []);
+    if(!imagesData.length > 0){
+      getGalleryImages();
+    }
+  }, [selectedLang]);
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then(response => {
@@ -140,7 +153,7 @@ export default function AddPrivacyPolicy() {
           setSeoInfo(seoInfoData);
         }
         else {
-          seoInfoData(seoInfo);
+          setSeoInfo(seoInfo);
         }
       }
     })
@@ -162,20 +175,20 @@ export default function AddPrivacyPolicy() {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-      setPrivacyPolicy({ ...privacyPolicy, [section]: { ...privacyPolicy[section], section_avatar: imagesData[index].id } })
+      setPrivacyPolicy({ ...privacyPolicy, [section]: { ...privacyPolicy[section], section_avatar: imagesData[index] } })
       setThumbnailPreview(imagesData[index].avatar)
 
-      let imagesDataUpdated = imagesData.map((x, i) => {
-        if (i === index) {
-          return {
-            ...x,
-            isChecked: true
-          }
-        } else {
-          return x
-        }
-      });
-      setImagesData(imagesDataUpdated);
+      // let imagesDataUpdated = imagesData.map((x, i) => {
+      //   if (i === index) {
+      //     return {
+      //       ...x,
+      //       isChecked: true
+      //     }
+      //   } else {
+      //     return x
+      //   }
+      // });
+      // setImagesData(imagesDataUpdated);
       // }
     } else {
       setPrivacyPolicy({ ...privacyPolicy, [section]: { ...privacyPolicy[section], section_avatar: "" } })
@@ -230,20 +243,66 @@ export default function AddPrivacyPolicy() {
   }
 
   const handleSubmit = (id, name) => {
-    API.post(`/add_section`, privacyPolicy[name]).then(response => {
+    // API.post(`/add_section`, privacyPolicy[name]).then(response => {
+    //   if (response.status === 200) {
+    //     alert("Section updated successfully !");
+    //   }
+    // }).catch(err => console.log(err))
+
+    let updatedPrivacyPolicy = { ...privacyPolicy };
+    updatedPrivacyPolicy.meta = {...seoInfo};
+    updatedPrivacyPolicy.page_id = pageId
+    updatedPrivacyPolicy.slug="privacyPolicy-sections"
+    // console.log("updatedPrivacyPolicy",updatedPrivacyPolicy); return false;
+
+    LangAPI.post(`/add-section?lang=${selectedLang}`, updatedPrivacyPolicy).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
     }).catch(err => console.log(err))
+
   }
+
+  const handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != selectedLang) {
+        setSelectedLang(event.target.value)
+    }
+  };
+
 
   return (
     <div>
       <div className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
             <h4 className="mb-0">Add Privacy Policy</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+            <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", color: "white" }}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                    style={{ color: "white" }}
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    style={{ color: "white" }}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
           </CardHeader>
           <CardBody>
             <Accordion>
@@ -274,16 +333,16 @@ export default function AddPrivacyPolicy() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !privacyPolicy.banner.id > 0 ?
-                            thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={privacyPolicy.banner.section_avtar_alt || ""} />
+                          privacyPolicy.banner.section_avatar?.avatar !== "" ?
+                                <img src={privacyPolicy.banner.section_avatar?.avatar} alt={privacyPolicy.banner.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                             :
-                            typeof (privacyPolicy.banner.section_avatar) === typeof (0) ?
+                            typeof (privacyPolicy.banner.section_avatar?.avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
                                 <img src={thumbnailPreview} alt={privacyPolicy.banner.section_avtar_alt || ""} />
                                 :
-                                <img src={privacyPolicy.banner.section_avatar} alt={privacyPolicy.banner.section_avtar_alt || ""} />
+                                <img src={privacyPolicy.banner.section_avatar?.avatar} alt={privacyPolicy.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
@@ -303,11 +362,6 @@ export default function AddPrivacyPolicy() {
                         Upload Featured Image
                       </MaterialButton>
                     </Fragment>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(privacyPolicy.banner.id, "banner")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -340,11 +394,6 @@ export default function AddPrivacyPolicy() {
                     <CKEditor
                         config={ckEditorConfig}
                         onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={privacyPolicy.intro.section_content} onChange={(e) => setPrivacyPolicy({ ...privacyPolicy, intro: { ...privacyPolicy.intro, section_content: e.editor.getData() } })} />
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(privacyPolicy.intro.id, "intro")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -437,16 +486,16 @@ export default function AddPrivacyPolicy() {
                       </RadioGroup>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
           </CardBody>
         </Card>
+        <Grid item xs={12} sm={12}>
+          <MaterialButton onClick={() => handleSubmit(privacyPolicy.banner.id, "banner")} size="large" color="primary" variant="contained">
+            Update Section
+          </MaterialButton>
+        </Grid>
       </div>
       <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
         setShowGallery(false);
