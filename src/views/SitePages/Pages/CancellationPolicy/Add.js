@@ -41,6 +41,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
+import LangAPI from "langapi/http";
 import GalleryDialog from "../../../Common/GalleryDialog";
 // const website_url = "/";
 
@@ -123,12 +124,12 @@ export default function AddCancellationPolicy() {
   }, []);
 
   const getGalleryImages = () => {
-    API.get(`/uploads`).then(response => {
-      if (response.status === 200) {
-        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
-      }
-    })
-  }
+    LangAPI.get(`/get_all_images`).then((response) => {
+        if (response.status === 200) {
+            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+        }
+    });
+};
 
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {
