@@ -20,7 +20,7 @@ class DiningList extends Component {
     selectedLang: "en",
     columns: [
       {
-        name: "thumbnail",
+        name: "thumbnailPreview",
         label: "Image",
         options: {
           filter: false,
@@ -84,7 +84,7 @@ class DiningList extends Component {
           filter: true,
           sort: false,
           customBodyRender: (val) => (
-              <code>{val?.length > 100 ? val?.substr(0, 100) + "..." : val}</code>
+            <code>{val?.length > 100 ? val?.substr(0, 100) + "..." : val}</code>
           ),
         },
       },
@@ -95,7 +95,7 @@ class DiningList extends Component {
           filter: true,
           sort: false,
           customBodyRender: (val) => (
-              <code>{val?.length > 100 ? val?.substr(0, 100) + "..." : val}</code>
+            <code>{val?.length > 100 ? val?.substr(0, 100) + "..." : val}</code>
           ),
         },
       },
@@ -148,12 +148,12 @@ class DiningList extends Component {
     }
   }
 
-  getData(){
+  getData() {
     LangAPI.get(`/dinings?lang=${this.state.selectedLang}`).then((response) => {
       let rows = response?.data?.data;
       this.setState({ rows: rows });
     });
-}
+  }
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
       LangAPI.delete(`/dinings/${id}?lang=${this.state.selectedLang}`)
@@ -189,42 +189,42 @@ class DiningList extends Component {
       <div>
         <Box marginBottom={4}>
           <div className="d-flex justify-content-between align-items-center">
-              <Link to="/admin/dining/add">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={<AddOutlined />}
-                >
-                  Add Restaurant
-                </Button>
-              </Link>
-              <FormControl
-                    variant="outlined"
-                    size="small"
-                    style={{ width: "20%" }}
-                  // fullWidth
-                  >
-                    <InputLabel id="language">Select Language</InputLabel>
-                    <Select
-                      labelId="language"
-                      id="language"
-                      name="language"
-                      value={this.state.selectedLang}
-                      // onChange={handleInputChange}
-                      label="Select Language"
-                      fullWidth
-                      onChange={this.handleChange}
-                    >
-                      {/* <MenuItem value={-1}>
+            <Link to="/admin/dining/add">
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddOutlined />}
+              >
+                Add Restaurant
+              </Button>
+            </Link>
+            <FormControl
+              variant="outlined"
+              size="small"
+              style={{ width: "20%" }}
+            // fullWidth
+            >
+              <InputLabel id="language">Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={this.state.selectedLang}
+                // onChange={handleInputChange}
+                label="Select Language"
+                fullWidth
+                onChange={this.handleChange}
+              >
+                {/* <MenuItem value={-1}>
                             <em>Select Language</em>
                         </MenuItem> */}
-                      <MenuItem value={'en'}>En</MenuItem>
-                      <MenuItem value={'fr'}>FR</MenuItem>
-                      <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
 
-                    </Select>
-                </FormControl>
-            </div>
+              </Select>
+            </FormControl>
+          </div>
         </Box>
         <MUIDataTable
           title="Restaurants &amp; Bars"
