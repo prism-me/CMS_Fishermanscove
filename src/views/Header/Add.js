@@ -57,6 +57,7 @@ export default function UpdateHeader() {
       whatsapp: "",
     },
   };
+
   const [dragId, setDragId] = useState();
   const [submenuDragId, setSubmenuDragId] = useState();
   const [headerContent, setHeaderContent] = useState({ ...initialObject });
@@ -84,8 +85,12 @@ export default function UpdateHeader() {
     API.get(`/common?lang=${selectedLang}`).then(response => {
 
       const contactdata = response?.data?.data.find((x) => x.type === "header");
-
-      setHeaderContent(contactdata);
+      if(contactdata){
+        setHeaderContent(contactdata);
+      } else {
+        setHeaderContent(initialObject)
+      }
+      
 
     });
 
@@ -140,6 +145,23 @@ export default function UpdateHeader() {
         )
       );
     }
+    
+    if(!headerContent.menuItems.length > 0){
+      let newObj = {...headerContent}
+      let data = {
+        text: "",
+        address: "",
+        temp_id:
+          headerContent?.menuItems[headerContent?.menuItems?.length - 1].order +
+          1,
+        order:
+          headerContent?.menuItems[headerContent?.menuItems?.length - 1].order +
+          1,
+        slug: "",
+      }
+      newObj.menuItems.push(data)
+      setHeaderContent(newObj)
+    } else {
     setHeaderContent({
       ...headerContent,
       menuItems: [
@@ -157,6 +179,7 @@ export default function UpdateHeader() {
         },
       ],
     });
+  }
   };
 
   const addSubmenu = (index) => {
@@ -276,30 +299,6 @@ export default function UpdateHeader() {
       }
     }).catch(err => console.log(err))
 
-
-
-    // let updatedHeaderContent = {
-    //   ...headerContent,
-    //   menuItems: headerContent.menuItems.filter((x) => x.text !== ""),
-    // };
-    // let id =
-    //   section === "menuItems"
-    //     ? updatedHeaderContent.menuId
-    //     : updatedHeaderContent.contactId;
-    // API[id ? "put" : "post"](id ? `/common?lang=${selectedLang}` : `/common?lang=${selectedLang}`, {
-    //   type: "header",
-    //   widget_name: section,
-    //   items: updatedHeaderContent[section],
-    // })
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       alert(response.data.message);
-    //       // window.location.reload();
-    //       // setHeaderContent({ ...initialObject }); //resetting the form
-    //     }
-    //   })
-    //   .catch((err) => alert("Something went wrong"));
-
   };
 
   return (
@@ -318,6 +317,7 @@ export default function UpdateHeader() {
                 id="language"
                 style={{ color: "white" }}
               >Select Language</InputLabel>
+
               <Select
                 labelId="language"
                 id="language"
@@ -328,6 +328,7 @@ export default function UpdateHeader() {
                 onChange={handleChange}
                 style={{ color: "white" }}
               >
+
                 <MenuItem value={'en'}>En</MenuItem>
                 <MenuItem value={'fr'}>FR</MenuItem>
                 <MenuItem value={'de'}>DE</MenuItem>
