@@ -311,6 +311,16 @@ export default function AddOffer(props) {
       setSelectedLang(event.target.value)
     }
   };
+  const handleInputChangePremium = (event) => {
+    // setAge(event.target.value as string);
+
+    let updatedOffer = { ...offer };
+    if (event.target.value != updatedOffer.is_premium) {
+      updatedOffer.is_premium = event.target.value;
+    }
+
+    setOffer(updatedOffer);
+  };
 
   return (
     <div>
@@ -520,21 +530,18 @@ export default function AddOffer(props) {
                   fullWidth
                   className={classes.formControl}
                 >
-                  <InputLabel id="offer_type-label">Type</InputLabel>
+                  <InputLabel id="is_premium-label">Type</InputLabel>
                   <Select
-                    labelId="offer_type-label"
-                    id="offer_type"
-                    name="offer_type"
-                    value={offer.offer_type}
-                    onChange={handleInputChange}
+                    labelId="is_premium-label"
+                    id="is_premium"
+                    name="is_premium"
+                    value={offer?.is_premium}
+                    onChange={handleInputChangePremium}
                     label="Type"
                     fullWidth
                   >
-                    <MenuItem value={-1}>
-                      <em>Select</em>
-                    </MenuItem>
+                    <MenuItem value={0}>Other Offer</MenuItem>
                     <MenuItem value={1}>Preminum Offer</MenuItem>
-                    <MenuItem value={2}>Other Offer</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
