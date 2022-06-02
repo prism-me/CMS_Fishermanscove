@@ -16,7 +16,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-
+import LangAPI from "langapi/http";
 import avatar from "assets/img/faces/marc.jpg";
 import {
   MenuItem,
@@ -59,9 +59,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function AddCovidPolicy() {
-  const pageId = parseInt(useParams().id);
+  const pageId = useParams().id;
   const classes = useStyles();
-  const [covidPolicy, setCovidPolicy] = useState({
+  let initObj = {
     intro: {
       id: 0,
       section_name: '',
@@ -84,8 +84,8 @@ export default function AddCovidPolicy() {
       section_avtar_alt: '',
       section_slug: 'banner'
     },
-  });
-  const [seoInfo, setSeoInfo] = useState({
+  }
+  let seoObj = {
     id: 0,
     post_id: pageId || 0,
     meta_title: '',
@@ -95,7 +95,12 @@ export default function AddCovidPolicy() {
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: '1,1',
-  })
+  }
+
+  const [covidPolicy, setCovidPolicy] = useState(initObj);
+
+  const [seoInfo, setSeoInfo] = useState(seoObj)
+
   const [currentSection, setCurrentSection] = useState("")
 
   const [imagesData, setImagesData] = useState([])
@@ -105,22 +110,32 @@ export default function AddCovidPolicy() {
   const [isSingle, setIsSingle] = useState(true)
   // const [renderPreviews, setRenderPreviews] = useState(false)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
+  const [selectedLang, setSelectedLang] = useState("en");
 
   useEffect(() => {
-    API.get(`/all_sections/${pageId}`).then(response => {
+    LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        const { data } = response;
-        setCovidPolicy(
-            {
-              intro: data.find(x => x.section_slug === "intro") || covidPolicy.intro,
-              banner: data.find(x => x.section_slug === "banner") || covidPolicy.banner,
-            }
-        )
+        // const { data } = response;
+        // setCovidPolicy(
+        //     {
+        //       intro: data.find(x => x.section_slug === "intro") || covidPolicy.intro,
+        //       banner: data.find(x => x.section_slug === "banner") || covidPolicy.banner,
+        //     }
+        // )
+        if(response.data.data[0]){
+          setCovidPolicy(response.data.data[0])
+          setSeoInfo(response.data.data[0].meta)
+        } else {
+          setCovidPolicy(initObj)
+          setSeoInfo(seoObj)
+        }
       }
     });
-    getGalleryImages();
-    getSEOInfo();
-  }, []);
+    
+    if(!imagesData.length > 0){
+      getGalleryImages();
+    }
+  }, [selectedLang]);
 
   const getGalleryImages = () => {
     API.get(`/uploads`).then(response => {
@@ -156,24 +171,27 @@ export default function AddCovidPolicy() {
     }, 500);
 
     if (e.target.checked) {
+      setTimeout(() => {
+        setShowGallery(false);
+      }, 500);
       // if (isSingle && thumbnailPreview !== "") {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-      setCovidPolicy({ ...covidPolicy, [section]: { ...covidPolicy[section], section_avatar: imagesData[index].id } })
+      setCovidPolicy({ ...covidPolicy, [section]: { ...covidPolicy[section], section_avatar: imagesData[index] } })
       setThumbnailPreview(imagesData[index].avatar)
 
-      let imagesDataUpdated = imagesData.map((x, i) => {
-        if (i === index) {
-          return {
-            ...x,
-            isChecked: true
-          }
-        } else {
-          return x
-        }
-      });
-      setImagesData(imagesDataUpdated);
+      // let imagesDataUpdated = imagesData.map((x, i) => {
+      //   if (i === index) {
+      //     return {
+      //       ...x,
+      //       isChecked: true
+      //     }
+      //   } else {
+      //     return x
+      //   }
+      // });
+      // setImagesData(imagesDataUpdated);
       // }
     } else {
       setCovidPolicy({ ...covidPolicy, [section]: { ...covidPolicy[section], section_avatar: "" } })
@@ -227,21 +245,66 @@ export default function AddCovidPolicy() {
     }
   }
 
-  const handleSubmit = (id, name) => {
-    API.post(`/add_section`, covidPolicy[name]).then(response => {
+  const handleSubmit = () => {
+    // API.post(`/add_section`, covidPolicy[name]).then(response => {
+    //   if (response.status === 200) {
+    //     alert("Section updated successfully !");
+    //   }
+    // }).catch(err => console.log(err))
+
+    let updatedCovidPolicy = { ...covidPolicy };
+    updatedCovidPolicy.meta = {...seoInfo};
+    updatedCovidPolicy.page_id = pageId
+    updatedCovidPolicy.slug="covidPolicy-sections"
+    // console.log("updatedCovidPolicy",updatedCovidPolicy); return false;
+
+    LangAPI.post(`/add-section?lang=${selectedLang}`, updatedCovidPolicy).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
     }).catch(err => console.log(err))
+
   }
+
+  const handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != selectedLang) {
+        setSelectedLang(event.target.value)
+    }
+  };
 
   return (
     <div>
       <div className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
             <h4 className="mb-0">Add Covid Policy</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+            <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", color: "white" }}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                    style={{ color: "white" }}
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    style={{ color: "white" }}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
           </CardHeader>
           <CardBody>
             <Accordion>
@@ -272,16 +335,16 @@ export default function AddCovidPolicy() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !covidPolicy.banner.id > 0 ?
-                            thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={covidPolicy.banner.section_avtar_alt || ""} />
+                          covidPolicy.banner.section_avatar?.avatar !== "" ?
+                                <img src={covidPolicy.banner.section_avatar?.avatar} alt={covidPolicy.banner.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                             :
-                            typeof (covidPolicy.banner.section_avatar) === typeof (0) ?
+                            typeof (covidPolicy.banner.section_avatar?.avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
                                 <img src={thumbnailPreview} alt={covidPolicy.banner.section_avtar_alt || ""} />
                                 :
-                                <img src={covidPolicy.banner.section_avatar} alt={covidPolicy.banner.section_avtar_alt || ""} />
+                                <img src={covidPolicy.banner.section_avatar?.avatar} alt={covidPolicy.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
@@ -301,11 +364,6 @@ export default function AddCovidPolicy() {
                         Upload Featured Image
                       </MaterialButton>
                     </Fragment>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(covidPolicy.banner.id, "banner")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -338,11 +396,6 @@ export default function AddCovidPolicy() {
                     <CKEditor
                         config={ckEditorConfig}
                         onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={covidPolicy.intro.section_content} onChange={(e) => setCovidPolicy({ ...covidPolicy, intro: { ...covidPolicy.intro, section_content: e.editor.getData() } })} />
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(covidPolicy.intro.id, "intro")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -435,16 +488,16 @@ export default function AddCovidPolicy() {
                       </RadioGroup>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
           </CardBody>
         </Card>
+        <Grid item xs={12} sm={12}>
+          <MaterialButton onClick={() => handleSubmit()} size="large" color="primary" variant="contained">
+            Update Section
+          </MaterialButton>
+        </Grid>
       </div>
       <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
         setShowGallery(false);
