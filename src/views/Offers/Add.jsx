@@ -109,7 +109,7 @@ export default function AddOffer(props) {
       // setPostId(id);
       LangAPI.get(`/offers/${id}?lang=${selectedLang}`).then((response) => {
         if (response.status === 200) {
-          let data = response?.data?.data;
+          let data = response?.data?.data || [];
           data.route = website_url + data.route;
           if(response?.data?.data){
             setOffer(response?.data?.data);
