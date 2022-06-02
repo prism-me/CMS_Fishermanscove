@@ -278,7 +278,7 @@ export default function AddAboutSeychelles() {
     let updatedAboutSeychelles = { ...aboutSeychelles };
     updatedAboutSeychelles.meta = {...seoInfo};
     updatedAboutSeychelles.page_id = pageId
-    updatedAboutSeychelles.slug="about-sections"
+    updatedAboutSeychelles.slug="aboutSeychelles-sections"
     // console.log("updatedAboutSeychelles",updatedAboutSeychelles); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedAboutSeychelles).then(response => {
