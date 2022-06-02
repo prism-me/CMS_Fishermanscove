@@ -530,6 +530,7 @@ export default function AddOffer(props) {
                   fullWidth
                   className={classes.formControl}
                 >
+                  
                   <InputLabel id="is_premium-label">Type</InputLabel>
                   <Select
                     labelId="is_premium-label"
