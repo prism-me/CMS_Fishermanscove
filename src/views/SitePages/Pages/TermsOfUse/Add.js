@@ -41,6 +41,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
+import LangAPI from "langapi/http";
 import GalleryDialog from "../../../Common/GalleryDialog";
 
 // const website_url = "/";
