@@ -67,8 +67,31 @@ export default function UpdateHeader() {
 
   useEffect(() => {
 
-    API.get(`/pages?lang=${selectedLang}`).then((response) => {
-      setPages(response?.data?.data);
+    // API.get(`/pages?lang=${selectedLang}`).then((response) => {
+    API.get(`/drop-down`).then((response) => {
+      
+      let a = []
+      if(response?.data?.data?.length > 0){
+        // response.data.data.forEach(element => {
+          let pages = [] 
+          response.data.data[1].forEach(element => {
+            let obj = {...element}
+            obj.name = obj.post_name
+            pages.push(obj) 
+          });
+          response.data.data[0].forEach(element => {
+            let obj = {...element}
+            obj.name = obj.post_name
+            pages.push(obj) 
+          });
+
+          a = [...response?.data?.data[2],...pages]
+          console.log(a,"element")
+          setPages(a);
+        }
+        setPagesFilter(a);
+      });
+
       // // let filteredArray = response.data?.data?.filter(function (array_el) {
       // //   return (
       // //     menuItems.filter(function (menuItems_el) {
@@ -76,8 +99,9 @@ export default function UpdateHeader() {
       // //     }).length == 0
       // //   );
       // // });
-      setPagesFilter(response?.data?.data);
-    });
+      
+    // });
+  // }
   }, []);
 
   useEffect(() => {
@@ -438,7 +462,7 @@ export default function UpdateHeader() {
                                       name="address"
                                       label="URL"
                                       value={
-                                        pages.find(
+                                        pages?.find(
                                           (p) =>
                                             p.name?.toLowerCase() ===
                                             x.text?.toLowerCase()
@@ -601,7 +625,7 @@ export default function UpdateHeader() {
                                               name="address"
                                               label="URL"
                                               value={
-                                                pages.find(
+                                                pages?.find(
                                                   (p) =>
                                                     p.name?.toLowerCase() ===
                                                     y.text?.toLowerCase()

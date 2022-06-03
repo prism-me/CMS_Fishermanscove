@@ -125,7 +125,7 @@ export default function FAQPage() {
   const getGalleryImages = () => {
     API.get(`/get_all_images`).then(response => {
       if (response.status === 200) {
-        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
+        setImagesData(response.data?.data)
       }
     })
   }
