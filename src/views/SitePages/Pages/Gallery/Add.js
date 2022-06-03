@@ -145,7 +145,7 @@ export default function AddGallery() {
   }, [selectedLang]);
 
   const getGalleryImages = () => {
-    API.get(`/uploads`).then(response => {
+    API.get(`/get_all_images`).then(response => {
       if (response.status === 200) {
         setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
       }
