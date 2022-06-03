@@ -99,6 +99,7 @@ export default withRouter(function AddRoom(props) {
     const [renderPreviews, setRenderPreviews] = useState(false);
     const [thumbnailPreview, setThumbnailPreview] = useState("");
     const [isBanner, setIsBanner] = useState(false);
+    const [isImagesList, setImagesList] = useState(false);
     const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState("");
     const [selectedLang, setSelectedLang] = useState(lang || "en");
 
@@ -165,50 +166,24 @@ export default withRouter(function AddRoom(props) {
 
     const handleImageSelect = (e, index) => {
         if (e.target.checked) {
-            // if (isSingle && thumbnailPreview !== "") {
-            //   alert("You can only select 1 image for thumbnail. If you want to change image, deselect the image and then select a new one");
-            //   return;
-            // } else {
-            if (isSingle && !isBanner) {
+            if (isSingle && !isBanner && !isImagesList) {
 
-
-                let updatedImage = { ...room };
-
-                updatedImage.thumbnail = imagesData[index].avatar;
-
-                setRoom(updatedImage);
+                setRoom({ ...room, thumbnail: imagesData[index].avatar, thumbnailPreview: imagesData[index].avatar });
+                setThumbnailPreview(imagesData[index].avatar);
 
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
 
+            } else if (!isSingle && isBanner && !isImagesList) {
 
-                // setRoom({ ...room, thumbnail: imagesData[index].id, thumbnailPreview: imagesData[index].avatar });
-                // setThumbnailPreview(imagesData[index].avatar);
-                // setTimeout(() => {
-                //     setShowGallery(false);
-                // }, 500);
-
-            } else if (!isSingle && isBanner) {
-
-                let updatedImage = { ...room };
-
-                updatedImage.banner_img = imagesData[index].avatar;
-
-                setRoom(updatedImage);
-
+                setRoom({ ...room, banner_img: imagesData[index].avatar, banner_imgPreview: imagesData[index].avatar });
+                setBannerThumbnailPreview(imagesData[index].avatar);
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
 
-                // setRoom({ ...room, banner_img: imagesData[index].id, banner_imgPreview: imagesData[index].avatar });
-                // setBannerThumbnailPreview(imagesData[index].avatar);
-                // setTimeout(() => {
-                //     setShowGallery(false);
-                // }, 500);
-
-            } else {
-                console.log("Error ::", imagesData[index]);
+            } else if (!isSingle && !isBanner && isImagesList) {
                 setSelectedImages([...selectedImages, imagesData[index]]);
                 let imagesDataUpdated = imagesData.map((x, i) => {
                     if (i === index) {
@@ -228,7 +203,7 @@ export default withRouter(function AddRoom(props) {
             if (isSingle && !isBanner) {
                 setRoom({ ...room, thumbnail: "" });
                 setThumbnailPreview("");
-            } else if (isSingle && isBanner) {
+            } else if (!isSingle && isBanner) {
                 setRoom({ ...room, banner_img: "" });
                 setBannerThumbnailPreview("");
             } else {
@@ -299,26 +274,24 @@ export default withRouter(function AddRoom(props) {
             return false;
         }
 
-        console.log("finalRoom :: ", finalRoom);
-
-        // if (isEdit) {
-        //     LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
-        //         if (response.status === 200) {
-        //             alert("Record Updated");
-        //             setRoom({ ...initialObject }); //clear all fields
-        //             props.history.push("/admin/room-suites");
-        //         }
-        //     });
-        // } else {
-        //     LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
-        //         if (response.status === 200) {
-        //             setPostId(response.data?.post_id);
-        //             alert("Record Updated");
-        //             setRoom({ ...initialObject });
-        //             props.history.push("/admin/room-suites");
-        //         }
-        //     });
-        // }
+        if (isEdit) {
+            LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
+                if (response.status === 200) {
+                    alert("Record Updated");
+                    setRoom({ ...initialObject }); //clear all fields
+                    props.history.push("/admin/room-suites");
+                }
+            });
+        } else {
+            LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
+                if (response.status === 200) {
+                    setPostId(response.data?.post_id);
+                    alert("Record Updated");
+                    setRoom({ ...initialObject });
+                    props.history.push("/admin/room-suites");
+                }
+            });
+        }
     };
 
     const handleRemoveSelectedImage = (x, arrayListType) => {
@@ -415,7 +388,7 @@ export default withRouter(function AddRoom(props) {
                                     <div className="thumbnail-preview-wrapper img-thumbnail">
                                         {!isEdit ? (
                                             thumbnailPreview && thumbnailPreview !== "" ? (
-                                                <img src={thumbnailPreview} alt={room.alt_text || ""} />
+                                                <img src={thumbnailPreview} alt={room.alt_tag || ""} />
                                             ) : (
                                                 <img
                                                     src={require("./../../assets/img/placeholder.png")}
@@ -424,9 +397,9 @@ export default withRouter(function AddRoom(props) {
                                             )
                                         ) : typeof room.thumbnail === typeof 0 ? (
                                             // room.thumbnail && room.thumbnail !== "" ?
-                                            <img src={thumbnailPreview} alt={room.alt_text || ""} />
+                                            <img src={thumbnailPreview} alt={room.alt_tag || ""} />
                                         ) : (
-                                            <img src={room.thumbnail} alt={room.alt_text || ""} />
+                                            <img src={room.thumbnail} alt={room.alt_tag || ""} />
                                         )}
                                     </div>
                                     <Fragment>
@@ -440,6 +413,7 @@ export default withRouter(function AddRoom(props) {
                                                 setIsSingle(true);
                                                 setIsBanner(false);
                                                 setShowGallery(true);
+                                                setImagesList(false);
                                             }}
                                         >
                                             {isEdit ? "Change" : "Upload"} Featured Image
@@ -496,9 +470,10 @@ export default withRouter(function AddRoom(props) {
                                             className="mt-1"
                                             fullWidth
                                             onClick={() => {
-                                                setIsSingle(true);
+                                                setIsSingle(false);
                                                 setIsBanner(true);
                                                 setShowGallery(true);
+                                                setImagesList(false);
                                             }}
                                         >
                                             {isEdit ? "Change" : "Upload"} Banner Image
@@ -740,6 +715,7 @@ export default withRouter(function AddRoom(props) {
                                 color="primary"
                                 onClick={() => {
                                     setRenderPreviews(false);
+                                    setImagesList(true);
                                     setIsSingle(false);
                                     setIsBanner(false);
                                     setShowGallery(true);
