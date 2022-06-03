@@ -30,8 +30,10 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
-import API from "utils/http";
+// import API from "utils/http";
+import API from "langapi/http";
 import { CloseOutlined } from "@material-ui/icons";
+import { Select, MenuItem, FormControl } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,6 +50,7 @@ export default function UpdateFooter() {
   const classes = useStyles();
   // const [open, setOpen] = React.useState(false);
   const initialObject = {
+    type: "footer",
     first: {
       description: "",
     },
@@ -59,11 +62,11 @@ export default function UpdateFooter() {
       email: "",
       address: "",
     },
-    social: {
-      facebook: "",
-      twitter: "",
-      instagram: "",
-    },
+    // social: {
+    //   facebook: "",
+    //   twitter: "",
+    //   instagram: "",
+    // },
   };
 
   const [openSnackAlert, setOpenSnackAlert] = useState(false);
@@ -73,56 +76,94 @@ export default function UpdateFooter() {
   const [footerContent, setFooterContent] = useState({ ...initialObject });
   const [pages, setPages] = useState([]);
   const [pagesFilter, setPagesFilter] = useState([]);
+  const [selectedLang, setSelectedLang] = useState("en");
 
   useEffect(() => {
-    async function getData() {
-      const menuItems = await getFooterData();
-      API.get("/pages").then((response) => {
-        setPages(response.data);
-        let filteredArray = response.data?.filter(function (array_el) {
-          return (
-            menuItems.filter(function (menuItems_el) {
-              return menuItems_el.text == array_el.post_name;
-            }).length == 0
-          );
-        });
-        setPagesFilter(filteredArray);
-        // })
-      });
-    }
-    getData();
+
+    API.get(`/pages?lang=${selectedLang}`).then((response) => {
+      setPages(response?.data?.data);
+      // // let filteredArray = response.data?.data?.filter(function (array_el) {
+      // //   return (
+      // //     menuItems.filter(function (menuItems_el) {
+      // //       return menuItems_el.text == array_el.name;
+      // //     }).length == 0
+      // //   );
+      // // });
+      setPagesFilter(response?.data?.data);
+    });
   }, []);
 
-  const getFooterData = async () => {
-    const response = await API.get("/get_widgets/footer");
-    if (response.status === 200) {
-      const { data } = response;
-      const first = data.find((x) => x.widget_name === "first");
-      const second = data.find((x) => x.widget_name === "second");
-      const third = data.find((x) => x.widget_name === "third");
-      const social = data.find((x) => x.widget_name === "social");
-      setFooterContent({
-        first: first
-          ? { id: first.id, ...JSON.parse(first.items) }
-          : initialObject.first,
-        second: second
-          ? { id: second.id, ...JSON.parse(second.items) }
-          : initialObject.second,
-        third: third
-          ? { id: third.id, ...JSON.parse(third.items) }
-          : initialObject.third,
-        social: social
-          ? { id: social.id, ...JSON.parse(social.items) }
-          : initialObject.social,
-      });
-      return second?.links
-        ? JSON.parse(second?.links)
-        : initialObject.second.links;
-    } else {
-      return [];
+  useEffect(() => {
+
+    API.get(`/common?lang=${selectedLang}`).then(response => {
+
+      const contactdata = response?.data?.data.find((x) => x.type === "footer");
+      if (contactdata) {
+        setFooterContent(contactdata);
+      } else {
+        setFooterContent(initialObject)
+      }
+
+
+    });
+
+  }, [selectedLang]);
+
+  const handleChange = (event) => {
+    if (event.target.value != selectedLang) {
+      setSelectedLang(event.target.value)
     }
-    // })
   };
+
+  // useEffect(() => {
+  //   async function getData() {
+  //     const menuItems = await getFooterData();
+  //     API.get("/pages").then((response) => {
+  //       setPages(response.data);
+  //       let filteredArray = response.data?.filter(function (array_el) {
+  //         return (
+  //           menuItems.filter(function (menuItems_el) {
+  //             return menuItems_el.text == array_el.name;
+  //           }).length == 0
+  //         );
+  //       });
+  //       setPagesFilter(filteredArray);
+  //       // })
+  //     });
+  //   }
+  //   getData();
+  // }, []);
+
+  // const getFooterData = async () => {
+  //   const response = await API.get("/get_widgets/footer");
+  //   if (response.status === 200) {
+  //     const { data } = response;
+  //     const first = data.find((x) => x.widget_name === "first");
+  //     const second = data.find((x) => x.widget_name === "second");
+  //     const third = data.find((x) => x.widget_name === "third");
+  //     const social = data.find((x) => x.widget_name === "social");
+  //     setFooterContent({
+  //       first: first
+  //         ? { id: first.id, ...JSON.parse(first.items) }
+  //         : initialObject.first,
+  //       second: second
+  //         ? { id: second.id, ...JSON.parse(second.items) }
+  //         : initialObject.second,
+  //       third: third
+  //         ? { id: third.id, ...JSON.parse(third.items) }
+  //         : initialObject.third,
+  //       social: social
+  //         ? { id: social.id, ...JSON.parse(social.items) }
+  //         : initialObject.social,
+  //     });
+  //     return second?.links
+  //       ? JSON.parse(second?.links)
+  //       : initialObject.second.links;
+  //   } else {
+  //     return [];
+  //   }
+  //   // })
+  // };
 
   const handleInputChange = (e, section) => {
     let updatedFooterContent = { ...footerContent };
@@ -141,7 +182,7 @@ export default function UpdateFooter() {
       setPagesFilter(
         pagesFilter.filter(
           (x) =>
-            x.post_name !==
+            x.name !==
             footerContent.second.links[footerContent.second.links.length - 1]
               ?.text
         )
@@ -158,23 +199,23 @@ export default function UpdateFooter() {
             address: "",
             temp_id: footerContent.second.links.length + 1,
             order: footerContent.second.links.length + 1,
-            inner_route: "",
+            slug: "",
           },
         ],
       },
     });
   };
 
-  const handleMenuItemChange = (e, index, route, inner_route) => {
+  const handleMenuItemChange = (e, index, slug) => {
     let updatedItems = [...footerContent.second.links];
     updatedItems[index][e.target.name] = e.target.value;
-    updatedItems[index]["inner_route"] = inner_route;
-    updatedItems[index]["address"] = route;
+    updatedItems[index]["slug"] = slug;
+    // updatedItems[index]["address"] = slug;
     setFooterContent({
       ...footerContent,
       second: { ...footerContent.second, links: updatedItems },
     });
-    // setPagesFilter(pagesFilter.filter(x => x.post_name !== e.target.value))
+    // setPagesFilter(pagesFilter.filter(x => x.name !== e.target.value))
   };
 
   const handleDrag = (ev) => {
@@ -208,35 +249,78 @@ export default function UpdateFooter() {
     });
   };
 
-  const handleSubmit = (section) => {
-    API[footerContent[section]?.id ? "put" : "post"](
-      footerContent[section]?.id
-        ? `/widget/${footerContent[section]?.id}`
-        : `/widget`,
-      {
-        widget_type: "footer",
-        widget_name: section,
-        items: footerContent[section],
+  const handleSubmit = () => {
+
+    let updatedHeaderContent = { ...footerContent };
+
+    console.log("updatedHeaderContent :: ", updatedHeaderContent);
+
+    API.post(`/common?lang=${selectedLang}`, updatedHeaderContent).then(response => {
+      if (response.status === 200) {
+        alert("Section updated successfully !");
       }
-    )
-      .then((response) => {
-        // debugger;
-        if (response.status === 200) {
-          alert(response.data.message);
-          // setMessageInfo((prev) => [...prev, { message: response.data.message, key: new Date().getTime() }])
-          // setOpenSnackAlert(true)
-          // setFooterContent({ ...initialObject }); //resetting the form
-        }
-      })
-      .catch((err) => alert("Something went wrong"));
+    }).catch(err => console.log(err))
+
   };
+
+  // const handleSubmit = (section) => {
+  //   API[footerContent[section]?.id ? "put" : "post"](
+  //     footerContent[section]?.id
+  //       ? `/widget/${footerContent[section]?.id}`
+  //       : `/widget`,
+  //     {
+  //       widget_type: "footer",
+  //       widget_name: section,
+  //       items: footerContent[section],
+  //     }
+  //   )
+  //     .then((response) => {
+  //       // debugger;
+  //       if (response.status === 200) {
+  //         alert(response.data.message);
+  //         // setMessageInfo((prev) => [...prev, { message: response.data.message, key: new Date().getTime() }])
+  //         // setOpenSnackAlert(true)
+  //         // setFooterContent({ ...initialObject }); //resetting the form
+  //       }
+  //     })
+  //     .catch((err) => alert("Something went wrong"));
+  // };
 
   return (
     <div>
       <div className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="primary" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h4 className="mb-0">Update Site Footer</h4>
+            <FormControl
+              variant="outlined"
+              size="small"
+              style={{ width: "20%" }}
+            >
+
+              <InputLabel
+                id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                onChange={handleChange}
+                style={{ color: "white" }}
+              >
+
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+
+              </Select>
+
+            </FormControl>
           </CardHeader>
 
           <CardBody className="">
@@ -269,7 +353,7 @@ export default function UpdateFooter() {
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={12}>
+                  {/* <Grid item xs={12} sm={12}>
                     <MaterialButton
                       onClick={() => handleSubmit("first")}
                       color="primary"
@@ -277,7 +361,7 @@ export default function UpdateFooter() {
                     >
                       Update Section
                     </MaterialButton>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
               </AccordionDetails>
             </Accordion>
@@ -310,28 +394,28 @@ export default function UpdateFooter() {
                                   value={
                                     pages.find(
                                       (p) =>
-                                        p.post_name?.toLowerCase() ===
+                                        p.name?.toLowerCase() ===
                                         x.text?.toLowerCase()
-                                    ) || { post_name: "" }
+                                    ) || { name: "" }
                                   }
                                   onChange={(e, newValue) =>
                                     handleMenuItemChange(
                                       {
                                         target: {
-                                          value: newValue?.post_name,
+                                          value: newValue?.name,
                                           name: "text",
                                         },
                                       },
                                       index,
-                                      newValue?.route,
+                                      newValue?.slug,
                                       pages.find(
                                         (p) =>
-                                          p.post_name?.toLowerCase() ===
-                                          newValue?.post_name?.toLowerCase()
-                                      )?.inner_route
+                                          p.name?.toLowerCase() ===
+                                          newValue?.name?.toLowerCase()
+                                      )?.slug
                                     ) || ""
                                   }
-                                  getOptionLabel={(option) => option.post_name}
+                                  getOptionLabel={(option) => option.name}
                                   // style={{ width: 300 }}
                                   renderInput={(params) => (
                                     <TextField
@@ -353,9 +437,9 @@ export default function UpdateFooter() {
                                 value={
                                   pages.find(
                                     (p) =>
-                                      p.post_name?.toLowerCase() ===
+                                      p.name?.toLowerCase() ===
                                       x.text?.toLowerCase()
-                                  )?.route || ""
+                                  )?.slug || ""
                                 }
                                 variant="outlined"
                                 fullWidth
@@ -400,7 +484,7 @@ export default function UpdateFooter() {
                           Add a New Link
                         </MaterialButton>
                       </Grid>
-                      <Grid item xs={12}>
+                      {/* <Grid item xs={12}>
                         <MaterialButton
                           disabled={footerContent.second.links?.length < 1}
                           onClick={() => handleSubmit("second")}
@@ -409,7 +493,7 @@ export default function UpdateFooter() {
                         >
                           Update Section
                         </MaterialButton>
-                      </Grid>
+                      </Grid> */}
                     </Grid>
                   </Grid>
 
@@ -553,7 +637,7 @@ export default function UpdateFooter() {
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={12}>
+                  {/* <Grid item xs={12} sm={12}>
                     <MaterialButton
                       onClick={() => handleSubmit("third")}
                       color="primary"
@@ -561,10 +645,21 @@ export default function UpdateFooter() {
                     >
                       Update Section
                     </MaterialButton>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
               </AccordionDetails>
             </Accordion>
+            <Grid container spacing={2} style={{ marginTop: '30px' }}>
+              <Grid item xs={12} sm={12}>
+                <MaterialButton
+                  onClick={() => handleSubmit()}
+                  color="primary"
+                  variant="contained"
+                >
+                  Update Section
+                </MaterialButton>
+              </Grid>
+            </Grid>
           </CardBody>
         </Card>
       </div>
