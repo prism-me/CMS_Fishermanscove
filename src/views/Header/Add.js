@@ -77,13 +77,13 @@ export default function UpdateHeader() {
           response.data.data[1].forEach(element => {
             let obj = {...element}
             obj.name = obj.post_name
-            obj.base_url = "rooms"
+            obj.base_url = "dining"
             pages.push(obj) 
           });
           response.data.data[0].forEach(element => {
             let obj = {...element}
             obj.name = obj.post_name
-            obj.base_url = "dining"
+            obj.base_url = "rooms"
             pages.push(obj) 
           });
 
