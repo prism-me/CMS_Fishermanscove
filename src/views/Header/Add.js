@@ -77,11 +77,13 @@ export default function UpdateHeader() {
           response.data.data[1].forEach(element => {
             let obj = {...element}
             obj.name = obj.post_name
+            obj.base_url = "rooms"
             pages.push(obj) 
           });
           response.data.data[0].forEach(element => {
             let obj = {...element}
             obj.name = obj.post_name
+            obj.base_url = "dining"
             pages.push(obj) 
           });
 
@@ -134,7 +136,7 @@ export default function UpdateHeader() {
     // setPagesFilter(pagesFilter.filter(x => x.name !== e.target.value))
   };
 
-  const handleSubMenuItemChange = (e, slug, index, ind) => {
+  const handleSubMenuItemChange = (e, slug, index, ind, base_url) => {
     // eslint-disable-next-line no-debugger
     // debugger;
     let updatedHeaderContent = { ...headerContent };
@@ -147,6 +149,8 @@ export default function UpdateHeader() {
 
     updatedSubMenu[ind][e.target.name] = e.target.value;
     updatedSubMenu[ind]["slug"] = slug;
+    updatedSubMenu[ind]["base_url"] = base_url;
+    // if()
 
     updatedHeaderContent.menuItems[index].subMenu = updatedSubMenu;
     setHeaderContent(updatedHeaderContent);
@@ -596,6 +600,7 @@ export default function UpdateHeader() {
                                                     newValue.slug,
                                                     index,
                                                     ind,
+                                                    newValue.base_url || "",
                                                     pages.find(
                                                       (p) =>
                                                         p.name?.toLowerCase() ===
