@@ -261,7 +261,7 @@ export default function FAQPage() {
         <div className={classes.root}>
           <Card>
             <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
-              <h4 className="mb-0">Add Gallery</h4>
+              <h4 className="mb-0">Add FAQ Page</h4>
               {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
               <FormControl
                 variant="outlined"
