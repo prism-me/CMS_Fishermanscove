@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import API from "langapi/http";
+import LangAPI from "langapi/http";
 import API from "utils/http";
 import { DropzoneArea } from "material-ui-dropzone";
 import {
@@ -43,12 +43,12 @@ class GalleryList extends Component {
   };
 
   componentDidMount() {
-    API.get("/uploads")
+    LangAPI.get("/get_all_images")
       .then((response) => {
         if (response.status === 200) {
-          this.setState({ gallery: response.data });
+          this.setState({ gallery: response.data.data });
           // this.setState({ mainSrc: response.data.data[0] });
-          console.log(response.data)
+          console.log(response.data.data)
         }
       })
       .catch((err) => {
@@ -60,7 +60,7 @@ class GalleryList extends Component {
 
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
-      API.delete(`/offers/${id}`)
+      LangAPI.delete(`/offers/${id}`)
         .then((response) => {
           if (response.status === 200) {
             alert("Offer deleted successfully !");
@@ -92,7 +92,8 @@ class GalleryList extends Component {
       imagesFormData.append("images[]", x.image);
       imagesFormData.append("data[]", JSON.stringify(x));
     });
-    API.post(`/upload_media`, imagesFormData, {
+    console.log("imagesFormData :: ", imagesFormData);
+    LangAPI.post(`/upload_media`, imagesFormData, {
       headers: {
         "Content-Type": `multipart/form-data; boundary=${imagesFormData._boundary}`,
       },
@@ -104,7 +105,7 @@ class GalleryList extends Component {
         }
       })
       .then(() => {
-        API.get("/uploads").then((response) => {
+        LangAPI.get("/get_all_images").then((response) => {
           if (response.status === 200) {
             this.setState({ gallery: response.data.data });
             this.setState({ mainSrc: response.data.data[0] });
@@ -115,7 +116,7 @@ class GalleryList extends Component {
   };
 
   handleDelete = (id) => {
-    API.delete(`/delete_images/${id}`)
+    LangAPI.delete(`/delete_images/${id}`)
       .then((response) => {
         if (response.status === 200) {
           alert("Image delete successfully.");
@@ -123,7 +124,7 @@ class GalleryList extends Component {
         }
       })
       .then(() => {
-        API.get("/uploads").then((response) => {
+        LangAPI.get("/get_all_images").then((response) => {
           if (response.status === 200) {
             this.setState({ gallery: response.data.data });
             this.setState({ mainSrc: response.data.data[0] });
