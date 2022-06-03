@@ -136,7 +136,7 @@ export default withRouter(function AddRoom(props) {
     const getGalleryImages = () => {
         LangAPI.get(`/get_all_images`).then((response) => {
             if (response.status === 200) {
-                setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+                setImagesData(response.data.data);
             }
         });
     };
@@ -272,24 +272,26 @@ export default withRouter(function AddRoom(props) {
             return false;
         }
 
-        if (isEdit) {
-            LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
-                if (response.status === 200) {
-                    alert("Record Updated");
-                    setRoom({ ...initialObject }); //clear all fields
-                    props.history.push("/admin/room-suites");
-                }
-            });
-        } else {
-            LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
-                if (response.status === 200) {
-                    setPostId(response.data?.post_id);
-                    alert("Record Updated");
-                    setRoom({ ...initialObject });
-                    props.history.push("/admin/room-suites");
-                }
-            });
-        }
+        console.log("finalRoom :: ", finalRoom);
+
+        // if (isEdit) {
+        //     LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
+        //         if (response.status === 200) {
+        //             alert("Record Updated");
+        //             setRoom({ ...initialObject }); //clear all fields
+        //             props.history.push("/admin/room-suites");
+        //         }
+        //     });
+        // } else {
+        //     LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
+        //         if (response.status === 200) {
+        //             setPostId(response.data?.post_id);
+        //             alert("Record Updated");
+        //             setRoom({ ...initialObject });
+        //             props.history.push("/admin/room-suites");
+        //         }
+        //     });
+        // }
     };
 
     const handleRemoveSelectedImage = (x, arrayListType) => {

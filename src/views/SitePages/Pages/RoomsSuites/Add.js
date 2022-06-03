@@ -549,10 +549,15 @@ export default function RoomsSuites() {
           </CardBody>
         </Card>
       </div>
-      <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
-        setShowGallery(false);
-        // setRenderPreviews(true);
-      }} refreshGallery={getGalleryImages} data={imagesData} />
+      <GalleryDialog
+        isSingle={isSingle}
+        section={currentSection}
+        open={showGallery}
+        handleImageSelect={handleImageSelect}
+        handleClose={() => {
+          setShowGallery(false);
+          // setRenderPreviews(true);
+        }} refreshGallery={getGalleryImages} data={imagesData} />
     </div>
   );
 }
