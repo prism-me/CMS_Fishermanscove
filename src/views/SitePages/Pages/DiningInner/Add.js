@@ -16,10 +16,9 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-
+import LangAPI from "langapi/http";
 import avatar from "assets/img/faces/marc.jpg";
-import { FormControl, FormControlLabel, Radio, RadioGroup, Select, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
-
+import { FormControl, FormControlLabel, Radio, RadioGroup, Select, MenuItem, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -34,7 +33,6 @@ import { useParams } from "react-router-dom";
 import API from "utils/http";
 import FAQSection from "../Common/FAQSection";
 import GalleryDialog from "views/Common/GalleryDialog";
-import LangAPI from "langapi/http";
 
 // const website_url = "https://fishermanscove-resort.com/";
 // const website_url = "/";
@@ -54,9 +52,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function AddDiningInner() {
-  const pageId = parseInt(useParams().id);
+  const pageId = useParams().id;
   const classes = useStyles();
-  const [diningInner, setDiningInner] = useState({
+
+  let initObj = {
     banner: {
       id: 0,
       section_name: '',
@@ -112,9 +111,9 @@ export default function AddDiningInner() {
       section_avtar_alt: '',
       section_slug: 'faq'
     },
-  })
+  }
 
-  const [seoInfo, setSeoInfo] = useState({
+  let seoObj = {
     id: 0,
     post_id: pageId || 0,
     meta_title: '',
@@ -124,7 +123,11 @@ export default function AddDiningInner() {
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: '1,1',
-  })
+  }
+
+  const [diningInner, setDiningInner] = useState(initObj)
+
+  const [seoInfo, setSeoInfo] = useState(seoObj)
 
   const [currentSection, setCurrentSection] = useState("")
 
@@ -135,34 +138,45 @@ export default function AddDiningInner() {
   const [isSingle, setIsSingle] = useState(false)
   // const [renderPreviews, setRenderPreviews] = useState(false)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
+  const [selectedLang, setSelectedLang] = useState("en");
 
   useEffect(() => {
-    API.get(`/all_sections/${pageId}`).then(response => {
+    LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        const { data } = response;
+        // const { data } = response;
 
-        let intro = data.find(x => x.section_slug === "intro");
-        let banner = data.find(x => x.section_slug === "banner");
-        let dress = data.find(x => x.section_slug === "dress");
-        let timings = data.find(x => x.section_slug === "timings");
-        let faq = data.find(x => x.section_slug === "faq");
-        if (faq && faq.section_content) {
-          faq.section_content = JSON.parse(faq.section_content);
+        // let intro = data.find(x => x.section_slug === "intro");
+        // let banner = data.find(x => x.section_slug === "banner");
+        // let dress = data.find(x => x.section_slug === "dress");
+        // let timings = data.find(x => x.section_slug === "timings");
+        // let faq = data.find(x => x.section_slug === "faq");
+        // if (faq && faq.section_content) {
+        //   faq.section_content = JSON.parse(faq.section_content);
+        // }
+        // setDiningInner(
+        //   {
+        //     intro: intro || diningInner.intro,
+        //     banner: banner || diningInner.banner,
+        //     dress: dress || diningInner.dress,
+        //     timings: timings || diningInner.timings,
+        //     faq: faq || diningInner.faq,
+        //   }
+        // )
+        if(response.data.data[0]){
+          setDiningInner(response.data.data[0])
+          setSeoInfo(response.data.data[0].meta)
+        } else {
+          setDiningInner(initObj)
+          setSeoInfo(seoObj)
         }
-        setDiningInner(
-          {
-            intro: intro || diningInner.intro,
-            banner: banner || diningInner.banner,
-            dress: dress || diningInner.dress,
-            timings: timings || diningInner.timings,
-            faq: faq || diningInner.faq,
-          }
-        )
+        
       }
     });
-    getGalleryImages();
-    getSEOInfo();
-  }, [])
+
+    if(!imagesData.length > 0){
+      getGalleryImages();
+    }
+  }, [selectedLang])
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
@@ -194,25 +208,28 @@ export default function AddDiningInner() {
   }
 
   const handleImageSelect = (e, index, section) => {
+    setTimeout(() => {
+      setShowGallery(false);
+    }, 500);
     if (e.target.checked) {
       if (isSingle && thumbnailPreview !== "") {
         alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
         return;
       } else {
-        setDiningInner({ ...diningInner, [section]: { ...diningInner[section], section_avatar: imagesData[index].id } })
-        setThumbnailPreview(imagesData[index].avatar)
+        setDiningInner({ ...diningInner, [section]: { ...diningInner[section], section_avatar: imagesData[index] } })
+        // setThumbnailPreview(imagesData[index].avatar)
 
-        let imagesDataUpdated = imagesData.map((x, i) => {
-          if (i === index) {
-            return {
-              ...x,
-              isChecked: true
-            }
-          } else {
-            return x
-          }
-        });
-        setImagesData(imagesDataUpdated);
+        // let imagesDataUpdated = imagesData.map((x, i) => {
+        //   if (i === index) {
+        //     return {
+        //       ...x,
+        //       isChecked: true
+        //     }
+        //   } else {
+        //     return x
+        //   }
+        // });
+        // setImagesData(imagesDataUpdated);
       }
     } else {
       setDiningInner({ ...diningInner, [section]: { ...diningInner[section], section_avatar: "" } })
@@ -283,25 +300,69 @@ export default function AddDiningInner() {
     }
   }
 
-  const handleSubmit = (id, name) => {
+  const handleSubmit = () => {
+
+    // let updatedDiningInner = { ...diningInner };
+    // if (name === "faq") {
+    //   updatedDiningInner.faq.section_content = JSON.stringify(updatedDiningInner.faq.section_content)
+    // }
+    // API.post(`/add_section`, updatedDiningInner[name]).then(response => {
+    //   if (response.status === 200) {
+    //     alert("Section updated successfully !");
+    //   }
+    // }).catch(err => console.log(err))
+
     let updatedDiningInner = { ...diningInner };
-    if (name === "faq") {
-      updatedDiningInner.faq.section_content = JSON.stringify(updatedDiningInner.faq.section_content)
-    }
-    API.post(`/add_section`, updatedDiningInner[name]).then(response => {
+    updatedDiningInner.meta = {...seoInfo};
+    updatedDiningInner.page_id = pageId
+    updatedDiningInner.slug="diningInner-sections"
+    // console.log("updatedDiningInner",updatedDiningInner); return false;
+
+    LangAPI.post(`/add-section?lang=${selectedLang}`, updatedDiningInner).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
     }).catch(err => console.log(err))
   }
 
+  const handleChange = (event) => {
+    if (event.target.value != selectedLang) {
+        setSelectedLang(event.target.value)
+    }
+  };
+
   return (
     <div>
       <div className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
             <h4 className="mb-0">Add Dining Inner Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+            <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", color: "white" }}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                    style={{ color: "white" }}
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    style={{ color: "white" }}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
           </CardHeader>
           <CardBody>
             {/* ******************* */}
@@ -335,16 +396,16 @@ export default function AddDiningInner() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !diningInner.banner.id > 0 ?
-                          thumbnailPreview && thumbnailPreview !== "" ?
-                            <img src={thumbnailPreview} alt={diningInner.banner.section_avtar_alt || ""} />
+                          diningInner.banner.section_avatar?.avatar !== "" ?
+                            <img src={diningInner.banner.section_avatar?.avatar} alt={diningInner.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
-                          typeof (diningInner.banner.section_avatar) === typeof (0) ?
+                          typeof (diningInner.banner.section_avatar?.avatar) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img src={thumbnailPreview} alt={diningInner.banner.section_avtar_alt || ""} />
                             :
-                            <img src={diningInner.banner.section_avatar} alt={diningInner.banner.section_avtar_alt || ""} />
+                            <img src={diningInner.banner.section_avatar?.avatar} alt={diningInner.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
@@ -364,11 +425,6 @@ export default function AddDiningInner() {
                         Upload Featured Image
                           </MaterialButton>
                     </Fragment>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(diningInner.banner.id, "banner")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -455,11 +511,6 @@ export default function AddDiningInner() {
                   {/*    </CardActions>*/}
                   {/*  </Card>*/}
                   {/*</Grid>*/}
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(diningInner.intro.id, "intro")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
@@ -689,11 +740,6 @@ export default function AddDiningInner() {
                       </RadioGroup>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
@@ -717,7 +763,7 @@ export default function AddDiningInner() {
                       color="primary"
                       onClick={() => setDiningInner({ ...diningInner, faq: { ...diningInner.faq, section_content: [...diningInner.faq.section_content, { id: diningInner.faq.section_content?.length + 1, question: '', answer: '' }] } })}
                     >
-                      Add a New Link
+                      Add a New FAQ
                     </MaterialButton>
                   </Grid>
                   <Grid item xs={12} sm={12}>
@@ -729,16 +775,16 @@ export default function AddDiningInner() {
                       handleAnswerChange={handleAnswerChange}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(diningInner.faq.id, "faq")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
           </CardBody>
         </Card>
+        <Grid item xs={12} sm={12}>
+          <MaterialButton onClick={() => handleSubmit()} size="large" color="primary" variant="contained">
+            Update Section
+          </MaterialButton>
+        </Grid>
       </div>
       {/* GALLERY DIALOG BOX START */}
       <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {

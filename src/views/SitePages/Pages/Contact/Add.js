@@ -16,9 +16,8 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-
 import avatar from "assets/img/faces/marc.jpg";
-import { FormControl, FormControlLabel, Radio, RadioGroup, Select, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
+import { FormControl, FormControlLabel, Radio, RadioGroup, Select, MenuItem, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -52,9 +51,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function AddContactUs() {
-  const pageId = parseInt(useParams().id);
+  const pageId = useParams().id;
   const classes = useStyles();
-  const [contact, setContact] = useState({
+
+  let initObj = {
     banner: {
       id: 0,
       section_name: '',
@@ -81,21 +81,10 @@ export default function AddContactUs() {
       section_prior: 1,
       section_avtar_alt: '',
       section_slug: 'intro'
-    },
-    // dine: {
-    //   id: 0,
-    //   section_name: '',
-    //   section_content: "<p>Detailed content goes here!</p>",
-    //   page_id: pageId,
-    //   section_avatar: '',
-    //   section_col_arr: 0,
-    //   section_prior: 1,
-    //   section_avtar_alt: '',
-    //   section_slug: 'dine'
-    // },
-  });
+    }
+  }
 
-  const [seoInfo, setSeoInfo] = useState({
+  let seoObj = {
     id: 0,
     post_id: pageId || 0,
     meta_title: '',
@@ -105,7 +94,11 @@ export default function AddContactUs() {
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: '1,1',
-  })
+  }
+
+  const [contact, setContact] = useState(initObj);
+
+  const [seoInfo, setSeoInfo] = useState(seoObj)
 
   const [currentSection, setCurrentSection] = useState("")
 
@@ -116,27 +109,38 @@ export default function AddContactUs() {
   const [isSingle, setIsSingle] = useState(true)
   // const [renderPreviews, setRenderPreviews] = useState(false)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
+  const [selectedLang, setSelectedLang] = useState("en");
 
   useEffect(() => {
-    API.get(`/all_sections/${pageId}`).then(response => {
+    LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        const { data } = response;
-        let intro = data.find(x => x.section_slug === "intro");
-        if (intro) {
-          intro.section_content = JSON.parse(intro.section_content)
+        // const { data } = response;
+        // let intro = data.find(x => x.section_slug === "intro");
+        // if (intro) {
+        //   intro.section_content = JSON.parse(intro.section_content)
+        // }
+        // setContact(
+        //   {
+        //     intro: intro || contact.intro,
+        //     // dine: data.find(x => x.section_slug === "dine") || contact.dine,
+        //     banner: data.find(x => x.section_slug === "banner") || contact.banner,
+        //   }
+        // )
+        if(response.data.data[0]){
+          setContact(response.data.data[0])
+          setSeoInfo(response.data.data[0].meta)
+        } else {
+          setContact(initObj)
+          setSeoInfo(seoObj)
         }
-        setContact(
-          {
-            intro: intro || contact.intro,
-            // dine: data.find(x => x.section_slug === "dine") || contact.dine,
-            banner: data.find(x => x.section_slug === "banner") || contact.banner,
-          }
-        )
       }
     });
-    getGalleryImages();
-    getSEOInfo();
-  }, []);
+
+    if(!imagesData.length > 0){
+      getGalleryImages();
+    }
+
+  }, [selectedLang]);
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
@@ -183,20 +187,8 @@ export default function AddContactUs() {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-      setContact({ ...contact, [section]: { ...contact[section], section_avatar: imagesData[index].id } })
-      setThumbnailPreview(imagesData[index].avatar)
+      setContact({ ...contact, [section]: { ...contact[section], section_avatar: imagesData[index] } })
 
-      let imagesDataUpdated = imagesData.map((x, i) => {
-        if (i === index) {
-          return {
-            ...x,
-            isChecked: true
-          }
-        } else {
-          return x
-        }
-      });
-      setImagesData(imagesDataUpdated);
       // }
     } else {
       setContact({ ...contact, [section]: { ...contact[section], section_avatar: "" } })
@@ -251,22 +243,68 @@ export default function AddContactUs() {
   }
 
   const handleSubmit = (id, name) => {
+    // let updatedContact = { ...contact };
+    // updatedContact.intro.section_content = JSON.stringify(updatedContact?.intro?.section_content)
+    // API.post(`/add_section`, contact[name]).then(response => {
+    //   if (response.status === 200) {
+    //     alert("Section updated successfully !");
+    //   }
+    // }).catch(err => console.log(err))
+
     let updatedContact = { ...contact };
-    updatedContact.intro.section_content = JSON.stringify(updatedContact?.intro?.section_content)
-    API.post(`/add_section`, contact[name]).then(response => {
+    updatedContact.meta = {...seoInfo};
+    updatedContact.page_id = pageId
+    updatedContact.slug="contact-sections"
+    // console.log("updatedContact",updatedContact); return false;
+
+    LangAPI.post(`/add-section?lang=${selectedLang}`, updatedContact).then(response => {
       if (response.status === 200) {
         alert("Section updated successfully !");
       }
     }).catch(err => console.log(err))
+
   }
+
+  const handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != selectedLang) {
+        setSelectedLang(event.target.value)
+    }
+  };
+
 
   return (
     <div>
       <div className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
             <h4 className="mb-0">Add Contact-Us Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+            <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", color: "white" }}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                    style={{ color: "white" }}
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    style={{ color: "white" }}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
           </CardHeader>
           <CardBody>
             {/* ******************* */}
@@ -300,16 +338,16 @@ export default function AddContactUs() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !contact.banner.id > 0 ?
-                          thumbnailPreview && thumbnailPreview !== "" ?
-                            <img src={thumbnailPreview} alt={contact.banner.section_avtar_alt || ""} />
+                          contact.banner.section_avatar?.avatar !== "" ?
+                            <img src={contact.banner.section_avatar?.avatar} alt={contact.banner.section_avtar_alt || ""} />
                             :
                             <img src={require('./../../../../assets/img/placeholder.png')} alt="" />
                           :
-                          typeof (contact.banner.section_avatar) === typeof (0) ?
+                          typeof (contact.banner.section_avatar?.avatar) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img src={thumbnailPreview} alt={contact.banner.section_avtar_alt || ""} />
                             :
-                            <img src={contact.banner.section_avatar} alt={contact.banner.section_avtar_alt || ""} />
+                            <img src={contact.banner.section_avatar?.avatar} alt={contact.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
@@ -329,11 +367,6 @@ export default function AddContactUs() {
                         Upload Featured Image
                           </MaterialButton>
                     </Fragment>
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(contact.banner.id, "banner")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -405,11 +438,6 @@ export default function AddContactUs() {
                       onChange={(e) => handleInputChange(e, 'intro')}
                       size="small"
                     />
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(contact.intro.id, "intro")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -503,16 +531,16 @@ export default function AddContactUs() {
                       </RadioGroup>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
           </CardBody>
         </Card>
+        <Grid item xs={12} sm={12}>
+          <MaterialButton onClick={() => handleSubmit()} size="large" color="primary" variant="contained">
+            Update Section
+          </MaterialButton>
+        </Grid>
       </div>
       <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
         setShowGallery(false);

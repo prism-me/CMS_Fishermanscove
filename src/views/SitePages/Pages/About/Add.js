@@ -384,15 +384,15 @@ export default function AddAboutUs() {
                       {
                         !about.banner.id > 0 ?
                           about.banner.section_avatar && about.banner.section_avatar.avatar !== "" ?
-                            <img src={about.banner.section_avatar.avatar} alt={about.banner.section_avtar_alt || ""} />
+                            <img src={about.banner.section_avatar?.avatar} alt={about.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
-                          typeof (about.banner.section_avatar) === typeof (0) ?
+                          typeof (about.banner.section_avatar?.avatar) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img src={thumbnailPreview} alt={about.banner.section_avtar_alt || ""} />
                             :
-                            <img src={about.banner.section_avatar} alt={about.banner.section_avtar_alt || ""} />
+                            <img src={about.banner.section_avatar?.avatar} alt={about.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
