@@ -273,7 +273,7 @@ class GalleryList extends Component {
         <Box>
           <GridList cellHeight={150} className="" spacing={10}>
             {this.state.gallery.map((tile, index) => (
-              <GridListTile className="gallery-tile" cols={0.4} key={tile._id}>
+              <GridListTile className="gallery-tile" cols={0.4} key={tile.id}>
                 <img
                   src={tile.avatar}
                   alt={tile.alt_tag}
@@ -288,7 +288,7 @@ class GalleryList extends Component {
                   actionIcon={
                     <IconButton
                       aria-label={`info about ${tile.alt_tag}`}
-                      onClick={() => this.handleDelete(tile._id)}
+                      onClick={() => this.handleDelete(tile.id)}
                       className=""
                     >
                       <DeleteRounded
