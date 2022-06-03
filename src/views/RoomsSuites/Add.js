@@ -99,6 +99,7 @@ export default withRouter(function AddRoom(props) {
     const [renderPreviews, setRenderPreviews] = useState(false);
     const [thumbnailPreview, setThumbnailPreview] = useState("");
     const [isBanner, setIsBanner] = useState(false);
+    const [isImagesList, setImagesList] = useState(false);
     const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState("");
     const [selectedLang, setSelectedLang] = useState(lang || "en");
 
@@ -136,7 +137,7 @@ export default withRouter(function AddRoom(props) {
     const getGalleryImages = () => {
         LangAPI.get(`/get_all_images`).then((response) => {
             if (response.status === 200) {
-                setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+                setImagesData(response.data.data);
             }
         });
     };
@@ -165,23 +166,24 @@ export default withRouter(function AddRoom(props) {
 
     const handleImageSelect = (e, index) => {
         if (e.target.checked) {
-            // if (isSingle && thumbnailPreview !== "") {
-            //   alert("You can only select 1 image for thumbnail. If you want to change image, deselect the image and then select a new one");
-            //   return;
-            // } else {
-            if (isSingle && !isBanner) {
-                setRoom({ ...room, thumbnail: imagesData[index].id, thumbnailPreview: imagesData[index].avatar });
+            if (isSingle && !isBanner && !isImagesList) {
+
+                setRoom({ ...room, thumbnail: imagesData[index].avatar, thumbnailPreview: imagesData[index].avatar });
                 setThumbnailPreview(imagesData[index].avatar);
+
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
-            } else if (isSingle && isBanner) {
-                setRoom({ ...room, banner_img: imagesData[index].id, banner_imgPreview: imagesData[index].avatar });
+
+            } else if (!isSingle && isBanner && !isImagesList) {
+
+                setRoom({ ...room, banner_img: imagesData[index].avatar, banner_imgPreview: imagesData[index].avatar });
                 setBannerThumbnailPreview(imagesData[index].avatar);
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
-            } else {
+
+            } else if (!isSingle && !isBanner && isImagesList) {
                 setSelectedImages([...selectedImages, imagesData[index]]);
                 let imagesDataUpdated = imagesData.map((x, i) => {
                     if (i === index) {
@@ -201,12 +203,12 @@ export default withRouter(function AddRoom(props) {
             if (isSingle && !isBanner) {
                 setRoom({ ...room, thumbnail: "" });
                 setThumbnailPreview("");
-            } else if (isSingle && isBanner) {
+            } else if (!isSingle && isBanner) {
                 setRoom({ ...room, banner_img: "" });
                 setBannerThumbnailPreview("");
             } else {
                 setSelectedImages(
-                    selectedImages.filter((x) => x !== imagesData[index].id)
+                    selectedImages.filter((x) => x !== imagesData[index]._id)
                 );
             }
             setImagesData(
@@ -295,20 +297,20 @@ export default withRouter(function AddRoom(props) {
     const handleRemoveSelectedImage = (x, arrayListType) => {
         switch (arrayListType) {
             case "uploadsPreview":
-                let updatePreview = uploadsPreview.filter((u) => u.id !== x.id)
+                let updatePreview = uploadsPreview.filter((u) => u._id !== x._id)
                 setUploadsPreview(updatePreview);
                 setImagesData(imagesData.map(im => {
-                    if (im.id === x.id) {
+                    if (im._id === x._id) {
                         im.isChecked = false
                     }
                     return im
                 }))
-                setSelectedImages(updatePreview.map((u) => u.id));
+                setSelectedImages(updatePreview.map((u) => u._id));
                 break;
             case "selectedImages":
-                let updateData = selectedImages.filter((u) => u.id !== x.id);
+                let updateData = selectedImages.filter((u) => u._id !== x._id);
                 setImagesData(imagesData.map(im => {
-                    if (im.id === x.id) {
+                    if (im._id === x._id) {
                         im.isChecked = false
                     }
                     return im
@@ -316,7 +318,7 @@ export default withRouter(function AddRoom(props) {
                 setSelectedImages(updateData);
                 break;
             default:
-                return setUploadsPreview(uploadsPreview.filter((u) => u.id !== x.id))
+                return setUploadsPreview(uploadsPreview.filter((u) => u._id !== x._id))
         }
     }
 
@@ -386,7 +388,7 @@ export default withRouter(function AddRoom(props) {
                                     <div className="thumbnail-preview-wrapper img-thumbnail">
                                         {!isEdit ? (
                                             thumbnailPreview && thumbnailPreview !== "" ? (
-                                                <img src={thumbnailPreview} alt={room.alt_text || ""} />
+                                                <img src={thumbnailPreview} alt={room.alt_tag || ""} />
                                             ) : (
                                                 <img
                                                     src={require("./../../assets/img/placeholder.png")}
@@ -395,9 +397,9 @@ export default withRouter(function AddRoom(props) {
                                             )
                                         ) : typeof room.thumbnail === typeof 0 ? (
                                             // room.thumbnail && room.thumbnail !== "" ?
-                                            <img src={thumbnailPreview} alt={room.alt_text || ""} />
+                                            <img src={thumbnailPreview} alt={room.alt_tag || ""} />
                                         ) : (
-                                            <img src={room.thumbnail} alt={room.alt_text || ""} />
+                                            <img src={room.thumbnail} alt={room.alt_tag || ""} />
                                         )}
                                     </div>
                                     <Fragment>
@@ -411,6 +413,7 @@ export default withRouter(function AddRoom(props) {
                                                 setIsSingle(true);
                                                 setIsBanner(false);
                                                 setShowGallery(true);
+                                                setImagesList(false);
                                             }}
                                         >
                                             {isEdit ? "Change" : "Upload"} Featured Image
@@ -467,9 +470,10 @@ export default withRouter(function AddRoom(props) {
                                             className="mt-1"
                                             fullWidth
                                             onClick={() => {
-                                                setIsSingle(true);
+                                                setIsSingle(false);
                                                 setIsBanner(true);
                                                 setShowGallery(true);
+                                                setImagesList(false);
                                             }}
                                         >
                                             {isEdit ? "Change" : "Upload"} Banner Image
@@ -711,6 +715,7 @@ export default withRouter(function AddRoom(props) {
                                 color="primary"
                                 onClick={() => {
                                     setRenderPreviews(false);
+                                    setImagesList(true);
                                     setIsSingle(false);
                                     setIsBanner(false);
                                     setShowGallery(true);
@@ -723,12 +728,13 @@ export default withRouter(function AddRoom(props) {
                             ?.filter(function (array_el) {
                                 return (
                                     selectedImages.filter(function (menuItems_el) {
-                                        return menuItems_el.id === array_el.id;
+                                        return menuItems_el._id === array_el._id;
                                     }).length !== 0
                                 );
                             })
                             ?.map((x) => (
-                                <SelectedImagesThumbnails x={x}
+                                <SelectedImagesThumbnails
+                                    x={x}
                                     handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")} />
                                 // <Grid item xs={12} sm={2}>
                                 //     <div style={{height: "120px"}}>

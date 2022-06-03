@@ -76,10 +76,10 @@ export default withRouter(function DiningAdd(props) {
     is_indexed_or_is_followed: "1,1",
     images_list: [],
     section_slug: "",
-    section_name:"",
+    section_name: "",
     section_dress_code: "",
-    section_opening_hours : "",
-    slug:""
+    section_opening_hours: "",
+    slug: ""
   };
 
   const [dining, setDining] = useState({ ...initialObject });
@@ -93,11 +93,12 @@ export default withRouter(function DiningAdd(props) {
   const [selectedImages, setSelectedImages] = useState([]);
   const [showGallery, setShowGallery] = useState(false);
   const [isSingle, setIsSingle] = useState(false);
+  const [isImagesList, setImagesList] = useState(false);
   const [renderPreviews, setRenderPreviews] = useState(false);
   const [thumbnailPreview, setThumbnailPreview] = useState("");
   const [isBanner, setIsBanner] = useState(false);
   const [bannerThumbnailPreview, setBannerThumbnailPreview] = useState("");
-  const [selectedLang, setSelectedLang] = useState(lang ||"en");
+  const [selectedLang, setSelectedLang] = useState(lang || "en");
 
   useEffect(() => {
     if (id && id != null) {
@@ -106,7 +107,7 @@ export default withRouter(function DiningAdd(props) {
       LangAPI.get(`/dinings/${id}?lang=${selectedLang}`).then((response) => {
         if (response.status === 200) {
 
-          if(response?.data?.data){
+          if (response?.data?.data) {
             let data = { ...response?.data?.data };
             // let meta = { ...response?.data?.meta[0] };
             // data.meta_title = meta.meta_title;
@@ -126,23 +127,23 @@ export default withRouter(function DiningAdd(props) {
             // setUploadsPreview([]);
             setSelectedImages([])
           }
-          
+
         }
       });
     }
 
-    if(!imagesData.length > 0){
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
   }, [selectedLang]);
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
-        if (response.status === 200) {
-            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
-        }
+      if (response.status === 200) {
+        setImagesData(response.data?.data);
+      }
     });
-};
+  };
 
   const handleInputChange = (e) => {
     let updatedDining = { ...dining };
@@ -172,19 +173,19 @@ export default withRouter(function DiningAdd(props) {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-      if (isSingle && !isBanner) {
-        setDining({ ...dining, thumbnail: imagesData[index].id,thumbnailPreview:imagesData[index].avatar });
+      if (isSingle && !isBanner && !isImagesList) {
+        setDining({ ...dining, thumbnail: imagesData[index].avatar, thumbnailPreview: imagesData[index].avatar });
         setThumbnailPreview(imagesData[index].avatar);
         setTimeout(() => {
           setShowGallery(false);
         }, 500);
-      } else if (isSingle && isBanner) {
-        setDining({ ...dining, banner_img: imagesData[index].id, banner_imgPreview: imagesData[index].avatar});
+      } else if (!isSingle && isBanner && !isImagesList) {
+        setDining({ ...dining, banner_img: imagesData[index].avatar, banner_imgPreview: imagesData[index].avatar });
         setBannerThumbnailPreview(imagesData[index].avatar);
         setTimeout(() => {
           setShowGallery(false);
         }, 500);
-      } else {
+      } else if (!isSingle && !isBanner && isImagesList) {
         setSelectedImages([...selectedImages, imagesData[index]]);
         let imagesDataUpdated = imagesData.map((x, i) => {
           if (i === index) {
@@ -208,7 +209,7 @@ export default withRouter(function DiningAdd(props) {
         setBannerThumbnailPreview("");
       } else {
         setSelectedImages(
-          selectedImages.filter((x) => x !== imagesData[index].id)
+          selectedImages.filter((x) => x !== imagesData[index]._id)
         );
       }
       setImagesData(
@@ -232,9 +233,8 @@ export default withRouter(function DiningAdd(props) {
     finalDining.route = dining?.route?.split(website_url)?.[1] || "";
     finalDining.inner_route = append_url || "";
     finalDining.images_list = JSON.stringify([...new Set(selectedImages)]);
-    finalDining.is_indexed_or_is_followed = `${
-        finalDining.is_indexed ? "1" : "0"
-    },${finalDining.is_followed ? "1" : "0"}`;
+    finalDining.is_indexed_or_is_followed = `${finalDining.is_indexed ? "1" : "0"
+      },${finalDining.is_followed ? "1" : "0"}`;
 
     const initialObject = {
       post_name: "",
@@ -257,37 +257,37 @@ export default withRouter(function DiningAdd(props) {
       is_indexed_or_is_followed: "1,1",
       images_list: [],
       section_slug: "",
-      section_name:"",
+      section_name: "",
       section_dress_code: "",
-      section_opening_hours : "",
-      slug:""
+      section_opening_hours: "",
+      slug: ""
     };
 
-    if(!finalDining.post_name || finalDining.post_name == ""){
+    if (!finalDining.post_name || finalDining.post_name == "") {
       alert("Please Add Title Before Submiting")
       return false;
     }
-    if(!finalDining.banner_text || finalDining.banner_text == ""){
+    if (!finalDining.banner_text || finalDining.banner_text == "") {
       alert("Please Add Banner Text Before Submiting")
       return false;
     }
-    if(!finalDining.thumbnailPreview || finalDining.thumbnailPreview == ""){
+    if (!finalDining.thumbnailPreview || finalDining.thumbnailPreview == "") {
       alert("Please select Featured Image Before Submiting")
       return false;
     }
-    if(!finalDining.banner_imgPreview || finalDining.banner_imgPreview == ""){
+    if (!finalDining.banner_imgPreview || finalDining.banner_imgPreview == "") {
       alert("Please select Add Banner Image Before Submiting")
       return false;
     }
-    if(!finalDining.slug || finalDining.slug == ""){
+    if (!finalDining.slug || finalDining.slug == "") {
       alert("Please select Add Slug Before Submiting")
       return false;
     }
-    if(!finalDining.short_description || finalDining.short_description == ""){
+    if (!finalDining.short_description || finalDining.short_description == "") {
       alert("Please Add Short Description Before Submiting")
       return false;
     }
-    if(!selectedImages || selectedImages.length <= 0){
+    if (!selectedImages || selectedImages.length <= 0) {
       alert("Please select Images List Before Submiting")
       return false;
     }
@@ -297,7 +297,7 @@ export default withRouter(function DiningAdd(props) {
       LangAPI.post(`/dinings?lang=${selectedLang}`, finalDining).then((response) => {
         if (response.status === 200) {
           alert("Record Updated");
-          setDining({...initialObject}); //clear all fields
+          setDining({ ...initialObject }); //clear all fields
           props.history.push("/admin/dining");
         }
       });
@@ -306,7 +306,7 @@ export default withRouter(function DiningAdd(props) {
         if (response.status === 200) {
           // setPostId(response.data?.post_id);
           alert("Record Updated");
-          setDining({...initialObject});
+          setDining({ ...initialObject });
           props.history.push("/admin/dining");
         }
       });
@@ -315,38 +315,36 @@ export default withRouter(function DiningAdd(props) {
 
   const handleRemoveSelectedImage = (x, arrayListType) => {
     switch (arrayListType) {
-      case "uploadsPreview" :
-        let updatePreview = uploadsPreview.filter((u) => u.id !== x.id)
+      case "uploadsPreview":
+        let updatePreview = uploadsPreview.filter((u) => u._id !== x._id)
         setUploadsPreview(updatePreview);
         setImagesData(imagesData.map(im => {
-          if(im.id === x.id)
-          {
+          if (im._id === x._id) {
             im.isChecked = false
           }
           return im
         }))
-        setSelectedImages(updatePreview.map((u) => u.id ));
+        setSelectedImages(updatePreview.map((u) => u._id));
         break;
-      case "selectedImages" :
-        let updateData = selectedImages.filter((u) => u.id !== x.id);
+      case "selectedImages":
+        let updateData = selectedImages.filter((u) => u._id !== x._id);
         setImagesData(imagesData.map(im => {
-          if(im.id === x.id)
-          {
+          if (im._id === x._id) {
             im.isChecked = false
           }
           return im
         }))
         setSelectedImages(updateData);
         break;
-      default :
-        return setUploadsPreview(uploadsPreview.filter((u) => u.id !== x.id))
+      default:
+        return setUploadsPreview(uploadsPreview.filter((u) => u._id !== x._id))
     }
   }
 
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
@@ -359,29 +357,29 @@ export default withRouter(function DiningAdd(props) {
               Add Dining/Suite
             </h4>
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
           </CardHeader>
@@ -430,22 +428,23 @@ export default withRouter(function DiningAdd(props) {
                       setIsSingle(true);
                       setIsBanner(false);
                       setShowGallery(true);
+                      setImagesList(false);
                     }}
                   >
                     {isEdit ? "Change" : "Upload"} Featured Image
                   </MaterialButton>
                   <TextField
-                  required
-                  id="slug"
-                  name="slug"
-                  label="Slug"
-                  value={dining.slug}
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  size="small"
-                  style={{ marginTop: '1rem' }}
-                />
+                    required
+                    id="slug"
+                    name="slug"
+                    label="Slug"
+                    value={dining.slug}
+                    variant="outlined"
+                    fullWidth
+                    onChange={handleInputChange}
+                    size="small"
+                    style={{ marginTop: '1rem' }}
+                  />
                 </Fragment>
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -491,9 +490,10 @@ export default withRouter(function DiningAdd(props) {
                     className="mt-1"
                     fullWidth
                     onClick={() => {
-                      setIsSingle(true);
+                      setIsSingle(false);
                       setIsBanner(true);
                       setShowGallery(true);
+                      setImagesList(false);
                     }}
                   >
                     {isEdit ? "Change" : "Upload"} Banner Image
@@ -507,7 +507,7 @@ export default withRouter(function DiningAdd(props) {
                   Short Description
                 </h4>
                 <CKEditor
-                config={ckEditorConfig}
+                  config={ckEditorConfig}
                   onBeforeLoad={(CKEDITOR) =>
                     (CKEDITOR.disableAutoInline = true)
                   }
@@ -526,7 +526,7 @@ export default withRouter(function DiningAdd(props) {
                   Detailed Content
                 </h4>
                 <CKEditor
-                config={ckEditorConfig}
+                  config={ckEditorConfig}
                   onBeforeLoad={(CKEDITOR) =>
                     (CKEDITOR.disableAutoInline = true)
                   }
@@ -535,21 +535,21 @@ export default withRouter(function DiningAdd(props) {
                     setDining({ ...dining, post_content: e.editor.getData() })
                   }
                 />
-                <hr/>
+                <hr />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <h4 style={{ fontWeight: "400" }} className="mt-2">
                   Dress Code
                 </h4>
                 <CKEditor
-                    config={ckEditorConfig}
-                    onBeforeLoad={(CKEDITOR) =>
-                        (CKEDITOR.disableAutoInline = true)
-                    }
-                    data={dining.section_dress_code}
-                    onChange={(e) =>
-                        setDining({ ...dining, section_dress_code: e.editor.getData() })
-                    }
+                  config={ckEditorConfig}
+                  onBeforeLoad={(CKEDITOR) =>
+                    (CKEDITOR.disableAutoInline = true)
+                  }
+                  data={dining.section_dress_code}
+                  onChange={(e) =>
+                    setDining({ ...dining, section_dress_code: e.editor.getData() })
+                  }
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -557,14 +557,14 @@ export default withRouter(function DiningAdd(props) {
                   Opening hours
                 </h4>
                 <CKEditor
-                    config={ckEditorConfig}
-                    onBeforeLoad={(CKEDITOR) =>
-                        (CKEDITOR.disableAutoInline = true)
-                    }
-                    data={dining.section_opening_hours}
-                    onChange={(e) =>
-                        setDining({ ...dining, section_opening_hours: e.editor.getData() })
-                    }
+                  config={ckEditorConfig}
+                  onBeforeLoad={(CKEDITOR) =>
+                    (CKEDITOR.disableAutoInline = true)
+                  }
+                  data={dining.section_opening_hours}
+                  onChange={(e) =>
+                    setDining({ ...dining, section_opening_hours: e.editor.getData() })
+                  }
                 />
               </Grid>
             </Grid>
@@ -588,7 +588,21 @@ export default withRouter(function DiningAdd(props) {
               </Grid>
               <Grid item xs={12} sm={6}>
                 {
-                  isEdit? <TextField
+                  isEdit ? <TextField
+                    required
+                    id="route"
+                    name="route"
+                    label="Permalink"
+                    value={dining.route}
+                    variant="outlined"
+                    fullWidth
+                    onChange={handleRouteChange}
+                    size="small"
+                    InputProps={{
+                      disabled: true,
+                    }}
+                  /> :
+                    <TextField
                       required
                       id="route"
                       name="route"
@@ -599,23 +613,9 @@ export default withRouter(function DiningAdd(props) {
                       onChange={handleRouteChange}
                       size="small"
                       InputProps={{
-                        disabled: true,
+                        disabled: false,
                       }}
-                  />:
-                      <TextField
-                          required
-                          id="route"
-                          name="route"
-                          label="Permalink"
-                          value={dining.route}
-                          variant="outlined"
-                          fullWidth
-                          onChange={handleRouteChange}
-                          size="small"
-                          InputProps={{
-                            disabled: false,
-                          }}
-                      />
+                    />
                 }
               </Grid>
               <Grid item xs={12} sm={12}>
@@ -754,6 +754,7 @@ export default withRouter(function DiningAdd(props) {
                     setIsSingle(false);
                     setIsBanner(false);
                     setShowGallery(true);
+                    setImagesList(true);
                   }}
                 >
                   Select Gallery Images
@@ -764,11 +765,11 @@ export default withRouter(function DiningAdd(props) {
                   ?.filter(function (array_el) {
                     return (
                       selectedImages.filter(function (menuItems_el) {
-                        return menuItems_el.id == array_el.id;
+                        return menuItems_el._id == array_el._id;
                       }).length !== 0
                     );
                   })
-                  ?.map((x) => ( <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")}/>
+                  ?.map((x) => (<SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")} />
                     // <Grid item xs={12} sm={2}>
                     //   <div style={{ height: "120px" }}>
                     //     <img
@@ -786,7 +787,7 @@ export default withRouter(function DiningAdd(props) {
                   ))}
               {uploadsPreview &&
                 uploadsPreview?.map((x) => (
-                    <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r)=>handleRemoveSelectedImage(r,"uploadsPreview")}/>
+                  <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "uploadsPreview")} />
                   // <Grid item xs={12} sm={2}>
                   //   <div style={{ height: "120px" }}>
                   //     <img
