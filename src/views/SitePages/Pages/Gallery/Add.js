@@ -188,11 +188,21 @@ export default function AddGallery() {
         }, 500);
 
       } else if (!isSingle && isImagesList) {
-        // setSelectedImages([...selectedImages, imagesData[index]]);
-        console.log('setSelectedImages :: ', imagesData[index] )
-        console.log('section :: ', section )
-        setSelectedImages([...gallery, imagesData[index]]);
-        // setGallery({ ...gallery, [section]: { ...gallery[section], imageGallery: imagesData[index] } })
+
+        let gal = { ...gallery}
+        // console.log(gal,"gal")
+        // return false;
+        if(!gal.imageGallery){
+          gal.imageGallery = []
+        }
+        gal.imageGallery.push(imagesData[index])
+        setGallery(gal)
+        // setGallery({ ...gallery, [section]: { ...gallery[section], imagesData[index] }})
+        // console.log('setSelectedImages :: ', imagesData[index])
+        // console.log('section :: ', section) 
+
+        // setGallery({ ...gallery, [section]: imagesData[index] })
+
         let imagesDataUpdated = imagesData.map((x, i) => {
           if (i === index) {
             return {
@@ -305,9 +315,11 @@ export default function AddGallery() {
   };
 
   const handleRemoveSelectedImage = (x, arrayListType) => {
+
+    console.log("Removing selected image :: ", x)
     switch (arrayListType) {
       case "uploadsPreview":
-        let updatePreview = uploadsPreview.filter((u) => u._id !== x._id)
+        let updatePreview = gallery?.imageGallery?.filter((u) => u._id !== x._id)
         setUploadsPreview(updatePreview);
         setImagesData(imagesData.map(im => {
           if (im._id === x._id) {
@@ -318,17 +330,22 @@ export default function AddGallery() {
         setSelectedImages(updatePreview.map((u) => u._id));
         break;
       case "selectedImages":
-        let updateData = selectedImages.filter((u) => u._id !== x._id);
-        setImagesData(imagesData.map(im => {
-          if (im._id === x._id) {
-            im.isChecked = false
-          }
-          return im
-        }))
-        setSelectedImages(updateData);
+        let gal = {...gallery}
+        let updateData = gal.imageGallery.filter((u) => u._id !== x._id);
+        // console.log(updateData,"updateData")
+        // return false;
+        // let updateData = selectedImages.filter((u) => u._id !== x._id);
+        // setImagesData(imagesData.map(im => {
+        //   if (im._id === x._id) {
+        //     im.isChecked = false
+        //   }
+        //   return im
+        // }))
+        gal.imageGallery = updateData
+        setGallery(gal);
         break;
       default:
-        return setUploadsPreview(uploadsPreview.filter((u) => u._id !== x._id))
+        return setUploadsPreview(gallery?.imageGallery?.filter((u) => u._id !== x._id))
     }
   }
 
@@ -450,15 +467,16 @@ export default function AddGallery() {
                           setImagesList(true);
                           setIsSingle(false);
                           setShowGallery(true);
+                          setCurrentSection("imageGallery");
                         }}
                       >
                         Select Gallery Images
                       </MaterialButton>
                     </Grid>
-                    {imagesData
+                    {gallery?.imageGallery?.length > 0 && imagesData
                       ?.filter(function (array_el) {
                         return (
-                          selectedImages.filter(function (menuItems_el) {
+                          gallery?.imageGallery?.filter(function (menuItems_el) {
                             return menuItems_el._id === array_el._id;
                           }).length !== 0
                         );

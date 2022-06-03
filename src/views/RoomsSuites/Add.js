@@ -184,6 +184,7 @@ export default withRouter(function AddRoom(props) {
                 }, 500);
 
             } else if (!isSingle && !isBanner && isImagesList) {
+                
                 setSelectedImages([...selectedImages, imagesData[index]]);
                 let imagesDataUpdated = imagesData.map((x, i) => {
                     if (i === index) {
