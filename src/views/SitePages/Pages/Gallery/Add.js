@@ -16,7 +16,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-
+import SelectedImagesThumbnails from "../../../Common/SelectedImagesThumbnails";
 import avatar from "assets/img/faces/marc.jpg";
 import {
   MenuItem,
@@ -74,6 +74,7 @@ export default function AddGallery() {
       section_avtar_alt: '',
       section_slug: 'banner'
     },
+    imageGallery: []
   });
   const [seoInfo, setSeoInfo] = useState({
     id: 0,
@@ -87,13 +88,13 @@ export default function AddGallery() {
     is_indexed_or_is_followed: '1,1',
   })
   const [currentSection, setCurrentSection] = useState("")
-
   const [imagesData, setImagesData] = useState([])
-  // const [uploadsPreview, setUploadsPreview] = useState(null)
-  // const [selectedImages, setSelectedImages] = useState([])
+  const [uploadsPreview, setUploadsPreview] = useState(null)
+  const [selectedImages, setSelectedImages] = useState([])
   const [showGallery, setShowGallery] = useState(false)
-  const [isSingle, setIsSingle] = useState(true)
-  // const [renderPreviews, setRenderPreviews] = useState(false)
+  const [isSingle, setIsSingle] = useState(false);
+  const [isImagesList, setImagesList] = useState(false);
+  const [renderPreviews, setRenderPreviews] = useState(false)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
   const [selectedLang, setSelectedLang] = useState("en");
 
@@ -106,7 +107,7 @@ export default function AddGallery() {
         //       banner: data.find(x => x.section_slug === "banner") || gallery.banner,
         //     }
         // )
-        if(response.data.data[0]){
+        if (response.data.data[0]) {
           setGallery(response.data.data[0])
           setSeoInfo(response.data.data[0]?.meta)
         } else {
@@ -138,8 +139,8 @@ export default function AddGallery() {
         }
       }
     });
-    
-    if(!imagesData.length > 0){
+
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
   }, [selectedLang]);
@@ -173,16 +174,42 @@ export default function AddGallery() {
   }
 
   const handleImageSelect = (e, index, section) => {
-    setTimeout(() => {
-      setShowGallery(false);
-    }, 500);
+    // setTimeout(() => {
+    //   setShowGallery(false);
+    // }, 500);
 
     if (e.target.checked) {
+      if (isSingle && !isImagesList) {
+
+        setGallery({ ...gallery, [section]: { ...gallery[section], section_avatar: imagesData[index] } })
+
+        setTimeout(() => {
+          setShowGallery(false);
+        }, 500);
+
+      } else if (!isSingle && isImagesList) {
+        // setSelectedImages([...selectedImages, imagesData[index]]);
+        console.log('setSelectedImages :: ', imagesData[index] )
+        console.log('section :: ', section )
+        setSelectedImages([...gallery, imagesData[index]]);
+        // setGallery({ ...gallery, [section]: { ...gallery[section], imageGallery: imagesData[index] } })
+        let imagesDataUpdated = imagesData.map((x, i) => {
+          if (i === index) {
+            return {
+              ...x,
+              isChecked: true,
+            };
+          } else {
+            return x;
+          }
+        });
+        setImagesData(imagesDataUpdated);
+      }
       // if (isSingle && thumbnailPreview !== "") {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-      setGallery({ ...gallery, [section]: { ...gallery[section], section_avatar: imagesData[index] } })
+      // setGallery({ ...gallery, [section]: { ...gallery[section], section_avatar: imagesData[index] } })
       // setThumbnailPreview(imagesData[index].avatar)
 
       // let imagesDataUpdated = imagesData.map((x, i) => {
@@ -257,9 +284,9 @@ export default function AddGallery() {
     }).catch(err => console.log(err))
 
     let updatedGalery = { ...gallery };
-    updatedGalery.meta = {...seoInfo};
+    updatedGalery.meta = { ...seoInfo };
     updatedGalery.page_id = pageId
-    updatedGalery.slug="gallery-sections"
+    updatedGalery.slug = "gallery-sections"
     // console.log("updatedGalery",updatedGalery); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedGalery).then(response => {
@@ -273,10 +300,37 @@ export default function AddGallery() {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
+  const handleRemoveSelectedImage = (x, arrayListType) => {
+    switch (arrayListType) {
+      case "uploadsPreview":
+        let updatePreview = uploadsPreview.filter((u) => u._id !== x._id)
+        setUploadsPreview(updatePreview);
+        setImagesData(imagesData.map(im => {
+          if (im._id === x._id) {
+            im.isChecked = false
+          }
+          return im
+        }))
+        setSelectedImages(updatePreview.map((u) => u._id));
+        break;
+      case "selectedImages":
+        let updateData = selectedImages.filter((u) => u._id !== x._id);
+        setImagesData(imagesData.map(im => {
+          if (im._id === x._id) {
+            im.isChecked = false
+          }
+          return im
+        }))
+        setSelectedImages(updateData);
+        break;
+      default:
+        return setUploadsPreview(uploadsPreview.filter((u) => u._id !== x._id))
+    }
+  }
 
   return (
     <div>
@@ -286,37 +340,37 @@ export default function AddGallery() {
             <h4 className="mb-0">Add Gallery</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </CardHeader>
           <CardBody>
             <Accordion>
               <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panelaa-content"
-                  id="panelaa-header"
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panelaa-content"
+                id="panelaa-header"
               >
                 <Typography className={classes.heading}>Banner</Typography>
               </AccordionSummary>
@@ -325,46 +379,46 @@ export default function AddGallery() {
                   <Grid item xs={12} sm={12}>
                     {/* SECTION TITLE */}
                     <TextField
-                        required
-                        id="section_name"
-                        name="section_name"
-                        label="Section Title"
-                        value={gallery.banner.section_name}
-                        variant="outlined"
-                        fullWidth
-                        onChange={(e) => handleInputChange(e, "banner")}
-                        size="medium"
-                        style={{ marginBottom: '1rem' }}
+                      required
+                      id="section_name"
+                      name="section_name"
+                      label="Section Title"
+                      value={gallery.banner.section_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "banner")}
+                      size="medium"
+                      style={{ marginBottom: '1rem' }}
                     />
 
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !gallery.banner.id > 0 ?
                           gallery.banner.section_avatar?.avatar !== "" ?
-                                <img src={gallery.banner.section_avatar?.avatar} alt={gallery.banner.section_avtar_alt || ""} />
-                                :
-                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                            <img src={gallery.banner.section_avatar?.avatar} alt={gallery.banner.section_avtar_alt || ""} />
                             :
-                            typeof (gallery.banner.section_avatar?.avatar) === typeof (0) ?
-                                // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={gallery.banner.section_avtar_alt || ""} />
-                                :
-                                <img src={gallery.banner.section_avatar?.avatar} alt={gallery.banner.section_avtar_alt || ""} />
+                            <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                          :
+                          typeof (gallery.banner.section_avatar?.avatar) === typeof (0) ?
+                            // dining.thumbnail && dining.thumbnail !== "" ?
+                            <img src={thumbnailPreview} alt={gallery.banner.section_avtar_alt || ""} />
+                            :
+                            <img src={gallery.banner.section_avatar?.avatar} alt={gallery.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
                       <MaterialButton
-                          variant="outlined"
-                          color="primary"
-                          startIcon={<Image />}
-                          className="mt-1"
-                          fullWidth
-                          size="large"
-                          onClick={() => {
-                            setIsSingle(true);
-                            setCurrentSection("banner");
-                            setShowGallery(true);
-                          }}
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<Image />}
+                        className="mt-1"
+                        fullWidth
+                        size="large"
+                        onClick={() => {
+                          setIsSingle(true);
+                          setCurrentSection("banner");
+                          setShowGallery(true);
+                        }}
                       >
                         Upload Featured Image
                       </MaterialButton>
@@ -375,9 +429,60 @@ export default function AddGallery() {
             </Accordion>
             <Accordion>
               <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel2a-content"
-                  id="panel2a-header"
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel3a-content"
+                id="panel3a-header"
+              >
+                <Typography className={classes.heading}>Image Gallery</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <p>
+                    <em>Please select images from gallery.</em>
+                  </p>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={12}>
+                      <MaterialButton
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                          setRenderPreviews(false);
+                          setImagesList(true);
+                          setIsSingle(false);
+                          setShowGallery(true);
+                        }}
+                      >
+                        Select Gallery Images
+                      </MaterialButton>
+                    </Grid>
+                    {imagesData
+                      ?.filter(function (array_el) {
+                        return (
+                          selectedImages.filter(function (menuItems_el) {
+                            return menuItems_el._id === array_el._id;
+                          }).length !== 0
+                        );
+                      })
+                      ?.map((x) => (
+                        <SelectedImagesThumbnails
+                          x={x}
+                          handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")} />
+                      ))}
+                    {uploadsPreview &&
+                      uploadsPreview?.map((x) => (
+                        <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "uploadsPreview")} />
+                      ))}
+                    <div className="clearfix clear-fix"></div>
+
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
               >
                 <Typography className={classes.heading}>SEO Information</Typography>
               </AccordionSummary>
@@ -385,15 +490,15 @@ export default function AddGallery() {
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                        required
-                        id="meta_title"
-                        name="meta_title"
-                        label="Meta Title"
-                        value={seoInfo.meta_title}
-                        variant="outlined"
-                        fullWidth
-                        onChange={handleSEOInputChange}
-                        size="small"
+                      required
+                      id="meta_title"
+                      name="meta_title"
+                      label="Meta Title"
+                      value={seoInfo.meta_title}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
                     />
                   </Grid>
                   {/*<Grid item xs={12} sm={3}>*/}
@@ -414,31 +519,31 @@ export default function AddGallery() {
                   {/*</Grid>*/}
                   <Grid item xs={12} sm={12}>
                     <TextField
-                        required
-                        id="meta_description"
-                        name="meta_description"
-                        label="Meta Description"
-                        value={seoInfo.meta_description}
-                        variant="outlined"
-                        fullWidth
-                        onChange={handleSEOInputChange}
-                        size="small"
+                      required
+                      id="meta_description"
+                      name="meta_description"
+                      label="Meta Description"
+                      value={seoInfo.meta_description}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
                     />
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     <TextField
-                        required
-                        id="schema_markup"
-                        name="schema_markup"
-                        label="Schema Markup"
-                        value={seoInfo.schema_markup}
-                        variant="outlined"
-                        fullWidth
-                        multiline
-                        rows={4}
-                        rowsMax={4}
-                        onChange={handleSEOInputChange}
-                        size="small"
+                      required
+                      id="schema_markup"
+                      name="schema_markup"
+                      label="Schema Markup"
+                      value={seoInfo.schema_markup}
+                      variant="outlined"
+                      fullWidth
+                      multiline
+                      rows={4}
+                      rowsMax={4}
+                      onChange={handleSEOInputChange}
+                      size="small"
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -472,10 +577,32 @@ export default function AddGallery() {
           </MaterialButton>
         </Grid>
       </div>
-      <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
-        setShowGallery(false);
-        // setRenderPreviews(true);
-      }} refreshGallery={getGalleryImages} data={imagesData} />
+      {/* GALLERY DIALOG BOX START */}
+      <GalleryDialog
+        isSingle={isSingle}
+        section={currentSection}
+        open={showGallery}
+        handleImageSelect={handleImageSelect}
+        handleClose={() => {
+          setShowGallery(false);
+          setRenderPreviews(true);
+          setUploadsPreview([])
+        }}
+        refreshGallery={getGalleryImages}
+        data={imagesData}
+        selectedData={selectedImages}
+      />
+      {/* GALLERY DIALOG BOX END */}
+
+      {/* <GalleryDialog
+        isSingle={isSingle}
+        section={currentSection}
+        open={showGallery}
+        handleImageSelect={handleImageSelect}
+        handleClose={() => {
+          setShowGallery(false);
+          // setRenderPreviews(true);
+        }} refreshGallery={getGalleryImages} data={imagesData} /> */}
     </div>
   );
 }
