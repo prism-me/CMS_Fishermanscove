@@ -439,11 +439,6 @@ export default function FAQPage() {
                         </RadioGroup>
                       </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={12}>
-                      <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
-                        Update Section
-                      </MaterialButton>
-                    </Grid>
                   </Grid>
                 </AccordionDetails>
               </Accordion>
