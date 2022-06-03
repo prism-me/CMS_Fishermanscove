@@ -16,6 +16,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
+import LangAPI from "langapi/http";
 
 import avatar from "assets/img/faces/marc.jpg";
 import {
@@ -41,7 +42,6 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
-import LangAPI from "langapi/http";
 import GalleryDialog from "../../../Common/GalleryDialog";
 // const website_url = "/";
 
@@ -60,9 +60,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function AddCancellationPolicy() {
-  const pageId = parseInt(useParams().id);
+  const pageId = useParams().id;
   const classes = useStyles();
-  const [cancellationPolicy, setCancellationPolicy] = useState({
+
+  let initObj = {
     intro: {
       id: 0,
       section_name: '',
@@ -85,8 +86,9 @@ export default function AddCancellationPolicy() {
       section_avtar_alt: '',
       section_slug: 'banner'
     },
-  });
-  const [seoInfo, setSeoInfo] = useState({
+  }
+
+  let seoObj = {
     id: 0,
     post_id: pageId || 0,
     meta_title: '',
@@ -96,7 +98,10 @@ export default function AddCancellationPolicy() {
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: '1,1',
-  })
+  }
+
+  const [cancellationPolicy, setCancellationPolicy] = useState(initObj);
+  const [seoInfo, setSeoInfo] = useState(seoObj)
   const [currentSection, setCurrentSection] = useState("")
 
   const [imagesData, setImagesData] = useState([])
@@ -106,22 +111,32 @@ export default function AddCancellationPolicy() {
   const [isSingle, setIsSingle] = useState(true)
   // const [renderPreviews, setRenderPreviews] = useState(false)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
+  const [selectedLang, setSelectedLang] = useState("en");
 
   useEffect(() => {
-    API.get(`/all_sections/${pageId}`).then(response => {
+    LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        const { data } = response;
-        setCancellationPolicy(
-            {
-              intro: data.find(x => x.section_slug === "intro") || cancellationPolicy.intro,
-              banner: data.find(x => x.section_slug === "banner") || cancellationPolicy.banner,
-            }
-        )
+        // const { data } = response;
+        // setCancellationPolicy(
+        //     {
+        //       intro: data.find(x => x.section_slug === "intro") || cancellationPolicy.intro,
+        //       banner: data.find(x => x.section_slug === "banner") || cancellationPolicy.banner,
+        //     }
+        // )
+        if(response.data.data[0]){
+          setCancellationPolicy(response.data.data[0])
+          setSeoInfo(response.data?.data[0]?.meta)
+        } else {
+          setCancellationPolicy(initObj)
+          setSeoInfo(seoObj)
+        }
       }
     });
-    getGalleryImages();
-    getSEOInfo();
-  }, []);
+
+    if(!imagesData.length > 0){
+      getGalleryImages();
+    }
+  }, [selectedLang]);
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
@@ -139,7 +154,7 @@ export default function AddCancellationPolicy() {
           setSeoInfo(seoInfoData);
         }
         else {
-          seoInfoData(seoInfo);
+          setSeoInfo(seoInfo);
         }
       }
     })
@@ -161,20 +176,9 @@ export default function AddCancellationPolicy() {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-      setCancellationPolicy({ ...cancellationPolicy, [section]: { ...cancellationPolicy[section], section_avatar: imagesData[index].id } })
+      setCancellationPolicy({ ...cancellationPolicy, [section]: { ...cancellationPolicy[section], section_avatar: imagesData[index] } })
       setThumbnailPreview(imagesData[index].avatar)
 
-      let imagesDataUpdated = imagesData.map((x, i) => {
-        if (i === index) {
-          return {
-            ...x,
-            isChecked: true
-          }
-        } else {
-          return x
-        }
-      });
-      setImagesData(imagesDataUpdated);
       // }
     } else {
       setCancellationPolicy({ ...cancellationPolicy, [section]: { ...cancellationPolicy[section], section_avatar: "" } })
@@ -234,15 +238,61 @@ export default function AddCancellationPolicy() {
         alert("Section updated successfully !");
       }
     }).catch(err => console.log(err))
+
+    let updatedCancellationPolicy = { ...cancellationPolicy };
+    updatedCancellationPolicy.meta = {...seoInfo};
+    updatedCancellationPolicy.page_id = pageId
+    updatedCancellationPolicy.slug="cancelationPolicy-sections"
+    // console.log("updatedCancellationPolicy",updatedCancellationPolicy); return false;
+
+    LangAPI.post(`/add-section?lang=${selectedLang}`, updatedCancellationPolicy).then(response => {
+      if (response.status === 200) {
+        alert("Section updated successfully !");
+      }
+    }).catch(err => console.log(err))
+
   }
+
+  const handleChange = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != selectedLang) {
+        setSelectedLang(event.target.value)
+    }
+  };
+
 
   return (
     <div>
       <div className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
             <h4 className="mb-0">Add Cancellation Policy</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+            <FormControl
+                variant="outlined"
+                size="small"
+                style={{ width: "20%", color: "white" }}
+            // fullWidth
+            >
+                <InputLabel id="language"
+                    style={{ color: "white" }}
+                >Select Language</InputLabel>
+                <Select
+                    labelId="language"
+                    id="language"
+                    name="language"
+                    value={selectedLang}
+                    label="Select Language"
+                    fullWidth
+                    style={{ color: "white" }}
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'en'}>En</MenuItem>
+                    <MenuItem value={'fr'}>FR</MenuItem>
+                    <MenuItem value={'de'}>DE</MenuItem>
+
+                </Select>
+            </FormControl>
           </CardHeader>
           <CardBody>
             <Accordion>
@@ -273,16 +323,16 @@ export default function AddCancellationPolicy() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !cancellationPolicy.banner.id > 0 ?
-                            thumbnailPreview && thumbnailPreview !== "" ?
-                                <img src={thumbnailPreview} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
+                          cancellationPolicy.banner.section_avatar?.avatar !== "" ?
+                                <img src={cancellationPolicy.banner.section_avatar?.avatar} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                             :
-                            typeof (cancellationPolicy.banner.section_avatar) === typeof (0) ?
+                            typeof (cancellationPolicy.banner.section_avatar?.avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
                                 <img src={thumbnailPreview} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
                                 :
-                                <img src={cancellationPolicy.banner.section_avatar} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
+                                <img src={cancellationPolicy.banner.section_avatar?.avatar} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
@@ -303,11 +353,7 @@ export default function AddCancellationPolicy() {
                       </MaterialButton>
                     </Fragment>
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(cancellationPolicy.banner.id, "banner")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
+
                 </Grid>
               </AccordionDetails>
             </Accordion>
@@ -339,11 +385,6 @@ export default function AddCancellationPolicy() {
                     <CKEditor
                         config={ckEditorConfig}
                         onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={cancellationPolicy.intro.section_content} onChange={(e) => setCancellationPolicy({ ...cancellationPolicy, intro: { ...cancellationPolicy.intro, section_content: e.editor.getData() } })} />
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={() => handleSubmit(cancellationPolicy.intro.id, "intro")} size="large" color="primary" variant="contained">
-                      Update Section
-                    </MaterialButton>
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -436,16 +477,16 @@ export default function AddCancellationPolicy() {
                       </RadioGroup>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <MaterialButton onClick={handleSEOSubmit} variant="contained" color="primary" size="large">
-                      Update Section
-                    </MaterialButton>
-                  </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
           </CardBody>
         </Card>
+        <Grid item xs={12} sm={12}>
+          <MaterialButton onClick={() => handleSubmit(cancellationPolicy.banner.id, "banner")} size="large" color="primary" variant="contained">
+            Update Section
+          </MaterialButton>
+        </Grid>
       </div>
       <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
         setShowGallery(false);
