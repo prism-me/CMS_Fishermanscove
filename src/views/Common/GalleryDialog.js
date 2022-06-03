@@ -10,7 +10,7 @@ import { Avatar, Box, Card, Checkbox, FormControl, FormControlLabel, FormGroup, 
 import { DropzoneArea } from 'material-ui-dropzone';
 import { CloudUploadOutlined, DeleteOutlined } from '@material-ui/icons';
 import CardBody from 'components/Card/CardBody';
-import API from 'utils/http';
+import API from 'langapi/http';
 
 export default function GalleryDialog(props) {
     const [currentFiles, setCurrentFiles] = useState([]);
@@ -57,7 +57,7 @@ export default function GalleryDialog(props) {
             imagesFormData.append("images[]", x.image);
             imagesFormData.append("data[]", JSON.stringify(x))
         })
-        API.post(`/multiple_upload`, imagesFormData, {
+        API.post(`/upload_media`, imagesFormData, {
             headers: {
                 'Content-Type': `multipart/form-data; boundary=${imagesFormData._boundary}`,
             }

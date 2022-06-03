@@ -26,7 +26,6 @@ import { ckEditorConfig } from "utils/data";
 // import ClassicEditor from "../../plugins/ckeditor.js";
 // import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock";
 import { Image } from "@material-ui/icons";
-import API from "utils/http";
 import { useParams, withRouter, useLocation } from "react-router-dom";
 
 // ClassicEditor.b
@@ -135,9 +134,9 @@ export default withRouter(function AddRoom(props) {
     }, [selectedLang]);
 
     const getGalleryImages = () => {
-        API.get(`/uploads`).then((response) => {
+        LangAPI.get(`/get_all_images`).then((response) => {
             if (response.status === 200) {
-                setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
+                setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
             }
         });
     };

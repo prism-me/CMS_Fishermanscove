@@ -10,7 +10,6 @@ import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, Tex
 import CKEditor from "ckeditor4-react";
 import { Image } from "@material-ui/icons";
 import LangAPI from "langapi/http";
-import API from "utils/http";
 
 import { useParams, withRouter, useLocation } from "react-router-dom";
 import GalleryDialog from "views/Common/GalleryDialog";
@@ -93,11 +92,9 @@ export default withRouter(function AddRoom(props) {
     }, [selectedLang]);
 
     const getGalleryImages = () => {
-        API.get(`/uploads`).then((response) => {
+        LangAPI.get(`/get_all_images`).then((response) => {
             if (response.status === 200) {
-                if (response.data.length > 0) {
-                    setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
-                }
+                setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
             }
         });
     };

@@ -96,12 +96,12 @@ export default withRouter(function WeddingAdd(props) {
   }, [selectedLang])
 
   const getGalleryImages = () => {
-    API.get(`/uploads`).then(response => {
+    LangAPI.get(`/get_all_images`).then((response) => {
       if (response.status === 200) {
-        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
+        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
       }
-    })
-  }
+    });
+  };
 
   const handleInputChange = (e) => {
     let updatedWedding = { ...wedding };

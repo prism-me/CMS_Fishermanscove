@@ -138,12 +138,12 @@ export default function AddPrivacyPolicy() {
   }, [selectedLang]);
 
   const getGalleryImages = () => {
-    API.get(`/uploads`).then(response => {
-      if (response.status === 200) {
-        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
-      }
-    })
-  }
+    LangAPI.get(`/get_all_images`).then((response) => {
+        if (response.status === 200) {
+            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+        }
+    });
+};
 
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {

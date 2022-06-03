@@ -34,6 +34,7 @@ import { useParams } from "react-router-dom";
 import API from "utils/http";
 import FAQSection from "../Common/FAQSection";
 import GalleryDialog from "views/Common/GalleryDialog";
+import LangAPI from "langapi/http";
 
 // const website_url = "https://fishermanscove-resort.com/";
 // const website_url = "/";
@@ -164,12 +165,12 @@ export default function ParisFrenchRestaurant() {
   }, [])
 
   const getGalleryImages = () => {
-    API.get(`/uploads`).then(response => {
-      if (response.status === 200) {
-        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
-      }
-    })
-  }
+    LangAPI.get(`/get_all_images`).then((response) => {
+        if (response.status === 200) {
+            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+        }
+    });
+};
 
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {

@@ -137,12 +137,12 @@ export default function AddOffer(props) {
   }, [selectedLang]);
 
   const getGalleryImages = () => {
-    API.get(`/uploads`).then((response) => {
-      if (response.status === 200) {
-        setImagesData(response.data?.map((x) => ({ ...x, isChecked: false })));
-      }
+    LangAPI.get(`/get_all_images`).then((response) => {
+        if (response.status === 200) {
+            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+        }
     });
-  };
+};
 
   const handleInputChange = (e) => {
     let updatedOffer = { ...offer };

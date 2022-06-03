@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import API from "utils/http";
+import API from "langapi/http";
 import { DropzoneArea } from "material-ui-dropzone";
 import {
   Avatar,
@@ -42,11 +42,11 @@ class GalleryList extends Component {
   };
 
   componentDidMount() {
-    API.get("/uploads")
+    API.get("/get_all_images")
       .then((response) => {
         if (response.status === 200) {
-          this.setState({ gallery: response.data });
-          this.setState({ mainSrc: response.data[0] });
+          this.setState({ gallery: response.data.data });
+          this.setState({ mainSrc: response.data.data[0] });
         }
       })
       .catch((err) => {
@@ -90,7 +90,7 @@ class GalleryList extends Component {
       imagesFormData.append("images[]", x.image);
       imagesFormData.append("data[]", JSON.stringify(x));
     });
-    API.post(`/multiple_upload`, imagesFormData, {
+    API.post(`/upload_media`, imagesFormData, {
       headers: {
         "Content-Type": `multipart/form-data; boundary=${imagesFormData._boundary}`,
       },
@@ -102,10 +102,10 @@ class GalleryList extends Component {
         }
       })
       .then(() => {
-        API.get("/uploads").then((response) => {
+        API.get("/get_all_images").then((response) => {
           if (response.status === 200) {
-            this.setState({ gallery: response.data });
-            this.setState({ mainSrc: response.data[0] });
+            this.setState({ gallery: response.data.data });
+            this.setState({ mainSrc: response.data.data[0] });
           }
         });
       })
@@ -113,7 +113,7 @@ class GalleryList extends Component {
   };
 
   handleDelete = (id) => {
-    API.delete(`/uploads/${id}`)
+    API.delete(`/delete_images/${id}`)
       .then((response) => {
         if (response.status === 200) {
           alert("Image delete successfully.");
@@ -121,10 +121,10 @@ class GalleryList extends Component {
         }
       })
       .then(() => {
-        API.get("/uploads").then((response) => {
+        API.get("/get_all_images").then((response) => {
           if (response.status === 200) {
-            this.setState({ gallery: response.data });
-            this.setState({ mainSrc: response.data[0] });
+            this.setState({ gallery: response.data.data });
+            this.setState({ mainSrc: response.data.data[0] });
           }
         });
       })

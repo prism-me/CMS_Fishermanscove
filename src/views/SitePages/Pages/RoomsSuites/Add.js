@@ -16,7 +16,6 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-import LangAPI from "langapi/http";
 import avatar from "assets/img/faces/marc.jpg";
 import { FormControl, FormControlLabel, Radio, RadioGroup, Select, MenuItem, TextField, CardMedia, CardActionArea, CardContent, CardActions } from "@material-ui/core";
 import CKEditor from 'ckeditor4-react';
@@ -31,6 +30,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
+import LangAPI from "langapi/http";
 import GalleryDialog from "views/Common/GalleryDialog";
 
 // const website_url = "https://fishermanscove-resort.com/";
@@ -144,12 +144,12 @@ export default function RoomsSuites() {
   }, [selectedLang]);
 
   const getGalleryImages = () => {
-    API.get(`/uploads`).then(response => {
+    LangAPI.get(`/get_all_images`).then((response) => {
       if (response.status === 200) {
-        setImagesData(response.data?.map(x => ({ ...x, isChecked: false })))
+        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
       }
-    })
-  }
+    });
+  };
 
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {
