@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import API from "langapi/http";
+// import API from "langapi/http";
+import API from "utils/http";
 import { DropzoneArea } from "material-ui-dropzone";
 import {
   Avatar,
@@ -42,11 +43,12 @@ class GalleryList extends Component {
   };
 
   componentDidMount() {
-    API.get("/get_all_images")
+    API.get("/uploads")
       .then((response) => {
         if (response.status === 200) {
-          this.setState({ gallery: response.data.data });
-          this.setState({ mainSrc: response.data.data[0] });
+          this.setState({ gallery: response.data });
+          // this.setState({ mainSrc: response.data.data[0] });
+          console.log(response.data)
         }
       })
       .catch((err) => {
@@ -102,7 +104,7 @@ class GalleryList extends Component {
         }
       })
       .then(() => {
-        API.get("/get_all_images").then((response) => {
+        API.get("/uploads").then((response) => {
           if (response.status === 200) {
             this.setState({ gallery: response.data.data });
             this.setState({ mainSrc: response.data.data[0] });
@@ -121,7 +123,7 @@ class GalleryList extends Component {
         }
       })
       .then(() => {
-        API.get("/get_all_images").then((response) => {
+        API.get("/uploads").then((response) => {
           if (response.status === 200) {
             this.setState({ gallery: response.data.data });
             this.setState({ mainSrc: response.data.data[0] });
