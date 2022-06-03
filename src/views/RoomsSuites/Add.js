@@ -136,7 +136,7 @@ export default withRouter(function AddRoom(props) {
     const getGalleryImages = () => {
         LangAPI.get(`/get_all_images`).then((response) => {
             if (response.status === 200) {
-                setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+                setImagesData(response.data.data);
             }
         });
     };
@@ -170,18 +170,45 @@ export default withRouter(function AddRoom(props) {
             //   return;
             // } else {
             if (isSingle && !isBanner) {
-                setRoom({ ...room, thumbnail: imagesData[index].id, thumbnailPreview: imagesData[index].avatar });
-                setThumbnailPreview(imagesData[index].avatar);
+
+
+                let updatedImage = { ...room };
+
+                updatedImage.thumbnail = imagesData[index].avatar;
+
+                setRoom(updatedImage);
+
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
-            } else if (isSingle && isBanner) {
-                setRoom({ ...room, banner_img: imagesData[index].id, banner_imgPreview: imagesData[index].avatar });
-                setBannerThumbnailPreview(imagesData[index].avatar);
+
+
+                // setRoom({ ...room, thumbnail: imagesData[index].id, thumbnailPreview: imagesData[index].avatar });
+                // setThumbnailPreview(imagesData[index].avatar);
+                // setTimeout(() => {
+                //     setShowGallery(false);
+                // }, 500);
+
+            } else if (!isSingle && isBanner) {
+
+                let updatedImage = { ...room };
+
+                updatedImage.banner_img = imagesData[index].avatar;
+
+                setRoom(updatedImage);
+
                 setTimeout(() => {
                     setShowGallery(false);
                 }, 500);
+
+                // setRoom({ ...room, banner_img: imagesData[index].id, banner_imgPreview: imagesData[index].avatar });
+                // setBannerThumbnailPreview(imagesData[index].avatar);
+                // setTimeout(() => {
+                //     setShowGallery(false);
+                // }, 500);
+
             } else {
+                console.log("Error ::", imagesData[index]);
                 setSelectedImages([...selectedImages, imagesData[index]]);
                 let imagesDataUpdated = imagesData.map((x, i) => {
                     if (i === index) {
@@ -206,7 +233,7 @@ export default withRouter(function AddRoom(props) {
                 setBannerThumbnailPreview("");
             } else {
                 setSelectedImages(
-                    selectedImages.filter((x) => x !== imagesData[index].id)
+                    selectedImages.filter((x) => x !== imagesData[index]._id)
                 );
             }
             setImagesData(
@@ -272,43 +299,45 @@ export default withRouter(function AddRoom(props) {
             return false;
         }
 
-        if (isEdit) {
-            LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
-                if (response.status === 200) {
-                    alert("Record Updated");
-                    setRoom({ ...initialObject }); //clear all fields
-                    props.history.push("/admin/room-suites");
-                }
-            });
-        } else {
-            LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
-                if (response.status === 200) {
-                    setPostId(response.data?.post_id);
-                    alert("Record Updated");
-                    setRoom({ ...initialObject });
-                    props.history.push("/admin/room-suites");
-                }
-            });
-        }
+        console.log("finalRoom :: ", finalRoom);
+
+        // if (isEdit) {
+        //     LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
+        //         if (response.status === 200) {
+        //             alert("Record Updated");
+        //             setRoom({ ...initialObject }); //clear all fields
+        //             props.history.push("/admin/room-suites");
+        //         }
+        //     });
+        // } else {
+        //     LangAPI.post(`/rooms?lang=${selectedLang}`, finalRoom).then((response) => {
+        //         if (response.status === 200) {
+        //             setPostId(response.data?.post_id);
+        //             alert("Record Updated");
+        //             setRoom({ ...initialObject });
+        //             props.history.push("/admin/room-suites");
+        //         }
+        //     });
+        // }
     };
 
     const handleRemoveSelectedImage = (x, arrayListType) => {
         switch (arrayListType) {
             case "uploadsPreview":
-                let updatePreview = uploadsPreview.filter((u) => u.id !== x.id)
+                let updatePreview = uploadsPreview.filter((u) => u._id !== x._id)
                 setUploadsPreview(updatePreview);
                 setImagesData(imagesData.map(im => {
-                    if (im.id === x.id) {
+                    if (im._id === x._id) {
                         im.isChecked = false
                     }
                     return im
                 }))
-                setSelectedImages(updatePreview.map((u) => u.id));
+                setSelectedImages(updatePreview.map((u) => u._id));
                 break;
             case "selectedImages":
-                let updateData = selectedImages.filter((u) => u.id !== x.id);
+                let updateData = selectedImages.filter((u) => u._id !== x._id);
                 setImagesData(imagesData.map(im => {
-                    if (im.id === x.id) {
+                    if (im._id === x._id) {
                         im.isChecked = false
                     }
                     return im
@@ -316,7 +345,7 @@ export default withRouter(function AddRoom(props) {
                 setSelectedImages(updateData);
                 break;
             default:
-                return setUploadsPreview(uploadsPreview.filter((u) => u.id !== x.id))
+                return setUploadsPreview(uploadsPreview.filter((u) => u._id !== x._id))
         }
     }
 
@@ -723,12 +752,13 @@ export default withRouter(function AddRoom(props) {
                             ?.filter(function (array_el) {
                                 return (
                                     selectedImages.filter(function (menuItems_el) {
-                                        return menuItems_el.id === array_el.id;
+                                        return menuItems_el._id === array_el._id;
                                     }).length !== 0
                                 );
                             })
                             ?.map((x) => (
-                                <SelectedImagesThumbnails x={x}
+                                <SelectedImagesThumbnails
+                                    x={x}
                                     handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")} />
                                 // <Grid item xs={12} sm={2}>
                                 //     <div style={{height: "120px"}}>
