@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-// import API from "langapi/http";
-import API from "utils/http";
+import API from "langapi/http";
 import { DropzoneArea } from "material-ui-dropzone";
 import {
   Avatar,
@@ -43,12 +42,11 @@ class GalleryList extends Component {
   };
 
   componentDidMount() {
-    API.get("/uploads")
+    API.get("/get_all_images")
       .then((response) => {
         if (response.status === 200) {
-          this.setState({ gallery: response.data });
-          // this.setState({ mainSrc: response.data.data[0] });
-          console.log(response.data)
+          this.setState({ gallery: response.data.data });
+          this.setState({ mainSrc: response.data.data[0] });
         }
       })
       .catch((err) => {
@@ -104,7 +102,7 @@ class GalleryList extends Component {
         }
       })
       .then(() => {
-        API.get("/uploads").then((response) => {
+        API.get("/get_all_images").then((response) => {
           if (response.status === 200) {
             this.setState({ gallery: response.data.data });
             this.setState({ mainSrc: response.data.data[0] });
@@ -123,7 +121,7 @@ class GalleryList extends Component {
         }
       })
       .then(() => {
-        API.get("/uploads").then((response) => {
+        API.get("/get_all_images").then((response) => {
           if (response.status === 200) {
             this.setState({ gallery: response.data.data });
             this.setState({ mainSrc: response.data.data[0] });
@@ -272,7 +270,7 @@ class GalleryList extends Component {
         <Box>
           <GridList cellHeight={150} className="" spacing={10}>
             {this.state.gallery.map((tile, index) => (
-              <GridListTile className="gallery-tile" cols={0.4} key={tile._id}>
+              <GridListTile className="gallery-tile" cols={0.4} key={tile.id}>
                 <img
                   src={tile.avatar}
                   alt={tile.alt_tag}
@@ -287,7 +285,7 @@ class GalleryList extends Component {
                   actionIcon={
                     <IconButton
                       aria-label={`info about ${tile.alt_tag}`}
-                      onClick={() => this.handleDelete(tile._id)}
+                      onClick={() => this.handleDelete(tile.id)}
                       className=""
                     >
                       <DeleteRounded
