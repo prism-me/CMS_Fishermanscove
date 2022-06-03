@@ -33,7 +33,6 @@ import { useParams } from "react-router-dom";
 import API from "utils/http";
 import FAQSection from "../Common/FAQSection";
 import GalleryDialog from "views/Common/GalleryDialog";
-import LangAPI from "langapi/http";
 
 // const website_url = "https://fishermanscove-resort.com/";
 // const website_url = "/";
