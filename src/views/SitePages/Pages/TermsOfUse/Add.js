@@ -8,7 +8,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 // import CustomInput from "components/CustomInput/CustomInput.js";
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-
+import LangAPI from "langapi/http";
 import MaterialButton from "@material-ui/core/Button";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
@@ -42,7 +42,6 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useParams } from "react-router-dom";
 import API from "utils/http";
-import LangAPI from "langapi/http";
 import GalleryDialog from "../../../Common/GalleryDialog";
 
 // const website_url = "/";
@@ -62,9 +61,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function AddTermsOfUse() {
-  const pageId = parseInt(useParams().id);
+  const pageId = useParams().id;
   const classes = useStyles();
-  const [termsUse, setTermsUse] = useState({
+
+  let initObj = {
     intro: {
       id: 0,
       section_name: '',
@@ -87,8 +87,9 @@ export default function AddTermsOfUse() {
       section_avtar_alt: '',
       section_slug: 'banner'
     },
-  });
-  const [seoInfo, setSeoInfo] = useState({
+  }
+
+  let seoObj = {
     id: 0,
     post_id: pageId || 0,
     meta_title: '',
@@ -98,7 +99,9 @@ export default function AddTermsOfUse() {
     is_followed: true,
     is_indexed: true,
     is_indexed_or_is_followed: '1,1',
-  })
+  }
+  const [termsUse, setTermsUse] = useState(initObj);
+  const [seoInfo, setSeoInfo] = useState(seoObj)
   const [currentSection, setCurrentSection] = useState("")
 
   const [imagesData, setImagesData] = useState([])
@@ -108,22 +111,32 @@ export default function AddTermsOfUse() {
   const [isSingle, setIsSingle] = useState(true)
   // const [renderPreviews, setRenderPreviews] = useState(false)
   const [thumbnailPreview, setThumbnailPreview] = useState('')
+  const [selectedLang, setSelectedLang] = useState("en");
 
   useEffect(() => {
-    API.get(`/all_sections/${pageId}`).then(response => {
+    LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        const { data } = response;
-        setTermsUse(
-          {
-            intro: data.find(x => x.section_slug === "intro") || termsUse.intro,
-            banner: data.find(x => x.section_slug === "banner") || termsUse.banner,
-          }
-        )
+        // const { data } = response;
+        // setTermsUse(
+        //   {
+        //     intro: data.find(x => x.section_slug === "intro") || termsUse.intro,
+        //     banner: data.find(x => x.section_slug === "banner") || termsUse.banner,
+        //   }
+        // )
+        if(response.data.data[0]){
+          setTermsUse(response.data.data[0])
+          setSeoInfo(response.data.data[0]?.meta)
+        } else {
+          setTermsUse(initObj)
+          setSeoInfo(seoObj)
+        }
       }
     });
-    getGalleryImages();
-    getSEOInfo();
-  }, []);
+    
+    if(!imagesData.length > 0){
+      getGalleryImages();
+    }
+  }, [selectedLang]);
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
