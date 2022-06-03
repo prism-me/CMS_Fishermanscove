@@ -231,6 +231,8 @@ export default function UpdateFooter() {
       .catch((err) => alert("Something went wrong"));
   };
 
+  //Footer
+
   return (
     <div>
       <div className={classes.root}>
