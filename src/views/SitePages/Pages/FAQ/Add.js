@@ -117,13 +117,13 @@ export default function FAQPage() {
         }
       }
     });
-    if(!imagesData.length > 0){
+    if(!imagesData?.length > 0){
       getGalleryImages();
     }
   }, [selectedLang]);
 
   const getGalleryImages = () => {
-    API.get(`/get_all_images`).then(response => {
+    LangAPI.get(`/get_all_images`).then(response => {
       if (response.status === 200) {
         setImagesData(response.data?.data)
       }
