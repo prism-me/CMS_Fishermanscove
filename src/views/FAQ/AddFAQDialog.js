@@ -22,6 +22,7 @@ export default function AddFAQDialog(props) {
     const [alt_tag, set_alt_tag] = useState("");
     const [avatar, set_avatar] = useState("");
     const [is360, set_is360] = useState(false);
+    const [pageVal, setPageVal] = useState("");
     // const [selectedLang, setSelectedLang] = useState("en");
 
     useEffect(() => {
@@ -116,7 +117,11 @@ export default function AddFAQDialog(props) {
                                 label="Select page"
                                 fullWidth
                                 // style={{ color: "white" }}
-                                onChange={handleChangePage}
+                                // onChange={handleChangePage}
+                                onChange={(e) => {
+                                    handleChangePage(e)
+                                    setPageVal(e.target.value)
+                                }}
                             >
                                 <MenuItem value={'wedding'}>Wedding</MenuItem>
                                 <MenuItem value={'dining'}>Dining</MenuItem>
@@ -127,8 +132,8 @@ export default function AddFAQDialog(props) {
                             </Select>
                         </FormControl>
 
-                        {/* {
-                            page === 'dining' && */}
+                        {
+                        pageVal === 'dining' &&
                         <FormControl
                             variant="outlined"
                             size="small"
@@ -156,7 +161,7 @@ export default function AddFAQDialog(props) {
                                 }
                             </Select>
                         </FormControl>
-                        {/* } */}
+                        }
 
                         {/* {
                             page === 'rooms' &&
