@@ -121,45 +121,49 @@ export default function AddFAQDialog(props) {
                                 <MenuItem value={'wedding'}>Wedding</MenuItem>
                                 <MenuItem value={'dining'}>Dining</MenuItem>
                                 <MenuItem value={'rooms'}>Rooms</MenuItem>
-                                <MenuItem value={'gardens'}>Gardens</MenuItem>
+                                <MenuItem value={'resort_activities'}>Other Resort Activities</MenuItem>
                                 <MenuItem value={'faq'}>FAQ's</MenuItem>
 
                             </Select>
                         </FormControl>
 
                         {/* {
-                            page === 'dining' && */}
-                        <FormControl
-                            variant="outlined"
-                            size="small"
-                            // style={{ color: "white" }}
-                            fullWidth
-                            style={{ marginBottom: '1rem' }}
-                        >
-                            <InputLabel id="language"
-                            // style={{ color: "white" }}
-                            >Select Inner Page</InputLabel>
-                            <Select
-                                labelId="innerpage"
-                                id="innerpage"
-                                name="innerpage"
-                                value={innerpage}
-                                label="Select Innner page"
-                                fullWidth
+                            page === 'dining' &&
+                            <FormControl
+                                variant="outlined"
+                                size="small"
                                 // style={{ color: "white" }}
-                                onChange={handleChangeInnerPage}
+                                fullWidth
+                                style={{ marginBottom: '1rem' }}
                             >
-                                {
-                                    diningData?.map((x, i) => (
-                                        <MenuItem value={x?.slug} key={i}>{x?.post_name}</MenuItem>
-                                    ))
-                                }
-                            </Select>
-                        </FormControl>
-                        {/* } */}
+                                <InputLabel id="language"
+                                // style={{ color: "white" }}
+                                >Select Inner Page</InputLabel>
+                                <Select
+                                    labelId="innerpage"
+                                    id="innerpage"
+                                    name="innerpage"
+                                    value={innerpage}
+                                    label="Select Innner page"
+                                    fullWidth
+                                    // style={{ color: "white" }}
+                                    onChange={handleChangeInnerPage}
+                                >
+                                    {
+                                        diningData?.map((x, i) => (
+                                            <MenuItem value={x?.slug} key={i}>{x?.post_name}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                        } */}
 
-                        {/* {
-                            page === 'rooms' &&
+                        {
+                            console.log("page", page)
+                        }
+
+                        {
+                            page === "rooms" &&
                             <FormControl
                                 variant="outlined"
                                 size="small"
@@ -187,7 +191,7 @@ export default function AddFAQDialog(props) {
                                     }
                                 </Select>
                             </FormControl>
-                        } */}
+                        }
 
                         <TextField
                             required
