@@ -6,8 +6,15 @@ import { useParams } from "react-router-dom";
 import API from "utils/http";
 import LangAPI from "langapi/http";
 import AddFAQDialog from "./AddFAQDialog";
+import {
+  AddOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  VisibilityOutlined,
+} from "@material-ui/icons";
 import InputLabel from "@material-ui/core/InputLabel";
 import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField, } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 
 function ContextAwareToggle({
@@ -59,8 +66,9 @@ const FAQList = (props) => {
       {
         question: "",
         answer: "",
-        slug:"",
-        page:""
+        slug: "",
+        page: "",
+        innerpage: ""
       },
     ],
     page_id: pageId,
@@ -105,39 +113,48 @@ const FAQList = (props) => {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
   const handleChangePage = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != faq.section_content[0].page) {
-        let section_content = [...faq.section_content];
-        section_content[0].page = event.target.value;
-        setFAQ({ ...faq, section_content });
+      let section_content = [...faq.section_content];
+      section_content[0].page = event.target.value;
+      setFAQ({ ...faq, section_content });
+    }
+  };
+
+  const handleChangeInnerPage = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != faq.section_content[0].innerpage) {
+      let section_content = [...faq.section_content];
+      section_content[0].innerpage = event.target.value;
+      setFAQ({ ...faq, section_content });
     }
   };
 
 
   const handleDelete = (sectionIndex) => {
-      if (window.confirm("Are you sure you want to delete this ?")) {
+    if (window.confirm("Are you sure you want to delete this ?")) {
 
-        LangAPI.delete(`/faqs/${sectionIndex}?lang=${selectedLang}`)
-          .then((response) => {
-            if (response.status === 200) {
+      LangAPI.delete(`/faqs/${sectionIndex}?lang=${selectedLang}`)
+        .then((response) => {
+          if (response.status === 200) {
 
-              LangAPI.get(`/faqs?lang=${selectedLang}`).then((response) => {
-                  if (response.status === 200) {
-                    setFaqList(response?.data?.data);
-                    alert("FAQ Deleted Successfully")
-                  }
-                })
-                .catch((err) => {
-                  alert("Something went wrong");
-                });
-            }
-          }).catch((err) => console.log(err));
-      }
-      
+            LangAPI.get(`/faqs?lang=${selectedLang}`).then((response) => {
+              if (response.status === 200) {
+                setFaqList(response?.data?.data);
+                alert("FAQ Deleted Successfully")
+              }
+            })
+              .catch((err) => {
+                alert("Something went wrong");
+              });
+          }
+        }).catch((err) => console.log(err));
+    }
+
     // let updatedSectionContent = JSON.parse(updatedFAQ.section_content);
     //deleting index item
     // updatedSectionContent = updatedSectionContent.filter(
@@ -170,7 +187,7 @@ const FAQList = (props) => {
     //appending the new item
     faq.section_content[0].lang = selectedLang;
     let faqObj = faq.section_content[0]
-    console.log(faq.section_content[0],"faq.section_content[0]", selectedLang,"selectedLang");
+    console.log(faq.section_content[0], "faq.section_content[0]", selectedLang, "selectedLang");
     // updatedSectionContent.push(faq.section_content[0]);
     //replacing section content with modified array
     // updatedFAQ.section_content = updatedSectionContent;
@@ -194,19 +211,19 @@ const FAQList = (props) => {
     //   })
     //   .catch((err) => console.log(err));
 
-    if(!faqObj.page || faqObj.page == ""){
+    if (!faqObj.page || faqObj.page == "") {
       alert("Please Select FAQ Page")
       return false;
     }
-    if(!faqObj.question || faqObj.question == ""){
+    if (!faqObj.question || faqObj.question == "") {
       alert("Please Select FAQ Title")
       return false;
     }
-    if(!faqObj.slug || faqObj.slug == ""){
+    if (!faqObj.slug || faqObj.slug == "") {
       alert("Please Add FAQ Slug")
       return false;
     }
-    if(!faqObj.answer || faqObj.answer == ""){
+    if (!faqObj.answer || faqObj.answer == "") {
       alert("Please Add FAQ Answer")
       return false;
     }
@@ -216,16 +233,17 @@ const FAQList = (props) => {
         if (response.status === 200) {
           alert("FAQ Added Successfully")
 
-            let section_content = [
-              {
-                question: "",
-                answer: "",
-                slug:"",
-                page:""
-              },
-            ]
+          let section_content = [
+            {
+              question: "",
+              answer: "",
+              slug: "",
+              page: "",
+              innerpage: ""
+            },
+          ]
 
-            LangAPI.get(`/faqs?lang=${selectedLang}`)
+          LangAPI.get(`/faqs?lang=${selectedLang}`)
             .then((response) => {
               if (response.status === 200) {
                 setFaqList(response?.data?.data);
@@ -236,86 +254,86 @@ const FAQList = (props) => {
             .catch((err) => {
               alert("Something went wrong");
             });
-            
-          }
+
+        }
       })
       .catch((err) => {
         alert("Something went wrong");
       });
 
   };
-  
+
   return (
     <div className="faq-section-block my-3 my-sm-4">
       <div className="container">
         <h3 className="text-center main-title mb-3">
           Frequently Asked Questions (F.A.Q's)
         </h3>
-          <div key={faq.id}>
-              <div className="d-flex justify-content-between">
-                {/* <h5 className="my-3">{faq.post_name}</h5> */}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  style={{marginBottom:"1rem"}}
-                  onClick={() => {
-                    // setCurrentFAQ({ ...faq, index: i });
-                    setShowFAQ(true);
-                  }}
-                >
-                  Add New F.A.Q Item
-                </Button>
-                <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", marginBottom:'1rem'}}
+        <div key={faq.id}>
+          <div className="d-flex justify-content-between">
+            {/* <h5 className="my-3">{faq.post_name}</h5> */}
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginBottom: "1rem" }}
+              onClick={() => {
+                // setCurrentFAQ({ ...faq, index: i });
+                setShowFAQ(true);
+              }}
+            >
+              Add New F.A.Q Item
+            </Button>
+            <FormControl
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", marginBottom: '1rem' }}
             // fullWidth
             >
-                <InputLabel id="language"
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
-              </div>
-            {faqList.map((x, ind) => (
-              <Accordion key={x.id}>
-                <Card>
-                  <Accordion.Toggle
-                    as={Card.Header}
-                    eventKey={`${ind}`}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <ContextAwareToggle
-                      eventKey={`${ind}`}
-                      sectionIndex={x.slug}
-                      contentIndex={ind}
-                      handleDelete={handleDelete}
-                    >
-                      {x?.question}
-                    </ContextAwareToggle>
-                  </Accordion.Toggle>
-                  <Accordion.Collapse eventKey={`${ind}`}>
-                    <Card.Body>
-                      <div dangerouslySetInnerHTML={{ __html: x?.answer }}></div>
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              </Accordion>
-            ))}
           </div>
+          {faqList.map((x, ind) => (
+            <Accordion key={x.id}>
+              <Card>
+                <Accordion.Toggle
+                  as={Card.Header}
+                  eventKey={`${ind}`}
+                  style={{ cursor: "pointer" }}
+                >
+                  <ContextAwareToggle
+                    eventKey={`${ind}`}
+                    sectionIndex={x.slug}
+                    contentIndex={ind}
+                    handleDelete={handleDelete}
+                  >
+                    {x?.question}
+                  </ContextAwareToggle>
+                </Accordion.Toggle>
+                <Accordion.Collapse eventKey={`${ind}`}>
+                  <Card.Body>
+                    <div dangerouslySetInnerHTML={{ __html: x?.answer }}></div>
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+            </Accordion>
+          ))}
+        </div>
       </div>
       {
         <AddFAQDialog
@@ -330,6 +348,7 @@ const FAQList = (props) => {
           handleChange={handleChange}
           selectedLang={selectedLang}
           handleChangePage={handleChangePage}
+          handleChangeInnerPage={handleChangeInnerPage}
         />
       }
     </div>

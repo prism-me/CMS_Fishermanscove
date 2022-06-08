@@ -116,7 +116,10 @@ export default withRouter(function AddRoom(props) {
                     if (response?.data?.data) {
                         setRoom({ ...room, ...data });
                         // setUploadsPreview(response.data?.uploads);
-                        let images = JSON.parse(response?.data?.data.images_list)
+                        let images = []
+                        if (response?.data?.data.images_list) {
+                            images = JSON.parse(response?.data?.data.images_list)
+                        }
                         setSelectedImages(images)
                         setThumbnailPreview(response?.data?.data?.thumbnailPreview)
                         setBannerThumbnailPreview(response?.data?.data?.banner_imgPreview)
@@ -184,7 +187,7 @@ export default withRouter(function AddRoom(props) {
                 }, 500);
 
             } else if (!isSingle && !isBanner && isImagesList) {
-                
+
                 setSelectedImages([...selectedImages, imagesData[index]]);
                 let imagesDataUpdated = imagesData.map((x, i) => {
                     if (i === index) {
