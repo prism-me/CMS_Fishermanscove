@@ -17,22 +17,24 @@ import LangAPI from "langapi/http";
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
 export default function AddFAQDialog(props) {
-    let { selectedLang, handleChange, page, handleChangePage, handleChangeInnerPage, innerpage } = props
+    let { selectedLang, handleChange, page, handleChangePage, handleChangeInnerPage, innerpage, selectedFaq, section_content } = props
     const [id, set_id] = useState(-1);
     const [alt_tag, set_alt_tag] = useState("");
     const [avatar, set_avatar] = useState("");
     const [is360, set_is360] = useState(false);
-    const [pageVal, setPageVal] = useState("");
+    const [pageVal, setPageVal] = useState(section_content?.page || "");
     // const [selectedLang, setSelectedLang] = useState("en");
 
     useEffect(() => {
+
         if (props.image) {
             set_id(props.image?.id);
             set_alt_tag(props.image?.alt_tag);
             set_avatar(props.image?.avatar);
             set_is360(props.image?.["360_view"] === "1" ? true : false);
         }
-    }, [props.image])
+
+    }, [props])
 
 
     const [diningData, setDiningData] = useState([]);
@@ -113,14 +115,14 @@ export default function AddFAQDialog(props) {
                                 labelId="page"
                                 id="page"
                                 name="page"
-                                value={page}
+                                value={section_content?.page}
                                 label="Select page"
                                 fullWidth
                                 // style={{ color: "white" }}
                                 // onChange={handleChangePage}
                                 onChange={(e) => {
                                     handleChangePage(e)
-                                    setPageVal(e.target.value)
+                                    setPageVal(section_content?.page !== "" ? section_content?.page : e.target.value)
                                 }}
                             >
                                 <MenuItem value={'dining'}>Dining</MenuItem>
@@ -147,7 +149,7 @@ export default function AddFAQDialog(props) {
                                     labelId="innerpage"
                                     id="innerpage"
                                     name="innerpage"
-                                    value={innerpage}
+                                    value={section_content?.innerpage}
                                     label="Select Innner page"
                                     fullWidth
                                     // style={{ color: "white" }}
@@ -178,7 +180,7 @@ export default function AddFAQDialog(props) {
                                     labelId="innerpage"
                                     id="innerpage"
                                     name="innerpage"
-                                    value={innerpage}
+                                    value={section_content?.innerpage}
                                     label="Select Innner page"
                                     fullWidth
                                     // style={{ color: "white" }}
@@ -198,7 +200,7 @@ export default function AddFAQDialog(props) {
                             id={`slug`}
                             name={`slug`}
                             label="Slug"
-                            value={props.slug}
+                            value={section_content?.slug}
                             variant="outlined"
                             fullWidth
                             onChange={(e) => props.handleSlugChange(e)}
@@ -211,7 +213,7 @@ export default function AddFAQDialog(props) {
                             id={`question`}
                             name={`question`}
                             label="Question"
-                            value={props.question}
+                            value={section_content?.question}
                             variant="outlined"
                             fullWidth
                             onChange={(e) => props.handleQuestionChange(e)}
@@ -222,7 +224,7 @@ export default function AddFAQDialog(props) {
                         {/* CKEDITOR  */}
                         <CKEditor
                             config={ckEditorConfig}
-                            onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={props.answer} onChange={(e) => props.handleAnswerChange(e.editor.getData())} />
+                            onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={section_content?.answer} onChange={(e) => props.handleAnswerChange(e.editor.getData())} />
                     </div>
                 </DialogContent>
                 <DialogActions>
