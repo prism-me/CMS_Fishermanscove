@@ -5,7 +5,6 @@ import { Avatar, Box, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { AddOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
 import LangAPI from "langapi/http";
-import { array } from 'prop-types';
 
 class PageList extends Component {
   state = {
@@ -100,30 +99,16 @@ class PageList extends Component {
     responsive: "vertical",
   };
 
-  // filterBySlug(item) {
-  //   if (item.slug = 'blog' || item.slug = 'offers') {
-  //     return false
-  //   }
-  //   return true;
-  // }
-
   componentDidMount() {
-
     LangAPI.get('/pages').then(response => {
+      console.log(response?.data?.data,"response?.data?.data")
       let rows = response?.data?.data;
+      // let rows = data.map(x=> {
+      //   return {
 
-      console.log(rows,"rowsrowsrows")
-      // let arrByID = arr.filter(filterByID)
-      rows = rows.filter((element) => {
-        if(element.slug == 'blog' || element.slug == 'offers'){
-          return false;
-        }
-        return true;
-      })
-      //dcki
-
+      //   }
+      // })
       this.setState({ rows })
-
     })
   }
 
@@ -138,7 +123,7 @@ class PageList extends Component {
               startIcon={<AddOutlined />}
             >
               Add Page
-            </Button>
+          </Button>
           </Link>
         </Box>
         <MUIDataTable
