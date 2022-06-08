@@ -100,15 +100,13 @@ class PageList extends Component {
   };
 
   componentDidMount() {
-    LangAPI.get('/pages').then(response => {
-      console.log(response?.data?.data,"response?.data?.data")
-      let rows = response?.data?.data;
-      // let rows = data.map(x=> {
-      //   return {
 
-      //   }
-      // })
+    LangAPI.get('/pages').then(response => {
+      
+      let rows = response?.data?.data.filter((x) => x.name !== "blog" && x.name !== "offers");
+
       this.setState({ rows })
+
     })
   }
 
@@ -123,7 +121,7 @@ class PageList extends Component {
               startIcon={<AddOutlined />}
             >
               Add Page
-          </Button>
+            </Button>
           </Link>
         </Box>
         <MUIDataTable
