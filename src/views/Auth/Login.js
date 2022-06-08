@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import API from 'utils/http';
+import LangAPI from 'langapi/http';
 import { loginSuccess } from 'redux/users/actions';
 import { connect } from 'react-redux';
 
@@ -22,7 +23,7 @@ function Copyright() {
             {'Copyright © '}
             <Link color="inherit" href="https://fishermanscove-resort.com/">
                 Fishermans Cove Resort
-      </Link>{' '}
+            </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
         </Typography>
@@ -70,18 +71,41 @@ function SignInSide(props) {
         formdata.append("email", email);
         formdata.append("password", password);
 
-        if (email === "admin@prism-me.com" && password === "admin321") {
-            props.loginSuccess();
-        }
-        else{
-            alert("Invalid username/password. Please try again.");
-        }
+        // if (email === "admin@prism-me.com" && password === "admin321") {
+        //     props.loginSuccess();
+        // }
+        // else {
+        //     alert("Invalid username/password. Please try again.");
+        // }
 
-        API.post(`/auth/login`, formdata, {
-            'Content-Type': `multipart/form-data; boundary=${formdata._boundary}`,
-        }).then(response => {
-            console.log(response.data)
+        // LangAPI.post(`/auth/login`, formdata, {
+        //     'Content-Type': `multipart/form-data; boundary=${formdata._boundary}`,
+        // }).then(response => {
+        //     console.log(response.data)
+        // })
+
+        LangAPI.post("/auth/login", {
+            email: email,
+            password: password,
+            user_type: "Admin",
         })
+            .then((response) => {
+                var loggedInUser;
+
+                if (response.data) {
+                    loggedInUser = response.data.user;
+
+                    props.loginSuccess();
+
+                    // dispatch({
+                    //     type: "LOGIN_WITH_JWT",
+                    //     payload: { loggedInUser, loggedInWith: "jwt", access_token: response.data?.access_token },
+                    // });
+
+                    // history.push("/");
+                }
+            })
+            .catch((err) => alert("Please enter valid email and password"));
     }
 
     return (
@@ -136,18 +160,18 @@ function SignInSide(props) {
                         >
                             Sign In
                         </Button>
-                        <Grid container>
+                        {/* <Grid container>
                             <Grid item xs>
                                 <Link href="#" variant="body2">
                                     Forgot password?
                                 </Link>
                             </Grid>
                             {/* <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid> */}
-                        </Grid>
+                                <Link href="#" variant="body2">
+                                {"Don't have an account? Sign Up"}
+                                </Link>
+                            </Grid> 
+                        </Grid> */}
                         <Box mt={5}>
                             <Copyright />
                         </Box>
@@ -168,7 +192,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         loginSuccess: () => dispatch({
             type: "LOGIN_SUCCESS",
-          }),
+        }),
     }
 }
 
