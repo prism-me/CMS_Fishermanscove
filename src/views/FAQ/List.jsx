@@ -67,7 +67,8 @@ const FAQList = (props) => {
         question: "",
         answer: "",
         slug: "",
-        page: ""
+        page: "",
+        innerpage: ""
       },
     ],
     page_id: pageId,
@@ -120,6 +121,15 @@ const FAQList = (props) => {
     if (event.target.value != faq.section_content[0].page) {
       let section_content = [...faq.section_content];
       section_content[0].page = event.target.value;
+      setFAQ({ ...faq, section_content });
+    }
+  };
+
+  const handleChangeInnerPage = (event) => {
+    // setAge(event.target.value as string);
+    if (event.target.value != faq.section_content[0].innerpage) {
+      let section_content = [...faq.section_content];
+      section_content[0].innerpage = event.target.value;
       setFAQ({ ...faq, section_content });
     }
   };
@@ -228,7 +238,8 @@ const FAQList = (props) => {
               question: "",
               answer: "",
               slug: "",
-              page: ""
+              page: "",
+              innerpage: ""
             },
           ]
 
@@ -255,8 +266,10 @@ const FAQList = (props) => {
   return (
     <div className="faq-section-block my-3 my-sm-4">
       <div className="container">
-        <h3 className="text-center main-title mb-3"> Frequently Asked Questions (F.A.Q's) </h3>
-        <div key={faq._id}>
+        <h3 className="text-center main-title mb-3">
+          Frequently Asked Questions (F.A.Q's)
+        </h3>
+        <div key={faq.id}>
           <div className="d-flex justify-content-between">
             {/* <h5 className="my-3">{faq.post_name}</h5> */}
             <Button
@@ -296,7 +309,7 @@ const FAQList = (props) => {
             </FormControl>
           </div>
           {faqList.map((x, ind) => (
-            <Accordion key={x._id}>
+            <Accordion key={x.id}>
               <Card>
                 <Accordion.Toggle
                   as={Card.Header}
@@ -311,13 +324,6 @@ const FAQList = (props) => {
                   >
                     {x?.question}
                   </ContextAwareToggle>
-                  <EditOutlined
-                    fontSize="small"
-                    color="primary"
-                    onClick={() => {
-                      setShowFAQ(true);
-                    }}
-                  />
                 </Accordion.Toggle>
                 <Accordion.Collapse eventKey={`${ind}`}>
                   <Card.Body>
@@ -342,6 +348,7 @@ const FAQList = (props) => {
           handleChange={handleChange}
           selectedLang={selectedLang}
           handleChangePage={handleChangePage}
+          handleChangeInnerPage={handleChangeInnerPage}
         />
       }
     </div>

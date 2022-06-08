@@ -17,11 +17,12 @@ import LangAPI from "langapi/http";
 import CKEditor from 'ckeditor4-react';
 import { ckEditorConfig } from "utils/data";
 export default function AddFAQDialog(props) {
-    let { selectedLang, handleChange, page, handleChangePage} = props
+    let { selectedLang, handleChange, page, handleChangePage, handleChangeInnerPage, innerpage } = props
     const [id, set_id] = useState(-1);
     const [alt_tag, set_alt_tag] = useState("");
     const [avatar, set_avatar] = useState("");
     const [is360, set_is360] = useState(false);
+    const [pageVal, setPageVal] = useState("");
     // const [selectedLang, setSelectedLang] = useState("en");
 
     useEffect(() => {
@@ -33,6 +34,36 @@ export default function AddFAQDialog(props) {
         }
     }, [props.image])
 
+
+    const [diningData, setDiningData] = useState([]);
+
+    const getDiningData = () => {
+        LangAPI.get(`/dinings?lang=${selectedLang}`).then(response => {
+            const allData = response.data?.data;
+            setDiningData(allData);
+        })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
+    const [roomsData, setRoomsData] = useState([]);
+
+    const getRoomsData = () => {
+        LangAPI.get(`/rooms?lang=${selectedLang}`).then(response => {
+            const allData = response.data?.data;
+            setRoomsData(allData);
+        })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
+    useEffect(() => {
+        getDiningData();
+        getRoomsData();
+    }, [selectedLang]);
+
     return (
         <div>
             <Dialog open={props.open} onClose={props.handleClose} maxWidth="sm" fullWidth aria-labelledby="form-dialog-title">
@@ -40,7 +71,7 @@ export default function AddFAQDialog(props) {
                 <DialogContent>
                     <div className="mb-3 p-2" style={{ boxShadow: '0 0 4px #dadada', position: 'relative' }}>
                         <Typography className="mb-2 font-weight-bold" variant="body2">
-                            Question
+                            ADD FAQ
                         </Typography>
                         <FormControl
                             variant="outlined"
@@ -50,7 +81,7 @@ export default function AddFAQDialog(props) {
                             style={{ marginBottom: '1rem' }}
                         >
                             <InputLabel id="language"
-                                // style={{ color: "white" }}
+                            // style={{ color: "white" }}
                             >Select Language</InputLabel>
                             <Select
                                 labelId="language"
@@ -76,7 +107,7 @@ export default function AddFAQDialog(props) {
                             style={{ marginBottom: '1rem' }}
                         >
                             <InputLabel id="language"
-                                // style={{ color: "white" }}
+                            // style={{ color: "white" }}
                             >Select Page</InputLabel>
                             <Select
                                 labelId="page"
@@ -86,27 +117,82 @@ export default function AddFAQDialog(props) {
                                 label="Select page"
                                 fullWidth
                                 // style={{ color: "white" }}
-                                onChange={handleChangePage}
+                                // onChange={handleChangePage}
+                                onChange={(e) => {
+                                    handleChangePage(e)
+                                    setPageVal(e.target.value)
+                                }}
                             >
-                                <MenuItem value={'wedding'}>Wedding</MenuItem>
                                 <MenuItem value={'dining'}>Dining</MenuItem>
                                 <MenuItem value={'rooms'}>Rooms</MenuItem>
-                                <MenuItem value={'gardens'}>Gardens</MenuItem>
+                                <MenuItem value={'resort_activities'}>Other Resort Activities</MenuItem>
+                                <MenuItem value={'faq'}>FAQ's</MenuItem>
+
                             </Select>
                         </FormControl>
-                        
-                        <TextField
-                            required
-                            id={`question`}
-                            name={`question`}
-                            label="Section Title"
-                            value={props.question}
-                            variant="outlined"
-                            fullWidth
-                            onChange={(e) => props.handleQuestionChange(e)}
-                            size="small"
-                            style={{ marginBottom: '1rem' }}
-                        />
+
+                        {
+                            pageVal === 'dining' &&
+                            <FormControl
+                                variant="outlined"
+                                size="small"
+                                // style={{ color: "white" }}
+                                fullWidth
+                                style={{ marginBottom: '1rem' }}
+                            >
+                                <InputLabel id="language"
+                                // style={{ color: "white" }}
+                                >Select Inner Page</InputLabel>
+                                <Select
+                                    labelId="innerpage"
+                                    id="innerpage"
+                                    name="innerpage"
+                                    value={innerpage}
+                                    label="Select Innner page"
+                                    fullWidth
+                                    // style={{ color: "white" }}
+                                    style={{ marginBottom: '1rem' }}
+                                >
+                                    {
+                                        diningData?.map((x, i) => (
+                                            <MenuItem value={x?.slug} key={i}>{x?.post_name}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                        }
+
+                        {
+                            pageVal === "rooms" &&
+                            <FormControl
+                                variant="outlined"
+                                size="small"
+                                // style={{ color: "white" }}
+                                fullWidth
+                                style={{ marginBottom: '1rem' }}
+                            >
+                                <InputLabel id="language"
+                                // style={{ color: "white" }}
+                                >Select Inner Page</InputLabel>
+                                <Select
+                                    labelId="innerpage"
+                                    id="innerpage"
+                                    name="innerpage"
+                                    value={innerpage}
+                                    label="Select Innner page"
+                                    fullWidth
+                                    // style={{ color: "white" }}
+                                    onChange={handleChangeInnerPage}
+                                >
+                                    {
+                                        roomsData?.map((x, i) => (
+                                            <MenuItem value={x?.slug} key={i}>{x?.post_name}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                        }
+
                         <TextField
                             required
                             id={`slug`}
@@ -119,6 +205,20 @@ export default function AddFAQDialog(props) {
                             size="small"
                             style={{ marginBottom: '1rem' }}
                         />
+
+                        <TextField
+                            required
+                            id={`question`}
+                            name={`question`}
+                            label="Question"
+                            value={props.question}
+                            variant="outlined"
+                            fullWidth
+                            onChange={(e) => props.handleQuestionChange(e)}
+                            size="small"
+                            style={{ marginBottom: '1rem' }}
+                        />
+
                         {/* CKEDITOR  */}
                         <CKEditor
                             config={ckEditorConfig}
@@ -131,7 +231,7 @@ export default function AddFAQDialog(props) {
                     </Button>
                     <Button onClick={props.handleSubmit} variant="contained" color="primary">
                         Submit
-                     </Button>
+                    </Button>
                 </DialogActions>
             </Dialog>
         </div>
