@@ -24,6 +24,10 @@ function ContextAwareToggle({
   sectionIndex,
   contentIndex,
   handleDelete,
+  setShowFAQ,
+  setIsEdit,
+  faqData,
+  setEditFaq
 }) {
   const currentEventKey = useContext(AccordionContext);
 
@@ -48,6 +52,11 @@ function ContextAwareToggle({
         className={`fa fa-trash float-right d-block`}
         onClick={() => handleDelete(sectionIndex)}
       />
+      <i
+        style={{ width: "5%", color: "#ff0000" }}
+        className={`fa fa-pencil float-right d-block`}
+        onClick={() => { setShowFAQ(true); setIsEdit(true); setEditFaq(faqData) }}
+      />
     </div>
   );
 }
@@ -59,6 +68,8 @@ const FAQList = (props) => {
   const [currentFAQ, setCurrentFAQ] = useState(null);
   const [showFAQ, setShowFAQ] = useState(false);
   const [selectedLang, setSelectedLang] = useState("en");
+  const [isEdit, setIsEdit] = useState(false);
+  const [selectedFaq, setSelectedFaq] = useState({});
   const [faq, setFAQ] = useState({
     id: 0,
     section_name: "",
@@ -98,6 +109,20 @@ const FAQList = (props) => {
     setFAQ({ ...faq, section_content });
   };
 
+  const setEditFaq = (data) => {
+    setSelectedFaq(data)
+
+    let section_content = [...faq.section_content];
+    section_content[0].question = data.question;
+    section_content[0].answer = data.answer;
+    section_content[0].slug = data.slug;
+    section_content[0].page = data.page;
+    section_content[0].innerpage = data.innerpage;
+
+    setFAQ({ ...faq, section_content });
+
+  }
+
   const handleSlugChange = (e, index) => {
     let section_content = [...faq.section_content];
     section_content[0].slug = e.target.value;
@@ -133,7 +158,6 @@ const FAQList = (props) => {
       setFAQ({ ...faq, section_content });
     }
   };
-
 
   const handleDelete = (sectionIndex) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
@@ -185,9 +209,11 @@ const FAQList = (props) => {
     //parsing to JSON as the data is stringified
     // let updatedSectionContent = JSON.parse(updatedFAQ.section_content);
     //appending the new item
+
     faq.section_content[0].lang = selectedLang;
     let faqObj = faq.section_content[0]
-    console.log(faq.section_content[0], "faq.section_content[0]", selectedLang, "selectedLang");
+    
+    // console.log(faq.section_content[0], "faq.section_content[0]", selectedLang, "selectedLang");
     // updatedSectionContent.push(faq.section_content[0]);
     //replacing section content with modified array
     // updatedFAQ.section_content = updatedSectionContent;
@@ -251,16 +277,8 @@ const FAQList = (props) => {
                 setShowFAQ(false)
               }
             })
-            .catch((err) => {
-              alert("Something went wrong");
-            });
-
         }
       })
-      .catch((err) => {
-        alert("Something went wrong");
-      });
-
   };
 
   return (
@@ -321,6 +339,10 @@ const FAQList = (props) => {
                     sectionIndex={x.slug}
                     contentIndex={ind}
                     handleDelete={handleDelete}
+                    setShowFAQ={setShowFAQ}
+                    setIsEdit={setIsEdit}
+                    faqData={x}
+                    setEditFaq={setEditFaq}
                   >
                     {x?.question}
                   </ContextAwareToggle>
@@ -342,13 +364,28 @@ const FAQList = (props) => {
           handleQuestionChange={handleQuestionChange}
           handleSlugChange={handleSlugChange}
           handleAnswerChange={handleAnswerChange}
-          onClose={() => setShowFAQ(false)}
+          onClose={() => {
+            setShowFAQ(false);
+            setSelectedFaq({});
+            setFAQ({
+              ...faq, section_content: [{
+                question: "",
+                answer: "",
+                slug: "",
+                page: "",
+                innerpage: ""
+              },
+              ]
+            });
+          }}
           handleSubmit={handleSubmit}
           open={showFAQ}
           handleChange={handleChange}
           selectedLang={selectedLang}
           handleChangePage={handleChangePage}
           handleChangeInnerPage={handleChangeInnerPage}
+          selectedFaq={selectedFaq}
+          setEditFaq={setEditFaq}
         />
       }
     </div>
