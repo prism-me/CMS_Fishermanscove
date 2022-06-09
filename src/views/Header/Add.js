@@ -479,21 +479,24 @@ export default function UpdateHeader() {
                                           ) || { name_de: "" }
                                         }
                                         onChange={(e, newValue) =>
-                                          handleMenuItemChange(
-                                            {
-                                              target: {
-                                                value: newValue?.name_de,
-                                                name: "text",
-                                              },
-                                            },
-                                            newValue?.slug,
-                                            index,
-                                            pages.find(
-                                              (p) =>
-                                                p.name_de?.toLowerCase() ===
-                                                newValue?.name?.toLowerCase()
-                                            )?.slug
-                                          ) || ""
+                                          
+                                          // handleMenuItemChange(
+                                          //   {
+                                          //     target: {
+                                          //       value: newValue?.name_de,
+                                          //       name: "text",
+                                          //     },
+                                          //   },
+                                          //   newValue?.slug,
+                                          //   index,
+                                          //   pages.find(
+                                          //     (p) =>
+                                          //       p.name_de?.toLowerCase() ===
+                                          //       newValue?.name?.toLowerCase()
+                                          //   )?.slug
+                                          // ) || ""
+                                          console.log("e, newValue",e, newValue)
+
                                         }
                                         getOptionLabel={(option) =>
                                           option.name_de
@@ -708,6 +711,7 @@ export default function UpdateHeader() {
                                                   ) || { name: "" }
                                                 }
                                                 onChange={(e, newValue) =>
+                                                  
                                                   handleSubMenuItemChange(
                                                     {
                                                       target: {
@@ -754,28 +758,47 @@ export default function UpdateHeader() {
                                                       y.text?.toLowerCase()
                                                   ) || { name_fr: "" }
                                                 }
+                                                // onChange={(e, newValue) =>
+                                                //   handleSubMenuItemChange(
+                                                //     {
+                                                //       target: {
+                                                //         value:
+                                                //           newValue?.name_fr,
+                                                //         name: "text",
+                                                //       },
+                                                //     },
+                                                //     newValue.slug,
+                                                //     index,
+                                                //     ind,
+                                                //     newValue.base_url || "",
+                                                //     pages.find(
+                                                //       (p) =>
+                                                //         p.name_fr?.toLowerCase() ===
+                                                //         newValue?.name?.toLowerCase()
+                                                //     )?.slug
+                                                //   ) || ""
+                                                // }
                                                 onChange={(e, newValue) =>
-                                                  handleSubMenuItemChange(
-                                                    {
-                                                      target: {
-                                                        value:
-                                                          newValue?.name_fr,
-                                                        name: "text",
-                                                      },
-                                                    },
-                                                    newValue.slug,
-                                                    index,
-                                                    ind,
-                                                    newValue.base_url || "",
-                                                    pages.find(
-                                                      (p) =>
-                                                        p.name_fr?.toLowerCase() ===
-                                                        newValue?.name?.toLowerCase()
-                                                    )?.slug
-                                                  ) || ""
+                                                   handleSubMenuItemChange(
+                                                        {
+                                                          target: {
+                                                            value: newValue?.name_fr,
+                                                            name: "text",
+                                                          },
+                                                        },
+                                                        newValue?.slug,
+                                                        index,
+                                                        ind,
+                                                        newValue?.base_url || "",
+                                                        pages.find(
+                                                          (p) =>
+                                                            p.name_fr?.toLowerCase() ===
+                                                            newValue?.name?.toLowerCase()
+                                                        )?.slug
+                                                      ) || ""
                                                 }
                                                 getOptionLabel={(option) =>
-                                                  option.name_fr
+                                                  option?.name_fr
                                                 }
                                                 // style={{ width: 300 }}
                                                 renderInput={(params) => (
@@ -797,7 +820,7 @@ export default function UpdateHeader() {
                                                 value={
                                                   pages.find(
                                                     (p) =>
-                                                      p.name_de?.toLowerCase() ===
+                                                      p?.name_de?.toLowerCase() ===
                                                       y.text?.toLowerCase()
                                                   ) || { name_de: "" }
                                                 }
@@ -810,10 +833,10 @@ export default function UpdateHeader() {
                                                         name: "text",
                                                       },
                                                     },
-                                                    newValue.slug,
+                                                    newValue?.slug,
                                                     index,
                                                     ind,
-                                                    newValue.base_url || "",
+                                                    newValue?.base_url || "",
                                                     pages.find(
                                                       (p) =>
                                                         p.name_de?.toLowerCase() ===
@@ -822,7 +845,7 @@ export default function UpdateHeader() {
                                                   ) || ""
                                                 }
                                                 getOptionLabel={(option) =>
-                                                  option.name_de
+                                                  option?.name_de
                                                 }
                                                 // style={{ width: 300 }}
                                                 renderInput={(params) => (
