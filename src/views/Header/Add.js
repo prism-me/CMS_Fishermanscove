@@ -716,10 +716,10 @@ export default function UpdateHeader() {
                                                         name: "text",
                                                       },
                                                     },
-                                                    newValue.slug,
+                                                    newValue?.slug,
                                                     index,
                                                     ind,
-                                                    newValue.base_url || "",
+                                                    newValue?.base_url || "",
                                                     pages.find(
                                                       (p) =>
                                                         p.name?.toLowerCase() ===
