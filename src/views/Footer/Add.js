@@ -441,7 +441,7 @@ export default function UpdateFooter() {
                                           value={
                                             pages.find(
                                               (p) =>
-                                                p.name?.toLowerCase() ===
+                                                p.name_fr?.toLowerCase() ===
                                                 x.text?.toLowerCase()
                                             ) || { name: "" }
                                           }
@@ -449,7 +449,7 @@ export default function UpdateFooter() {
                                             handleMenuItemChange(
                                               {
                                                 target: {
-                                                  value: newValue?.name,
+                                                  value: newValue?.name_fr,
                                                   name: "text",
                                                 },
                                               },
