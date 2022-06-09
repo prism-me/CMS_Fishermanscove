@@ -154,6 +154,7 @@ export default function AddFAQDialog(props) {
                                     fullWidth
                                     // style={{ color: "white" }}
                                     style={{ marginBottom: '1rem' }}
+                                    onChange={handleChangeInnerPage}
                                 >
                                     {
                                         diningData?.map((x, i) => (
