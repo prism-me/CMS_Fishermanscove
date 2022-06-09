@@ -759,7 +759,7 @@ export default function UpdateHeader() {
                                                     {
                                                       target: {
                                                         value:
-                                                          newValue?.name,
+                                                          newValue?.name_fr,
                                                         name: "text",
                                                       },
                                                     },
@@ -806,7 +806,7 @@ export default function UpdateHeader() {
                                                     {
                                                       target: {
                                                         value:
-                                                          newValue?.name,
+                                                          newValue?.name_de,
                                                         name: "text",
                                                       },
                                                     },
@@ -845,11 +845,27 @@ export default function UpdateHeader() {
                                               name="address"
                                               label="URL"
                                               value={
+                                                selectedLang === "en" ?
                                                 pages?.find(
                                                   (p) =>
                                                     p.name?.toLowerCase() ===
                                                     y.text?.toLowerCase()
                                                 )?.slug || ""
+                                                :
+                                                selectedLang === "fr" ?
+                                                pages?.find(
+                                                  (p) =>
+                                                    p.name_fr?.toLowerCase() ===
+                                                    y.text?.toLowerCase()
+                                                )?.slug || ""
+                                                :
+                                                selectedLang === "de" ?
+                                                pages?.find(
+                                                  (p) =>
+                                                    p.name_de?.toLowerCase() ===
+                                                    y.text?.toLowerCase()
+                                                )?.slug || ""
+                                                :""
                                               }
                                               variant="outlined"
                                               fullWidth
