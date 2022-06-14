@@ -164,7 +164,7 @@ export const OfferDetail = React.memo(function ReviewCard() {
         >
           <Typography color={'primary'} variant="h5">
             Details
-        </Typography>
+          </Typography>
           <div dangerouslySetInnerHTML={{ __html: room?.post_content }}></div>
         </Box>
 

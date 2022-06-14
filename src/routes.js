@@ -40,6 +40,8 @@ import DashboardPage from "views/Dashboard/Dashboard.js";
 import { AttachFileRounded, HotelOutlined, RestaurantOutlined, CardGiftcardOutlined, SpaOutlined, ViewCarouselOutlined, FavoriteBorderOutlined, PoolOutlined, InsertDriveFileOutlined, PostAddOutlined, QuestionAnswerOutlined, ViewStreamOutlined, ArtTrackOutlined, HorizontalSplitOutlined } from "@material-ui/icons";
 import AddOffer from "views/Offers/Add";
 import OffersList from "views/Offers/List";
+import AddPremiuimOffer from "views/Premiuim-offers/Add";
+import PremiuimOffersList from "views/Premiuim-offers/List";
 import RoomsList from "views/RoomsSuites/List";
 import RoomDetail from "views/RoomsSuites/Details";
 import AddRoom from "views/RoomsSuites/Add";
@@ -83,6 +85,7 @@ import FAQList from "views/FAQ/List";
 import GalleryList from "views/Gallery/List";
 import AddGallery from "views/Gallery/Add";
 import OfferDetail from "views/Offers/Details";
+import PremiuimOfferDetail from "views/Premiuim-offers/Details";
 import SignInSide from "views/Auth/Login";
 import AddContactUs from "views/SitePages/Pages/Contact/Add";
 
@@ -233,7 +236,6 @@ const dashboardRoutes = [
     exact: true,
     hide: true
   },
-
   {
     path: "/offers",
     name: "Offers",
@@ -269,6 +271,46 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
     component: OfferDetail,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+
+  {
+    path: "/premium-offers",
+    name: "Premiuim Offers",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: PremiuimOffersList,
+    layout: "/admin",
+    exact: true
+  },
+  {
+    path: "/premium-offers/add",
+    name: "Premiuim Offers",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: AddPremiuimOffer,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/premium-offers/edit/:id",
+    name: "Premiuim Offers",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: AddPremiuimOffer,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/premium-offers/:id",
+    name: "Premiuim Offers",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: PremiuimOfferDetail,
     layout: "/admin",
     exact: true,
     hide: true

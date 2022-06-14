@@ -68,7 +68,7 @@ export default function AddOffer(props) {
     post_name: "",
     post_content: "",
     short_description: "",
-    is_premium: 0,
+    is_premium: 1,
     thumbnail: "",
     banner_img: "",
     banner_text: "",
@@ -257,7 +257,7 @@ export default function AddOffer(props) {
             alert("Record Updated");
             // setOffer({ ...initialObject }); //resetting the form
             // eslint-disable-next-line react/prop-types
-            props.history.push("/admin/offers");
+            props.history.push("/admin/premium-offers");
           }
         })
         .catch((err) => alert("Something went wrong"));
@@ -270,7 +270,7 @@ export default function AddOffer(props) {
             alert("Record Added");
             // setPostId(response.data?.post_id);
             // setOffer({ ...initialObject });
-            props.history.push("/admin/offers");
+            props.history.push("/admin/premium-offers");
           }
         })
         .catch((err) => alert("Something went wrong."));
@@ -329,7 +329,7 @@ export default function AddOffer(props) {
         <Card>
           <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
             <h4 style={{ fontWeight: "400" }} className="mb-0">
-              Add an Offer
+              Add Premiuim Offer
             </h4>
             <FormControl
               variant="outlined"
@@ -550,6 +550,7 @@ export default function AddOffer(props) {
                 </FormControl>
               </Grid> */}
               <Grid item xs={12} sm={12}>
+                <hr />
                 <h4 style={{ fontWeight: "400" }}>Short Description</h4>
                 <CKEditor
                   config={ckEditorConfig}
