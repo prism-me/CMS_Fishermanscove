@@ -206,7 +206,7 @@ class OffersList extends Component {
           </Button> */}
         </Box>
         <MUIDataTable
-          title="Premium Offers List"
+          title="Offers List"
           columns={this.state.columns}
           data={this.state.rows}
           options={this.options}

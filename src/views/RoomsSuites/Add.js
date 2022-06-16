@@ -728,15 +728,16 @@ export default withRouter(function AddRoom(props) {
                                 Select Gallery Images
                             </MaterialButton>
                         </Grid>
-                        {imagesData
-                            ?.filter(function (array_el) {
-                                return (
-                                    selectedImages.filter(function (menuItems_el) {
-                                        return menuItems_el._id === array_el._id;
-                                    }).length !== 0
-                                );
-                            })
-                            ?.map((x) => (
+                        {
+                            // imagesData
+                            //     ?.filter(function (array_el) {
+                            //         return (
+                            //             selectedImages.filter(function (menuItems_el) {
+                            //                 return menuItems_el._id === array_el._id;
+                            //             }).length !== 0
+                            //         );
+                            //     })
+                            selectedImages?.map((x) => (
                                 <SelectedImagesThumbnails
                                     x={x}
                                     handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")} />

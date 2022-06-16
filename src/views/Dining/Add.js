@@ -761,30 +761,30 @@ export default withRouter(function DiningAdd(props) {
                 </MaterialButton>
               </Grid>
               {
-                imagesData
-                  ?.filter(function (array_el) {
-                    return (
-                      selectedImages.filter(function (menuItems_el) {
-                        return menuItems_el._id == array_el._id;
-                      }).length !== 0
-                    );
-                  })
-                  ?.map((x) => (<SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")} />
-                    // <Grid item xs={12} sm={2}>
-                    //   <div style={{ height: "120px" }}>
-                    //     <img
-                    //       width="100%"
-                    //       src={x.avatar}
-                    //       className="img-thumbnail"
-                    //       alt=""
-                    //       style={{ height: "90%", objectFit: "cover" }}
-                    //     />
-                    //     <p style={{ fontSize: "12px" }} className="text-center">
-                    //       {x.alt_tag}
-                    //     </p>
-                    //   </div>
-                    // </Grid>
-                  ))}
+                // imagesData
+                //   ?.filter(function (array_el) {
+                //     return (
+                //       selectedImages.filter(function (menuItems_el) {
+                //         return menuItems_el._id == array_el._id;
+                //       }).length !== 0
+                //     );
+                //   })
+                selectedImages?.map((x) => (<SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")} />
+                  // <Grid item xs={12} sm={2}>
+                  //   <div style={{ height: "120px" }}>
+                  //     <img
+                  //       width="100%"
+                  //       src={x.avatar}
+                  //       className="img-thumbnail"
+                  //       alt=""
+                  //       style={{ height: "90%", objectFit: "cover" }}
+                  //     />
+                  //     <p style={{ fontSize: "12px" }} className="text-center">
+                  //       {x.alt_tag}
+                  //     </p>
+                  //   </div>
+                  // </Grid>
+                ))}
               {uploadsPreview &&
                 uploadsPreview?.map((x) => (
                   <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "uploadsPreview")} />
