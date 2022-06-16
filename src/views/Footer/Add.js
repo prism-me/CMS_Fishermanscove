@@ -326,7 +326,7 @@ export default function UpdateFooter() {
           </CardHeader>
 
           <CardBody className="">
-            <Accordion>
+            {/* <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
@@ -337,7 +337,6 @@ export default function UpdateFooter() {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
-                {/* <h4 className="mt-2">First Column (About)</h4> */}
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={12}>
                     <TextField
@@ -355,18 +354,9 @@ export default function UpdateFooter() {
                       size="small"
                     />
                   </Grid>
-                  {/* <Grid item xs={12} sm={12}>
-                    <MaterialButton
-                      onClick={() => handleSubmit("first")}
-                      color="primary"
-                      variant="contained"
-                    >
-                      Update Section
-                    </MaterialButton>
-                  </Grid> */}
                 </Grid>
               </AccordionDetails>
-            </Accordion>
+            </Accordion> */}
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -374,7 +364,7 @@ export default function UpdateFooter() {
                 id="panel2a-header"
               >
                 <Typography className={classes.heading}>
-                  Second Column - Services
+                  Links
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
@@ -441,7 +431,7 @@ export default function UpdateFooter() {
                                           value={
                                             pages.find(
                                               (p) =>
-                                                p.name?.toLowerCase() ===
+                                                p.name_fr?.toLowerCase() ===
                                                 x.text?.toLowerCase()
                                             ) || { name: "" }
                                           }
@@ -449,7 +439,7 @@ export default function UpdateFooter() {
                                             handleMenuItemChange(
                                               {
                                                 target: {
-                                                  value: newValue?.name,
+                                                  value: newValue?.name_fr,
                                                   name: "text",
                                                 },
                                               },
@@ -695,7 +685,7 @@ export default function UpdateFooter() {
                 </Grid> */}
               </AccordionDetails>
             </Accordion>
-            <Accordion>
+            {/* <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel3a-content"
@@ -746,18 +736,9 @@ export default function UpdateFooter() {
                       size="small"
                     />
                   </Grid>
-                  {/* <Grid item xs={12} sm={12}>
-                    <MaterialButton
-                      onClick={() => handleSubmit("third")}
-                      color="primary"
-                      variant="contained"
-                    >
-                      Update Section
-                    </MaterialButton>
-                  </Grid> */}
                 </Grid>
               </AccordionDetails>
-            </Accordion>
+            </Accordion> */}
             <Grid container spacing={2} style={{ marginTop: '30px' }}>
               <Grid item xs={12} sm={12}>
                 <MaterialButton

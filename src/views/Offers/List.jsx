@@ -95,7 +95,7 @@ class OffersList extends Component {
 
   componentDidMount() {
     LangAPI.get(`/offers?lang=${this.state.selectedLang}`).then(response => {
-      let rows = response?.data?.data;
+      let rows = response?.data?.data?.filter((x) => x?.is_premium === 0);
       this.setState({ rows })
     })
   }
@@ -103,7 +103,7 @@ class OffersList extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState.selectedLang !== this.state.selectedLang) {
       LangAPI.get(`/offers?lang=${this.state.selectedLang}`).then((response) => {
-        let rows = response?.data?.data;
+        let rows = response?.data?.data?.filter((x) => x?.is_premium === 0);
         if (this.state.rows != rows) {
           // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
           this.setState({ rows });
@@ -136,7 +136,7 @@ class OffersList extends Component {
       })
         .then(() => {
           LangAPI.get(`/offers?lang=${this.state.selectedLang}`).then(response => {
-            let rows = response?.data?.data;
+            let rows = response?.data?.data?.filter((x) => x?.is_premium === 0);
             this.setState({ rows })
           })
         })
@@ -206,7 +206,7 @@ class OffersList extends Component {
           </Button> */}
         </Box>
         <MUIDataTable
-          title="Premium Offers List"
+          title="Offers List"
           columns={this.state.columns}
           data={this.state.rows}
           options={this.options}

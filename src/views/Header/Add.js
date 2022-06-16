@@ -77,12 +77,16 @@ export default function UpdateHeader() {
           response.data.data[1].forEach(element => {
             let obj = {...element}
             obj.name = obj.post_name
+            obj.name_de = obj.name_de || ""
+            obj.name_fr = obj.name_fr || ""
             obj.base_url = "dining"
             pages.push(obj) 
           });
           response.data.data[0].forEach(element => {
             let obj = {...element}
             obj.name = obj.post_name
+            obj.name_de = obj.name_de || ""
+            obj.name_fr = obj.name_fr || ""
             obj.base_url = "rooms"
             pages.push(obj) 
           });
@@ -415,6 +419,8 @@ export default function UpdateHeader() {
 
                                   <Grid item xs={12} sm={4}>
                                     {pages?.length > 0 && (
+                                      <>
+                                      {selectedLang == 'en' &&
                                       <Autocomplete
                                         id={`text${x.temp_id}`}
                                         name="text"
@@ -457,6 +463,103 @@ export default function UpdateHeader() {
                                           />
                                         )}
                                       />
+                                      }
+                                    {
+                                    selectedLang == 'de' &&
+                                      <Autocomplete
+                                        id={`text${x.temp_id}`}
+                                        name="text"
+                                        options={pagesFilter}
+                                        size="small"
+                                        value={
+                                          pages.find(
+                                            (p) =>
+                                              p.name_de?.toLowerCase() ===
+                                              x.text?.toLowerCase()
+                                          ) || { name_de: "" }
+                                        }
+                                        onChange={(e, newValue) =>
+                                          
+                                          // handleMenuItemChange(
+                                          //   {
+                                          //     target: {
+                                          //       value: newValue?.name_de,
+                                          //       name: "text",
+                                          //     },
+                                          //   },
+                                          //   newValue?.slug,
+                                          //   index,
+                                          //   pages.find(
+                                          //     (p) =>
+                                          //       p.name_de?.toLowerCase() ===
+                                          //       newValue?.name?.toLowerCase()
+                                          //   )?.slug
+                                          // ) || ""
+                                          console.log("e, newValue",e, newValue)
+
+                                        }
+                                        getOptionLabel={(option) =>
+                                          option.name_de
+                                        }
+                                        // style={{ width: 300 }}
+                                        renderInput={(params) => (
+                                          <TextField
+                                            required
+                                            {...params}
+                                            label="Select Link Text"
+                                            variant="outlined"
+                                          />
+                                        )}
+                                      />
+                                      }
+
+                                    {
+                                    selectedLang == 'fr' &&
+                                      <Autocomplete
+                                        id={`text${x.temp_id}`}
+                                        name="text"
+                                        options={pagesFilter}
+                                        size="small"
+                                        value={
+                                          pages.find(
+                                            (p) =>
+                                              p.name_fr?.toLowerCase() ===
+                                              x.text?.toLowerCase()
+                                          ) || { name_fr: "" }
+                                        }
+                                        onChange={(e, newValue) =>
+                                          handleMenuItemChange(
+                                            {
+                                              target: {
+                                                value: newValue?.name_fr,
+                                                name: "text",
+                                              },
+                                            },
+                                            newValue?.slug,
+                                            index,
+                                            pages.find(
+                                              (p) =>
+                                                p.name_fr?.toLowerCase() ===
+                                                newValue?.name?.toLowerCase()
+                                            )?.slug
+                                          ) || ""
+                                        }
+                                        getOptionLabel={(option) =>
+                                          option.name_fr
+                                        }
+                                        // style={{ width: 300 }}
+                                        renderInput={(params) => (
+                                          <TextField
+                                            required
+                                            {...params}
+                                            label="Select Link Text"
+                                            variant="outlined"
+                                          />
+                                        )}
+                                      />
+                                      }
+
+                                      </>
                                     )}
                                   </Grid>
                                   <Grid item xs={12} sm={4}>
@@ -466,11 +569,28 @@ export default function UpdateHeader() {
                                       name="address"
                                       label="URL"
                                       value={
+                                        selectedLang === "en" ?
+
                                         pages?.find(
                                           (p) =>
                                             p.name?.toLowerCase() ===
                                             x.text?.toLowerCase()
                                         )?.slug || ""
+                                        :
+                                        selectedLang === "fr" ?
+                                        pages?.find(
+                                          (p) =>
+                                            p.name_fr?.toLowerCase() ===
+                                            x.text?.toLowerCase()
+                                        )?.slug || ""
+                                        :
+                                        selectedLang === "de" ?
+                                        pages?.find(
+                                          (p) =>
+                                            p.name_de?.toLowerCase() ===
+                                            x.text?.toLowerCase()
+                                        )?.slug || ""
+                                        :""
                                       }
                                       variant="outlined"
                                       fullWidth
@@ -576,6 +696,8 @@ export default function UpdateHeader() {
 
                                           <Grid item xs={12} sm={4}>
                                             {pages?.length > 0 && (
+                                              <>
+                                              {selectedLang == 'en' &&
                                               <Autocomplete
                                                 id={`text${y.temp_id}`}
                                                 name="text"
@@ -589,6 +711,7 @@ export default function UpdateHeader() {
                                                   ) || { name: "" }
                                                 }
                                                 onChange={(e, newValue) =>
+                                                  
                                                   handleSubMenuItemChange(
                                                     {
                                                       target: {
@@ -597,10 +720,10 @@ export default function UpdateHeader() {
                                                         name: "text",
                                                       },
                                                     },
-                                                    newValue.slug,
+                                                    newValue?.slug,
                                                     index,
                                                     ind,
-                                                    newValue.base_url || "",
+                                                    newValue?.base_url || "",
                                                     pages.find(
                                                       (p) =>
                                                         p.name?.toLowerCase() ===
@@ -621,6 +744,121 @@ export default function UpdateHeader() {
                                                   />
                                                 )}
                                               />
+                                              }
+                                              {selectedLang == 'fr' &&
+                                              <Autocomplete
+                                                id={`text${y.temp_id}`}
+                                                name="text"
+                                                options={pages}
+                                                size="small"
+                                                value={
+                                                  pages.find(
+                                                    (p) =>
+                                                      p.name_fr?.toLowerCase() ===
+                                                      y.text?.toLowerCase()
+                                                  ) || { name_fr: "" }
+                                                }
+                                                // onChange={(e, newValue) =>
+                                                //   handleSubMenuItemChange(
+                                                //     {
+                                                //       target: {
+                                                //         value:
+                                                //           newValue?.name_fr,
+                                                //         name: "text",
+                                                //       },
+                                                //     },
+                                                //     newValue.slug,
+                                                //     index,
+                                                //     ind,
+                                                //     newValue.base_url || "",
+                                                //     pages.find(
+                                                //       (p) =>
+                                                //         p.name_fr?.toLowerCase() ===
+                                                //         newValue?.name?.toLowerCase()
+                                                //     )?.slug
+                                                //   ) || ""
+                                                // }
+                                                onChange={(e, newValue) =>
+                                                   handleSubMenuItemChange(
+                                                        {
+                                                          target: {
+                                                            value: newValue?.name_fr,
+                                                            name: "text",
+                                                          },
+                                                        },
+                                                        newValue?.slug,
+                                                        index,
+                                                        ind,
+                                                        newValue?.base_url || "",
+                                                        pages.find(
+                                                          (p) =>
+                                                            p.name_fr?.toLowerCase() ===
+                                                            newValue?.name?.toLowerCase()
+                                                        )?.slug
+                                                      ) || ""
+                                                }
+                                                getOptionLabel={(option) =>
+                                                  option?.name_fr
+                                                }
+                                                // style={{ width: 300 }}
+                                                renderInput={(params) => (
+                                                  <TextField
+                                                    required
+                                                    {...params}
+                                                    label="Select Link Text"
+                                                    variant="outlined"
+                                                  />
+                                                )}
+                                              />
+                                              }
+                                              {selectedLang == 'de' &&
+                                              <Autocomplete
+                                                id={`text${y.temp_id}`}
+                                                name="text"
+                                                options={pages}
+                                                size="small"
+                                                value={
+                                                  pages.find(
+                                                    (p) =>
+                                                      p?.name_de?.toLowerCase() ===
+                                                      y.text?.toLowerCase()
+                                                  ) || { name_de: "" }
+                                                }
+                                                onChange={(e, newValue) =>
+                                                  handleSubMenuItemChange(
+                                                    {
+                                                      target: {
+                                                        value:
+                                                          newValue?.name_de,
+                                                        name: "text",
+                                                      },
+                                                    },
+                                                    newValue?.slug,
+                                                    index,
+                                                    ind,
+                                                    newValue?.base_url || "",
+                                                    pages.find(
+                                                      (p) =>
+                                                        p.name_de?.toLowerCase() ===
+                                                        newValue?.name?.toLowerCase()
+                                                    )?.slug
+                                                  ) || ""
+                                                }
+                                                getOptionLabel={(option) =>
+                                                  option?.name_de
+                                                }
+                                                // style={{ width: 300 }}
+                                                renderInput={(params) => (
+                                                  <TextField
+                                                    required
+                                                    {...params}
+                                                    label="Select Link Text"
+                                                    variant="outlined"
+                                                  />
+                                                )}
+                                              />
+                                              }
+                                              </>
                                             )}
                                           </Grid>
                                           <Grid item xs={12} sm={4}>
@@ -630,11 +868,27 @@ export default function UpdateHeader() {
                                               name="address"
                                               label="URL"
                                               value={
+                                                selectedLang === "en" ?
                                                 pages?.find(
                                                   (p) =>
                                                     p.name?.toLowerCase() ===
                                                     y.text?.toLowerCase()
                                                 )?.slug || ""
+                                                :
+                                                selectedLang === "fr" ?
+                                                pages?.find(
+                                                  (p) =>
+                                                    p.name_fr?.toLowerCase() ===
+                                                    y.text?.toLowerCase()
+                                                )?.slug || ""
+                                                :
+                                                selectedLang === "de" ?
+                                                pages?.find(
+                                                  (p) =>
+                                                    p.name_de?.toLowerCase() ===
+                                                    y.text?.toLowerCase()
+                                                )?.slug || ""
+                                                :""
                                               }
                                               variant="outlined"
                                               fullWidth
