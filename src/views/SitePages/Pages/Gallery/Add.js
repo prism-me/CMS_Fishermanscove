@@ -189,10 +189,10 @@ export default function AddGallery() {
 
       } else if (!isSingle && isImagesList) {
 
-        let gal = { ...gallery}
+        let gal = { ...gallery }
         // console.log(gal,"gal")
         // return false;
-        if(!gal.imageGallery){
+        if (!gal.imageGallery) {
           gal.imageGallery = []
         }
         gal.imageGallery.push(imagesData[index])
@@ -330,7 +330,7 @@ export default function AddGallery() {
         setSelectedImages(updatePreview.map((u) => u._id));
         break;
       case "selectedImages":
-        let gal = {...gallery}
+        let gal = { ...gallery }
         let updateData = gal.imageGallery.filter((u) => u._id !== x._id);
         // console.log(updateData,"updateData")
         // return false;

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import MUIDataTable from "mui-datatables";
-import API from 'utils/http';
 import { Avatar, Box, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { AddOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
@@ -91,8 +90,8 @@ class PageList extends Component {
         }
       },
     ],
-    rows: []
-  }
+    rows: [],
+  };
 
   options = {
     filterType: "checkbox",
@@ -101,14 +100,14 @@ class PageList extends Component {
 
   componentDidMount() {
     LangAPI.get('/pages').then(response => {
-      console.log(response?.data?.data,"response?.data?.data")
+      console.log(response?.data?.data, "response?.data?.data")
       let rows = response?.data?.data;
       // let rows = data.map(x=> {
       //   return {
 
       //   }
       // })
-      this.setState({ rows })
+      this.setState({ rows: rows })
     })
   }
 
@@ -123,7 +122,7 @@ class PageList extends Component {
               startIcon={<AddOutlined />}
             >
               Add Page
-          </Button>
+            </Button>
           </Link>
         </Box>
         <MUIDataTable
