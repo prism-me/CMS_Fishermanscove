@@ -173,14 +173,20 @@ export default function AddGallery() {
     setGallery(updatedAbout);
   }
 
+  // const useForceUpdate = () =>  {
+    
+  //   return () => setState(!value);
+  // }
+
+
   const handleImageSelect = (e, index, section) => {
     // setTimeout(() => {
     //   setShowGallery(false);
     // }, 500);
 
     if (e.target.checked) {
-      if (isSingle && !isImagesList) {
 
+      if (isSingle && !isImagesList) {
         setGallery({ ...gallery, [section]: { ...gallery[section], section_avatar: imagesData[index] } })
 
         setTimeout(() => {
@@ -195,13 +201,13 @@ export default function AddGallery() {
         if (!gal.imageGallery) {
           gal.imageGallery = []
         }
-        gal.imageGallery.push(imagesData[index])
-        setGallery(gal)
-        // setGallery({ ...gallery, [section]: { ...gallery[section], imagesData[index] }})
-        // console.log('setSelectedImages :: ', imagesData[index])
-        // console.log('section :: ', section) 
-
-        // setGallery({ ...gallery, [section]: imagesData[index] })
+        const index2 = gal?.imageGallery?.findIndex(img => img._id === imagesData[index]._id);
+        if(index2 === -1){
+          gal.imageGallery.push(imagesData[index])
+          setGallery({ ...gallery, imageGallery: gal.imageGallery})
+        } else {
+          alert("This Image is already selected")
+        }
 
         let imagesDataUpdated = imagesData.map((x, i) => {
           if (i === index) {
@@ -215,28 +221,14 @@ export default function AddGallery() {
         });
         setImagesData(imagesDataUpdated);
       }
-      // if (isSingle && thumbnailPreview !== "") {
-      //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
-      //   return;
-      // } else {
-      // setGallery({ ...gallery, [section]: { ...gallery[section], section_avatar: imagesData[index] } })
-      // setThumbnailPreview(imagesData[index].avatar)
-
-      // let imagesDataUpdated = imagesData.map((x, i) => {
-      //   if (i === index) {
-      //     return {
-      //       ...x,
-      //       isChecked: true
-      //     }
-      //   } else {
-      //     return x
-      //   }
-      // });
-      // setImagesData(imagesDataUpdated);
-      // }
     } else {
-      setGallery({ ...gallery, [section]: { ...gallery[section], section_avatar: "" } })
-      setThumbnailPreview("")
+      let gal = {...gallery}
+      let updateData = gal.imageGallery.filter((u) => u._id !== imagesData[index]._id);
+      gal.imageGallery = updateData
+      setGallery(gal);
+
+      // setGallery({ ...gallery, [section]: { ...gallery[section], section_avatar: "" } })
+      // setThumbnailPreview("")
 
       setImagesData(imagesData.map((x, i) => {
         if (i === index) {
@@ -486,10 +478,10 @@ export default function AddGallery() {
                           x={x}
                           handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "selectedImages")} />
                       ))}
-                    {uploadsPreview &&
+                    {/* {uploadsPreview &&
                       uploadsPreview?.map((x) => (
                         <SelectedImagesThumbnails x={x} handleRemoveSelectedImage={(r) => handleRemoveSelectedImage(r, "uploadsPreview")} />
-                      ))}
+                      ))} */}
                     <div className="clearfix clear-fix"></div>
 
                   </Grid>
