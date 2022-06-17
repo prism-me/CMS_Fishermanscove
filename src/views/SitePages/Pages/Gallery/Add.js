@@ -174,9 +174,6 @@ export default function AddGallery() {
   }
 
   const handleImageSelect = (e, index, section) => {
-    // setTimeout(() => {
-    //   setShowGallery(false);
-    // }, 500);
 
     if (e.target.checked) {
       if (isSingle && !isImagesList) {
@@ -190,18 +187,11 @@ export default function AddGallery() {
       } else if (!isSingle && isImagesList) {
 
         let gal = { ...gallery}
-        // console.log(gal,"gal")
-        // return false;
         if(!gal.imageGallery){
           gal.imageGallery = []
         }
         gal.imageGallery.push(imagesData[index])
         setGallery(gal)
-        // setGallery({ ...gallery, [section]: { ...gallery[section], imagesData[index] }})
-        // console.log('setSelectedImages :: ', imagesData[index])
-        // console.log('section :: ', section) 
-
-        // setGallery({ ...gallery, [section]: imagesData[index] })
 
         let imagesDataUpdated = imagesData.map((x, i) => {
           if (i === index) {
@@ -215,25 +205,6 @@ export default function AddGallery() {
         });
         setImagesData(imagesDataUpdated);
       }
-      // if (isSingle && thumbnailPreview !== "") {
-      //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
-      //   return;
-      // } else {
-      // setGallery({ ...gallery, [section]: { ...gallery[section], section_avatar: imagesData[index] } })
-      // setThumbnailPreview(imagesData[index].avatar)
-
-      // let imagesDataUpdated = imagesData.map((x, i) => {
-      //   if (i === index) {
-      //     return {
-      //       ...x,
-      //       isChecked: true
-      //     }
-      //   } else {
-      //     return x
-      //   }
-      // });
-      // setImagesData(imagesDataUpdated);
-      // }
     } else {
       setGallery({ ...gallery, [section]: { ...gallery[section], section_avatar: "" } })
       setThumbnailPreview("")
@@ -271,13 +242,13 @@ export default function AddGallery() {
     updatedSeoInfo.is_indexed_or_is_followed = `${updatedSeoInfo.is_indexed},${updatedSeoInfo.is_followed}`;
 
     if (updatedSeoInfo.id > 0) {
-      API.put(`/meta/${pageId}`, updatedSeoInfo).then(response => {
+      LangAPI.put(`/meta/${pageId}`, updatedSeoInfo).then(response => {
         if (response.status === 200) {
           alert("Section updated successfully !");
         }
       }).catch(err => console.log(err))
     } else {
-      API.post(`/meta`, updatedSeoInfo).then(response => {
+      LangAPI.post(`/meta`, updatedSeoInfo).then(response => {
         if (response.status === 200) {
           alert("Section updated successfully !");
         }
@@ -287,11 +258,11 @@ export default function AddGallery() {
   }
 
   const handleSubmit = (id, name) => {
-    API.post(`/add_section`, gallery[name]).then(response => {
-      if (response.status === 200) {
-        alert("Section updated successfully !");
-      }
-    }).catch(err => console.log(err))
+    // LangAPI.post(`/add-section?lang=${selectedLang}`, updatedGalery).then(response => {
+    //   if (response.status === 200) {
+    //     alert("Section updated successfully !");
+    //   }
+    // }).catch(err => console.log(err))
 
     let updatedGalery = { ...gallery };
     updatedGalery.meta = { ...seoInfo };
@@ -315,8 +286,6 @@ export default function AddGallery() {
   };
 
   const handleRemoveSelectedImage = (x, arrayListType) => {
-
-    console.log("Removing selected image :: ", x)
     switch (arrayListType) {
       case "uploadsPreview":
         let updatePreview = gallery?.imageGallery?.filter((u) => u._id !== x._id)
