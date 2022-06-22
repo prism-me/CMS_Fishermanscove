@@ -79,7 +79,7 @@ export default function Dashboard() {
     let updatedTodo = todos[index];
     debugger;
     updatedTodo.is_read = e.target.checked;
-    
+
     API.put(`/todo/${todos[index].id}`, updatedTodo)
       .then(response => {
         if (response?.status === 200) {
@@ -116,7 +116,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      
+
       <GridContainer>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
@@ -289,19 +289,19 @@ export default function Dashboard() {
               <div className="d-flex align-items-center img-thumbnail mb-2" style={{ justifyContent: 'space-between' }}>
                 <small style={{ width: '30%', marginBottom: 0, fontWeight: 500 }}>
                   Task
-                    </small>
+                </small>
                 <small style={{ width: '30%', marginBottom: 0, fontWeight: 500 }}>
                   Date
-                    </small>
+                </small>
                 <small style={{ width: '20%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
                   Status
-                    </small>
+                </small>
                 <small style={{ width: '10%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
                   Mark
-                    </small>
+                </small>
                 <small style={{ width: '10%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
                   Delete
-                    </small>
+                </small>
               </div>
               {
                 recents?.Todo_lists?.map((x, index) => (

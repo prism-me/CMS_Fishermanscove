@@ -22,6 +22,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
+import SubscribersList from "../SubscribersList"
 
 import {
   dailySalesChart,
@@ -73,8 +74,8 @@ export default function Dashboard() {
   }
 
   const handleStatusChange = (e, index) => {
- 
-    let updatedTodo = todos.Todo_lists[index];  
+
+    let updatedTodo = todos.Todo_lists[index];
     updatedTodo.is_read = e.target.checked;
     API.put(`/todo/${todos.Todo_lists[index].id}`, updatedTodo)
       .then(response => {
@@ -97,7 +98,7 @@ export default function Dashboard() {
   const handleTaskDelete = (id) => {
     API.delete(`/todo/${id}`).then(response => {
       if (response.status === 200) {
-        
+
         // alert("Task deleted successfully.");
         // this.setState({currentFiles: []})
       }
@@ -287,19 +288,19 @@ export default function Dashboard() {
               <div className="d-flex align-items-center img-thumbnail mb-2" style={{ justifyContent: 'space-between' }}>
                 <small style={{ width: '30%', marginBottom: 0, fontWeight: 500 }}>
                   Task
-                    </small>
+                </small>
                 <small style={{ width: '30%', marginBottom: 0, fontWeight: 500 }}>
                   Date
-                    </small>
+                </small>
                 <small style={{ width: '20%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
                   Status
-                    </small>
+                </small>
                 <small style={{ width: '10%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
                   Mark
-                    </small>
+                </small>
                 <small style={{ width: '10%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
                   Delete
-                    </small>
+                </small>
               </div>
               {
                 recents?.Todo_lists?.map((x, index) => (
@@ -440,7 +441,9 @@ export default function Dashboard() {
               </p>
             </CardHeader>
             <CardBody style={{ height: '300px', overflowY: 'scroll' }}>
-              <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
+
+              <SubscribersList />
+              {/* <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
                 <p style={{ marginBottom: 0, width: '40%' }}>
                   <b>Email</b>
                 </p>
@@ -470,7 +473,7 @@ export default function Dashboard() {
                     </p>
                   </div>
                 ))
-              }
+              } */}
             </CardBody>
           </Card>
         </GridItem>

@@ -1,25 +1,13 @@
 import React, { Component } from 'react';
 import MUIDataTable from "mui-datatables";
-import { Avatar, Box, Button } from '@material-ui/core';
+import { Box, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { AddOutlined, EditOutlined, VisibilityOutlined } from '@material-ui/icons';
+import { AddOutlined } from '@material-ui/icons';
 import LangAPI from "langapi/http";
 
 class PageList extends Component {
   state = {
-    offers: [],
     columns: [
-      // {
-      //   name: "avatar",
-      //   label: "Image",
-      //   options: {
-      //     filter: false,
-      //     sort: false,
-      //     customBodyRender: (val) => (
-      //       <Avatar alt={"Image"} src={val}></Avatar>
-      //     )
-      //   }
-      // },
       {
         name: "name",
         label: "Name",
@@ -28,51 +16,6 @@ class PageList extends Component {
           sort: true,
         }
       },
-      // {
-      //   name: "room_type",
-      //   label: "Room Type",
-      //   options: {
-      //     filter: true,
-      //     sort: false,
-      //     customBodyRender: (val) => {
-      //       return val === 0 ? 'Room' : 'Suite'
-      //     }
-      //   }
-      // },
-      // {
-      //   name: "category_name",
-      //   label: "Category",
-      //   options: {
-      //     filter: true,
-      //     sort: false,
-      //   }
-      // },
-      // {
-      //   name: "short_description",
-      //   label: "Description",
-      //   options: {
-      //     filter: true,
-      //     sort: false,
-      //     customBodyRender: val => (
-      //       val.length > 100 ? val.substr(0, 100) + '...' : val
-      //     )
-      //   }
-      // },
-      // {
-      //   name: "post_content",
-      //   label: "Content",
-      //   options: {
-      //     filter: true,
-      //     sort: false,
-      //     customBodyRender: val => (
-      //       <code>
-      //         {
-      //           val.length > 100 ? val.substr(0, 100) + '...' : val
-      //         }
-      //       </code>
-      //     )
-      //   }
-      // },
       {
         name: "_id",
         label: "Actions",
@@ -100,13 +43,8 @@ class PageList extends Component {
 
   componentDidMount() {
     LangAPI.get('/pages').then(response => {
-      console.log(response?.data?.data, "response?.data?.data")
+      console.log(response?.data?.data, "page data")
       let rows = response?.data?.data;
-      // let rows = data.map(x=> {
-      //   return {
-
-      //   }
-      // })
       this.setState({ rows: rows })
     })
   }
