@@ -38,7 +38,7 @@ class PageList extends Component {
 
   options = {
     filterType: "checkbox",
-    responsive: "vertical",
+    responsive: "vertical"
   };
 
   componentDidMount() {
