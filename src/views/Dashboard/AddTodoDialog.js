@@ -7,19 +7,19 @@ import DialogContent from '@material-ui/core/DialogContent';
 // import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Image } from '@material-ui/icons';
-import API from 'utils/http';
+import API from 'langapi/http';
 import { Grid, FormControl, FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 
 export default function AddTodoDialog(props) {
-    const [todo_name, setTodoName] = React.useState("");
+    const [name, setTodoName] = React.useState("");
     const [todo_description, setTodoDescription] = React.useState("");
     const [is_read, setIsRead] = React.useState(false);
 
     const handleSubmit = () => {
         API.post(`/todo`, {
-            todo_name,
+            name,
             todo_description,
-            is_read 
+            is_read
         }).then(response => {
             if (response.status === 200) {
                 alert(response.data?.message || "Success");
@@ -38,12 +38,12 @@ export default function AddTodoDialog(props) {
                     <Grid container spacing={5}>
                         <Grid item xs={12} sm={12}>
                             <TextField
-                                id="todo_name"
+                                id="name"
                                 label="Task Name"
                                 type="text"
                                 fullWidth
                                 size="small"
-                                value={todo_name}
+                                value={name}
                                 onChange={(e) => setTodoName(e.target.value)}
                                 variant="outlined"
                             />
@@ -78,7 +78,7 @@ export default function AddTodoDialog(props) {
                     </Button>
                     <Button onClick={handleSubmit} variant="contained" color="primary">
                         Submit
-                     </Button>
+                    </Button>
                 </DialogActions>
             </Dialog>
         </div>

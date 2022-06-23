@@ -31,7 +31,7 @@ import {
 } from "variables/charts.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
-import API from "utils/http";
+import API from "langapi/http";
 import { Avatar, Checkbox, IconButton } from "@material-ui/core";
 import { AddOutlined, Check, DeleteOutlined, PlaylistAddOutlined } from "@material-ui/icons";
 import AddTodoDialog from "./AddTodoDialog";
@@ -68,7 +68,7 @@ export default function Dashboard() {
   const getTodos = () => {
     API.get('/todo').then(response => {
       if (response?.status === 200) {
-        setTodos(response.data)
+        setTodos(response?.data?.data)
       }
     })
   }
@@ -77,16 +77,17 @@ export default function Dashboard() {
 
     let updatedTodo = todos.Todo_lists[index];
     updatedTodo.is_read = e.target.checked;
-    API.put(`/todo/${todos.Todo_lists[index].id}`, updatedTodo)
+    API.put(`/todo/${todos.Todo_lists[index]._id}`, updatedTodo)
       .then(response => {
         if (response?.status === 200) {
           // alert("Updated")
+          window.location.reload(true);
         }
       })
       .then(() => {
         API.get('/todo').then(response => {
           if (response?.status === 200) {
-            setTodos(response.data)
+            setTodos(response.data?.data)
           }
         })
       })
@@ -94,6 +95,7 @@ export default function Dashboard() {
         alert("Something went wrong")
       })
   }
+
 
   const handleTaskDelete = (id) => {
     API.delete(`/todo/${id}`).then(response => {
@@ -106,7 +108,7 @@ export default function Dashboard() {
       API.get('/todo').then(response => {
         if (response.status === 200) {
 
-          setTodos(response.data);
+          setTodos(response.data?.data);
           window.location.reload(true);
         }
       })
@@ -306,7 +308,7 @@ export default function Dashboard() {
                 recents?.Todo_lists?.map((x, index) => (
                   <div className="d-flex align-items-center img-thumbnail mb-2" style={{ justifyContent: 'space-between' }}>
                     <p title={x.todo_description} style={{ width: '30%', marginBottom: 0 }}>
-                      {x.todo_name}
+                      {x.name}
                     </p>
                     <p style={{ width: '30%', marginBottom: 0 }}>
                       {new Date(x.updated_at).toLocaleDateString()}
@@ -328,7 +330,7 @@ export default function Dashboard() {
                       />
                     </p>
                     <p style={{ width: '10%', marginBottom: 0, textAlign: 'center' }}>
-                      <DeleteOutlined onClick={() => handleTaskDelete(x.id)} style={{ cursor: 'pointer' }} fontSize="small" color="secondary" />
+                      <DeleteOutlined onClick={() => handleTaskDelete(x._id)} style={{ cursor: 'pointer' }} fontSize="small" color="secondary" />
                     </p>
                   </div>
                 ))
@@ -361,7 +363,7 @@ export default function Dashboard() {
               </div>
               <hr />
               {
-                recents.recent_activities?.map(x => (
+                recents.allOffer?.filter((x) => x?.is_premium === 0 && x?.lang === "en")?.map(x => (
                   <div key={x.post_name} className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
                     <p style={{ width: '10%' }}>
                       <Avatar src={x.thumbnail} style={{ width: '30px', height: '30px' }} />

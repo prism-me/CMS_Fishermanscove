@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MUIDataTable from "mui-datatables";
-import API from 'utils/http';
+import API from 'langapi/http';
 import "./SubscriberList.scss"
 
 class SubscribersList extends Component {
