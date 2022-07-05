@@ -103,13 +103,13 @@ class RoomsList extends Component {
     if (prevState.selectedLang !== this.state.selectedLang) {
       API.get(`/blogs?lang=${this.state.selectedLang}`).then((response) => {
         let rows = response.data?.data;
-        if(this.state.rows != rows){
-            this.setState({ rows });
+        if (this.state.rows != rows) {
+          this.setState({ rows });
         }
       });
     }
   }
-  
+
 
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
@@ -175,6 +175,7 @@ class RoomsList extends Component {
                 <MenuItem value={'en'}>En</MenuItem>
                 <MenuItem value={'fr'}>FR</MenuItem>
                 <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
               </Select>
             </FormControl>

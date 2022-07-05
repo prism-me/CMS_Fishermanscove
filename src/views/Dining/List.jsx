@@ -221,6 +221,7 @@ class DiningList extends Component {
                 <MenuItem value={'en'}>En</MenuItem>
                 <MenuItem value={'fr'}>FR</MenuItem>
                 <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
               </Select>
             </FormControl>
