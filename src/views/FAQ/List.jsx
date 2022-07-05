@@ -212,7 +212,7 @@ const FAQList = (props) => {
 
     faq.section_content[0].lang = selectedLang;
     let faqObj = faq.section_content[0]
-    
+
     // console.log(faq.section_content[0], "faq.section_content[0]", selectedLang, "selectedLang");
     // updatedSectionContent.push(faq.section_content[0]);
     //replacing section content with modified array
@@ -322,6 +322,7 @@ const FAQList = (props) => {
                 <MenuItem value={'en'}>En</MenuItem>
                 <MenuItem value={'fr'}>FR</MenuItem>
                 <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
               </Select>
             </FormControl>

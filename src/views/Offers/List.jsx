@@ -35,7 +35,7 @@ class OffersList extends Component {
       },
       {
         name: "is_premium",
-        label: "Room Type",
+        label: "Offer Type",
         options: {
           filter: true,
           sort: false,

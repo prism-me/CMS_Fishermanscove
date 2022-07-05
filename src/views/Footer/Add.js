@@ -319,6 +319,7 @@ export default function UpdateFooter() {
                 <MenuItem value={'en'}>En</MenuItem>
                 <MenuItem value={'fr'}>FR</MenuItem>
                 <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
               </Select>
 
@@ -504,7 +505,49 @@ export default function UpdateFooter() {
                                               />
                                             )}
                                           />
-                                          : ""
+                                          :
+                                          selectedLang === "ru" ?
+                                            <Autocomplete
+                                              id={`text${x.temp_id}`}
+                                              name="text"
+                                              options={pagesFilter}
+                                              size="small"
+                                              value={
+                                                pages.find(
+                                                  (p) =>
+                                                    p.name_ru?.toLowerCase() ===
+                                                    x.text?.toLowerCase()
+                                                ) || { name: "" }
+                                              }
+                                              onChange={(e, newValue) =>
+                                                handleMenuItemChange(
+                                                  {
+                                                    target: {
+                                                      value: newValue?.name_ru,
+                                                      name: "text",
+                                                    },
+                                                  },
+                                                  index,
+                                                  newValue?.slug,
+                                                  pages.find(
+                                                    (p) =>
+                                                      p.name?.toLowerCase() ===
+                                                      newValue?.name?.toLowerCase()
+                                                  )?.slug
+                                                ) || ""
+                                              }
+                                              getOptionLabel={(option) => option.name_ru}
+                                              // style={{ width: 300 }}
+                                              renderInput={(params) => (
+                                                <TextField
+                                                  required
+                                                  {...params}
+                                                  label="Select Link Text"
+                                                  variant="outlined"
+                                                />
+                                              )}
+                                            />
+                                            : ""
                                   }
                                 </>
 
@@ -538,7 +581,14 @@ export default function UpdateFooter() {
                                             p.name_de?.toLowerCase() ===
                                             x.text?.toLowerCase()
                                         )?.slug || ""
-                                        : ""
+                                        :
+                                        selectedLang === "ru" ?
+                                          pages.find(
+                                            (p) =>
+                                              p.name_ru?.toLowerCase() ===
+                                              x.text?.toLowerCase()
+                                          )?.slug || ""
+                                          : ""
                                 }
                                 variant="outlined"
                                 fullWidth
