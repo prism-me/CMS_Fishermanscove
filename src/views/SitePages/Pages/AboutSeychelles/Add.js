@@ -127,7 +127,7 @@ export default function AddAboutSeychelles() {
         //     features: initialObject.features,
         //   }
         // )
-        if(response.data.data[0]){
+        if (response.data.data[0]) {
           setAboutSeychelles(response.data.data[0])
           setSeoInfo(response?.data?.data[0]?.meta)
         } else {
@@ -137,18 +137,18 @@ export default function AddAboutSeychelles() {
       }
     });
 
-    if(!imagesData.length > 0){
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
   }, [selectedLang])
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
-        if (response.status === 200) {
-            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
-        }
+      if (response.status === 200) {
+        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+      }
     });
-};
+  };
 
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {
@@ -180,20 +180,20 @@ export default function AddAboutSeychelles() {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-        setAboutSeychelles({ ...aboutSeychelles, [section]: { ...aboutSeychelles[section], section_avatar: imagesData[index] } })
-        setThumbnailPreview(imagesData[index].avatar)
+      setAboutSeychelles({ ...aboutSeychelles, [section]: { ...aboutSeychelles[section], section_avatar: imagesData[index] } })
+      setThumbnailPreview(imagesData[index].avatar)
 
-        // let imagesDataUpdated = imagesData.map((x, i) => {
-        //   if (i === index) {
-        //     return {
-        //       ...x,
-        //       isChecked: true
-        //     }
-        //   } else {
-        //     return x
-        //   }
-        // });
-        // setImagesData(imagesDataUpdated);
+      // let imagesDataUpdated = imagesData.map((x, i) => {
+      //   if (i === index) {
+      //     return {
+      //       ...x,
+      //       isChecked: true
+      //     }
+      //   } else {
+      //     return x
+      //   }
+      // });
+      // setImagesData(imagesDataUpdated);
       // }
     } else {
       setAboutSeychelles({ ...aboutSeychelles, [section]: { ...aboutSeychelles[section], section_avatar: "" } })
@@ -276,9 +276,9 @@ export default function AddAboutSeychelles() {
     // }).catch(err => console.log(err))
 
     let updatedAboutSeychelles = { ...aboutSeychelles };
-    updatedAboutSeychelles.meta = {...seoInfo};
+    updatedAboutSeychelles.meta = { ...seoInfo };
     updatedAboutSeychelles.page_id = pageId
-    updatedAboutSeychelles.slug="aboutSeychelles-sections"
+    updatedAboutSeychelles.slug = "aboutSeychelles-sections"
     // console.log("updatedAboutSeychelles",updatedAboutSeychelles); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedAboutSeychelles).then(response => {
@@ -292,7 +292,7 @@ export default function AddAboutSeychelles() {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
@@ -305,29 +305,30 @@ export default function AddAboutSeychelles() {
             <h4 className="mb-0">Add About Seychelles Information</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </CardHeader>
           <CardBody>
@@ -389,7 +390,7 @@ export default function AddAboutSeychelles() {
                         }}
                       >
                         Upload Featured Image
-                          </MaterialButton>
+                      </MaterialButton>
                     </Fragment>
                   </Grid>
                 </Grid>
@@ -424,8 +425,8 @@ export default function AddAboutSeychelles() {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={aboutSeychelles.intro.section_content} onChange={(e) => setAboutSeychelles({ ...aboutSeychelles, intro: { ...aboutSeychelles.intro, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={aboutSeychelles.intro.section_content} onChange={(e) => setAboutSeychelles({ ...aboutSeychelles, intro: { ...aboutSeychelles.intro, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     {/* <TextField

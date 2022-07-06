@@ -158,28 +158,28 @@ export default function AddLeisureInner() {
   useEffect(() => {
     LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-        if(response?.data?.data[0]){
+        if (response?.data?.data[0]) {
           setLeisureInner(response.data.data[0])
           setSeoInfo(response?.data?.data[0]?.meta)
         } else {
           setLeisureInner(leisureObj)
           setSeoInfo(seoObj)
         }
-        
+
       }
     });
-    if(!imagesData.length > 0){
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
   }, [selectedLang])
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
-        if (response.status === 200) {
-            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
-        }
+      if (response.status === 200) {
+        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+      }
     });
-};
+  };
 
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {
@@ -213,14 +213,14 @@ export default function AddLeisureInner() {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-        setLeisureInner({ ...leisureInner, [section]: { ...leisureInner[section], section_avatar: imagesData[index] } })
-        // setThumbnailPreview(imagesData[index].avatar)
-        setThumbnailPreview({...thumbnailPreview, [section]: imagesData[index].avatar })
+      setLeisureInner({ ...leisureInner, [section]: { ...leisureInner[section], section_avatar: imagesData[index] } })
+      // setThumbnailPreview(imagesData[index].avatar)
+      setThumbnailPreview({ ...thumbnailPreview, [section]: imagesData[index].avatar })
       // }
     } else {
       setLeisureInner({ ...leisureInner, [section]: { ...leisureInner[section], section_avatar: "" } })
       // setThumbnailPreview("")
-      setThumbnailPreview({...thumbnailPreview, [section]: "" })
+      setThumbnailPreview({ ...thumbnailPreview, [section]: "" })
 
       setImagesData(imagesData.map((x, i) => {
         if (i === index) {
@@ -273,9 +273,9 @@ export default function AddLeisureInner() {
   const handleSubmit = (id, name) => {
 
     let updatedAbout = { ...leisureInner };
-    updatedAbout.meta = {...seoInfo};
+    updatedAbout.meta = { ...seoInfo };
     updatedAbout.page_id = pageId
-    updatedAbout.slug="liesureInner-sections"
+    updatedAbout.slug = "liesureInner-sections"
     // console.log("updatedAbout",updatedAbout); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedAbout).then(response => {
@@ -289,7 +289,7 @@ export default function AddLeisureInner() {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
@@ -302,29 +302,30 @@ export default function AddLeisureInner() {
             <h4 className="mb-0">Add Leisure Inner Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </CardHeader>
           <CardBody>
@@ -359,7 +360,7 @@ export default function AddLeisureInner() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !leisureInner.banner.id > 0 ?
-                        leisureInner.banner.section_avatar?.avatar !== "" ?
+                          leisureInner.banner.section_avatar?.avatar !== "" ?
                             <img src={leisureInner.banner.section_avatar?.avatar} alt={leisureInner.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
@@ -386,7 +387,7 @@ export default function AddLeisureInner() {
                         }}
                       >
                         Upload Featured Image
-                          </MaterialButton>
+                      </MaterialButton>
                     </Fragment>
                   </Grid>
                 </Grid>
@@ -401,7 +402,7 @@ export default function AddLeisureInner() {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               >
-                <Typography className={classes.heading}>Lounge by the Pool</Typography>
+                <Typography className={classes.heading}>Water Activities</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
@@ -421,8 +422,8 @@ export default function AddLeisureInner() {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.lounge.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, lounge: { ...leisureInner.lounge, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.lounge.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, lounge: { ...leisureInner.lounge, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     {/* <TextField
@@ -486,7 +487,7 @@ export default function AddLeisureInner() {
                 aria-controls="panel2a-content"
                 id="panel2a-header"
               >
-                <Typography className={classes.heading}>Snorkeling</Typography>
+                <Typography className={classes.heading}>Unlock the Sea</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
@@ -506,8 +507,8 @@ export default function AddLeisureInner() {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.kayaking.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, kayaking: { ...leisureInner.kayaking, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.kayaking.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, kayaking: { ...leisureInner.kayaking, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     {/* <TextField
@@ -571,7 +572,7 @@ export default function AddLeisureInner() {
                 aria-controls="panel3a-content"
                 id="panel3a-header"
               >
-                <Typography className={classes.heading}>Kayaking</Typography>
+                <Typography className={classes.heading}>Snorkeling</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
@@ -591,8 +592,8 @@ export default function AddLeisureInner() {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.snorkeling.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, snorkeling: { ...leisureInner.snorkeling, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.snorkeling.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, snorkeling: { ...leisureInner.snorkeling, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     {/* <TextField
@@ -656,7 +657,7 @@ export default function AddLeisureInner() {
                 aria-controls="panel4a-content"
                 id="panel4a-header"
               >
-                <Typography className={classes.heading}>Discover the Marine Life</Typography>
+                <Typography className={classes.heading}>Coral Cove</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
@@ -676,8 +677,8 @@ export default function AddLeisureInner() {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.marine.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, marine: { ...leisureInner.marine, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.marine.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, marine: { ...leisureInner.marine, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     {/* <TextField
@@ -696,7 +697,7 @@ export default function AddLeisureInner() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !leisureInner.marine.id > 0 ?
-                            leisureInner.marine.section_avatar?.avatar !== "" ?
+                              leisureInner.marine.section_avatar?.avatar !== "" ?
                                 <img src={leisureInner.marine.section_avatar?.avatar} alt={leisureInner.marine.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
@@ -744,7 +745,7 @@ export default function AddLeisureInner() {
                 aria-controls="panel5a-content"
                 id="panel5a-header"
               >
-                <Typography className={classes.heading}>Others</Typography>
+                <Typography className={classes.heading}>Kayaking in Seychelles</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
@@ -764,8 +765,8 @@ export default function AddLeisureInner() {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.others.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, others: { ...leisureInner.others, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisureInner.others.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, others: { ...leisureInner.others, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     {/* <TextField

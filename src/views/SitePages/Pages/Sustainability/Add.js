@@ -53,76 +53,76 @@ const useStyles = makeStyles((theme) => ({
 export default function AddSustainability() {
   const pageId = useParams().id;
 
-  
-let initObj = {
-  banner: {
-    id: 0,
-    section_name: '',
-    section_content: "<p>Detailed content goes here!</p>",
-    page_id: pageId,
-    section_avatar: '',
-    section_col_arr: 0,
-    section_prior: 1,
-    section_avtar_alt: '',
-    section_slug: 'banner'
-  },
-  intro: {
-    id: 0,
-    section_name: '',
-    section_content: "<p>Detailed content goes here!</p>",
-    page_id: pageId,
-    section_avatar: '',
-    section_col_arr: 0,
-    section_prior: 1,
-    section_avtar_alt: '',
-    section_slug: 'intro'
-  },
-  pillars: {
-    id: 0,
-    section_name: '',
-    section_content: "<p>Detailed content goes here!</p>",
-    page_id: pageId,
-    section_avatar: '',
-    section_col_arr: 0,
-    section_prior: 1,
-    section_avtar_alt: '',
-    section_slug: 'pillars'
-  },
-  projects: {
-    id: 0,
-    section_name: '',
-    section_content: "<p>Detailed content goes here!</p>",
-    page_id: pageId,
-    section_avatar: '',
-    section_col_arr: 0,
-    section_prior: 1,
-    section_avtar_alt: '',
-    section_slug: 'projects'
-  },
-  energy: {
-    id: 0,
-    section_name: '',
-    section_content: "<p>Detailed content goes here!</p>",
-    page_id: pageId,
-    section_avatar: '',
-    section_col_arr: 0,
-    section_prior: 1,
-    section_avtar_alt: '',
-    section_slug: 'energy'
-  },
-}
 
-let seoObj = {
-  id: 0,
-  post_id: pageId || 0,
-  meta_title: '',
-  meta_description: '',
-  // route: website_url,
-  schema_markup: '',
-  is_followed: true,
-  is_indexed: true,
-  is_indexed_or_is_followed: '1,1',
-}
+  let initObj = {
+    banner: {
+      id: 0,
+      section_name: '',
+      section_content: "<p>Detailed content goes here!</p>",
+      page_id: pageId,
+      section_avatar: '',
+      section_col_arr: 0,
+      section_prior: 1,
+      section_avtar_alt: '',
+      section_slug: 'banner'
+    },
+    intro: {
+      id: 0,
+      section_name: '',
+      section_content: "<p>Detailed content goes here!</p>",
+      page_id: pageId,
+      section_avatar: '',
+      section_col_arr: 0,
+      section_prior: 1,
+      section_avtar_alt: '',
+      section_slug: 'intro'
+    },
+    pillars: {
+      id: 0,
+      section_name: '',
+      section_content: "<p>Detailed content goes here!</p>",
+      page_id: pageId,
+      section_avatar: '',
+      section_col_arr: 0,
+      section_prior: 1,
+      section_avtar_alt: '',
+      section_slug: 'pillars'
+    },
+    projects: {
+      id: 0,
+      section_name: '',
+      section_content: "<p>Detailed content goes here!</p>",
+      page_id: pageId,
+      section_avatar: '',
+      section_col_arr: 0,
+      section_prior: 1,
+      section_avtar_alt: '',
+      section_slug: 'projects'
+    },
+    energy: {
+      id: 0,
+      section_name: '',
+      section_content: "<p>Detailed content goes here!</p>",
+      page_id: pageId,
+      section_avatar: '',
+      section_col_arr: 0,
+      section_prior: 1,
+      section_avtar_alt: '',
+      section_slug: 'energy'
+    },
+  }
+
+  let seoObj = {
+    id: 0,
+    post_id: pageId || 0,
+    meta_title: '',
+    meta_description: '',
+    // route: website_url,
+    schema_markup: '',
+    is_followed: true,
+    is_indexed: true,
+    is_indexed_or_is_followed: '1,1',
+  }
 
 
   const classes = useStyles();
@@ -151,29 +151,29 @@ let seoObj = {
     LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
-        if(response.data.data[0]){
+        if (response.data.data[0]) {
           setSustainability(response.data.data[0])
           setSeoInfo(response?.data?.data[0]?.meta)
         } else {
           setSustainability(initObj)
           setSeoInfo(seoObj)
         }
-        
+
       }
     });
 
-    if(!imagesData.length > 0){
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
   }, [selectedLang])
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
-        if (response.status === 200) {
-            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
-        }
+      if (response.status === 200) {
+        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+      }
     });
-};
+  };
 
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {
@@ -280,9 +280,9 @@ let seoObj = {
     // }).catch(err => console.log(err))
 
     let updatedSustainability = { ...sustainability };
-    updatedSustainability.meta = {...seoInfo};
+    updatedSustainability.meta = { ...seoInfo };
     updatedSustainability.page_id = pageId
-    updatedSustainability.slug="sustainability-sections"
+    updatedSustainability.slug = "sustainability-sections"
     // console.log("updatedSustainability",updatedSustainability); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedSustainability).then(response => {
@@ -296,7 +296,7 @@ let seoObj = {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
@@ -310,29 +310,30 @@ let seoObj = {
             <h4 className="mb-0">Add Sustainability Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </CardHeader>
           <CardBody>
@@ -394,7 +395,7 @@ let seoObj = {
                         }}
                       >
                         Upload Featured Image
-                          </MaterialButton>
+                      </MaterialButton>
                     </Fragment>
                   </Grid>
                 </Grid>
@@ -429,8 +430,8 @@ let seoObj = {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.intro.section_content} onChange={(e) => setSustainability({ ...sustainability, intro: { ...sustainability.intro, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.intro.section_content} onChange={(e) => setSustainability({ ...sustainability, intro: { ...sustainability.intro, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     {/* <TextField
@@ -494,7 +495,7 @@ let seoObj = {
                 aria-controls="panel2a-content"
                 id="panel2a-header"
               >
-                <Typography className={classes.heading}>Projects Section</Typography>
+                <Typography className={classes.heading}>Protect Wildlife Section</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
@@ -514,8 +515,8 @@ let seoObj = {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.projects.section_content} onChange={(e) => setSustainability({ ...sustainability, projects: { ...sustainability.projects, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.projects.section_content} onChange={(e) => setSustainability({ ...sustainability, projects: { ...sustainability.projects, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     {/* <TextField
@@ -579,7 +580,7 @@ let seoObj = {
                 aria-controls="panel3a-content"
                 id="panel3a-header"
               >
-                <Typography className={classes.heading}>Pillars Section</Typography>
+                <Typography className={classes.heading}>3R Section</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
@@ -599,8 +600,8 @@ let seoObj = {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.pillars.section_content} onChange={(e) => setSustainability({ ...sustainability, pillars: { ...sustainability.pillars, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.pillars.section_content} onChange={(e) => setSustainability({ ...sustainability, pillars: { ...sustainability.pillars, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     {/* <TextField
@@ -684,8 +685,8 @@ let seoObj = {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.energy.section_content} onChange={(e) => setSustainability({ ...sustainability, energy: { ...sustainability.energy, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={sustainability.energy.section_content} onChange={(e) => setSustainability({ ...sustainability, energy: { ...sustainability.energy, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     {/* <TextField
@@ -704,7 +705,7 @@ let seoObj = {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !sustainability.energy.id > 0 ?
-                            sustainability.energy.section_avatar?.avatar !== "" ?
+                              sustainability.energy.section_avatar?.avatar !== "" ?
                                 <img src={sustainability.energy.section_avatar?.avatar} alt={sustainability.energy.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
@@ -751,7 +752,7 @@ let seoObj = {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={12}>
                     <TextField
                       required
                       id="meta_title"
