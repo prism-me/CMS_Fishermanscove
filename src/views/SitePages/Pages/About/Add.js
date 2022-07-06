@@ -123,7 +123,7 @@ export default function AddAboutUs() {
         //     banner: data.find(x => x.section_slug === "banner") || about.banner,
         //   }
         // )
-        if(response.data.data[0]){
+        if (response.data.data[0]) {
           setAbout(response.data.data[0])
           // setThumbnailPreview(response?.data?.data[0]?.banner?.section_avatar?.avatar || "")
           setSeoInfo(response?.data?.data[0]?.meta)
@@ -179,7 +179,7 @@ export default function AddAboutUs() {
       }
     });
 
-    if(!imagesData.length > 0){
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
     // getSEOInfo();
@@ -187,11 +187,11 @@ export default function AddAboutUs() {
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
-        if (response.status === 200) {
-            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
-        }
+      if (response.status === 200) {
+        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+      }
     });
-};
+  };
 
   // const getSEOInfo = () => {
   //   API.get(`/meta/${pageId}`).then(response => {
@@ -223,20 +223,20 @@ export default function AddAboutUs() {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-        setAbout({ ...about, [section]: { ...about[section], section_avatar: imagesData[index] } })
-        // setThumbnailPreview(imagesData[index].avatar)
+      setAbout({ ...about, [section]: { ...about[section], section_avatar: imagesData[index] } })
+      // setThumbnailPreview(imagesData[index].avatar)
 
-        // let imagesDataUpdated = imagesData.map((x, i) => {
-        //   if (i === index) {
-        //     return {
-        //       ...x,
-        //       isChecked: true
-        //     }
-        //   } else {
-        //     return x
-        //   }
-        // });
-        // setImagesData(imagesDataUpdated);
+      // let imagesDataUpdated = imagesData.map((x, i) => {
+      //   if (i === index) {
+      //     return {
+      //       ...x,
+      //       isChecked: true
+      //     }
+      //   } else {
+      //     return x
+      //   }
+      // });
+      // setImagesData(imagesDataUpdated);
       // }
     } else {
       setAbout({ ...about, [section]: { ...about[section], section_avatar: "" } })
@@ -298,9 +298,9 @@ export default function AddAboutUs() {
     // }).catch(err => console.log(err))
 
     let updatedAbout = { ...about };
-    updatedAbout.meta = {...seoInfo};
+    updatedAbout.meta = { ...seoInfo };
     updatedAbout.page_id = pageId
-    updatedAbout.slug="about-sections"
+    updatedAbout.slug = "about-sections"
     // console.log("updatedAbout",updatedAbout); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedAbout).then(response => {
@@ -308,13 +308,13 @@ export default function AddAboutUs() {
         alert("Section updated successfully !");
       }
     }).catch(err => console.log(err))
-    
+
   }
 
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
@@ -326,29 +326,30 @@ export default function AddAboutUs() {
             <h4 className="mb-0">Add About-Us Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </CardHeader>
           <CardBody>
@@ -410,7 +411,7 @@ export default function AddAboutUs() {
                         }}
                       >
                         Upload Featured Image
-                          </MaterialButton>
+                      </MaterialButton>
                     </Fragment>
                   </Grid>
                 </Grid>
@@ -445,8 +446,8 @@ export default function AddAboutUs() {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={about.intro.section_content} onChange={(e) => setAbout({ ...about, intro: { ...about.intro, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={about.intro.section_content} onChange={(e) => setAbout({ ...about, intro: { ...about.intro, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     {/* <TextField
@@ -530,8 +531,8 @@ export default function AddAboutUs() {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={about.dine.section_content} onChange={(e) => setAbout({ ...about, dine: { ...about.dine, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={about.dine.section_content} onChange={(e) => setAbout({ ...about, dine: { ...about.dine, section_content: e.editor.getData() } })} />
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     {/* <TextField
@@ -596,7 +597,7 @@ export default function AddAboutUs() {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={12}>
                     <TextField
                       required
                       id="meta_title"

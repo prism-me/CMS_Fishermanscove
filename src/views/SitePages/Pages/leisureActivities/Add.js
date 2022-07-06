@@ -163,7 +163,7 @@ export default function LeisureActivities() {
     LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
         const { data } = response;
-        console.log(data,"datadata for leasure act")
+        console.log(data, "datadata for leasure act")
         // setLeisure(
         //     {
         //       banner: data.find(x => x.section_slug === "banner") || leisure.banner,
@@ -175,7 +175,7 @@ export default function LeisureActivities() {
         //       Water: data.find(x => x.section_slug === "Water") || leisure.Water,
         //     }
         // )
-        if(response.data.data[0]){
+        if (response.data.data[0]) {
           setLeisure(response.data.data[0])
           setSeoInfo(response?.data?.data[0]?.meta)
         } else {
@@ -194,8 +194,8 @@ export default function LeisureActivities() {
         }
       }
     });
-    
-    if(!imagesData.length > 0){
+
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
 
@@ -204,11 +204,11 @@ export default function LeisureActivities() {
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
-        if (response.status === 200) {
-            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
-        }
+      if (response.status === 200) {
+        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+      }
     });
-};
+  };
 
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {
@@ -243,7 +243,7 @@ export default function LeisureActivities() {
       // } else {
       setLeisure({ ...leisure, [section]: { ...leisure[section], section_avatar: imagesData[index] } })
       // setThumbnailPreview(imagesData[index].avatar)
-      setThumbnailPreview({...thumbnailPreview, [section]: imagesData[index].avatar })
+      setThumbnailPreview({ ...thumbnailPreview, [section]: imagesData[index].avatar })
 
       // let imagesDataUpdated = imagesData.map((x, i) => {
       //   if (i === index) {
@@ -260,7 +260,7 @@ export default function LeisureActivities() {
     } else {
       setLeisure({ ...leisure, [section]: { ...leisure[section], section_avatar: "" } })
       // setThumbnailPreview("")
-      setThumbnailPreview({...thumbnailPreview, [section]: "" })
+      setThumbnailPreview({ ...thumbnailPreview, [section]: "" })
 
       setImagesData(imagesData.map((x, i) => {
         if (i === index) {
@@ -313,9 +313,9 @@ export default function LeisureActivities() {
   const handleSubmit = (id, name) => {
 
     let updatedLeisure = { ...leisure };
-    updatedLeisure.meta = {...seoInfo};
+    updatedLeisure.meta = { ...seoInfo };
     updatedLeisure.page_id = pageId
-    updatedLeisure.slug="leisure-sections"
+    updatedLeisure.slug = "leisure-sections"
     // console.log("updatedLeisure",updatedLeisure); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedLeisure).then(response => {
@@ -334,145 +334,146 @@ export default function LeisureActivities() {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
   return (
-      <div>
-        <div className={classes.root}>
-          <Card>
-            <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
-              <h4 className="mb-0">Add Leisure Activities</h4>
-              {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
-              <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+    <div>
+      <div className={classes.root}>
+        <Card>
+          <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
+            <h4 className="mb-0">Add Leisure Activities</h4>
+            {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+            <FormControl
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
-            </CardHeader>
-            <CardBody>
-              {/* ******************* */}
-              {/* SECTION BANNER */}
-              {/* ******************* */}
-              <Accordion defaultExpanded>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panelaa-content"
-                    id="panelaa-header"
-                >
-                  <Typography className={classes.heading}>Banner</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12}>
-                      {/* SECTION TITLE */}
-                      <TextField
-                          required
-                          id="section_name"
-                          name="section_name"
-                          label="Section Title"
-                          value={leisure.banner.section_name}
-                          variant="outlined"
-                          fullWidth
-                          onChange={(e) => handleInputChange(e, "banner")}
-                          size="medium"
-                          style={{ marginBottom: '1rem' }}
-                      />
+          </CardHeader>
+          <CardBody>
+            {/* ******************* */}
+            {/* SECTION BANNER */}
+            {/* ******************* */}
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panelaa-content"
+                id="panelaa-header"
+              >
+                <Typography className={classes.heading}>Banner</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    {/* SECTION TITLE */}
+                    <TextField
+                      required
+                      id="section_name"
+                      name="section_name"
+                      label="Section Title"
+                      value={leisure.banner.section_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "banner")}
+                      size="medium"
+                      style={{ marginBottom: '1rem' }}
+                    />
 
-                      <div className="thumbnail-preview-wrapper-large img-thumbnail">
-                        {
-                          !leisure.banner.id > 0 ?
-                            leisure.banner?.section_avatar?.avatar !== "" ?
-                                  <img src={leisure.banner?.section_avatar?.avatar} alt={leisure.banner.section_avtar_alt || ""} />
-                                  :
-                                  <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                              :
-                              typeof (leisure.banner.section_avatar) === typeof (0) ?
-                                  // dining.thumbnail && dining.thumbnail !== "" ?
-                                  <img src={thumbnailPreview["banner"]} alt={leisure.banner.section_avtar_alt || ""} />
-                                  :
-                                  <img src={leisure.banner.section_avatar} alt={leisure.banner.section_avtar_alt || ""} />
-                        }
-                      </div>
-                      <Fragment>
-                        <MaterialButton
-                            variant="outlined"
-                            color="primary"
-                            startIcon={<Image />}
-                            className="mt-1"
-                            fullWidth
-                            size="large"
-                            onClick={() => {
-                              setIsSingle(true);
-                              setCurrentSection("banner");
-                              setShowGallery(true);
-                            }}
-                        >
-                          Upload Featured Image
-                        </MaterialButton>
-                      </Fragment>
-                    </Grid>
-                    {/* <Grid item xs={12} sm={12}>
+                    <div className="thumbnail-preview-wrapper-large img-thumbnail">
+                      {
+                        !leisure.banner.id > 0 ?
+                          leisure.banner?.section_avatar?.avatar !== "" ?
+                            <img src={leisure.banner?.section_avatar?.avatar} alt={leisure.banner.section_avtar_alt || ""} />
+                            :
+                            <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                          :
+                          typeof (leisure.banner.section_avatar) === typeof (0) ?
+                            // dining.thumbnail && dining.thumbnail !== "" ?
+                            <img src={thumbnailPreview["banner"]} alt={leisure.banner.section_avtar_alt || ""} />
+                            :
+                            <img src={leisure.banner.section_avatar} alt={leisure.banner.section_avtar_alt || ""} />
+                      }
+                    </div>
+                    <Fragment>
+                      <MaterialButton
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<Image />}
+                        className="mt-1"
+                        fullWidth
+                        size="large"
+                        onClick={() => {
+                          setIsSingle(true);
+                          setCurrentSection("banner");
+                          setShowGallery(true);
+                        }}
+                      >
+                        Upload Featured Image
+                      </MaterialButton>
+                    </Fragment>
+                  </Grid>
+                  {/* <Grid item xs={12} sm={12}>
                       <MaterialButton onClick={() => handleSubmit(leisure.banner.id, "banner")} size="large" color="primary" variant="contained">
                         Update Section
                       </MaterialButton>
                     </Grid> */}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            {/* ******************* */}
+            {/* SECTION 1 */}
+            {/* ******************* */}
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography className={classes.heading}>Diving In Seychelles</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    {/* SECTION TITLE */}
+                    <TextField
+                      required
+                      id="section_name"
+                      name="section_name"
+                      label="Section Title"
+                      value={leisure.activities.section_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "activities")}
+                      size="small"
+                      style={{ marginBottom: '1rem' }}
+                    />
+                    {/* CKEDITOR  */}
+                    {/*<CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.lounge.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, lounge: { ...leisureInner.lounge, section_content: e.editor.getData() } })} />*/}
                   </Grid>
-                </AccordionDetails>
-              </Accordion>
-              {/* ******************* */}
-              {/* SECTION 1 */}
-              {/* ******************* */}
-              <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                >
-                  <Typography className={classes.heading}>Diving In Seychelles</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12}>
-                      {/* SECTION TITLE */}
-                      <TextField
-                          required
-                          id="section_name"
-                          name="section_name"
-                          label="Section Title"
-                          value={leisure.activities.section_name}
-                          variant="outlined"
-                          fullWidth
-                          onChange={(e) => handleInputChange(e, "activities")}
-                          size="small"
-                          style={{ marginBottom: '1rem' }}
-                      />
-                      {/* CKEDITOR  */}
-                      {/*<CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.lounge.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, lounge: { ...leisureInner.lounge, section_content: e.editor.getData() } })} />*/}
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                      {/* <TextField
+                  <Grid item xs={12} sm={12}>
+                    {/* <TextField
                       required
                       id="section_avtar_alt"
                       name="section_avtar_alt"
@@ -483,81 +484,81 @@ export default function LeisureActivities() {
                       onChange={(e) => handleInputChange(e, "lounge")}
                       size="small"
                     /> */}
-                      <Card className={classes.root} style={{ marginTop: 0 }}>
-                        <CardActionArea>
-                          <div className="thumbnail-preview-wrapper-large img-thumbnail">
-                            {
-                              !leisure.activities.id > 0 ?
-                                leisure.activities?.section_avatar?.avatar !== "" ?
-                                      <img src={leisure.activities?.section_avatar?.avatar} alt={leisure.activities.section_avtar_alt || ""} />
-                                      :
-                                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                                  :
-                                  typeof (leisure.activities.section_avatar) === typeof (0) ?
-                                      // dining.thumbnail && dining.thumbnail !== "" ?
-                                      <img src={thumbnailPreview["activities"]} alt={leisure.activities.section_avtar_alt || ""} />
-                                      :
-                                      <img src={leisure.activities.section_avatar?.avatar} alt={leisure.activities.section_avtar_alt || ""} />
-                            }
-                          </div>
-                        </CardActionArea>
-                        <CardActions>
-                          <Fragment>
-                            <MaterialButton
-                                variant="contained"
-                                color="primary"
-                                startIcon={<Image />}
-                                className="mt-1"
-                                fullWidth
-                                onClick={() => {
-                                  setIsSingle(true);
-                                  setCurrentSection("activities");
-                                  setShowGallery(true);
-                                }}
-                            >
-                              Upload Featured Image
-                            </MaterialButton>
-                          </Fragment>
-                        </CardActions>
-                      </Card>
-                    </Grid>
-                    {/* <Grid item xs={12} sm={12}>
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
+                      <CardActionArea>
+                        <div className="thumbnail-preview-wrapper-large img-thumbnail">
+                          {
+                            !leisure.activities.id > 0 ?
+                              leisure.activities?.section_avatar?.avatar !== "" ?
+                                <img src={leisure.activities?.section_avatar?.avatar} alt={leisure.activities.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (leisure.activities.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview["activities"]} alt={leisure.activities.section_avtar_alt || ""} />
+                                :
+                                <img src={leisure.activities.section_avatar?.avatar} alt={leisure.activities.section_avtar_alt || ""} />
+                          }
+                        </div>
+                      </CardActionArea>
+                      <CardActions>
+                        <Fragment>
+                          <MaterialButton
+                            variant="contained"
+                            color="primary"
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("activities");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
+                        </Fragment>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                  {/* <Grid item xs={12} sm={12}>
                       <MaterialButton onClick={() => handleSubmit(leisure.activities.id, "activities")} size="large" color="primary" variant="contained">
                         Update Section
                       </MaterialButton>
                     </Grid> */}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>Fishing In Seychelles</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    {/* SECTION TITLE */}
+                    <TextField
+                      required
+                      id="section_name"
+                      name="section_name"
+                      label="Section Title"
+                      value={leisure.Fishing.section_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "Fishing")}
+                      size="small"
+                      style={{ marginBottom: '1rem' }}
+                    />
+                    {/* CKEDITOR  */}
+                    {/*<CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.lounge.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, lounge: { ...leisureInner.lounge, section_content: e.editor.getData() } })} />*/}
                   </Grid>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2a-content"
-                    id="panel2a-header"
-                >
-                  <Typography className={classes.heading}>Fishing In Seychelles</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12}>
-                      {/* SECTION TITLE */}
-                      <TextField
-                          required
-                          id="section_name"
-                          name="section_name"
-                          label="Section Title"
-                          value={leisure.Fishing.section_name}
-                          variant="outlined"
-                          fullWidth
-                          onChange={(e) => handleInputChange(e, "Fishing")}
-                          size="small"
-                          style={{ marginBottom: '1rem' }}
-                      />
-                      {/* CKEDITOR  */}
-                      {/*<CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.lounge.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, lounge: { ...leisureInner.lounge, section_content: e.editor.getData() } })} />*/}
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                      {/* <TextField
+                  <Grid item xs={12} sm={12}>
+                    {/* <TextField
                       required
                       id="section_avtar_alt"
                       name="section_avtar_alt"
@@ -568,81 +569,81 @@ export default function LeisureActivities() {
                       onChange={(e) => handleInputChange(e, "lounge")}
                       size="small"
                     /> */}
-                      <Card className={classes.root} style={{ marginTop: 0 }}>
-                        <CardActionArea>
-                          <div className="thumbnail-preview-wrapper-large img-thumbnail">
-                            {
-                              !leisure.Fishing.id > 0 ?
-                                leisure.Fishing?.section_avatar?.avatar !== "" ?
-                                      <img src={leisure.Fishing?.section_avatar?.avatar} alt={leisure.Fishing.section_avtar_alt || ""} />
-                                      :
-                                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                                  :
-                                  typeof (leisure.Fishing.section_avatar) === typeof (0) ?
-                                      // dining.thumbnail && dining.thumbnail !== "" ?
-                                      <img src={thumbnailPreview["Fishing"]} alt={leisure.Fishing.section_avtar_alt || ""} />
-                                      :
-                                      <img src={leisure.Fishing?.section_avatar} alt={leisure.Fishing.section_avtar_alt || ""} />
-                            }
-                          </div>
-                        </CardActionArea>
-                        <CardActions>
-                          <Fragment>
-                            <MaterialButton
-                                variant="contained"
-                                color="primary"
-                                startIcon={<Image />}
-                                className="mt-1"
-                                fullWidth
-                                onClick={() => {
-                                  setIsSingle(true);
-                                  setCurrentSection("Fishing");
-                                  setShowGallery(true);
-                                }}
-                            >
-                              Upload Featured Image
-                            </MaterialButton>
-                          </Fragment>
-                        </CardActions>
-                      </Card>
-                    </Grid>
-                    {/* <Grid item xs={12} sm={12}>
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
+                      <CardActionArea>
+                        <div className="thumbnail-preview-wrapper-large img-thumbnail">
+                          {
+                            !leisure.Fishing.id > 0 ?
+                              leisure.Fishing?.section_avatar?.avatar !== "" ?
+                                <img src={leisure.Fishing?.section_avatar?.avatar} alt={leisure.Fishing.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (leisure.Fishing.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview["Fishing"]} alt={leisure.Fishing.section_avtar_alt || ""} />
+                                :
+                                <img src={leisure.Fishing?.section_avatar} alt={leisure.Fishing.section_avtar_alt || ""} />
+                          }
+                        </div>
+                      </CardActionArea>
+                      <CardActions>
+                        <Fragment>
+                          <MaterialButton
+                            variant="contained"
+                            color="primary"
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("Fishing");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
+                        </Fragment>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                  {/* <Grid item xs={12} sm={12}>
                       <MaterialButton onClick={() => handleSubmit(leisure.Fishing.id, "Fishing")} size="large" color="primary" variant="contained">
                         Update Section
                       </MaterialButton>
                     </Grid> */}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>Unlock the Sea</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    {/* SECTION TITLE */}
+                    <TextField
+                      required
+                      id="section_name"
+                      name="section_name"
+                      label="Section Title"
+                      value={leisure.Unlock.section_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "Unlock")}
+                      size="small"
+                      style={{ marginBottom: '1rem' }}
+                    />
+                    {/* CKEDITOR  */}
+                    {/*<CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.lounge.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, lounge: { ...leisureInner.lounge, section_content: e.editor.getData() } })} />*/}
                   </Grid>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2a-content"
-                    id="panel2a-header"
-                >
-                  <Typography className={classes.heading}>Unlock the Sea</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12}>
-                      {/* SECTION TITLE */}
-                      <TextField
-                          required
-                          id="section_name"
-                          name="section_name"
-                          label="Section Title"
-                          value={leisure.Unlock.section_name}
-                          variant="outlined"
-                          fullWidth
-                          onChange={(e) => handleInputChange(e, "Unlock")}
-                          size="small"
-                          style={{ marginBottom: '1rem' }}
-                      />
-                      {/* CKEDITOR  */}
-                      {/*<CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.lounge.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, lounge: { ...leisureInner.lounge, section_content: e.editor.getData() } })} />*/}
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                      {/* <TextField
+                  <Grid item xs={12} sm={12}>
+                    {/* <TextField
                       required
                       id="section_avtar_alt"
                       name="section_avtar_alt"
@@ -653,81 +654,81 @@ export default function LeisureActivities() {
                       onChange={(e) => handleInputChange(e, "lounge")}
                       size="small"
                     /> */}
-                      <Card className={classes.root} style={{ marginTop: 0 }}>
-                        <CardActionArea>
-                          <div className="thumbnail-preview-wrapper-large img-thumbnail">
-                            {
-                              !leisure.Unlock.id > 0 ?
-                                leisure.Unlock.section_avatar?.avatar !== "" ?
-                                      <img src={leisure.Unlock.section_avatar?.avatar} alt={leisure.Unlock.section_avtar_alt || ""} />
-                                      :
-                                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                                  :
-                                  typeof (leisure.Unlock.section_avatar) === typeof (0) ?
-                                      // dining.thumbnail && dining.thumbnail !== "" ?
-                                      <img src={thumbnailPreview["Unlock"]} alt={leisure.Unlock.section_avtar_alt || ""} />
-                                      :
-                                      <img src={leisure.Unlock.section_avatar} alt={leisure.Unlock.section_avtar_alt || ""} />
-                            }
-                          </div>
-                        </CardActionArea>
-                        <CardActions>
-                          <Fragment>
-                            <MaterialButton
-                                variant="contained"
-                                color="primary"
-                                startIcon={<Image />}
-                                className="mt-1"
-                                fullWidth
-                                onClick={() => {
-                                  setIsSingle(true);
-                                  setCurrentSection("Unlock");
-                                  setShowGallery(true);
-                                }}
-                            >
-                              Upload Featured Image
-                            </MaterialButton>
-                          </Fragment>
-                        </CardActions>
-                      </Card>
-                    </Grid>
-                    {/* <Grid item xs={12} sm={12}>
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
+                      <CardActionArea>
+                        <div className="thumbnail-preview-wrapper-large img-thumbnail">
+                          {
+                            !leisure.Unlock.id > 0 ?
+                              leisure.Unlock.section_avatar?.avatar !== "" ?
+                                <img src={leisure.Unlock.section_avatar?.avatar} alt={leisure.Unlock.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (leisure.Unlock.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview["Unlock"]} alt={leisure.Unlock.section_avtar_alt || ""} />
+                                :
+                                <img src={leisure.Unlock.section_avatar} alt={leisure.Unlock.section_avtar_alt || ""} />
+                          }
+                        </div>
+                      </CardActionArea>
+                      <CardActions>
+                        <Fragment>
+                          <MaterialButton
+                            variant="contained"
+                            color="primary"
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("Unlock");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
+                        </Fragment>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                  {/* <Grid item xs={12} sm={12}>
                       <MaterialButton onClick={() => handleSubmit(leisure.Unlock.id, "Unlock")} size="large" color="primary" variant="contained">
                         Update Section
                       </MaterialButton>
                     </Grid> */}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>Water Activities</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    {/* SECTION TITLE */}
+                    <TextField
+                      required
+                      id="section_name"
+                      name="section_name"
+                      label="Section Title"
+                      value={leisure.Water.section_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "Water")}
+                      size="small"
+                      style={{ marginBottom: '1rem' }}
+                    />
+                    {/* CKEDITOR  */}
+                    {/*<CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.lounge.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, lounge: { ...leisureInner.lounge, section_content: e.editor.getData() } })} />*/}
                   </Grid>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2a-content"
-                    id="panel2a-header"
-                >
-                  <Typography className={classes.heading}>Water Activities</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12}>
-                      {/* SECTION TITLE */}
-                      <TextField
-                          required
-                          id="section_name"
-                          name="section_name"
-                          label="Section Title"
-                          value={leisure.Water.section_name}
-                          variant="outlined"
-                          fullWidth
-                          onChange={(e) => handleInputChange(e, "Water")}
-                          size="small"
-                          style={{ marginBottom: '1rem' }}
-                      />
-                      {/* CKEDITOR  */}
-                      {/*<CKEditor onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={leisure.lounge.section_content} onChange={(e) => setLeisureInner({ ...leisureInner, lounge: { ...leisureInner.lounge, section_content: e.editor.getData() } })} />*/}
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                      {/* <TextField
+                  <Grid item xs={12} sm={12}>
+                    {/* <TextField
                       required
                       id="section_avtar_alt"
                       name="section_avtar_alt"
@@ -738,62 +739,62 @@ export default function LeisureActivities() {
                       onChange={(e) => handleInputChange(e, "lounge")}
                       size="small"
                     /> */}
-                      <Card className={classes.root} style={{ marginTop: 0 }}>
-                        <CardActionArea>
-                          <div className="thumbnail-preview-wrapper-large img-thumbnail">
-                            {
-                              !leisure.Water.id > 0 ?
-                                leisure.Water.section_avatar?.avatar !== "" ?
-                                      <img src={leisure.Water.section_avatar?.avatar} alt={leisure.Water.section_avtar_alt || ""} />
-                                      :
-                                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                                  :
-                                  typeof (leisure.Water.section_avatar) === typeof (0) ?
-                                      // dining.thumbnail && dining.thumbnail !== "" ?
-                                      <img src={thumbnailPreview["Water"]} alt={leisure.Water.section_avtar_alt || ""} />
-                                      :
-                                      <img src={leisure.Water.section_avatar} alt={leisure.Water.section_avtar_alt || ""} />
-                            }
-                          </div>
-                        </CardActionArea>
-                        <CardActions>
-                          <Fragment>
-                            <MaterialButton
-                                variant="contained"
-                                color="primary"
-                                startIcon={<Image />}
-                                className="mt-1"
-                                fullWidth
-                                onClick={() => {
-                                  setIsSingle(true);
-                                  setCurrentSection("Water");
-                                  setShowGallery(true);
-                                }}
-                            >
-                              Upload Featured Image
-                            </MaterialButton>
-                          </Fragment>
-                        </CardActions>
-                      </Card>
-                    </Grid>
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
+                      <CardActionArea>
+                        <div className="thumbnail-preview-wrapper-large img-thumbnail">
+                          {
+                            !leisure.Water.id > 0 ?
+                              leisure.Water.section_avatar?.avatar !== "" ?
+                                <img src={leisure.Water.section_avatar?.avatar} alt={leisure.Water.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (leisure.Water.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview["Water"]} alt={leisure.Water.section_avtar_alt || ""} />
+                                :
+                                <img src={leisure.Water.section_avatar} alt={leisure.Water.section_avtar_alt || ""} />
+                          }
+                        </div>
+                      </CardActionArea>
+                      <CardActions>
+                        <Fragment>
+                          <MaterialButton
+                            variant="contained"
+                            color="primary"
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("Water");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
+                        </Fragment>
+                      </CardActions>
+                    </Card>
                   </Grid>
-                </AccordionDetails>
-              </Accordion>
-              {/********************/}
-              {/*SECTION 2*/}
-              {/********************/}
-              <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2a-content"
-                    id="panel2a-header"
-                >
-                  <Typography className={classes.heading}>Awards And Certifications</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Grid container spacing={1}>
-                    <Grid item xs={12} sm={12}>
-                      {/* <TextField
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            {/********************/}
+            {/*SECTION 2*/}
+            {/********************/}
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>Awards And Certifications</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={12}>
+                    {/* <TextField
                       required
                       id="section_avtar_alt"
                       name="section_avtar_alt"
@@ -804,48 +805,48 @@ export default function LeisureActivities() {
                       onChange={(e) => handleInputChange(e, "kayaking")}
                       size="small"
                     /> */}
-                      <Card className={classes.root} style={{ marginTop: 0 }}>
-                        <CardActionArea>
-                          <div className="thumbnail-preview-wrapper-small img-thumbnail">
-                            {
-                              !leisure.awards.id > 0 ?
-                                leisure.awards?.section_avatar?.avatar !== "" ?
-                                      <img src={leisure.awards.section_avatar?.avatar} alt={leisure.awards.section_avtar_alt || ""} />
-                                      :
-                                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                                  :
-                                  typeof (leisure.awards.section_avatar) === typeof (0) ?
-                                      // dining.thumbnail && dining.thumbnail !== "" ?
-                                      <img src={thumbnailPreview["awards"]} alt={leisure.awards.section_avtar_alt || ""} />
-                                      :
-                                      <img src={leisure.awards.section_avatar} alt={leisure.awards.section_avtar_alt || ""} />
-                            }
-                          </div>
-                        </CardActionArea>
-                        <CardActions>
-                          <Fragment>
-                            <MaterialButton
-                                variant="contained"
-                                color="primary"
-                                startIcon={<Image />}
-                                className="mt-1"
-                                fullWidth
-                                onClick={() => {
-                                  setIsSingle(true);
-                                  setCurrentSection("awards");
-                                  setShowGallery(true);
-                                }}
-                            >
-                              Upload Featured Image
-                            </MaterialButton>
-                          </Fragment>
-                        </CardActions>
-                      </Card>
-                    </Grid>
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
+                      <CardActionArea>
+                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          {
+                            !leisure.awards.id > 0 ?
+                              leisure.awards?.section_avatar?.avatar !== "" ?
+                                <img src={leisure.awards.section_avatar?.avatar} alt={leisure.awards.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (leisure.awards.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview["awards"]} alt={leisure.awards.section_avtar_alt || ""} />
+                                :
+                                <img src={leisure.awards.section_avatar} alt={leisure.awards.section_avtar_alt || ""} />
+                          }
+                        </div>
+                      </CardActionArea>
+                      <CardActions>
+                        <Fragment>
+                          <MaterialButton
+                            variant="contained"
+                            color="primary"
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("awards");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
+                        </Fragment>
+                      </CardActions>
+                    </Card>
                   </Grid>
-                  <Grid container>
-                    <Grid item xs={12} sm={12}>
-                      {/* <TextField
+                </Grid>
+                <Grid container>
+                  <Grid item xs={12} sm={12}>
+                    {/* <TextField
                       required
                       id="section_avtar_alt"
                       name="section_avtar_alt"
@@ -856,151 +857,151 @@ export default function LeisureActivities() {
                       onChange={(e) => handleInputChange(e, "snorkeling")}
                       size="small"
                     /> */}
-                      <Card className={classes.root} style={{ marginTop: 0 }}>
-                        <CardActionArea>
-                          <div className="thumbnail-preview-wrapper-small img-thumbnail">
-                            {
-                              !leisure.excellence.id > 0 ?
+                    <Card className={classes.root} style={{ marginTop: 0 }}>
+                      <CardActionArea>
+                        <div className="thumbnail-preview-wrapper-small img-thumbnail">
+                          {
+                            !leisure.excellence.id > 0 ?
                               leisure.excellence?.section_avatar?.avatar !== "" ?
-                                      <img src={leisure.excellence?.section_avatar?.avatar} alt={leisure.excellence.section_avtar_alt || ""} />
-                                      :
-                                      <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                                  :
-                                  typeof (leisure.excellence.section_avatar) === typeof (0) ?
-                                      // dining.thumbnail && dining.thumbnail !== "" ?
-                                      <img src={thumbnailPreview["snorkeling"]} alt={leisure.excellence.section_avtar_alt || ""} />
-                                      :
-                                      <img src={leisure.excellence?.section_avatar?.avatar} alt={leisure.excellence.section_avtar_alt || ""} />
-                            }
-                          </div>
-                        </CardActionArea>
-                        <CardActions>
-                          <Fragment>
-                            <MaterialButton
-                                variant="contained"
-                                color="primary"
-                                startIcon={<Image />}
-                                className="mt-1"
-                                fullWidth
-                                onClick={() => {
-                                  setIsSingle(true);
-                                  setCurrentSection("excellence");
-                                  setShowGallery(true);
-                                }}
-                            >
-                              Upload Featured Image
-                            </MaterialButton>
-                          </Fragment>
-                        </CardActions>
-                      </Card>
-                    </Grid>
+                                <img src={leisure.excellence?.section_avatar?.avatar} alt={leisure.excellence.section_avtar_alt || ""} />
+                                :
+                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                              :
+                              typeof (leisure.excellence.section_avatar) === typeof (0) ?
+                                // dining.thumbnail && dining.thumbnail !== "" ?
+                                <img src={thumbnailPreview["snorkeling"]} alt={leisure.excellence.section_avtar_alt || ""} />
+                                :
+                                <img src={leisure.excellence?.section_avatar?.avatar} alt={leisure.excellence.section_avtar_alt || ""} />
+                          }
+                        </div>
+                      </CardActionArea>
+                      <CardActions>
+                        <Fragment>
+                          <MaterialButton
+                            variant="contained"
+                            color="primary"
+                            startIcon={<Image />}
+                            className="mt-1"
+                            fullWidth
+                            onClick={() => {
+                              setIsSingle(true);
+                              setCurrentSection("excellence");
+                              setShowGallery(true);
+                            }}
+                          >
+                            Upload Featured Image
+                          </MaterialButton>
+                        </Fragment>
+                      </CardActions>
+                    </Card>
                   </Grid>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2a-content"
-                    id="panel2a-header"
-                >
-                  <Typography className={classes.heading}>SEO Information</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12}>
-                      <TextField
-                          required
-                          id="meta_title"
-                          name="meta_title"
-                          label="Meta Title"
-                          value={seoInfo.meta_title}
-                          variant="outlined"
-                          fullWidth
-                          onChange={handleSEOInputChange}
-                          size="small"
-                      />
-                    </Grid>
-                    {/*<Grid item xs={12} sm={3}>*/}
-                    {/*  <span>https://fishermanscove-resort.com</span>*/}
-                    {/*</Grid>*/}
-                    {/*<Grid item xs={12} sm={3}>*/}
-                    {/*  <TextField*/}
-                    {/*      required*/}
-                    {/*      id="route"*/}
-                    {/*      name="route"*/}
-                    {/*      label="Permalink"*/}
-                    {/*      value={seoInfo.route}*/}
-                    {/*      variant="outlined"*/}
-                    {/*      fullWidth*/}
-                    {/*      onChange={handleRouteChange}*/}
-                    {/*      size="small"*/}
-                    {/*  />*/}
-                    {/*</Grid>*/}
-                    <Grid item xs={12} sm={12}>
-                      <TextField
-                          required
-                          id="meta_description"
-                          name="meta_description"
-                          label="Meta Description"
-                          value={seoInfo.meta_description}
-                          variant="outlined"
-                          fullWidth
-                          onChange={handleSEOInputChange}
-                          size="small"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                      <TextField
-                          required
-                          id="schema_markup"
-                          name="schema_markup"
-                          label="Schema Markup"
-                          value={seoInfo.schema_markup}
-                          variant="outlined"
-                          fullWidth
-                          multiline
-                          rows={4}
-                          rowsMax={4}
-                          onChange={handleSEOInputChange}
-                          size="small"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <FormControl component="fieldset">
-                        <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={seoInfo.is_followed} onChange={(e) => {
-                          setSeoInfo({ ...seoInfo, is_followed: !seoInfo.is_followed })
-                        }}>
-                          <FormControlLabel value={true} control={<Radio />} label="Follow" />
-                          <FormControlLabel value={false} control={<Radio />} label="No Follow" />
-                        </RadioGroup>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <FormControl component="fieldset">
-                        <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={seoInfo.is_indexed} onChange={(e) => {
-                          setSeoInfo({ ...seoInfo, is_indexed: !seoInfo.is_indexed })
-                        }}>
-                          <FormControlLabel value={true} control={<Radio />} label="Index" />
-                          <FormControlLabel value={false} control={<Radio />} label="No Index" />
-                        </RadioGroup>
-                      </FormControl>
-                    </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>SEO Information</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="meta_title"
+                      name="meta_title"
+                      label="Meta Title"
+                      value={seoInfo.meta_title}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
+                    />
                   </Grid>
-                </AccordionDetails>
-              </Accordion>
-            </CardBody>
-          </Card>
-          <Grid item xs={12} sm={12}>
-            <MaterialButton onClick={() => handleSubmit()} size="large" color="primary" variant="contained">
-              Update Section
-            </MaterialButton>
-          </Grid>
-        </div>
-        <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
-          setShowGallery(false);
-          // setRenderPreviews(true);
-        }} refreshGallery={getGalleryImages} data={imagesData} />
-        {/* GALLERY DIALOG BOX END */}
+                  {/*<Grid item xs={12} sm={3}>*/}
+                  {/*  <span>https://fishermanscove-resort.com</span>*/}
+                  {/*</Grid>*/}
+                  {/*<Grid item xs={12} sm={3}>*/}
+                  {/*  <TextField*/}
+                  {/*      required*/}
+                  {/*      id="route"*/}
+                  {/*      name="route"*/}
+                  {/*      label="Permalink"*/}
+                  {/*      value={seoInfo.route}*/}
+                  {/*      variant="outlined"*/}
+                  {/*      fullWidth*/}
+                  {/*      onChange={handleRouteChange}*/}
+                  {/*      size="small"*/}
+                  {/*  />*/}
+                  {/*</Grid>*/}
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="meta_description"
+                      name="meta_description"
+                      label="Meta Description"
+                      value={seoInfo.meta_description}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="schema_markup"
+                      name="schema_markup"
+                      label="Schema Markup"
+                      value={seoInfo.schema_markup}
+                      variant="outlined"
+                      fullWidth
+                      multiline
+                      rows={4}
+                      rowsMax={4}
+                      onChange={handleSEOInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl component="fieldset">
+                      <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={seoInfo.is_followed} onChange={(e) => {
+                        setSeoInfo({ ...seoInfo, is_followed: !seoInfo.is_followed })
+                      }}>
+                        <FormControlLabel value={true} control={<Radio />} label="Follow" />
+                        <FormControlLabel value={false} control={<Radio />} label="No Follow" />
+                      </RadioGroup>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl component="fieldset">
+                      <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={seoInfo.is_indexed} onChange={(e) => {
+                        setSeoInfo({ ...seoInfo, is_indexed: !seoInfo.is_indexed })
+                      }}>
+                        <FormControlLabel value={true} control={<Radio />} label="Index" />
+                        <FormControlLabel value={false} control={<Radio />} label="No Index" />
+                      </RadioGroup>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+          </CardBody>
+        </Card>
+        <Grid item xs={12} sm={12}>
+          <MaterialButton onClick={() => handleSubmit()} size="large" color="primary" variant="contained">
+            Update Section
+          </MaterialButton>
+        </Grid>
       </div>
+      <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
+        setShowGallery(false);
+        // setRenderPreviews(true);
+      }} refreshGallery={getGalleryImages} data={imagesData} />
+      {/* GALLERY DIALOG BOX END */}
+    </div>
   );
 }

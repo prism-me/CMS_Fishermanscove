@@ -114,61 +114,61 @@ export default function AddWedding() {
   useEffect(() => {
     LangAPI.get(`/all-sections/${pageId}/${selectedLang}`).then(response => {
       if (response?.status === 200) {
-          console.log(response.data.data[0],"response.data.data")
-          if(response.data.data[0]){
-            setWedding(response.data.data[0])
-            setThumbnailPreview(response?.data?.data[0]?.banner?.section_avatar?.avatar || "")
-            setSeoInfo(response?.data?.data[0]?.meta)
-          } else {
-            setWedding({
-              banner: {
-                id: 0,
-                section_name: '',
-                section_content: "<p>Detailed content goes here!</p>",
-                page_id: pageId,
-                section_avatar: '',
-                section_col_arr: 0,
-                section_prior: 1,
-                section_avtar_alt: '',
-                section_slug: 'banner'
-              },
-              intro: {
-                id: 0,
-                section_name: '',
-                section_content: "<p>Detailed content goes here!</p>",
-                page_id: pageId,
-                section_avatar: '',
-                section_col_arr: 0,
-                section_prior: 1,
-                section_avtar_alt: '',
-                section_slug: 'intro'
-              },
-              faq: {
-                id: 0,
-                section_name: '',
-                section_content: [],
-                page_id: pageId,
-                section_avatar: '',
-                section_col_arr: 0,
-                section_prior: 1,
-                section_avtar_alt: '',
-                section_slug: 'faq'
-              },
-            })
-            setThumbnailPreview("")
-            setSeoInfo({
+        console.log(response.data.data[0], "response.data.data")
+        if (response.data.data[0]) {
+          setWedding(response.data.data[0])
+          setThumbnailPreview(response?.data?.data[0]?.banner?.section_avatar?.avatar || "")
+          setSeoInfo(response?.data?.data[0]?.meta)
+        } else {
+          setWedding({
+            banner: {
               id: 0,
-              post_id: pageId || 0,
-              meta_title: '',
-              meta_description: '',
-              // route: website_url,
-              schema_markup: '',
-              is_followed: true,
-              is_indexed: true,
-              is_indexed_or_is_followed: '1,1',
-            })
-          }
-          
+              section_name: '',
+              section_content: "<p>Detailed content goes here!</p>",
+              page_id: pageId,
+              section_avatar: '',
+              section_col_arr: 0,
+              section_prior: 1,
+              section_avtar_alt: '',
+              section_slug: 'banner'
+            },
+            intro: {
+              id: 0,
+              section_name: '',
+              section_content: "<p>Detailed content goes here!</p>",
+              page_id: pageId,
+              section_avatar: '',
+              section_col_arr: 0,
+              section_prior: 1,
+              section_avtar_alt: '',
+              section_slug: 'intro'
+            },
+            faq: {
+              id: 0,
+              section_name: '',
+              section_content: [],
+              page_id: pageId,
+              section_avatar: '',
+              section_col_arr: 0,
+              section_prior: 1,
+              section_avtar_alt: '',
+              section_slug: 'faq'
+            },
+          })
+          setThumbnailPreview("")
+          setSeoInfo({
+            id: 0,
+            post_id: pageId || 0,
+            meta_title: '',
+            meta_description: '',
+            // route: website_url,
+            schema_markup: '',
+            is_followed: true,
+            is_indexed: true,
+            is_indexed_or_is_followed: '1,1',
+          })
+        }
+
         // const { data } = response;
         // const banner = data?.find(x => x.section_slug === "banner")
         // const intro = data?.find(x => x.section_slug === "intro")
@@ -186,7 +186,7 @@ export default function AddWedding() {
       }
     });
 
-    if(!imagesData.length > 0){
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
     // getSEOInfo();
@@ -194,11 +194,11 @@ export default function AddWedding() {
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
-        if (response.status === 200) {
-            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
-        }
+      if (response.status === 200) {
+        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+      }
     });
-};
+  };
 
   // const getSEOInfo = () => {
   //   API.get(`/meta/${pageId}`).then(response => {
@@ -252,20 +252,20 @@ export default function AddWedding() {
       //   alert("You can only select 1 image for thubnail. If you want to change image, deselect the image and then select a new one");
       //   return;
       // } else {
-        setWedding({ ...wedding, [section]: { ...wedding[section], section_avatar: imagesData[index] } })
-        setThumbnailPreview(imagesData[index].avatar)
+      setWedding({ ...wedding, [section]: { ...wedding[section], section_avatar: imagesData[index] } })
+      setThumbnailPreview(imagesData[index].avatar)
 
-        let imagesDataUpdated = imagesData.map((x, i) => {
-          if (i === index) {
-            return {
-              ...x,
-              isChecked: true
-            }
-          } else {
-            return x
+      let imagesDataUpdated = imagesData.map((x, i) => {
+        if (i === index) {
+          return {
+            ...x,
+            isChecked: true
           }
-        });
-        setImagesData(imagesDataUpdated);
+        } else {
+          return x
+        }
+      });
+      setImagesData(imagesDataUpdated);
       // }
     }
     else {
@@ -355,9 +355,9 @@ export default function AddWedding() {
 
   const handleSubmit = (id, name) => {
     let updatedWedding = { ...wedding };
-    updatedWedding.meta = {...seoInfo};
+    updatedWedding.meta = { ...seoInfo };
     updatedWedding.page_id = pageId
-    updatedWedding.slug="wedding-sections"
+    updatedWedding.slug = "wedding-sections"
     // console.log("updatedWedding",updatedWedding); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedWedding).then(response => {
@@ -370,7 +370,7 @@ export default function AddWedding() {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
@@ -382,29 +382,30 @@ export default function AddWedding() {
             <h4 className="mb-0">Add Wedding Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </CardHeader>
           <CardBody>
@@ -466,10 +467,10 @@ export default function AddWedding() {
                         }}
                       >
                         Upload Featured Image
-                          </MaterialButton>
+                      </MaterialButton>
                     </Fragment>
                   </Grid>
-                  
+
                 </Grid>
               </AccordionDetails>
             </Accordion>
@@ -502,8 +503,8 @@ export default function AddWedding() {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.intro.section_content} onChange={(e) => setWedding({ ...wedding, intro: { ...wedding.intro, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={wedding.intro.section_content} onChange={(e) => setWedding({ ...wedding, intro: { ...wedding.intro, section_content: e.editor.getData() } })} />
                   </Grid>
                 </Grid>
               </AccordionDetails>
@@ -626,12 +627,12 @@ export default function AddWedding() {
                   </Grid>
                   <Grid item xs={12}>
                     <MaterialButton
-                        variant="outlined"
-                        component="span"
-                        className={classes.button}
-                        size="small"
-                        color="primary"
-                        onClick={() => setWedding({ ...wedding, faq: { ...wedding.faq, section_content: [...wedding.faq.section_content, { id: wedding.faq.section_content?.length + 1, question: '', answer: '' }] } })}
+                      variant="outlined"
+                      component="span"
+                      className={classes.button}
+                      size="small"
+                      color="primary"
+                      onClick={() => setWedding({ ...wedding, faq: { ...wedding.faq, section_content: [...wedding.faq.section_content, { id: wedding.faq.section_content?.length + 1, question: '', answer: '' }] } })}
                     >
                       Add a New Link
                     </MaterialButton>
