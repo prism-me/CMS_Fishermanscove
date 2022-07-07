@@ -126,7 +126,7 @@ export default function AddContactUs() {
         //     banner: data.find(x => x.section_slug === "banner") || contact.banner,
         //   }
         // )
-        if(response.data.data[0]){
+        if (response.data.data[0]) {
           setContact(response.data.data[0])
           setSeoInfo(response.data.data[0].meta)
         } else {
@@ -136,7 +136,7 @@ export default function AddContactUs() {
       }
     });
 
-    if(!imagesData.length > 0){
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
 
@@ -144,11 +144,11 @@ export default function AddContactUs() {
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
-        if (response.status === 200) {
-            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
-        }
+      if (response.status === 200) {
+        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+      }
     });
-};
+  };
 
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {
@@ -252,9 +252,9 @@ export default function AddContactUs() {
     // }).catch(err => console.log(err))
 
     let updatedContact = { ...contact };
-    updatedContact.meta = {...seoInfo};
+    updatedContact.meta = { ...seoInfo };
     updatedContact.page_id = pageId
-    updatedContact.slug="contact-sections"
+    updatedContact.slug = "contact-sections"
     // console.log("updatedContact",updatedContact); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedContact).then(response => {
@@ -268,7 +268,7 @@ export default function AddContactUs() {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
@@ -281,29 +281,30 @@ export default function AddContactUs() {
             <h4 className="mb-0">Add Contact-Us Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </CardHeader>
           <CardBody>
@@ -365,7 +366,7 @@ export default function AddContactUs() {
                         }}
                       >
                         Upload Featured Image
-                          </MaterialButton>
+                      </MaterialButton>
                     </Fragment>
                   </Grid>
                 </Grid>
@@ -453,7 +454,7 @@ export default function AddContactUs() {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={12}>
                     <TextField
                       required
                       id="meta_title"

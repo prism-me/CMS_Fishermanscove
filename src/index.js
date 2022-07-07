@@ -144,7 +144,7 @@ const App = connect(
     }, [props.user]);
 
     ReactGA.initialize('UA-121337419-1');
-    console.log('analytics'+ReactGA.pageview('/Fisherman'));
+    console.log('analytics' + ReactGA.pageview('/Fisherman'));
 
     // console.log(props.user?.isAuthenticated );
     return (

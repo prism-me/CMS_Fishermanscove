@@ -122,7 +122,7 @@ export default function AddCovidPolicy() {
         //       banner: data.find(x => x.section_slug === "banner") || covidPolicy.banner,
         //     }
         // )
-        if(response.data.data[0]){
+        if (response.data.data[0]) {
           setCovidPolicy(response.data.data[0])
           setSeoInfo(response.data.data[0].meta)
         } else {
@@ -131,19 +131,19 @@ export default function AddCovidPolicy() {
         }
       }
     });
-    
-    if(!imagesData.length > 0){
+
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
   }, [selectedLang]);
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
-        if (response.status === 200) {
-            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
-        }
+      if (response.status === 200) {
+        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+      }
     });
-};
+  };
 
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {
@@ -253,9 +253,9 @@ export default function AddCovidPolicy() {
     // }).catch(err => console.log(err))
 
     let updatedCovidPolicy = { ...covidPolicy };
-    updatedCovidPolicy.meta = {...seoInfo};
+    updatedCovidPolicy.meta = { ...seoInfo };
     updatedCovidPolicy.page_id = pageId
-    updatedCovidPolicy.slug="covidPolicy-sections"
+    updatedCovidPolicy.slug = "covidPolicy-sections"
     // console.log("updatedCovidPolicy",updatedCovidPolicy); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedCovidPolicy).then(response => {
@@ -269,7 +269,7 @@ export default function AddCovidPolicy() {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
@@ -281,37 +281,38 @@ export default function AddCovidPolicy() {
             <h4 className="mb-0">Add Covid Policy</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </CardHeader>
           <CardBody>
             <Accordion>
               <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panelaa-content"
-                  id="panelaa-header"
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panelaa-content"
+                id="panelaa-header"
               >
                 <Typography className={classes.heading}>Banner</Typography>
               </AccordionSummary>
@@ -320,46 +321,46 @@ export default function AddCovidPolicy() {
                   <Grid item xs={12} sm={12}>
                     {/* SECTION TITLE */}
                     <TextField
-                        required
-                        id="section_name"
-                        name="section_name"
-                        label="Section Title"
-                        value={covidPolicy.banner.section_name}
-                        variant="outlined"
-                        fullWidth
-                        onChange={(e) => handleInputChange(e, "banner")}
-                        size="medium"
-                        style={{ marginBottom: '1rem' }}
+                      required
+                      id="section_name"
+                      name="section_name"
+                      label="Section Title"
+                      value={covidPolicy.banner.section_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "banner")}
+                      size="medium"
+                      style={{ marginBottom: '1rem' }}
                     />
 
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !covidPolicy.banner.id > 0 ?
                           covidPolicy.banner.section_avatar?.avatar !== "" ?
-                                <img src={covidPolicy.banner.section_avatar?.avatar} alt={covidPolicy.banner.section_avtar_alt || ""} />
-                                :
-                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                            <img src={covidPolicy.banner.section_avatar?.avatar} alt={covidPolicy.banner.section_avtar_alt || ""} />
                             :
-                            typeof (covidPolicy.banner.section_avatar?.avatar) === typeof (0) ?
-                                // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={covidPolicy.banner.section_avtar_alt || ""} />
-                                :
-                                <img src={covidPolicy.banner.section_avatar?.avatar} alt={covidPolicy.banner.section_avtar_alt || ""} />
+                            <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                          :
+                          typeof (covidPolicy.banner.section_avatar?.avatar) === typeof (0) ?
+                            // dining.thumbnail && dining.thumbnail !== "" ?
+                            <img src={thumbnailPreview} alt={covidPolicy.banner.section_avtar_alt || ""} />
+                            :
+                            <img src={covidPolicy.banner.section_avatar?.avatar} alt={covidPolicy.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
                       <MaterialButton
-                          variant="outlined"
-                          color="primary"
-                          startIcon={<Image />}
-                          className="mt-1"
-                          fullWidth
-                          size="large"
-                          onClick={() => {
-                            setIsSingle(true);
-                            setCurrentSection("banner");
-                            setShowGallery(true);
-                          }}
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<Image />}
+                        className="mt-1"
+                        fullWidth
+                        size="large"
+                        onClick={() => {
+                          setIsSingle(true);
+                          setCurrentSection("banner");
+                          setShowGallery(true);
+                        }}
                       >
                         Upload Featured Image
                       </MaterialButton>
@@ -394,33 +395,33 @@ export default function AddCovidPolicy() {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={covidPolicy.intro.section_content} onChange={(e) => setCovidPolicy({ ...covidPolicy, intro: { ...covidPolicy.intro, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={covidPolicy.intro.section_content} onChange={(e) => setCovidPolicy({ ...covidPolicy, intro: { ...covidPolicy.intro, section_content: e.editor.getData() } })} />
                   </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
             <Accordion>
               <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel2a-content"
-                  id="panel2a-header"
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
               >
                 <Typography className={classes.heading}>SEO Information</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={12}>
                     <TextField
-                        required
-                        id="meta_title"
-                        name="meta_title"
-                        label="Meta Title"
-                        value={seoInfo.meta_title}
-                        variant="outlined"
-                        fullWidth
-                        onChange={handleSEOInputChange}
-                        size="small"
+                      required
+                      id="meta_title"
+                      name="meta_title"
+                      label="Meta Title"
+                      value={seoInfo.meta_title}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
                     />
                   </Grid>
                   {/*<Grid item xs={12} sm={3}>*/}
@@ -441,31 +442,31 @@ export default function AddCovidPolicy() {
                   {/*</Grid>*/}
                   <Grid item xs={12} sm={12}>
                     <TextField
-                        required
-                        id="meta_description"
-                        name="meta_description"
-                        label="Meta Description"
-                        value={seoInfo.meta_description}
-                        variant="outlined"
-                        fullWidth
-                        onChange={handleSEOInputChange}
-                        size="small"
+                      required
+                      id="meta_description"
+                      name="meta_description"
+                      label="Meta Description"
+                      value={seoInfo.meta_description}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
                     />
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     <TextField
-                        required
-                        id="schema_markup"
-                        name="schema_markup"
-                        label="Schema Markup"
-                        value={seoInfo.schema_markup}
-                        variant="outlined"
-                        fullWidth
-                        multiline
-                        rows={4}
-                        rowsMax={4}
-                        onChange={handleSEOInputChange}
-                        size="small"
+                      required
+                      id="schema_markup"
+                      name="schema_markup"
+                      label="Schema Markup"
+                      value={seoInfo.schema_markup}
+                      variant="outlined"
+                      fullWidth
+                      multiline
+                      rows={4}
+                      rowsMax={4}
+                      onChange={handleSEOInputChange}
+                      size="small"
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>

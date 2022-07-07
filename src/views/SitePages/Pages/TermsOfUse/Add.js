@@ -123,7 +123,7 @@ export default function AddTermsOfUse() {
         //     banner: data.find(x => x.section_slug === "banner") || termsUse.banner,
         //   }
         // )
-        if(response.data.data[0]){
+        if (response.data.data[0]) {
           setTermsUse(response.data.data[0])
           setSeoInfo(response.data.data[0]?.meta)
         } else {
@@ -132,19 +132,19 @@ export default function AddTermsOfUse() {
         }
       }
     });
-    
-    if(!imagesData.length > 0){
+
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
   }, [selectedLang]);
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
-        if (response.status === 200) {
-            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
-        }
+      if (response.status === 200) {
+        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+      }
     });
-};
+  };
 
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {
@@ -251,9 +251,9 @@ export default function AddTermsOfUse() {
     // }).catch(err => console.log(err))
 
     let updatedTermsUse = { ...termsUse };
-    updatedTermsUse.meta = {...seoInfo};
+    updatedTermsUse.meta = { ...seoInfo };
     updatedTermsUse.page_id = pageId
-    updatedTermsUse.slug="termsUse-sections"
+    updatedTermsUse.slug = "termsUse-sections"
     // console.log("updatedTermsUse",updatedTermsUse); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedTermsUse).then(response => {
@@ -266,7 +266,7 @@ export default function AddTermsOfUse() {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
@@ -278,29 +278,30 @@ export default function AddTermsOfUse() {
             <h4 className="mb-0">Add Terms Of Use</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </CardHeader>
           <CardBody>

@@ -123,7 +123,7 @@ export default function AddPrivacyPolicy() {
         //       banner: data.find(x => x.section_slug === "banner") || privacyPolicy.banner,
         //     }
         // )
-        if(response.data?.data[0]){
+        if (response.data?.data[0]) {
           setPrivacyPolicy(response.data.data[0])
           setSeoInfo(response.data.data[0].meta)
         } else {
@@ -132,18 +132,18 @@ export default function AddPrivacyPolicy() {
         }
       }
     });
-    if(!imagesData.length > 0){
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
   }, [selectedLang]);
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
-        if (response.status === 200) {
-            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
-        }
+      if (response.status === 200) {
+        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+      }
     });
-};
+  };
 
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {
@@ -250,9 +250,9 @@ export default function AddPrivacyPolicy() {
     // }).catch(err => console.log(err))
 
     let updatedPrivacyPolicy = { ...privacyPolicy };
-    updatedPrivacyPolicy.meta = {...seoInfo};
+    updatedPrivacyPolicy.meta = { ...seoInfo };
     updatedPrivacyPolicy.page_id = pageId
-    updatedPrivacyPolicy.slug="privacyPolicy-sections"
+    updatedPrivacyPolicy.slug = "privacyPolicy-sections"
     // console.log("updatedPrivacyPolicy",updatedPrivacyPolicy); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedPrivacyPolicy).then(response => {
@@ -266,7 +266,7 @@ export default function AddPrivacyPolicy() {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
@@ -279,37 +279,38 @@ export default function AddPrivacyPolicy() {
             <h4 className="mb-0">Add Privacy Policy</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </CardHeader>
           <CardBody>
             <Accordion>
               <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panelaa-content"
-                  id="panelaa-header"
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panelaa-content"
+                id="panelaa-header"
               >
                 <Typography className={classes.heading}>Banner</Typography>
               </AccordionSummary>
@@ -318,46 +319,46 @@ export default function AddPrivacyPolicy() {
                   <Grid item xs={12} sm={12}>
                     {/* SECTION TITLE */}
                     <TextField
-                        required
-                        id="section_name"
-                        name="section_name"
-                        label="Section Title"
-                        value={privacyPolicy.banner.section_name}
-                        variant="outlined"
-                        fullWidth
-                        onChange={(e) => handleInputChange(e, "banner")}
-                        size="medium"
-                        style={{ marginBottom: '1rem' }}
+                      required
+                      id="section_name"
+                      name="section_name"
+                      label="Section Title"
+                      value={privacyPolicy.banner.section_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "banner")}
+                      size="medium"
+                      style={{ marginBottom: '1rem' }}
                     />
 
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !privacyPolicy.banner.id > 0 ?
                           privacyPolicy.banner.section_avatar?.avatar !== "" ?
-                                <img src={privacyPolicy.banner.section_avatar?.avatar} alt={privacyPolicy.banner.section_avtar_alt || ""} />
-                                :
-                                <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                            <img src={privacyPolicy.banner.section_avatar?.avatar} alt={privacyPolicy.banner.section_avtar_alt || ""} />
                             :
-                            typeof (privacyPolicy.banner.section_avatar?.avatar) === typeof (0) ?
-                                // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={privacyPolicy.banner.section_avtar_alt || ""} />
-                                :
-                                <img src={privacyPolicy.banner.section_avatar?.avatar} alt={privacyPolicy.banner.section_avtar_alt || ""} />
+                            <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                          :
+                          typeof (privacyPolicy.banner.section_avatar?.avatar) === typeof (0) ?
+                            // dining.thumbnail && dining.thumbnail !== "" ?
+                            <img src={thumbnailPreview} alt={privacyPolicy.banner.section_avtar_alt || ""} />
+                            :
+                            <img src={privacyPolicy.banner.section_avatar?.avatar} alt={privacyPolicy.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
                       <MaterialButton
-                          variant="outlined"
-                          color="primary"
-                          startIcon={<Image />}
-                          className="mt-1"
-                          fullWidth
-                          size="large"
-                          onClick={() => {
-                            setIsSingle(true);
-                            setCurrentSection("banner");
-                            setShowGallery(true);
-                          }}
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<Image />}
+                        className="mt-1"
+                        fullWidth
+                        size="large"
+                        onClick={() => {
+                          setIsSingle(true);
+                          setCurrentSection("banner");
+                          setShowGallery(true);
+                        }}
                       >
                         Upload Featured Image
                       </MaterialButton>
@@ -392,17 +393,17 @@ export default function AddPrivacyPolicy() {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={privacyPolicy.intro.section_content} onChange={(e) => setPrivacyPolicy({ ...privacyPolicy, intro: { ...privacyPolicy.intro, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={privacyPolicy.intro.section_content} onChange={(e) => setPrivacyPolicy({ ...privacyPolicy, intro: { ...privacyPolicy.intro, section_content: e.editor.getData() } })} />
                   </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
             <Accordion>
               <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel2a-content"
-                  id="panel2a-header"
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
               >
                 <Typography className={classes.heading}>SEO Information</Typography>
               </AccordionSummary>
@@ -410,15 +411,15 @@ export default function AddPrivacyPolicy() {
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={12}>
                     <TextField
-                        required
-                        id="meta_title"
-                        name="meta_title"
-                        label="Meta Title"
-                        value={seoInfo.meta_title}
-                        variant="outlined"
-                        fullWidth
-                        onChange={handleSEOInputChange}
-                        size="small"
+                      required
+                      id="meta_title"
+                      name="meta_title"
+                      label="Meta Title"
+                      value={seoInfo.meta_title}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
                     />
                   </Grid>
                   {/*<Grid item xs={12} sm={3}>*/}
@@ -439,31 +440,31 @@ export default function AddPrivacyPolicy() {
                   {/*</Grid>*/}
                   <Grid item xs={12} sm={12}>
                     <TextField
-                        required
-                        id="meta_description"
-                        name="meta_description"
-                        label="Meta Description"
-                        value={seoInfo.meta_description}
-                        variant="outlined"
-                        fullWidth
-                        onChange={handleSEOInputChange}
-                        size="small"
+                      required
+                      id="meta_description"
+                      name="meta_description"
+                      label="Meta Description"
+                      value={seoInfo.meta_description}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
                     />
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     <TextField
-                        required
-                        id="schema_markup"
-                        name="schema_markup"
-                        label="Schema Markup"
-                        value={seoInfo.schema_markup}
-                        variant="outlined"
-                        fullWidth
-                        multiline
-                        rows={4}
-                        rowsMax={4}
-                        onChange={handleSEOInputChange}
-                        size="small"
+                      required
+                      id="schema_markup"
+                      name="schema_markup"
+                      label="Schema Markup"
+                      value={seoInfo.schema_markup}
+                      variant="outlined"
+                      fullWidth
+                      multiline
+                      rows={4}
+                      rowsMax={4}
+                      onChange={handleSEOInputChange}
+                      size="small"
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>

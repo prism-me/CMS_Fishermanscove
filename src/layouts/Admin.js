@@ -31,7 +31,7 @@ const switchRoutes = (
       if (prop.layout === "/admin") {
         return (
           <Route
-            path={prop.layout+ prop.path}
+            path={prop.layout + prop.path}
             component={prop.component}
             key={key}
             exact={prop.exact}
@@ -40,7 +40,7 @@ const switchRoutes = (
       }
       return null;
     })}
-    <Redirect from="/" to="/dashboard" />
+    <Redirect from="/" to="/admin/dashboard" />
   </Switch>
 );
 
@@ -126,8 +126,8 @@ function Admin({ ...rest }) {
             <div className={classes.container}>{switchRoutes}</div>
           </div>
         ) : (
-            <div className={classes.map}>{switchRoutes}</div>
-          )}
+          <div className={classes.map}>{switchRoutes}</div>
+        )}
         {getRoute() ? <Footer /> : null}
         {/* <FixedPlugin
           handleImageClick={handleImageClick}

@@ -174,7 +174,7 @@ export default function AddGallery() {
   }
 
   // const useForceUpdate = () =>  {
-    
+
   //   return () => setState(!value);
   // }
 
@@ -202,9 +202,9 @@ export default function AddGallery() {
           gal.imageGallery = []
         }
         const index2 = gal?.imageGallery?.findIndex(img => img._id === imagesData[index]._id);
-        if(index2 === -1){
+        if (index2 === -1) {
           gal.imageGallery.push(imagesData[index])
-          setGallery({ ...gallery, imageGallery: gal.imageGallery})
+          setGallery({ ...gallery, imageGallery: gal.imageGallery })
         } else {
           alert("This Image is already selected")
         }
@@ -222,7 +222,7 @@ export default function AddGallery() {
         setImagesData(imagesDataUpdated);
       }
     } else {
-      let gal = {...gallery}
+      let gal = { ...gallery }
       let updateData = gal.imageGallery.filter((u) => u._id !== imagesData[index]._id);
       gal.imageGallery = updateData
       setGallery(gal);
@@ -498,7 +498,7 @@ export default function AddGallery() {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={12}>
                     <TextField
                       required
                       id="meta_title"

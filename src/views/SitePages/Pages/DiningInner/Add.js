@@ -162,29 +162,29 @@ export default function AddDiningInner() {
         //     faq: faq || diningInner.faq,
         //   }
         // )
-        if(response.data.data[0]){
+        if (response.data.data[0]) {
           setDiningInner(response.data.data[0])
           setSeoInfo(response.data.data[0].meta)
         } else {
           setDiningInner(initObj)
           setSeoInfo(seoObj)
         }
-        
+
       }
     });
 
-    if(!imagesData.length > 0){
+    if (!imagesData.length > 0) {
       getGalleryImages();
     }
   }, [selectedLang])
 
   const getGalleryImages = () => {
     LangAPI.get(`/get_all_images`).then((response) => {
-        if (response.status === 200) {
-            setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
-        }
+      if (response.status === 200) {
+        setImagesData(response.data?.data?.map((x) => ({ ...x, isChecked: false })));
+      }
     });
-};
+  };
 
   const getSEOInfo = () => {
     API.get(`/meta/${pageId}`).then(response => {
@@ -313,9 +313,9 @@ export default function AddDiningInner() {
     // }).catch(err => console.log(err))
 
     let updatedDiningInner = { ...diningInner };
-    updatedDiningInner.meta = {...seoInfo};
+    updatedDiningInner.meta = { ...seoInfo };
     updatedDiningInner.page_id = pageId
-    updatedDiningInner.slug="diningInner-sections"
+    updatedDiningInner.slug = "diningInner-sections"
     // console.log("updatedDiningInner",updatedDiningInner); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedDiningInner).then(response => {
@@ -327,7 +327,7 @@ export default function AddDiningInner() {
 
   const handleChange = (event) => {
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
@@ -339,29 +339,30 @@ export default function AddDiningInner() {
             <h4 className="mb-0">Add Dining Inner Sections</h4>
             {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
             <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
             // fullWidth
             >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
-                </Select>
+              </Select>
             </FormControl>
           </CardHeader>
           <CardBody>
@@ -423,7 +424,7 @@ export default function AddDiningInner() {
                         }}
                       >
                         Upload Featured Image
-                          </MaterialButton>
+                      </MaterialButton>
                     </Fragment>
                   </Grid>
                 </Grid>
@@ -458,8 +459,8 @@ export default function AddDiningInner() {
                     />
                     {/* CKEDITOR  */}
                     <CKEditor
-                        config={ckEditorConfig}
-                        onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={diningInner.intro.section_content} onChange={(e) => setDiningInner({ ...diningInner, intro: { ...diningInner.intro, section_content: e.editor.getData() } })} />
+                      config={ckEditorConfig}
+                      onBeforeLoad={(CKEDITOR) => (CKEDITOR.disableAutoInline = true)} data={diningInner.intro.section_content} onChange={(e) => setDiningInner({ ...diningInner, intro: { ...diningInner.intro, section_content: e.editor.getData() } })} />
                   </Grid>
                   {/*<Grid item xs={12} sm={3}>*/}
                   {/*  /!* <TextField*/}
