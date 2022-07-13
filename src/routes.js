@@ -81,6 +81,7 @@ import AddAboutSeychelles from "views/SitePages/Pages/AboutSeychelles/Add";
 import ParisFrenchRestaurant from "views/SitePages/Pages/ParisFrenchRestaurant/Add";
 import AddGalleryPage from "views/SitePages/Pages/Gallery/Add";
 import FAQPage from "views/SitePages/Pages/FAQ/Add";
+import BlogPage from "views/SitePages/Pages/Blog/Add";
 import FAQList from "views/FAQ/List";
 import GalleryList from "views/Gallery/List";
 import AddGallery from "views/Gallery/Add";
@@ -440,6 +441,16 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
     component: FAQPage,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/pages/blog/add/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: BlogPage,
     layout: "/admin",
     exact: true,
     hide: true
