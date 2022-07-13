@@ -82,6 +82,7 @@ import ParisFrenchRestaurant from "views/SitePages/Pages/ParisFrenchRestaurant/A
 import AddGalleryPage from "views/SitePages/Pages/Gallery/Add";
 import FAQPage from "views/SitePages/Pages/FAQ/Add";
 import BlogPage from "views/SitePages/Pages/Blog/Add";
+import OfferPage from "views/SitePages/Pages/Offers/Add";
 import FAQList from "views/FAQ/List";
 import GalleryList from "views/Gallery/List";
 import AddGallery from "views/Gallery/Add";
@@ -451,6 +452,16 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: CardGiftcardOutlined,
     component: BlogPage,
+    layout: "/admin",
+    exact: true,
+    hide: true
+  },
+  {
+    path: "/pages/offers/add/:id",
+    name: "Pages",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: OfferPage,
     layout: "/admin",
     exact: true,
     hide: true
