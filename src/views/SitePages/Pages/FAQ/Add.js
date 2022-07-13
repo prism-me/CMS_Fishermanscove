@@ -108,7 +108,7 @@ export default function FAQPage() {
         //       banner: data.find(x => x.section_slug === "banner") || gallery.banner,
         //     }
         // )
-        if(response.data.data[0]){
+        if (response.data.data[0]) {
           setGallery(response.data.data[0])
           setSeoInfo(response?.data?.data[0]?.meta)
         } else {
@@ -117,7 +117,7 @@ export default function FAQPage() {
         }
       }
     });
-    if(!imagesData?.length > 0){
+    if (!imagesData?.length > 0) {
       getGalleryImages();
     }
   }, [selectedLang]);
@@ -235,9 +235,9 @@ export default function FAQPage() {
     // }).catch(err => console.log(err))
 
     let updatedFAQ = { ...gallery };
-    updatedFAQ.meta = {...seoInfo};
+    updatedFAQ.meta = { ...seoInfo };
     updatedFAQ.page_id = pageId
-    updatedFAQ.slug="faq-sections"
+    updatedFAQ.slug = "faq-sections"
     // console.log("updatedFAQ",updatedFAQ); return false;
 
     LangAPI.post(`/add-section?lang=${selectedLang}`, updatedFAQ).then(response => {
@@ -251,209 +251,210 @@ export default function FAQPage() {
   const handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != selectedLang) {
-        setSelectedLang(event.target.value)
+      setSelectedLang(event.target.value)
     }
   };
 
 
   return (
-      <div>
-        <div className={classes.root}>
-          <Card>
-            <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
-              <h4 className="mb-0">Add FAQ Page</h4>
-              {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
-              <FormControl
-                variant="outlined"
-                size="small"
-                style={{ width: "20%", color: "white" }}
-              
+    <div>
+      <div className={classes.root}>
+        <Card>
+          <CardHeader color="primary" className="d-flex justify-content-between align-items-center">
+            <h4 className="mb-0">Add FAQ Page</h4>
+            {/* <p className={classes.cardCategoryWhite}>Complete your profile</p> */}
+            <FormControl
+              variant="outlined"
+              size="small"
+              style={{ width: "20%", color: "white" }}
+
+            >
+              <InputLabel id="language"
+                style={{ color: "white" }}
+              >Select Language</InputLabel>
+              <Select
+                labelId="language"
+                id="language"
+                name="language"
+                value={selectedLang}
+                label="Select Language"
+                fullWidth
+                style={{ color: "white" }}
+                onChange={handleChange}
               >
-                <InputLabel id="language"
-                    style={{ color: "white" }}
-                >Select Language</InputLabel>
-                <Select
-                    labelId="language"
-                    id="language"
-                    name="language"
-                    value={selectedLang}
-                    label="Select Language"
-                    fullWidth
-                    style={{ color: "white" }}
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'en'}>En</MenuItem>
-                    <MenuItem value={'fr'}>FR</MenuItem>
-                    <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>FR</MenuItem>
+                <MenuItem value={'de'}>DE</MenuItem>
+                <MenuItem value={'ru'}>RU</MenuItem>
 
-                </Select>
-              </FormControl>
-            </CardHeader>
-            <CardBody>
-              <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panelaa-content"
-                    id="panelaa-header"
-                >
-                  <Typography className={classes.heading}>Banner</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12}>
-                      {/* SECTION TITLE */}
-                      <TextField
-                          required
-                          id="section_name"
-                          name="section_name"
-                          label="Section Title"
-                          value={gallery.banner.section_name}
-                          variant="outlined"
-                          fullWidth
-                          onChange={(e) => handleInputChange(e, "banner")}
-                          size="medium"
-                          style={{ marginBottom: '1rem' }}
-                      />
+              </Select>
+            </FormControl>
+          </CardHeader>
+          <CardBody>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panelaa-content"
+                id="panelaa-header"
+              >
+                <Typography className={classes.heading}>Banner</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    {/* SECTION TITLE */}
+                    <TextField
+                      required
+                      id="section_name"
+                      name="section_name"
+                      label="Section Title"
+                      value={gallery.banner.section_name}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => handleInputChange(e, "banner")}
+                      size="medium"
+                      style={{ marginBottom: '1rem' }}
+                    />
 
-                      <div className="thumbnail-preview-wrapper-large img-thumbnail">
-                        {
-                          !gallery.banner.id > 0 ?
-                            gallery.banner.section_avatar?.avatar !== "" ?
-                                  <img src={gallery.banner.section_avatar?.avatar} alt={gallery.banner.section_avtar_alt || ""} />
-                                  :
-                                  <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
-                              :
-                              typeof (gallery.banner.section_avatar?.avatar) === typeof (0) ?
-                                  // dining.thumbnail && dining.thumbnail !== "" ?
-                                  <img src={thumbnailPreview} alt={gallery.banner.section_avtar_alt || ""} />
-                                  :
-                                  <img src={gallery.banner.section_avatar?.avatar} alt={gallery.banner.section_avtar_alt || ""} />
-                        }
-                      </div>
-                      <Fragment>
-                        <MaterialButton
-                            variant="outlined"
-                            color="primary"
-                            startIcon={<Image />}
-                            className="mt-1"
-                            fullWidth
-                            size="large"
-                            onClick={() => {
-                              setIsSingle(true);
-                              setCurrentSection("banner");
-                              setShowGallery(true);
-                            }}
-                        >
-                          Upload Featured Image
-                        </MaterialButton>
-                      </Fragment>
-                    </Grid>
+                    <div className="thumbnail-preview-wrapper-large img-thumbnail">
+                      {
+                        !gallery.banner.id > 0 ?
+                          gallery.banner.section_avatar?.avatar !== "" ?
+                            <img src={gallery.banner.section_avatar?.avatar} alt={gallery.banner.section_avtar_alt || ""} />
+                            :
+                            <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
+                          :
+                          typeof (gallery.banner.section_avatar?.avatar) === typeof (0) ?
+                            // dining.thumbnail && dining.thumbnail !== "" ?
+                            <img src={thumbnailPreview} alt={gallery.banner.section_avtar_alt || ""} />
+                            :
+                            <img src={gallery.banner.section_avatar?.avatar} alt={gallery.banner.section_avtar_alt || ""} />
+                      }
+                    </div>
+                    <Fragment>
+                      <MaterialButton
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<Image />}
+                        className="mt-1"
+                        fullWidth
+                        size="large"
+                        onClick={() => {
+                          setIsSingle(true);
+                          setCurrentSection("banner");
+                          setShowGallery(true);
+                        }}
+                      >
+                        Upload Featured Image
+                      </MaterialButton>
+                    </Fragment>
                   </Grid>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2a-content"
-                    id="panel2a-header"
-                >
-                  <Typography className={classes.heading}>SEO Information</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12}>
-                      <TextField
-                          required
-                          id="meta_title"
-                          name="meta_title"
-                          label="Meta Title"
-                          value={seoInfo.meta_title}
-                          variant="outlined"
-                          fullWidth
-                          onChange={handleSEOInputChange}
-                          size="small"
-                      />
-                    </Grid>
-                    {/*<Grid item xs={12} sm={3}>*/}
-                    {/*  <span>https://fishermanscove-resort.com</span>*/}
-                    {/*</Grid>*/}
-                    {/*<Grid item xs={12} sm={3}>*/}
-                    {/*  <TextField*/}
-                    {/*      required*/}
-                    {/*      id="route"*/}
-                    {/*      name="route"*/}
-                    {/*      label="Permalink"*/}
-                    {/*      value={seoInfo.route}*/}
-                    {/*      variant="outlined"*/}
-                    {/*      fullWidth*/}
-                    {/*      onChange={handleRouteChange}*/}
-                    {/*      size="small"*/}
-                    {/*  />*/}
-                    {/*</Grid>*/}
-                    <Grid item xs={12} sm={12}>
-                      <TextField
-                          required
-                          id="meta_description"
-                          name="meta_description"
-                          label="Meta Description"
-                          value={seoInfo.meta_description}
-                          variant="outlined"
-                          fullWidth
-                          onChange={handleSEOInputChange}
-                          size="small"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                      <TextField
-                          required
-                          id="schema_markup"
-                          name="schema_markup"
-                          label="Schema Markup"
-                          value={seoInfo.schema_markup}
-                          variant="outlined"
-                          fullWidth
-                          multiline
-                          rows={4}
-                          rowsMax={4}
-                          onChange={handleSEOInputChange}
-                          size="small"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <FormControl component="fieldset">
-                        <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={seoInfo.is_followed} onChange={(e) => {
-                          setSeoInfo({ ...seoInfo, is_followed: !seoInfo.is_followed })
-                        }}>
-                          <FormControlLabel value={true} control={<Radio />} label="Follow" />
-                          <FormControlLabel value={false} control={<Radio />} label="No Follow" />
-                        </RadioGroup>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <FormControl component="fieldset">
-                        <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={seoInfo.is_indexed} onChange={(e) => {
-                          setSeoInfo({ ...seoInfo, is_indexed: !seoInfo.is_indexed })
-                        }}>
-                          <FormControlLabel value={true} control={<Radio />} label="Index" />
-                          <FormControlLabel value={false} control={<Radio />} label="No Index" />
-                        </RadioGroup>
-                      </FormControl>
-                    </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography className={classes.heading}>SEO Information</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="meta_title"
+                      name="meta_title"
+                      label="Meta Title"
+                      value={seoInfo.meta_title}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
+                    />
                   </Grid>
-                </AccordionDetails>
-              </Accordion>
-            </CardBody>
-          </Card>
-          <Grid item xs={12} sm={12}>
-            <MaterialButton onClick={() => handleSubmit()} size="large" color="primary" variant="contained">
-              Update Section
-            </MaterialButton>
-          </Grid>
-        </div>
-        <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
-          setShowGallery(false);
-          // setRenderPreviews(true);
-        }} refreshGallery={getGalleryImages} data={imagesData} />
+                  {/*<Grid item xs={12} sm={3}>*/}
+                  {/*  <span>https://fishermanscove-resort.com</span>*/}
+                  {/*</Grid>*/}
+                  {/*<Grid item xs={12} sm={3}>*/}
+                  {/*  <TextField*/}
+                  {/*      required*/}
+                  {/*      id="route"*/}
+                  {/*      name="route"*/}
+                  {/*      label="Permalink"*/}
+                  {/*      value={seoInfo.route}*/}
+                  {/*      variant="outlined"*/}
+                  {/*      fullWidth*/}
+                  {/*      onChange={handleRouteChange}*/}
+                  {/*      size="small"*/}
+                  {/*  />*/}
+                  {/*</Grid>*/}
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="meta_description"
+                      name="meta_description"
+                      label="Meta Description"
+                      value={seoInfo.meta_description}
+                      variant="outlined"
+                      fullWidth
+                      onChange={handleSEOInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      required
+                      id="schema_markup"
+                      name="schema_markup"
+                      label="Schema Markup"
+                      value={seoInfo.schema_markup}
+                      variant="outlined"
+                      fullWidth
+                      multiline
+                      rows={4}
+                      rowsMax={4}
+                      onChange={handleSEOInputChange}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl component="fieldset">
+                      <RadioGroup aria-label="is_followed" row defaultChecked name="is_followed" value={seoInfo.is_followed} onChange={(e) => {
+                        setSeoInfo({ ...seoInfo, is_followed: !seoInfo.is_followed })
+                      }}>
+                        <FormControlLabel value={true} control={<Radio />} label="Follow" />
+                        <FormControlLabel value={false} control={<Radio />} label="No Follow" />
+                      </RadioGroup>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl component="fieldset">
+                      <RadioGroup aria-label="is_indexed" row defaultChecked name="is_indexed" value={seoInfo.is_indexed} onChange={(e) => {
+                        setSeoInfo({ ...seoInfo, is_indexed: !seoInfo.is_indexed })
+                      }}>
+                        <FormControlLabel value={true} control={<Radio />} label="Index" />
+                        <FormControlLabel value={false} control={<Radio />} label="No Index" />
+                      </RadioGroup>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+          </CardBody>
+        </Card>
+        <Grid item xs={12} sm={12}>
+          <MaterialButton onClick={() => handleSubmit()} size="large" color="primary" variant="contained">
+            Update Section
+          </MaterialButton>
+        </Grid>
       </div>
+      <GalleryDialog isSingle={isSingle} section={currentSection} open={showGallery} handleImageSelect={handleImageSelect} handleClose={() => {
+        setShowGallery(false);
+        // setRenderPreviews(true);
+      }} refreshGallery={getGalleryImages} data={imagesData} />
+    </div>
   );
 }
