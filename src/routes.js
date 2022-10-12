@@ -37,7 +37,22 @@ import DashboardPage from "views/Dashboard/Dashboard.js";
 
 // core components/views for RTL layout
 // import RTLPage from "views/RTLPage/RTLPage.js";
-import { AttachFileRounded, HotelOutlined, RestaurantOutlined, CardGiftcardOutlined, SpaOutlined, ViewCarouselOutlined, FavoriteBorderOutlined, PoolOutlined, InsertDriveFileOutlined, PostAddOutlined, QuestionAnswerOutlined, ViewStreamOutlined, ArtTrackOutlined, HorizontalSplitOutlined } from "@material-ui/icons";
+import {
+  AttachFileRounded,
+  HotelOutlined,
+  RestaurantOutlined,
+  CardGiftcardOutlined,
+  SpaOutlined,
+  ViewCarouselOutlined,
+  FavoriteBorderOutlined,
+  PoolOutlined,
+  InsertDriveFileOutlined,
+  PostAddOutlined,
+  QuestionAnswerOutlined,
+  ViewStreamOutlined,
+  ArtTrackOutlined,
+  HorizontalSplitOutlined,
+} from "@material-ui/icons";
 import AddOffer from "views/Offers/Add";
 import OffersList from "views/Offers/List";
 import AddPremiuimOffer from "views/Premiuim-offers/Add";
@@ -61,6 +76,7 @@ import WeddingDetail from "views/Wedding/Details";
 import SpaWellnessList from "views/SpaWellness/List";
 import SpaWellnessAdd from "views/SpaWellness/Add";
 import PageAdd from "views/SitePages/Add";
+import PopUpAdd from "views/PopUpForm/Add";
 import PageDetail from "views/SitePages/Details";
 import PageList from "views/SitePages/List";
 import Footer from "views/Footer/Add";
@@ -73,7 +89,7 @@ import AddDiningInner from "views/SitePages/Pages/DiningInner/Add";
 import AddAboutUs from "views/SitePages/Pages/About/Add";
 import AddSpaWellness from "views/SitePages/Pages/SpaWellness/Add";
 import AddPrivacyPolicy from "views/SitePages/Pages/PrivacyPolicy/Add";
-import AddTermsOfUse from "views/SitePages/Pages/TermsOfUse/Add"
+import AddTermsOfUse from "views/SitePages/Pages/TermsOfUse/Add";
 import AddCovidPolicy from "views/SitePages/Pages/CovidPolicy/Add";
 import AddCancellationPolicy from "views/SitePages/Pages/CancellationPolicy/Add";
 import AddWedding from "views/SitePages/Pages/Wedding/Add";
@@ -98,7 +114,7 @@ const dashboardRoutes = [
     rtlName: "لوحة القيادة",
     icon: Dashboard,
     component: DashboardPage,
-    layout: "/admin"
+    layout: "/admin",
   },
   // {
   //   path: "/login",
@@ -116,28 +132,28 @@ const dashboardRoutes = [
     icon: HotelOutlined,
     component: RoomsList,
     layout: "/admin",
-    exact: true
+    exact: true,
   },
   {
     path: "/room-suites/add",
     component: AddRoom,
     layout: "/admin",
     hide: true,
-    exact: true
+    exact: true,
   },
   {
     path: "/room-suites/edit/:id",
     component: AddRoom,
     layout: "/admin",
     hide: true,
-    exact: true
+    exact: true,
   },
   {
     path: "/room-suites/:id",
     component: RoomDetail,
     layout: "/admin",
     hide: true,
-    exact: true
+    exact: true,
   },
   {
     path: "/blogs",
@@ -146,28 +162,28 @@ const dashboardRoutes = [
     icon: AttachFileRounded,
     component: BlogsList,
     layout: "/admin",
-    exact: true
+    exact: true,
   },
   {
     path: "/blogs/add",
     component: AddBlog,
     layout: "/admin",
     hide: true,
-    exact: true
+    exact: true,
   },
   {
     path: "/blogs/edit/:id",
     component: AddBlog,
     layout: "/admin",
     hide: true,
-    exact: true
+    exact: true,
   },
   {
     path: "/blogs/:id",
     component: BlogDetail,
     layout: "/admin",
     hide: true,
-    exact: true
+    exact: true,
   },
   {
     path: "/dining",
@@ -176,28 +192,28 @@ const dashboardRoutes = [
     icon: RestaurantOutlined,
     component: DiningList,
     layout: "/admin",
-    exact: true
+    exact: true,
   },
   {
     path: "/dining/add",
     component: DiningAdd,
     layout: "/admin",
     hide: true,
-    exact: true
+    exact: true,
   },
   {
     path: "/dining/edit/:id",
     component: DiningAdd,
     layout: "/admin",
     hide: true,
-    exact: true
+    exact: true,
   },
   {
     path: "/dining/:id",
     component: DiningDetail,
     layout: "/admin",
     hide: true,
-    exact: true
+    exact: true,
   },
   {
     path: "/weddings",
@@ -206,7 +222,7 @@ const dashboardRoutes = [
     icon: FavoriteBorderOutlined,
     component: WeddingList,
     layout: "/admin",
-    exact: true
+    exact: true,
   },
   {
     path: "/weddings/add",
@@ -216,7 +232,7 @@ const dashboardRoutes = [
     component: WeddingAdd,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/weddings/edit/:id",
@@ -226,7 +242,7 @@ const dashboardRoutes = [
     component: WeddingAdd,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/weddings/:id",
@@ -236,7 +252,7 @@ const dashboardRoutes = [
     component: WeddingDetail,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/offers",
@@ -245,7 +261,7 @@ const dashboardRoutes = [
     icon: CardGiftcardOutlined,
     component: OffersList,
     layout: "/admin",
-    exact: true
+    exact: true,
   },
   {
     path: "/offers/add",
@@ -255,7 +271,7 @@ const dashboardRoutes = [
     component: AddOffer,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/offers/edit/:id",
@@ -265,7 +281,7 @@ const dashboardRoutes = [
     component: AddOffer,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/offers/:id",
@@ -275,7 +291,7 @@ const dashboardRoutes = [
     component: OfferDetail,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
 
   {
@@ -285,7 +301,7 @@ const dashboardRoutes = [
     icon: CardGiftcardOutlined,
     component: PremiuimOffersList,
     layout: "/admin",
-    exact: true
+    exact: true,
   },
   {
     path: "/premium-offers/add",
@@ -295,7 +311,7 @@ const dashboardRoutes = [
     component: AddPremiuimOffer,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/premium-offers/edit/:id",
@@ -305,7 +321,7 @@ const dashboardRoutes = [
     component: AddPremiuimOffer,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/premium-offers/:id",
@@ -315,7 +331,7 @@ const dashboardRoutes = [
     component: PremiuimOfferDetail,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/spa-wellness",
@@ -325,7 +341,7 @@ const dashboardRoutes = [
     component: SpaWellnessList,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/spa-wellness/add",
@@ -335,7 +351,7 @@ const dashboardRoutes = [
     component: SpaWellnessAdd,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/spa-wellness/:id",
@@ -345,7 +361,7 @@ const dashboardRoutes = [
     component: SpaWellnessList,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/whats-on",
@@ -355,7 +371,7 @@ const dashboardRoutes = [
     component: LeisureList,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/whats-on/add",
@@ -365,7 +381,7 @@ const dashboardRoutes = [
     component: LeisureAdd,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/whats-on/:id",
@@ -375,7 +391,16 @@ const dashboardRoutes = [
     component: LeisureDetail,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
+  },
+  {
+    path: "/popup/add",
+    name: "Pop-Up",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: CardGiftcardOutlined,
+    component: PopUpAdd,
+    layout: "/admin",
+    exact: true,
   },
   {
     path: "/pages",
@@ -384,7 +409,7 @@ const dashboardRoutes = [
     icon: InsertDriveFileOutlined,
     component: PageList,
     layout: "/admin",
-    exact: true
+    exact: true,
   },
   {
     path: "/pages/add",
@@ -394,7 +419,7 @@ const dashboardRoutes = [
     component: PageAdd,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/sustainability/add/:id",
@@ -404,7 +429,7 @@ const dashboardRoutes = [
     component: AddSustainability,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/gallery/add/:id",
@@ -414,7 +439,7 @@ const dashboardRoutes = [
     component: AddGalleryPage,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/paris-french-restaurant/add/:id",
@@ -424,7 +449,7 @@ const dashboardRoutes = [
     component: ParisFrenchRestaurant,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/whats-on/add/:id",
@@ -434,7 +459,7 @@ const dashboardRoutes = [
     component: LeisureActivities,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/faqs/add/:id",
@@ -444,7 +469,7 @@ const dashboardRoutes = [
     component: FAQPage,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/blog/add/:id",
@@ -454,7 +479,7 @@ const dashboardRoutes = [
     component: BlogPage,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/offers/add/:id",
@@ -464,7 +489,7 @@ const dashboardRoutes = [
     component: OfferPage,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/leisure-inner/add/:id",
@@ -474,7 +499,7 @@ const dashboardRoutes = [
     component: AddLeisureInner,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/fine-dining-seychelles/add/:id",
@@ -484,7 +509,7 @@ const dashboardRoutes = [
     component: AddDiningInner,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/about-us/add/:id",
@@ -494,7 +519,7 @@ const dashboardRoutes = [
     component: AddAboutUs,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/contact/add/:id",
@@ -504,7 +529,7 @@ const dashboardRoutes = [
     component: AddContactUs,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/spa-wellness/add/:id",
@@ -514,7 +539,7 @@ const dashboardRoutes = [
     component: AddSpaWellness,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/privacy-policy/add/:id",
@@ -524,7 +549,7 @@ const dashboardRoutes = [
     component: AddPrivacyPolicy,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/terms-of-use/add/:id",
@@ -534,7 +559,7 @@ const dashboardRoutes = [
     component: AddTermsOfUse,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/covid-policy/add/:id",
@@ -544,7 +569,7 @@ const dashboardRoutes = [
     component: AddCovidPolicy,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/cancellation-policy/add/:id",
@@ -554,7 +579,7 @@ const dashboardRoutes = [
     component: AddCancellationPolicy,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/wedding/add/:id",
@@ -564,7 +589,7 @@ const dashboardRoutes = [
     component: AddWedding,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/rooms-suites-seychelles/add/:id",
@@ -574,7 +599,7 @@ const dashboardRoutes = [
     component: AddRoomsSuites,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/about-seychelles/add/:id",
@@ -584,7 +609,7 @@ const dashboardRoutes = [
     component: AddAboutSeychelles,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/pages/:id",
@@ -594,7 +619,7 @@ const dashboardRoutes = [
     component: PageDetail,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/gallery",
@@ -614,7 +639,7 @@ const dashboardRoutes = [
     component: AddGallery,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/gallery/:id",
@@ -624,7 +649,7 @@ const dashboardRoutes = [
     component: GalleryList,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   // {
   //   path: "/gallery",
@@ -642,7 +667,7 @@ const dashboardRoutes = [
     icon: ArtTrackOutlined,
     component: UpdateHeader,
     layout: "/admin",
-    exact: true
+    exact: true,
   },
   {
     path: "/footer",
@@ -651,7 +676,7 @@ const dashboardRoutes = [
     icon: HorizontalSplitOutlined,
     component: Footer,
     layout: "/admin",
-    exact: true
+    exact: true,
   },
   {
     path: "/posts",
@@ -661,7 +686,7 @@ const dashboardRoutes = [
     component: UpdateHeader,
     layout: "/admin",
     exact: true,
-    hide: true
+    hide: true,
   },
   {
     path: "/faq",
@@ -670,7 +695,7 @@ const dashboardRoutes = [
     icon: QuestionAnswerOutlined,
     component: FAQList,
     layout: "/admin",
-    exact: true
+    exact: true,
   },
   // {
   //   path: "/user",
