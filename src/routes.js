@@ -702,7 +702,7 @@ const dashboardRoutes = [
     path: "/black-friday-list",
     name: "Black Friday List",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: QuestionAnswerOutlined,
+    icon: ArtTrackOutlined,
     component: BlackFridayList,
     layout: "/admin",
     exact: true,
