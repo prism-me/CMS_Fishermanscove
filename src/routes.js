@@ -106,6 +106,7 @@ import OfferDetail from "views/Offers/Details";
 import PremiuimOfferDetail from "views/Premiuim-offers/Details";
 import SignInSide from "views/Auth/Login";
 import AddContactUs from "views/SitePages/Pages/Contact/Add";
+import BlackFridayList from "views/BlackFridayList/List";
 
 const dashboardRoutes = [
   {
@@ -694,6 +695,15 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: QuestionAnswerOutlined,
     component: FAQList,
+    layout: "/admin",
+    exact: true,
+  },
+  {
+    path: "/black-friday-list",
+    name: "Black Friday List",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: QuestionAnswerOutlined,
+    component: BlackFridayList,
     layout: "/admin",
     exact: true,
   },
