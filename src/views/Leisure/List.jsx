@@ -16,7 +16,7 @@ class LeisureList extends Component {
           filter: false,
           sort: false,
           customBodyRender: (val) => (
-            <Avatar alt={"Image"} src={val}></Avatar>
+            <Avatar alt={"Image"} src={process.env.REACT_APP_IMAGE_BASE_URL + val}></Avatar>
           )
         }
       },

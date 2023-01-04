@@ -165,7 +165,7 @@ export const RoomDetail = React.memo(function ReviewCard() {
           </h4>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={3}>
-              <img src={room?.author_img} alt={"img"} className={"img-fluid"} />
+              <img src={process.env.REACT_APP_IMAGE_BASE_URL + room?.author_img} alt={"img"} className={"img-fluid"} />
             </Grid>
             <Grid item xs={12} sm={9}>
               <p dangerouslySetInnerHTML={{ __html: room?.author_details }}>

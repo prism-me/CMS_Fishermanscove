@@ -200,7 +200,7 @@ export default function ParisFrenchRestaurant() {
         return;
       } else {
         setDiningInner({ ...diningInner, [section]: { ...diningInner[section], section_avatar: imagesData[index].id } })
-        setThumbnailPreview(imagesData[index].avatar)
+        setThumbnailPreview(imagesData[index].url)
 
         let imagesDataUpdated = imagesData.map((x, i) => {
           if (i === index) {

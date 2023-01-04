@@ -117,7 +117,7 @@ export default function AddWedding() {
         console.log(response.data.data[0], "response.data.data")
         if (response.data.data[0]) {
           setWedding(response.data.data[0])
-          setThumbnailPreview(response?.data?.data[0]?.banner?.section_avatar?.avatar || "")
+          setThumbnailPreview(response?.data?.data[0]?.banner?.section_avatar?.url || "")
           setSeoInfo(response?.data?.data[0]?.meta)
         } else {
           setWedding({
@@ -253,7 +253,7 @@ export default function AddWedding() {
       //   return;
       // } else {
       setWedding({ ...wedding, [section]: { ...wedding[section], section_avatar: imagesData[index] } })
-      setThumbnailPreview(imagesData[index].avatar)
+      setThumbnailPreview(imagesData[index].url)
 
       let imagesDataUpdated = imagesData.map((x, i) => {
         if (i === index) {

@@ -2,7 +2,14 @@ import React, { Component } from "react";
 import MUIDataTable from "mui-datatables";
 import LangAPI from "langapi/http";
 import InputLabel from "@material-ui/core/InputLabel";
-import { Avatar, Box, Button, Select, MenuItem, FormControl } from "@material-ui/core";
+import {
+  Avatar,
+  Box,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+} from "@material-ui/core";
 import { Link } from "react-router-dom";
 import {
   AddOutlined,
@@ -25,7 +32,7 @@ class WeddingList extends Component {
           customBodyRender: (val, row) => (
             <Avatar
               alt={row.tableData[row.rowIndex][1]?.toUpperCase()}
-              src={val}
+              src={process.env.REACT_APP_IMAGE_BASE_URL + val}
             ></Avatar>
           ),
         },
@@ -75,7 +82,9 @@ class WeddingList extends Component {
           filter: true,
           sort: false,
           customBodyRender: (val) => (
-            <code>{val && val.length > 100 ? val.substr(0, 100) + "..." : val}</code>
+            <code>
+              {val && val.length > 100 ? val.substr(0, 100) + "..." : val}
+            </code>
           ),
         },
       },
@@ -87,7 +96,9 @@ class WeddingList extends Component {
           sort: false,
           customBodyRender: (val) => (
             <div className="d-flex nowrap">
-              <Link to={`/admin/weddings/${val}?lang=${this.state.selectedLang}`}>
+              <Link
+                to={`/admin/weddings/${val}?lang=${this.state.selectedLang}`}
+              >
                 <VisibilityOutlined fontSize="small" color="action" />
               </Link>
               <Link
@@ -119,26 +130,29 @@ class WeddingList extends Component {
   };
 
   componentDidMount() {
-    LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then((response) => {
-      let rows = response?.data?.data;
-      console.log(rows, "rowsrowsrows")
-      // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
-      this.setState({ rows });
-    });
+    LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then(
+      (response) => {
+        let rows = response?.data?.data;
+        console.log(rows, "rowsrowsrows");
+        // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
+        this.setState({ rows });
+      }
+    );
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.selectedLang !== this.state.selectedLang) {
-      LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then((response) => {
-        let rows = response?.data?.data;
-        if (this.state.rows != rows) {
-          // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
-          this.setState({ rows });
+      LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then(
+        (response) => {
+          let rows = response?.data?.data;
+          if (this.state.rows != rows) {
+            // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
+            this.setState({ rows });
+          }
         }
-      });
+      );
     }
   }
-
 
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
@@ -150,11 +164,13 @@ class WeddingList extends Component {
         })
         .then(() => {
           // debugger;
-          LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then((response) => {
-            let rows = response?.data?.data;
-            // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
-            this.setState({ rows });
-          });
+          LangAPI.get(`/weddings?lang=${this.state.selectedLang}`).then(
+            (response) => {
+              let rows = response?.data?.data;
+              // this.setState({ rows: rows.filter((x) => x.post_type !== "page") });
+              this.setState({ rows });
+            }
+          );
         })
         .catch((err) => console.log(err));
     }
@@ -163,9 +179,9 @@ class WeddingList extends Component {
   handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != this.state.selectedLang) {
-      this.setState({ selectedLang: event.target.value })
+      this.setState({ selectedLang: event.target.value });
     }
-    console.log(event.target.value, "event.target.value")
+    console.log(event.target.value, "event.target.value");
   };
 
   render() {
@@ -186,7 +202,7 @@ class WeddingList extends Component {
               variant="outlined"
               size="small"
               style={{ width: "20%" }}
-            // fullWidth
+              // fullWidth
             >
               <InputLabel id="language">Select Language</InputLabel>
               <Select
@@ -202,11 +218,10 @@ class WeddingList extends Component {
                 {/* <MenuItem value={-1}>
                         <em>Select Language</em>
                     </MenuItem> */}
-                <MenuItem value={'en'}>En</MenuItem>
-                <MenuItem value={'fr'}>FR</MenuItem>
-                <MenuItem value={'de'}>DE</MenuItem>
-                <MenuItem value={'ru'}>RU</MenuItem>
-
+                <MenuItem value={"en"}>En</MenuItem>
+                <MenuItem value={"fr"}>FR</MenuItem>
+                <MenuItem value={"de"}>DE</MenuItem>
+                <MenuItem value={"ru"}>RU</MenuItem>
               </Select>
             </FormControl>
           </div>

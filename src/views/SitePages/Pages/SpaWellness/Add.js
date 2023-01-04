@@ -172,7 +172,7 @@ export default function AddSpaWellness() {
       //   return;
       // } else {
       setSpaWellness({ ...spaWellness, [section]: { ...spaWellness[section], section_avatar: imagesData[index] } })
-      setThumbnailPreview(imagesData[index].avatar)
+      setThumbnailPreview(imagesData[index].url)
 
       // let imagesDataUpdated = imagesData.map((x, i) => {
       //   if (i === index) {
@@ -333,16 +333,16 @@ export default function AddSpaWellness() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !spaWellness.banner.id > 0 ?
-                          spaWellness.banner.section_avatar?.avatar !== "" ?
-                            <img src={spaWellness.banner.section_avatar?.avatar} alt={spaWellness.banner.section_avtar_alt || ""} />
+                          spaWellness.banner.section_avatar?.url !== "" ?
+                            <img src={spaWellness.banner.section_avatar?.url} alt={spaWellness.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
-                          typeof (spaWellness.banner.section_avatar?.avatar) === typeof (0) ?
+                          typeof (spaWellness.banner.section_avatar?.url) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img src={thumbnailPreview} alt={spaWellness.banner.section_avtar_alt || ""} />
                             :
-                            <img src={spaWellness.banner.section_avatar?.avatar} alt={spaWellness.banner.section_avtar_alt || ""} />
+                            <img src={spaWellness.banner.section_avatar?.url} alt={spaWellness.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
@@ -415,16 +415,16 @@ export default function AddSpaWellness() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !spaWellness.intro.id > 0 ?
-                              spaWellness.intro.section_avatar?.avatar !== "" ?
-                                <img src={spaWellness.intro.section_avatar?.avatar} alt={spaWellness.intro.section_avtar_alt || ""} />
+                              spaWellness.intro.section_avatar?.url !== "" ?
+                                <img src={spaWellness.intro.section_avatar?.url} alt={spaWellness.intro.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
-                              typeof (spaWellness.intro.section_avatar?.avatar) === typeof (0) ?
+                              typeof (spaWellness.intro.section_avatar?.url) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
                                 <img src={thumbnailPreview} alt={spaWellness.intro.section_avtar_alt || ""} />
                                 :
-                                <img src={spaWellness.intro.section_avatar?.avatar} alt={spaWellness.intro.section_avtar_alt || ""} />
+                                <img src={spaWellness.intro.section_avatar?.url} alt={spaWellness.intro.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>

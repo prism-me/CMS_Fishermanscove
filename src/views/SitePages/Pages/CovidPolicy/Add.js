@@ -179,7 +179,7 @@ export default function AddCovidPolicy() {
       //   return;
       // } else {
       setCovidPolicy({ ...covidPolicy, [section]: { ...covidPolicy[section], section_avatar: imagesData[index] } })
-      setThumbnailPreview(imagesData[index].avatar)
+      setThumbnailPreview(imagesData[index].url)
 
       // let imagesDataUpdated = imagesData.map((x, i) => {
       //   if (i === index) {
@@ -336,16 +336,16 @@ export default function AddCovidPolicy() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !covidPolicy.banner.id > 0 ?
-                          covidPolicy.banner.section_avatar?.avatar !== "" ?
-                            <img src={covidPolicy.banner.section_avatar?.avatar} alt={covidPolicy.banner.section_avtar_alt || ""} />
+                          covidPolicy.banner.section_avatar?.url !== "" ?
+                            <img src={covidPolicy.banner.section_avatar?.url} alt={covidPolicy.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
-                          typeof (covidPolicy.banner.section_avatar?.avatar) === typeof (0) ?
+                          typeof (covidPolicy.banner.section_avatar?.url) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img src={thumbnailPreview} alt={covidPolicy.banner.section_avtar_alt || ""} />
                             :
-                            <img src={covidPolicy.banner.section_avatar?.avatar} alt={covidPolicy.banner.section_avtar_alt || ""} />
+                            <img src={covidPolicy.banner.section_avatar?.url} alt={covidPolicy.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>

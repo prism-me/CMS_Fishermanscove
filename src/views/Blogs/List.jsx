@@ -3,7 +3,15 @@ import MUIDataTable from "mui-datatables";
 import API from "langapi/http";
 import InputLabel from "@material-ui/core/InputLabel";
 import { Avatar, Box, Button } from "@material-ui/core";
-import { FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField, } from "@material-ui/core";
+import {
+  FormControl,
+  FormControlLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  TextField,
+} from "@material-ui/core";
 import { Link } from "react-router-dom";
 import {
   AddOutlined,
@@ -26,7 +34,7 @@ class RoomsList extends Component {
           customBodyRender: (val, row) => (
             <Avatar
               alt={row.tableData[row.rowIndex][1]?.toUpperCase()}
-              src={val}
+              src={process.env.REACT_APP_IMAGE_BASE_URL + val}
             ></Avatar>
           ),
         },
@@ -110,7 +118,6 @@ class RoomsList extends Component {
     }
   }
 
-
   handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this ?")) {
       API.delete(`/blogs/${id}?lang=${this.state.selectedLang}`)
@@ -132,11 +139,10 @@ class RoomsList extends Component {
   handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != this.state.selectedLang) {
-      this.setState({ selectedLang: event.target.value })
+      this.setState({ selectedLang: event.target.value });
     }
-    console.log(event.target.value, "event.target.value")
+    console.log(event.target.value, "event.target.value");
   };
-
 
   render() {
     return (
@@ -156,7 +162,7 @@ class RoomsList extends Component {
               variant="outlined"
               size="small"
               style={{ width: "20%" }}
-            // fullWidth
+              // fullWidth
             >
               <InputLabel id="language">Select Language</InputLabel>
               <Select
@@ -172,11 +178,10 @@ class RoomsList extends Component {
                 {/* <MenuItem value={-1}>
                       <em>Select Language</em>
                   </MenuItem> */}
-                <MenuItem value={'en'}>En</MenuItem>
-                <MenuItem value={'fr'}>FR</MenuItem>
-                <MenuItem value={'de'}>DE</MenuItem>
-                <MenuItem value={'ru'}>RU</MenuItem>
-
+                <MenuItem value={"en"}>En</MenuItem>
+                <MenuItem value={"fr"}>FR</MenuItem>
+                <MenuItem value={"de"}>DE</MenuItem>
+                <MenuItem value={"ru"}>RU</MenuItem>
               </Select>
             </FormControl>
           </div>

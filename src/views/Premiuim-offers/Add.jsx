@@ -180,14 +180,14 @@ export default function AddOffer(props) {
       //   return;
       // } else {
       if (isSingle && !isBanner && !isImagesList) {
-        setOffer({ ...offer, thumbnail: imagesData[index].avatar, thumbnailPreview: imagesData[index].avatar });
-        setThumbnailPreview(imagesData[index].avatar);
+        setOffer({ ...offer, thumbnail: imagesData[index].url, thumbnailPreview: imagesData[index].url });
+        setThumbnailPreview(imagesData[index].url);
         setTimeout(() => {
           setShowGallery(false);
         }, 500);
       } else if (!isSingle && isBanner && !isImagesList) {
-        setOffer({ ...offer, banner_img: imagesData[index].avatar, banner_imgPreview: imagesData[index].avatar });
-        setBannerThumbnailPreview(imagesData[index].avatar);
+        setOffer({ ...offer, banner_img: imagesData[index].url, banner_imgPreview: imagesData[index].url });
+        setBannerThumbnailPreview(imagesData[index].url);
         setTimeout(() => {
           setShowGallery(false);
         }, 500);
@@ -404,7 +404,7 @@ export default function AddOffer(props) {
                       {!isEdit ? (
                         thumbnailPreview && thumbnailPreview !== "" ? (
                           <img
-                            src={thumbnailPreview}
+                            src={process.env.REACT_APP_IMAGE_BASE_URL + thumbnailPreview}
                             alt={offer.alt_text || ""}
                           />
                         ) : (
@@ -416,11 +416,11 @@ export default function AddOffer(props) {
                       ) : typeof offer.thumbnail === typeof 0 ? (
                         // offer.thumbnail && offer.thumbnail !== "" ?
                         <img
-                          src={thumbnailPreview}
+                          src={process.env.REACT_APP_IMAGE_BASE_URL + thumbnailPreview}
                           alt={offer.alt_text || ""}
                         />
                       ) : (
-                        <img src={offer.thumbnail} alt={offer.alt_text || ""} />
+                        <img src={process.env.REACT_APP_IMAGE_BASE_URL + offer.thumbnail} alt={offer.alt_text || ""} />
                       )}
                     </div>
                     <Fragment>
@@ -485,7 +485,7 @@ export default function AddOffer(props) {
                         bannerThumbnailPreview &&
                           bannerThumbnailPreview !== "" ? (
                           <img
-                            src={bannerThumbnailPreview}
+                            src={process.env.REACT_APP_IMAGE_BASE_URL + bannerThumbnailPreview}
                             alt={offer.alt_text || ""}
                           />
                         ) : (
@@ -497,12 +497,12 @@ export default function AddOffer(props) {
                       ) : typeof offer.banner_img === typeof 0 ? (
                         // offer.thumbnail && offer.thumbnail !== "" ?
                         <img
-                          src={bannerThumbnailPreview}
+                          src={process.env.REACT_APP_IMAGE_BASE_URL + bannerThumbnailPreview}
                           alt={offer.alt_text || ""}
                         />
                       ) : (
                         <img
-                          src={offer.banner_img}
+                          src={process.env.REACT_APP_IMAGE_BASE_URL + offer.banner_img}
                           alt={offer.alt_text || ""}
                         />
                       )}
@@ -734,7 +734,7 @@ export default function AddOffer(props) {
                     //   <div style={{ height: "120px" }}>
                     //     <img
                     //       width="100%"
-                    //       src={x.avatar}
+                    //       src={x.url}
                     //       className="img-thumbnail"
                     //       alt=""
                     //       style={{ height: "90%", objectFit: "cover" }}
@@ -752,7 +752,7 @@ export default function AddOffer(props) {
                   //   <div style={{ height: "120px" }}>
                   //     <img
                   //       width="100%"
-                  //       src={x.avatar}
+                  //       src={x.url}
                   //       className="img-thumbnail"
                   //       alt=""
                   //       style={{ height: "90%", objectFit: "cover" }}

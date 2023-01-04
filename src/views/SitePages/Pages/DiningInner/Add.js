@@ -217,7 +217,7 @@ export default function AddDiningInner() {
         return;
       } else {
         setDiningInner({ ...diningInner, [section]: { ...diningInner[section], section_avatar: imagesData[index] } })
-        // setThumbnailPreview(imagesData[index].avatar)
+        // setThumbnailPreview(imagesData[index].url)
 
         // let imagesDataUpdated = imagesData.map((x, i) => {
         //   if (i === index) {
@@ -397,16 +397,16 @@ export default function AddDiningInner() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !diningInner.banner.id > 0 ?
-                          diningInner.banner.section_avatar?.avatar !== "" ?
-                            <img src={diningInner.banner.section_avatar?.avatar} alt={diningInner.banner.section_avtar_alt || ""} />
+                          diningInner.banner.section_avatar?.url !== "" ?
+                            <img src={diningInner.banner.section_avatar?.url} alt={diningInner.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
-                          typeof (diningInner.banner.section_avatar?.avatar) === typeof (0) ?
+                          typeof (diningInner.banner.section_avatar?.url) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img src={thumbnailPreview} alt={diningInner.banner.section_avtar_alt || ""} />
                             :
-                            <img src={diningInner.banner.section_avatar?.avatar} alt={diningInner.banner.section_avtar_alt || ""} />
+                            <img src={diningInner.banner.section_avatar?.url} alt={diningInner.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>

@@ -182,7 +182,7 @@ export default function RoomsSuites() {
       //   return;
       // } else {
       setAbout({ ...about, [section]: { ...about[section], section_avatar: imagesData[index] } })
-      // setThumbnailPreview(imagesData[index].avatar)
+      // setThumbnailPreview(imagesData[index].url)
       // }
     } else {
       setAbout({ ...about, [section]: { ...about[section], section_avatar: "" } })
@@ -330,16 +330,16 @@ export default function RoomsSuites() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !about.banner.id > 0 ?
-                          about.banner.section_avatar?.avatar !== "" ?
-                            <img src={about.banner.section_avatar?.avatar} alt={about.banner.section_avtar_alt || ""} />
+                          about.banner.section_avatar?.url !== "" ?
+                            <img src={about.banner.section_avatar?.url} alt={about.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
-                          typeof (about.banner.section_avatar?.avatar) === typeof (0) ?
+                          typeof (about.banner.section_avatar?.url) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img src={thumbnailPreview} alt={about.banner.section_avtar_alt || ""} />
                             :
-                            <img src={about.banner.section_avatar?.avatar} alt={about.banner.section_avtar_alt || ""} />
+                            <img src={about.banner.section_avatar?.url} alt={about.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>

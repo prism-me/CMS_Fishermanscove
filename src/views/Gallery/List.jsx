@@ -48,7 +48,7 @@ class GalleryList extends Component {
         if (response.status === 200) {
           this.setState({ gallery: response.data.data });
           // this.setState({ mainSrc: response.data.data[0] });
-          console.log(response.data.data)
+          console.log(response.data.data);
         }
       })
       .catch((err) => {
@@ -275,7 +275,7 @@ class GalleryList extends Component {
             {this.state.gallery.map((tile, index) => (
               <GridListTile className="gallery-tile" cols={0.4} key={tile._id}>
                 <img
-                  src={tile.avatar}
+                  src={process.env.REACT_APP_IMAGE_BASE_URL + tile.url}
                   alt={tile.alt_tag}
                   onClick={() => {
                     this.setState({ selectedImage: this.state.gallery[index] });

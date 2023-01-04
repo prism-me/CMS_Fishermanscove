@@ -30,7 +30,7 @@ export default function AddFAQDialog(props) {
         if (props.image) {
             set_id(props.image?.id);
             set_alt_tag(props.image?.alt_tag);
-            set_avatar(props.image?.avatar);
+            set_avatar(props.image?.url);
             set_is360(props.image?.["360_view"] === "1" ? true : false);
         }
 

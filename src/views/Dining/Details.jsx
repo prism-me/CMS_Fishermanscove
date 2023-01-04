@@ -184,8 +184,8 @@ export const DiningDetail = React.memo(function ReviewCard() {
           <div className={classes.imagesWrapper}>
             <GridList className={classes.gridList} cols={2.5}>
               {uploads?.map((tile) => (
-                <GridListTile key={tile.avatar}>
-                  <img src={tile.avatar} alt={tile.alt_tag} />
+                <GridListTile key={tile.url}>
+                  <img src={process.env.REACT_APP_IMAGE_BASE_URL + tile.url} alt={tile.alt_tag} />
                   <GridListTileBar
                     title={tile.alt_tag}
                     // subtitle={<span>by: {tile.author}</span>}

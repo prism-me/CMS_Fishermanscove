@@ -406,7 +406,7 @@ export default function AddGallery(props) {
                   offerImages?.map((x, i) => (
                     <>
                       <Grid item xs={12} sm={2}>
-                        <Avatar src={URL.createObjectURL(x.avatar)} alt={x.alt_tag} />
+                        <Avatar src={URL.createObjectURL(x.url)} alt={x.alt_tag} />
                       </Grid>
                       <Grid item xs={12} sm={4}>
                         <TextField

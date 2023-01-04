@@ -404,16 +404,16 @@ export default function AddGallery() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !gallery.banner.id > 0 ?
-                          gallery.banner.section_avatar?.avatar !== "" ?
-                            <img src={gallery.banner.section_avatar?.avatar} alt={gallery.banner.section_avtar_alt || ""} />
+                          gallery.banner.section_avatar?.url !== "" ?
+                            <img src={gallery.banner.section_avatar?.url} alt={gallery.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
-                          typeof (gallery.banner.section_avatar?.avatar) === typeof (0) ?
+                          typeof (gallery.banner.section_avatar?.url) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img src={thumbnailPreview} alt={gallery.banner.section_avtar_alt || ""} />
                             :
-                            <img src={gallery.banner.section_avatar?.avatar} alt={gallery.banner.section_avtar_alt || ""} />
+                            <img src={gallery.banner.section_avatar?.url} alt={gallery.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>

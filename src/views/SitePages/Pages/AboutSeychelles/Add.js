@@ -181,7 +181,7 @@ export default function AddAboutSeychelles() {
       //   return;
       // } else {
       setAboutSeychelles({ ...aboutSeychelles, [section]: { ...aboutSeychelles[section], section_avatar: imagesData[index] } })
-      setThumbnailPreview(imagesData[index].avatar)
+      setThumbnailPreview(imagesData[index].url)
 
       // let imagesDataUpdated = imagesData.map((x, i) => {
       //   if (i === index) {
@@ -363,16 +363,16 @@ export default function AddAboutSeychelles() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !aboutSeychelles.banner.id > 0 ?
-                          aboutSeychelles.banner.section_avatar?.avatar !== "" ?
-                            <img src={aboutSeychelles.banner.section_avatar?.avatar} alt={aboutSeychelles.banner.section_avtar_alt || ""} />
+                          aboutSeychelles.banner.section_avatar?.url !== "" ?
+                            <img src={process.env.REACT_APP_IMAGE_BASE_URL + aboutSeychelles.banner.section_avatar?.url} alt={aboutSeychelles.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
-                          typeof (aboutSeychelles.banner.section_avatar?.avatar) === typeof (0) ?
+                          typeof (aboutSeychelles.banner.section_avatar?.url) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
-                            <img src={thumbnailPreview} alt={aboutSeychelles.banner.section_avtar_alt || ""} />
+                            <img src={process.env.REACT_APP_IMAGE_BASE_URL + thumbnailPreview} alt={aboutSeychelles.banner.section_avtar_alt || ""} />
                             :
-                            <img src={aboutSeychelles.banner.section_avatar?.avatar} alt={aboutSeychelles.banner.section_avtar_alt || ""} />
+                            <img src={process.env.REACT_APP_IMAGE_BASE_URL + aboutSeychelles.banner.section_avatar?.url} alt={aboutSeychelles.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
@@ -445,16 +445,16 @@ export default function AddAboutSeychelles() {
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {
                             !aboutSeychelles.intro.id > 0 ?
-                              aboutSeychelles.intro.section_avatar?.avatar !== "" ?
-                                <img src={aboutSeychelles.intro.section_avatar?.avatar} alt={aboutSeychelles.intro.section_avtar_alt || ""} />
+                              aboutSeychelles.intro.section_avatar?.url !== "" ?
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + aboutSeychelles.intro.section_avatar?.url} alt={aboutSeychelles.intro.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
-                              typeof (aboutSeychelles.intro.section_avatar?.avatar) === typeof (0) ?
+                              typeof (aboutSeychelles.intro.section_avatar?.url) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview} alt={aboutSeychelles.intro.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + thumbnailPreview} alt={aboutSeychelles.intro.section_avtar_alt || ""} />
                                 :
-                                <img src={aboutSeychelles.intro.section_avatar?.avatar} alt={aboutSeychelles.intro.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + aboutSeychelles.intro.section_avatar?.url} alt={aboutSeychelles.intro.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>

@@ -1,9 +1,15 @@
 import React, { Component } from "react";
 import MUIDataTable from "mui-datatables";
 import InputLabel from "@material-ui/core/InputLabel";
-import API from "utils/http";
 import LangAPI from "langapi/http";
-import { Avatar, Box, Button, Select, MenuItem, FormControl } from "@material-ui/core";
+import {
+  Avatar,
+  Box,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+} from "@material-ui/core";
 import { Link } from "react-router-dom";
 import {
   AddOutlined,
@@ -26,7 +32,7 @@ class RoomsList extends Component {
           customBodyRender: (val, row) => (
             <Avatar
               alt={row.tableData[row.rowIndex][1]?.toUpperCase()}
-              src={val}
+              src={process.env.REACT_APP_IMAGE_BASE_URL + val}
             ></Avatar>
           ),
         },
@@ -128,7 +134,7 @@ class RoomsList extends Component {
   };
 
   componentDidMount() {
-    this.getData()
+    this.getData();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -140,7 +146,7 @@ class RoomsList extends Component {
   getData() {
     LangAPI.get(`/rooms?lang=${this.state.selectedLang}`).then((response) => {
       let rows = response?.data?.data;
-      console.log(rows, "rows")
+      console.log(rows, "rows");
       this.setState({ rows: rows });
     });
   }
@@ -167,9 +173,9 @@ class RoomsList extends Component {
   handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != this.state.selectedLang) {
-      this.setState({ selectedLang: event.target.value })
+      this.setState({ selectedLang: event.target.value });
     }
-    console.log(event.target.value, "event.target.value")
+    console.log(event.target.value, "event.target.value");
   };
 
   render() {
@@ -190,7 +196,7 @@ class RoomsList extends Component {
               variant="outlined"
               size="small"
               style={{ width: "20%" }}
-            // fullWidth
+              // fullWidth
             >
               <InputLabel id="language">Select Language</InputLabel>
               <Select
@@ -206,10 +212,10 @@ class RoomsList extends Component {
                 {/* <MenuItem value={-1}>
                         <em>Select Language</em>
                     </MenuItem> */}
-                <MenuItem value={'en'}>En</MenuItem>
-                <MenuItem value={'fr'}>FR</MenuItem>
-                <MenuItem value={'de'}>DE</MenuItem>
-                <MenuItem value={'ru'}>RU</MenuItem>
+                <MenuItem value={"en"}>En</MenuItem>
+                <MenuItem value={"fr"}>FR</MenuItem>
+                <MenuItem value={"de"}>DE</MenuItem>
+                <MenuItem value={"ru"}>RU</MenuItem>
               </Select>
             </FormControl>
           </div>

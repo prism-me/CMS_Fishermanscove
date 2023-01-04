@@ -339,16 +339,16 @@ export default function AddContactUs() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !contact.banner.id > 0 ?
-                          contact.banner.section_avatar?.avatar !== "" ?
-                            <img src={contact.banner.section_avatar?.avatar} alt={contact.banner.section_avtar_alt || ""} />
+                          contact.banner.section_avatar?.url !== "" ?
+                            <img src={contact.banner.section_avatar?.url} alt={contact.banner.section_avtar_alt || ""} />
                             :
                             <img src={require('./../../../../assets/img/placeholder.png')} alt="" />
                           :
-                          typeof (contact.banner.section_avatar?.avatar) === typeof (0) ?
+                          typeof (contact.banner.section_avatar?.url) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img src={thumbnailPreview} alt={contact.banner.section_avtar_alt || ""} />
                             :
-                            <img src={contact.banner.section_avatar?.avatar} alt={contact.banner.section_avtar_alt || ""} />
+                            <img src={contact.banner.section_avatar?.url} alt={contact.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>

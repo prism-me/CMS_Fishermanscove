@@ -177,7 +177,7 @@ export default function AddCancellationPolicy() {
       //   return;
       // } else {
       setCancellationPolicy({ ...cancellationPolicy, [section]: { ...cancellationPolicy[section], section_avatar: imagesData[index] } })
-      setThumbnailPreview(imagesData[index].avatar)
+      setThumbnailPreview(imagesData[index].url)
 
       // }
     } else {
@@ -324,16 +324,16 @@ export default function AddCancellationPolicy() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !cancellationPolicy.banner.id > 0 ?
-                          cancellationPolicy.banner.section_avatar?.avatar !== "" ?
-                            <img src={cancellationPolicy.banner.section_avatar?.avatar} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
+                          cancellationPolicy.banner.section_avatar?.url !== "" ?
+                            <img src={cancellationPolicy.banner.section_avatar?.url} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
-                          typeof (cancellationPolicy.banner.section_avatar?.avatar) === typeof (0) ?
+                          typeof (cancellationPolicy.banner.section_avatar?.url) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img src={thumbnailPreview} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
                             :
-                            <img src={cancellationPolicy.banner.section_avatar?.avatar} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
+                            <img src={cancellationPolicy.banner.section_avatar?.url} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>

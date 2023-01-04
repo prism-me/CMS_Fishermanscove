@@ -2,7 +2,14 @@ import React, { Component } from "react";
 import MUIDataTable from "mui-datatables";
 import API from "utils/http";
 import LangAPI from "langapi/http";
-import { Avatar, Box, Button, Select, MenuItem, FormControl } from "@material-ui/core";
+import {
+  Avatar,
+  Box,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+} from "@material-ui/core";
 
 import { Link } from "react-router-dom";
 import {
@@ -25,7 +32,12 @@ class DiningList extends Component {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: (val) => <Avatar alt={"Image"} src={val}></Avatar>,
+          customBodyRender: (val) => (
+            <Avatar
+              alt={"Image"}
+              src={process.env.REACT_APP_IMAGE_BASE_URL + val}
+            ></Avatar>
+          ),
         },
       },
       {
@@ -178,11 +190,10 @@ class DiningList extends Component {
   handleChange = (event) => {
     // setAge(event.target.value as string);
     if (event.target.value != this.state.selectedLang) {
-      this.setState({ selectedLang: event.target.value })
+      this.setState({ selectedLang: event.target.value });
     }
-    console.log(event.target.value, "event.target.value")
+    console.log(event.target.value, "event.target.value");
   };
-
 
   render() {
     return (
@@ -202,7 +213,7 @@ class DiningList extends Component {
               variant="outlined"
               size="small"
               style={{ width: "20%" }}
-            // fullWidth
+              // fullWidth
             >
               <InputLabel id="language">Select Language</InputLabel>
               <Select
@@ -218,11 +229,10 @@ class DiningList extends Component {
                 {/* <MenuItem value={-1}>
                             <em>Select Language</em>
                         </MenuItem> */}
-                <MenuItem value={'en'}>En</MenuItem>
-                <MenuItem value={'fr'}>FR</MenuItem>
-                <MenuItem value={'de'}>DE</MenuItem>
-                <MenuItem value={'ru'}>RU</MenuItem>
-
+                <MenuItem value={"en"}>En</MenuItem>
+                <MenuItem value={"fr"}>FR</MenuItem>
+                <MenuItem value={"de"}>DE</MenuItem>
+                <MenuItem value={"ru"}>RU</MenuItem>
               </Select>
             </FormControl>
           </div>

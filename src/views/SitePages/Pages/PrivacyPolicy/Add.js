@@ -176,7 +176,7 @@ export default function AddPrivacyPolicy() {
       //   return;
       // } else {
       setPrivacyPolicy({ ...privacyPolicy, [section]: { ...privacyPolicy[section], section_avatar: imagesData[index] } })
-      setThumbnailPreview(imagesData[index].avatar)
+      setThumbnailPreview(imagesData[index].url)
 
       // let imagesDataUpdated = imagesData.map((x, i) => {
       //   if (i === index) {
@@ -334,16 +334,16 @@ export default function AddPrivacyPolicy() {
                     <div className="thumbnail-preview-wrapper-large img-thumbnail">
                       {
                         !privacyPolicy.banner.id > 0 ?
-                          privacyPolicy.banner.section_avatar?.avatar !== "" ?
-                            <img src={privacyPolicy.banner.section_avatar?.avatar} alt={privacyPolicy.banner.section_avtar_alt || ""} />
+                          privacyPolicy.banner.section_avatar?.url !== "" ?
+                            <img src={privacyPolicy.banner.section_avatar?.url} alt={privacyPolicy.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
-                          typeof (privacyPolicy.banner.section_avatar?.avatar) === typeof (0) ?
+                          typeof (privacyPolicy.banner.section_avatar?.url) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img src={thumbnailPreview} alt={privacyPolicy.banner.section_avtar_alt || ""} />
                             :
-                            <img src={privacyPolicy.banner.section_avatar?.avatar} alt={privacyPolicy.banner.section_avtar_alt || ""} />
+                            <img src={privacyPolicy.banner.section_avatar?.url} alt={privacyPolicy.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>

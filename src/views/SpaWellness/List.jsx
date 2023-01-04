@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import MUIDataTable from "mui-datatables";
-import API from 'utils/http';
-import { Avatar, Box, Button } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import { AddOutlined, VisibilityOutlined } from '@material-ui/icons';
+import API from "utils/http";
+import { Avatar, Box, Button } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import { AddOutlined, VisibilityOutlined } from "@material-ui/icons";
 
 class SpaWellnessList extends Component {
   state = {
@@ -16,9 +16,12 @@ class SpaWellnessList extends Component {
           filter: false,
           sort: false,
           customBodyRender: (val) => (
-            <Avatar alt={"Image"} src={val}></Avatar>
-          )
-        }
+            <Avatar
+              alt={"Image"}
+              src={process.env.REACT_APP_IMAGE_BASE_URL + val}
+            ></Avatar>
+          ),
+        },
       },
       {
         name: "post_name",
@@ -26,7 +29,7 @@ class SpaWellnessList extends Component {
         options: {
           filter: true,
           sort: true,
-        }
+        },
       },
       {
         name: "room_type",
@@ -35,9 +38,9 @@ class SpaWellnessList extends Component {
           filter: true,
           sort: false,
           customBodyRender: (val) => {
-            return val === 0 ? 'Room' : 'Suite'
-          }
-        }
+            return val === 0 ? "Room" : "Suite";
+          },
+        },
       },
       // {
       //   name: "category_name",
@@ -64,14 +67,10 @@ class SpaWellnessList extends Component {
         options: {
           filter: true,
           sort: false,
-          customBodyRender: val => (
-            <code>
-              {
-                val.length > 100 ? val.substr(0, 100) + '...' : val
-              }
-            </code>
-          )
-        }
+          customBodyRender: (val) => (
+            <code>{val.length > 100 ? val.substr(0, 100) + "..." : val}</code>
+          ),
+        },
       },
       {
         name: "id",
@@ -79,16 +78,16 @@ class SpaWellnessList extends Component {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: val => (
-            <Link to={`/admin/dining/${val}`} >
+          customBodyRender: (val) => (
+            <Link to={`/admin/dining/${val}`}>
               <VisibilityOutlined color="primary" />
             </Link>
-          )
-        }
+          ),
+        },
       },
     ],
-    rows: []
-  }
+    rows: [],
+  };
 
   options = {
     filterType: "checkbox",
@@ -96,15 +95,15 @@ class SpaWellnessList extends Component {
   };
 
   componentDidMount() {
-    API.get('/dining').then(response => {
+    API.get("/dining").then((response) => {
       let rows = response.data;
       // let rows = data.map(x=> {
       //   return {
 
       //   }
       // })
-      this.setState({ rows })
-    })
+      this.setState({ rows });
+    });
   }
 
   render() {
@@ -118,7 +117,7 @@ class SpaWellnessList extends Component {
               startIcon={<AddOutlined />}
             >
               Add Spa n Wellness
-          </Button>
+            </Button>
           </Link>
         </Box>
         <MUIDataTable

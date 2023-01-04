@@ -72,8 +72,8 @@ export default function AddPopUp(props) {
       if (isSingle && !isBanner) {
         setOffer({
           ...offer,
-          image: imagesData[index].avatar,
-          image: imagesData[index].avatar,
+          image: imagesData[index].url,
+          image: imagesData[index].url,
         });
         setTimeout(() => {
           setShowGallery(false);
@@ -172,7 +172,10 @@ export default function AddPopUp(props) {
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     <div className="thumbnail-preview-wrapper-small img-thumbnail">
-                      <img src={offer.image} alt={"pop up image"} />
+                      <img
+                        src={process.env.REACT_APP_IMAGE_BASE_URL + offer.image}
+                        alt={"pop up image"}
+                      />
                     </div>
                     <Fragment>
                       <MaterialButton
