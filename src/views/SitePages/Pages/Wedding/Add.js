@@ -441,15 +441,15 @@ export default function AddWedding() {
                       {
                         !wedding.banner.id > 0 ?
                           thumbnailPreview && thumbnailPreview !== "" ?
-                            <img src={thumbnailPreview} alt={wedding.banner.section_avtar_alt || ""} />
+                            <img src={process.env.REACT_APP_IMAGE_BASE_URL + thumbnailPreview} alt={wedding.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
                           typeof (wedding.banner.section_avatar) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
-                            <img src={thumbnailPreview} alt={wedding.banner.section_avtar_alt || ""} />
+                            <img src={process.env.REACT_APP_IMAGE_BASE_URL + thumbnailPreview} alt={wedding.banner.section_avtar_alt || ""} />
                             :
-                            <img src={wedding.banner.section_avatar} alt={wedding.banner.section_avtar_alt || ""} />
+                            <img src={process.env.REACT_APP_IMAGE_BASE_URL + wedding.banner.section_avatar} alt={wedding.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>

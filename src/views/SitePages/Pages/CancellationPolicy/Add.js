@@ -325,15 +325,15 @@ export default function AddCancellationPolicy() {
                       {
                         !cancellationPolicy.banner.id > 0 ?
                           cancellationPolicy.banner.section_avatar?.url !== "" ?
-                            <img src={cancellationPolicy.banner.section_avatar?.url} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
+                            <img src={process.env.REACT_APP_IMAGE_BASE_URL + cancellationPolicy.banner.section_avatar?.url} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
                           typeof (cancellationPolicy.banner.section_avatar?.url) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
-                            <img src={thumbnailPreview} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
+                            <img src={process.env.REACT_APP_IMAGE_BASE_URL + thumbnailPreview} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
                             :
-                            <img src={cancellationPolicy.banner.section_avatar?.url} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
+                            <img src={process.env.REACT_APP_IMAGE_BASE_URL + cancellationPolicy.banner.section_avatar?.url} alt={cancellationPolicy.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>

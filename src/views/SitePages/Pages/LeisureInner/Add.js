@@ -361,15 +361,15 @@ export default function AddLeisureInner() {
                       {
                         !leisureInner.banner.id > 0 ?
                           leisureInner.banner.section_avatar?.url !== "" ?
-                            <img src={leisureInner.banner.section_avatar?.url} alt={leisureInner.banner.section_avtar_alt || ""} />
+                            <img src={process.env.REACT_APP_IMAGE_BASE_URL + leisureInner.banner.section_avatar?.url} alt={leisureInner.banner.section_avtar_alt || ""} />
                             :
                             <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                           :
                           typeof (leisureInner.banner.section_avatar?.url) === typeof (0) ?
                             // dining.thumbnail && dining.thumbnail !== "" ?
-                            <img src={thumbnailPreview["banner"]} alt={leisureInner.banner.section_avtar_alt || ""} />
+                            <img src={process.env.REACT_APP_IMAGE_BASE_URL + thumbnailPreview["banner"]} alt={leisureInner.banner.section_avtar_alt || ""} />
                             :
-                            <img src={leisureInner.banner.section_avatar?.url} alt={leisureInner.banner.section_avtar_alt || ""} />
+                            <img src={process.env.REACT_APP_IMAGE_BASE_URL + leisureInner.banner.section_avatar?.url} alt={leisureInner.banner.section_avtar_alt || ""} />
                       }
                     </div>
                     <Fragment>
@@ -443,15 +443,15 @@ export default function AddLeisureInner() {
                           {
                             !leisureInner.lounge.id > 0 ?
                               leisureInner.lounge.section_avatar?.url !== "" ?
-                                <img src={leisureInner.lounge.section_avatar?.url} alt={leisureInner.lounge.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + leisureInner.lounge.section_avatar?.url} alt={leisureInner.lounge.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
                               typeof (leisureInner.lounge.section_avatar?.url) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview["lounge"]} alt={leisureInner.lounge.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + thumbnailPreview["lounge"]} alt={leisureInner.lounge.section_avtar_alt || ""} />
                                 :
-                                <img src={leisureInner.lounge.section_avatar?.url} alt={leisureInner.lounge.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + leisureInner.lounge.section_avatar?.url} alt={leisureInner.lounge.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>
@@ -528,15 +528,15 @@ export default function AddLeisureInner() {
                           {
                             !leisureInner.kayaking.id > 0 ?
                               leisureInner.kayaking.section_avatar?.url !== "" ?
-                                <img src={leisureInner.kayaking.section_avatar?.url} alt={leisureInner.kayaking.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + leisureInner.kayaking.section_avatar?.url} alt={leisureInner.kayaking.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
                               typeof (leisureInner.kayaking.section_avatar?.url) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview["kayaking"]} alt={leisureInner.kayaking.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + thumbnailPreview["kayaking"]} alt={leisureInner.kayaking.section_avtar_alt || ""} />
                                 :
-                                <img src={leisureInner.kayaking.section_avatar?.url} alt={leisureInner.kayaking.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + leisureInner.kayaking.section_avatar?.url} alt={leisureInner.kayaking.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>
@@ -613,15 +613,15 @@ export default function AddLeisureInner() {
                           {
                             !leisureInner.snorkeling.id > 0 ?
                               leisureInner.snorkeling.section_avatar?.url !== "" ?
-                                <img src={leisureInner.snorkeling.section_avatar?.url} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + leisureInner.snorkeling.section_avatar?.url} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
                               typeof (leisureInner.snorkeling.section_avatar?.url) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview["snorkeling"]} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + thumbnailPreview["snorkeling"]} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
                                 :
-                                <img src={leisureInner.snorkeling.section_avatar?.url} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + leisureInner.snorkeling.section_avatar?.url} alt={leisureInner.snorkeling.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>
@@ -698,15 +698,15 @@ export default function AddLeisureInner() {
                           {
                             !leisureInner.marine.id > 0 ?
                               leisureInner.marine.section_avatar?.url !== "" ?
-                                <img src={leisureInner.marine.section_avatar?.url} alt={leisureInner.marine.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + leisureInner.marine.section_avatar?.url} alt={leisureInner.marine.section_avtar_alt || ""} />
                                 :
                                 <img src="https://artgalleryofballarat.com.au/wp-content/uploads/2020/06/placeholder-image.png" alt="" />
                               :
                               typeof (leisureInner.marine.section_avatar?.url) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview["marine"]} alt={leisureInner.marine.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + thumbnailPreview["marine"]} alt={leisureInner.marine.section_avtar_alt || ""} />
                                 :
-                                <img src={leisureInner.marine.section_avatar?.url} alt={leisureInner.marine.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + leisureInner.marine.section_avatar?.url} alt={leisureInner.marine.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>
@@ -792,9 +792,9 @@ export default function AddLeisureInner() {
                               :
                               typeof (leisureInner.others.section_avatar) === typeof (0) ?
                                 // dining.thumbnail && dining.thumbnail !== "" ?
-                                <img src={thumbnailPreview["others"]} alt={leisureInner.others.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + thumbnailPreview["others"]} alt={leisureInner.others.section_avtar_alt || ""} />
                                 :
-                                <img src={leisureInner.others.section_avatar?.url} alt={leisureInner.others.section_avtar_alt || ""} />
+                                <img src={process.env.REACT_APP_IMAGE_BASE_URL + leisureInner.others.section_avatar?.url} alt={leisureInner.others.section_avtar_alt || ""} />
                           }
                         </div>
                       </CardActionArea>

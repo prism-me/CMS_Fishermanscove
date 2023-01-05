@@ -430,7 +430,10 @@ export default function LeisureActivities() {
                       {!leisure.banner.id > 0 ? (
                         leisure.banner?.section_avatar?.url !== "" ? (
                           <img
-                            src={leisure.banner?.section_avatar?.url}
+                            src={
+                              process.env.REACT_APP_IMAGE_BASE_URL +
+                              leisure.banner?.section_avatar?.url
+                            }
                             alt={leisure.banner.section_avtar_alt || ""}
                           />
                         ) : (
@@ -442,12 +445,18 @@ export default function LeisureActivities() {
                       ) : typeof leisure.banner.section_avatar === typeof 0 ? (
                         // dining.thumbnail && dining.thumbnail !== "" ?
                         <img
-                          src={thumbnailPreview["banner"]}
+                          src={
+                            process.env.REACT_APP_IMAGE_BASE_URL +
+                            thumbnailPreview["banner"]
+                          }
                           alt={leisure.banner.section_avtar_alt || ""}
                         />
                       ) : (
                         <img
-                          src={leisure.banner.section_avatar}
+                          src={
+                            process.env.REACT_APP_IMAGE_BASE_URL +
+                            leisure.banner.section_avatar
+                          }
                           alt={leisure.banner.section_avtar_alt || ""}
                         />
                       )}
@@ -526,10 +535,12 @@ export default function LeisureActivities() {
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-large img-thumbnail">
                           {!leisure.activities.id > 0 ? (
-                            leisure.activities?.section_avatar?.url !==
-                            "" ? (
+                            leisure.activities?.section_avatar?.url !== "" ? (
                               <img
-                                src={leisure.activities?.section_avatar?.url}
+                                src={
+                                  process.env.REACT_APP_IMAGE_BASE_URL +
+                                  leisure.activities?.section_avatar?.url
+                                }
                                 alt={leisure.activities.section_avtar_alt || ""}
                               />
                             ) : (
@@ -542,12 +553,18 @@ export default function LeisureActivities() {
                             typeof 0 ? (
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img
-                              src={thumbnailPreview["activities"]}
+                              src={
+                                process.env.REACT_APP_IMAGE_BASE_URL +
+                                thumbnailPreview["activities"]
+                              }
                               alt={leisure.activities.section_avtar_alt || ""}
                             />
                           ) : (
                             <img
-                              src={leisure.activities.section_avatar?.url}
+                              src={
+                                process.env.REACT_APP_IMAGE_BASE_URL +
+                                leisure.activities.section_avatar?.url
+                              }
                               alt={leisure.activities.section_avtar_alt || ""}
                             />
                           )}
@@ -628,7 +645,10 @@ export default function LeisureActivities() {
                           {!leisure.Fishing.id > 0 ? (
                             leisure.Fishing?.section_avatar?.url !== "" ? (
                               <img
-                                src={leisure.Fishing?.section_avatar?.url}
+                                src={
+                                  process.env.REACT_APP_IMAGE_BASE_URL +
+                                  leisure.Fishing?.section_avatar?.url
+                                }
                                 alt={leisure.Fishing.section_avtar_alt || ""}
                               />
                             ) : (
@@ -641,12 +661,18 @@ export default function LeisureActivities() {
                             typeof 0 ? (
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img
-                              src={thumbnailPreview["Fishing"]}
+                              src={
+                                process.env.REACT_APP_IMAGE_BASE_URL +
+                                thumbnailPreview["Fishing"]
+                              }
                               alt={leisure.Fishing.section_avtar_alt || ""}
                             />
                           ) : (
                             <img
-                              src={leisure.Fishing?.section_avatar}
+                              src={
+                                process.env.REACT_APP_IMAGE_BASE_URL +
+                                leisure.Fishing?.section_avatar
+                              }
                               alt={leisure.Fishing.section_avtar_alt || ""}
                             />
                           )}
@@ -727,7 +753,10 @@ export default function LeisureActivities() {
                           {!leisure.Unlock.id > 0 ? (
                             leisure.Unlock.section_avatar?.url !== "" ? (
                               <img
-                                src={leisure.Unlock.section_avatar?.url}
+                                src={
+                                  process.env.REACT_APP_IMAGE_BASE_URL +
+                                  leisure.Unlock.section_avatar?.url
+                                }
                                 alt={leisure.Unlock.section_avtar_alt || ""}
                               />
                             ) : (
@@ -740,12 +769,18 @@ export default function LeisureActivities() {
                             typeof 0 ? (
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img
-                              src={thumbnailPreview["Unlock"]}
+                              src={
+                                process.env.REACT_APP_IMAGE_BASE_URL +
+                                thumbnailPreview["Unlock"]
+                              }
                               alt={leisure.Unlock.section_avtar_alt || ""}
                             />
                           ) : (
                             <img
-                              src={leisure.Unlock.section_avatar}
+                              src={
+                                process.env.REACT_APP_IMAGE_BASE_URL +
+                                leisure.Unlock.section_avatar
+                              }
                               alt={leisure.Unlock.section_avtar_alt || ""}
                             />
                           )}
@@ -826,7 +861,10 @@ export default function LeisureActivities() {
                           {!leisure.Water.id > 0 ? (
                             leisure.Water.section_avatar?.url !== "" ? (
                               <img
-                                src={leisure.Water.section_avatar?.url}
+                                src={
+                                  process.env.REACT_APP_IMAGE_BASE_URL +
+                                  leisure.Water.section_avatar?.url
+                                }
                                 alt={leisure.Water.section_avtar_alt || ""}
                               />
                             ) : (
@@ -839,12 +877,18 @@ export default function LeisureActivities() {
                             typeof 0 ? (
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img
-                              src={thumbnailPreview["Water"]}
+                              src={
+                                process.env.REACT_APP_IMAGE_BASE_URL +
+                                thumbnailPreview["Water"]
+                              }
                               alt={leisure.Water.section_avtar_alt || ""}
                             />
                           ) : (
                             <img
-                              src={leisure.Water.section_avatar}
+                              src={
+                                process.env.REACT_APP_IMAGE_BASE_URL +
+                                leisure.Water.section_avatar
+                              }
                               alt={leisure.Water.section_avtar_alt || ""}
                             />
                           )}
@@ -906,7 +950,10 @@ export default function LeisureActivities() {
                           {!leisure.awards.id > 0 ? (
                             leisure.awards?.section_avatar?.url !== "" ? (
                               <img
-                                src={leisure.awards.section_avatar?.url}
+                                src={
+                                  process.env.REACT_APP_IMAGE_BASE_URL +
+                                  leisure.awards.section_avatar?.url
+                                }
                                 alt={leisure.awards.section_avtar_alt || ""}
                               />
                             ) : (
@@ -919,12 +966,18 @@ export default function LeisureActivities() {
                             typeof 0 ? (
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img
-                              src={thumbnailPreview["awards"]}
+                              src={
+                                process.env.REACT_APP_IMAGE_BASE_URL +
+                                thumbnailPreview["awards"]
+                              }
                               alt={leisure.awards.section_avtar_alt || ""}
                             />
                           ) : (
                             <img
-                              src={leisure.awards.section_avatar}
+                              src={
+                                process.env.REACT_APP_IMAGE_BASE_URL +
+                                leisure.awards.section_avatar
+                              }
                               alt={leisure.awards.section_avtar_alt || ""}
                             />
                           )}
@@ -968,10 +1021,12 @@ export default function LeisureActivities() {
                       <CardActionArea>
                         <div className="thumbnail-preview-wrapper-small img-thumbnail">
                           {!leisure.excellence.id > 0 ? (
-                            leisure.excellence?.section_avatar?.url !==
-                            "" ? (
+                            leisure.excellence?.section_avatar?.url !== "" ? (
                               <img
-                                src={leisure.excellence?.section_avatar?.url}
+                                src={
+                                  process.env.REACT_APP_IMAGE_BASE_URL +
+                                  leisure.excellence?.section_avatar?.url
+                                }
                                 alt={leisure.excellence.section_avtar_alt || ""}
                               />
                             ) : (
@@ -984,12 +1039,18 @@ export default function LeisureActivities() {
                             typeof 0 ? (
                             // dining.thumbnail && dining.thumbnail !== "" ?
                             <img
-                              src={thumbnailPreview["snorkeling"]}
+                              src={
+                                process.env.REACT_APP_IMAGE_BASE_URL +
+                                thumbnailPreview["snorkeling"]
+                              }
                               alt={leisure.excellence.section_avtar_alt || ""}
                             />
                           ) : (
                             <img
-                              src={leisure.excellence?.section_avatar?.url}
+                              src={
+                                process.env.REACT_APP_IMAGE_BASE_URL +
+                                leisure.excellence?.section_avatar?.url
+                              }
                               alt={leisure.excellence.section_avtar_alt || ""}
                             />
                           )}

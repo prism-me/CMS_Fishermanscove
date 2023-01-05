@@ -351,7 +351,10 @@ export default function AddTermsOfUse() {
                       {!termsUse.banner.id > 0 ? (
                         termsUse.banner.section_avatar?.url !== "" ? (
                           <img
-                            src={termsUse.banner.section_avatar?.url}
+                            src={
+                              process.env.REACT_APP_IMAGE_BASE_URL +
+                              termsUse.banner.section_avatar?.url
+                            }
                             alt={termsUse.banner.section_avtar_alt || ""}
                           />
                         ) : (
@@ -364,12 +367,18 @@ export default function AddTermsOfUse() {
                         typeof 0 ? (
                         // dining.thumbnail && dining.thumbnail !== "" ?
                         <img
-                          src={thumbnailPreview}
+                          src={
+                            process.env.REACT_APP_IMAGE_BASE_URL +
+                            thumbnailPreview
+                          }
                           alt={termsUse.banner.section_avtar_alt || ""}
                         />
                       ) : (
                         <img
-                          src={termsUse.banner.section_avatar?.url}
+                          src={
+                            process.env.REACT_APP_IMAGE_BASE_URL +
+                            termsUse.banner.section_avatar?.url
+                          }
                           alt={termsUse.banner.section_avtar_alt || ""}
                         />
                       )}
