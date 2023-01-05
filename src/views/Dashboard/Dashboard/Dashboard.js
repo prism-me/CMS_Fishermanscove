@@ -23,18 +23,23 @@ import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
-import ReactGA from 'react-ga'
+import ReactGA from "react-ga";
 
 import {
   dailySalesChart,
   emailsSubscriptionChart,
-  completedTasksChart
+  completedTasksChart,
 } from "variables/charts.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import API from "utils/http";
 import { Avatar, Checkbox, IconButton } from "@material-ui/core";
-import { AddOutlined, Check, DeleteOutlined, PlaylistAddOutlined } from "@material-ui/icons";
+import {
+  AddOutlined,
+  Check,
+  DeleteOutlined,
+  PlaylistAddOutlined,
+} from "@material-ui/icons";
 import AddTodoDialog from "./AddTodoDialog";
 import WeddingDetailDialog from "./WeddingDetailDialog";
 
@@ -46,7 +51,7 @@ export default function Dashboard() {
     contacts_count: 0,
     offers_count: 0,
     subscribers_count: 0,
-    analytics_count: 12
+    analytics_count: 12,
   });
   const [recents, setRecents] = useState([]);
   const [todos, setTodos] = useState([]);
@@ -57,23 +62,22 @@ export default function Dashboard() {
   const [showWedding, setShowWedding] = useState(false);
 
   useEffect(() => {
-    API.get('/dashboard_apis').then(response => {
+    API.get("/dashboard_apis").then((response) => {
       if (response?.status === 200) {
-        setRecents(response.data)
+        setRecents(response.data);
       }
       // ReactGA.pageview('/dashboard_apis')
       // console.log(recents)
-    })
-
-  }, [])
+    });
+  }, []);
 
   const getTodos = () => {
-    API.get('/todo').then(response => {
+    API.get("/todo").then((response) => {
       if (response?.status === 200) {
-        setTodos(response.data)
+        setTodos(response.data);
       }
-    })
-  }
+    });
+  };
 
   const handleStatusChange = (e, index) => {
     let updatedTodo = todos[index];
@@ -81,42 +85,43 @@ export default function Dashboard() {
     updatedTodo.is_read = e.target.checked;
 
     API.put(`/todo/${todos[index].id}`, updatedTodo)
-      .then(response => {
+      .then((response) => {
         if (response?.status === 200) {
           // alert("Updated")
         }
       })
       .then(() => {
-        API.get('/todo').then(response => {
+        API.get("/todo").then((response) => {
           if (response?.status === 200) {
-            setTodos(response.data)
+            setTodos(response.data);
           }
-        })
+        });
       })
-      .catch(err => {
-        alert("Something went wrong")
-      })
-  }
+      .catch((err) => {
+        alert("Something went wrong");
+      });
+  };
 
   const handleTaskDelete = (id) => {
-    API.delete(`/todo/${id}`).then(response => {
-      if (response.status === 200) {
-        // alert("Task deleted successfully.");
-        // this.setState({currentFiles: []})
-      }
-    }).then(() => {
-      API.get('/todo').then(response => {
+    API.delete(`/todo/${id}`)
+      .then((response) => {
         if (response.status === 200) {
-          setTodos(response.data)
+          // alert("Task deleted successfully.");
+          // this.setState({currentFiles: []})
         }
       })
-    })
-      .catch(err => alert("Something went wrong"));
-  }
+      .then(() => {
+        API.get("/todo").then((response) => {
+          if (response.status === 200) {
+            setTodos(response.data);
+          }
+        });
+      })
+      .catch((err) => alert("Something went wrong"));
+  };
 
   return (
     <div>
-
       <GridContainer>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
@@ -125,9 +130,7 @@ export default function Dashboard() {
                 <Icon>content_copy</Icon>
               </CardIcon>
               <p className={classes.cardCategory}>Contacts</p>
-              <h3 className={classes.cardTitle}>
-                {recents.contacts_count}
-              </h3>
+              <h3 className={classes.cardTitle}>{recents.contacts_count}</h3>
             </CardHeader>
             {/* <CardFooter stats>
               <div className={classes.stats}>
@@ -193,7 +196,7 @@ export default function Dashboard() {
           </Card>
         </GridItem>
       </GridContainer>
-      <GridContainer style={{ display: 'none' }}>
+      <GridContainer style={{ display: "none" }}>
         <GridItem xs={12} sm={12} md={4}>
           <Card chart>
             <CardHeader color="success">
@@ -271,7 +274,10 @@ export default function Dashboard() {
         <GridItem xs={12} sm={12} md={6}>
           <Card>
             <CardHeader color="success">
-              <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
+              <div
+                className="d-flex align-items-center"
+                style={{ justifyContent: "space-between" }}
+              >
                 <div>
                   <h4 className="mb-0">Todo List</h4>
                   <p className={classes.cardCategoryWhite}>
@@ -279,61 +285,119 @@ export default function Dashboard() {
                   </p>
                 </div>
                 <div>
-                  <IconButton color="default" style={{ color: '#fff' }} onClick={() => setShowAddTodo(true)}>
+                  <IconButton
+                    color="default"
+                    style={{ color: "#fff" }}
+                    onClick={() => setShowAddTodo(true)}
+                  >
                     <AddOutlined />
                   </IconButton>
                 </div>
               </div>
             </CardHeader>
-            <CardBody style={{ height: '300px', overflowY: 'scroll' }}>
-              <div className="d-flex align-items-center img-thumbnail mb-2" style={{ justifyContent: 'space-between' }}>
-                <small style={{ width: '30%', marginBottom: 0, fontWeight: 500 }}>
+            <CardBody style={{ height: "300px", overflowY: "scroll" }}>
+              <div
+                className="d-flex align-items-center img-thumbnail mb-2"
+                style={{ justifyContent: "space-between" }}
+              >
+                <small
+                  style={{ width: "30%", marginBottom: 0, fontWeight: 500 }}
+                >
                   Task
                 </small>
-                <small style={{ width: '30%', marginBottom: 0, fontWeight: 500 }}>
+                <small
+                  style={{ width: "30%", marginBottom: 0, fontWeight: 500 }}
+                >
                   Date
                 </small>
-                <small style={{ width: '20%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
+                <small
+                  style={{
+                    width: "20%",
+                    marginBottom: 0,
+                    fontWeight: 500,
+                    textAlign: "center",
+                  }}
+                >
                   Status
                 </small>
-                <small style={{ width: '10%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
+                <small
+                  style={{
+                    width: "10%",
+                    marginBottom: 0,
+                    fontWeight: 500,
+                    textAlign: "center",
+                  }}
+                >
                   Mark
                 </small>
-                <small style={{ width: '10%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
+                <small
+                  style={{
+                    width: "10%",
+                    marginBottom: 0,
+                    fontWeight: 500,
+                    textAlign: "center",
+                  }}
+                >
                   Delete
                 </small>
               </div>
-              {
-                recents?.Todo_lists?.map((x, index) => (
-                  <div className="d-flex align-items-center img-thumbnail mb-2" style={{ justifyContent: 'space-between' }}>
-                    <p title={x.todo_description} style={{ width: '30%', marginBottom: 0 }}>
-                      {x.todo_name}
-                    </p>
-                    <p style={{ width: '30%', marginBottom: 0 }}>
-                      {new Date(x.updated_at).toLocaleDateString()}
-                    </p>
-                    <p style={{ width: '20%', marginBottom: 0, textAlign: 'center' }}>
-                      {
-                        x.is_read == 0 ?
-                          <small className="badge badge-warning">pending</small>
-                          :
-                          <small className="badge badge-success">completed</small>
-                      }
-                    </p>
-                    <p style={{ width: '10%', marginBottom: 0, textAlign: 'center' }}>
-                      <Checkbox
-                        checked={x.is_read == 0 ? false : true}
-                        tabIndex={-1}
-                        onChange={(e) => handleStatusChange(e, index)}
-                        size="small"
-                      />
-                    </p>
-                    <p style={{ width: '10%', marginBottom: 0, textAlign: 'center' }}>
-                      <DeleteOutlined onClick={() => handleTaskDelete(x.id)} style={{ cursor: 'pointer' }} fontSize="small" color="secondary" />
-                    </p>
-                  </div>
-                ))
-              }
+              {recents?.Todo_lists?.map((x, index) => (
+                <div
+                  className="d-flex align-items-center img-thumbnail mb-2"
+                  style={{ justifyContent: "space-between" }}
+                >
+                  <p
+                    title={x.todo_description}
+                    style={{ width: "30%", marginBottom: 0 }}
+                  >
+                    {x.todo_name}
+                  </p>
+                  <p style={{ width: "30%", marginBottom: 0 }}>
+                    {new Date(x.updated_at).toLocaleDateString()}
+                  </p>
+                  <p
+                    style={{
+                      width: "20%",
+                      marginBottom: 0,
+                      textAlign: "center",
+                    }}
+                  >
+                    {x.is_read == 0 ? (
+                      <small className="badge badge-warning">pending</small>
+                    ) : (
+                      <small className="badge badge-success">completed</small>
+                    )}
+                  </p>
+                  <p
+                    style={{
+                      width: "10%",
+                      marginBottom: 0,
+                      textAlign: "center",
+                    }}
+                  >
+                    <Checkbox
+                      checked={x.is_read == 0 ? false : true}
+                      tabIndex={-1}
+                      onChange={(e) => handleStatusChange(e, index)}
+                      size="small"
+                    />
+                  </p>
+                  <p
+                    style={{
+                      width: "10%",
+                      marginBottom: 0,
+                      textAlign: "center",
+                    }}
+                  >
+                    <DeleteOutlined
+                      onClick={() => handleTaskDelete(x.id)}
+                      style={{ cursor: "pointer" }}
+                      fontSize="small"
+                      color="secondary"
+                    />
+                  </p>
+                </div>
+              ))}
             </CardBody>
           </Card>
         </GridItem>
@@ -345,40 +409,44 @@ export default function Dashboard() {
                 List of recent activitiies on CMS
               </p>
             </CardHeader>
-            <CardBody style={{ height: '300px', overflowY: 'scroll' }}>
-              <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
-                <p style={{ marginBottom: 0, width: '10%' }}>
-
-                </p>
-                <p style={{ marginBottom: 0, width: '30%' }}>
+            <CardBody style={{ height: "300px", overflowY: "scroll" }}>
+              <div
+                className="d-flex align-items-center"
+                style={{ justifyContent: "space-between" }}
+              >
+                <p style={{ marginBottom: 0, width: "10%" }}></p>
+                <p style={{ marginBottom: 0, width: "30%" }}>
                   <b>Activity</b>
                 </p>
-                <p style={{ marginBottom: 0, width: '30%' }}>
+                <p style={{ marginBottom: 0, width: "30%" }}>
                   <b>Date</b>
                 </p>
-                <p style={{ marginBottom: 0, width: '30%' }}>
+                <p style={{ marginBottom: 0, width: "30%" }}>
                   <b>Time</b>
                 </p>
               </div>
               <hr />
-              {
-                recents.recent_activities?.map(x => (
-                  <div key={x.post_name} className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
-                    <p style={{ width: '10%' }}>
-                      <Avatar src={x.thumbnail} style={{ width: '30px', height: '30px' }} />
-                    </p>
-                    <p style={{ width: '30%' }}>
-                      {x.post_name}
-                    </p>
-                    <p style={{ width: '30%' }}>
-                      {new Date(x.updated_at).toLocaleDateString()}
-                    </p>
-                    <p style={{ width: '30%' }}>
-                      {new Date(x.updated_at).toLocaleTimeString()}
-                    </p>
-                  </div>
-                ))
-              }
+              {recents.recent_activities?.map((x) => (
+                <div
+                  key={x.post_name}
+                  className="d-flex align-items-center"
+                  style={{ justifyContent: "space-between" }}
+                >
+                  <p style={{ width: "10%" }}>
+                    <Avatar
+                      src={process.env.REACT_APP_IMAGE_BASE_URL + x.thumbnail}
+                      style={{ width: "30px", height: "30px" }}
+                    />
+                  </p>
+                  <p style={{ width: "30%" }}>{x.post_name}</p>
+                  <p style={{ width: "30%" }}>
+                    {new Date(x.updated_at).toLocaleDateString()}
+                  </p>
+                  <p style={{ width: "30%" }}>
+                    {new Date(x.updated_at).toLocaleTimeString()}
+                  </p>
+                </div>
+              ))}
             </CardBody>
           </Card>
         </GridItem>
@@ -386,7 +454,10 @@ export default function Dashboard() {
         <GridItem xs={12} sm={12} md={6}>
           <Card>
             <CardHeader color="warning">
-              <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
+              <div
+                className="d-flex align-items-center"
+                style={{ justifyContent: "space-between" }}
+              >
                 <div>
                   <h4 className="mb-0">Wedding Forms</h4>
                   <p className={classes.cardCategoryWhite}>
@@ -400,36 +471,59 @@ export default function Dashboard() {
                 </div> */}
               </div>
             </CardHeader>
-            <CardBody style={{ height: '300px', overflowY: 'scroll' }}>
-              <div className="d-flex align-items-center mb-2" style={{ justifyContent: 'space-between' }}>
-                <small style={{ width: '30%', marginBottom: 0, fontWeight: 500 }}>
+            <CardBody style={{ height: "300px", overflowY: "scroll" }}>
+              <div
+                className="d-flex align-items-center mb-2"
+                style={{ justifyContent: "space-between" }}
+              >
+                <small
+                  style={{ width: "30%", marginBottom: 0, fontWeight: 500 }}
+                >
                   Name
                 </small>
-                <small style={{ width: '30%', marginBottom: 0, fontWeight: 500 }}>
+                <small
+                  style={{ width: "30%", marginBottom: 0, fontWeight: 500 }}
+                >
                   Email
                 </small>
-                <small style={{ width: '20%', marginBottom: 0, fontWeight: 500, textAlign: 'center' }}>
+                <small
+                  style={{
+                    width: "20%",
+                    marginBottom: 0,
+                    fontWeight: 500,
+                    textAlign: "center",
+                  }}
+                >
                   Date
                 </small>
               </div>
-              {
-                recents.weddings?.map((x, index) => (
-                  <div onClick={() => {
+              {recents.weddings?.map((x, index) => (
+                <div
+                  onClick={() => {
                     setCurrentWedding(weddings[index]);
                     setShowWedding(true);
-                  }} className="d-flex align-items-center img-thumbnail mb-2" style={{ justifyContent: 'space-between', cursor: 'pointer' }}>
-                    <p title={x.todo_description} style={{ width: '30%', marginBottom: 0 }}>
-                      {x.name}
-                    </p>
-                    <p style={{ width: '30%', marginBottom: 0 }}>
-                      {x.email}
-                    </p>
-                    <p style={{ width: '20%', marginBottom: 0, textAlign: 'center' }}>
-                      {new Date(x.created_at).toLocaleDateString()}
-                    </p>
-                  </div>
-                ))
-              }
+                  }}
+                  className="d-flex align-items-center img-thumbnail mb-2"
+                  style={{ justifyContent: "space-between", cursor: "pointer" }}
+                >
+                  <p
+                    title={x.todo_description}
+                    style={{ width: "30%", marginBottom: 0 }}
+                  >
+                    {x.name}
+                  </p>
+                  <p style={{ width: "30%", marginBottom: 0 }}>{x.email}</p>
+                  <p
+                    style={{
+                      width: "20%",
+                      marginBottom: 0,
+                      textAlign: "center",
+                    }}
+                  >
+                    {new Date(x.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+              ))}
             </CardBody>
           </Card>
         </GridItem>
@@ -437,48 +531,56 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="info">
               <h4 className="mb-0">Subscribers List</h4>
-              <p className={classes.cardCategoryWhite}>
-                List of subscribers
-              </p>
+              <p className={classes.cardCategoryWhite}>List of subscribers</p>
             </CardHeader>
-            <CardBody style={{ height: '300px', overflowY: 'scroll' }}>
-              <div className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
-                <p style={{ marginBottom: 0, width: '40%' }}>
+            <CardBody style={{ height: "300px", overflowY: "scroll" }}>
+              <div
+                className="d-flex align-items-center"
+                style={{ justifyContent: "space-between" }}
+              >
+                <p style={{ marginBottom: 0, width: "40%" }}>
                   <b>Email</b>
                 </p>
-                <p style={{ marginBottom: 0, width: '40%' }}>
+                <p style={{ marginBottom: 0, width: "40%" }}>
                   <b>Joined</b>
                 </p>
-                <p style={{ marginBottom: 0, width: '20%' }}>
+                <p style={{ marginBottom: 0, width: "20%" }}>
                   <b>Enroled</b>
                 </p>
               </div>
               <hr />
-              {
-                recents.subscribers?.map(x => (
-                  <div key={x.post_name} className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
-                    <p style={{ width: '40%' }}>
-                      {x.email}
-                    </p>
-                    <p style={{ width: '40%' }}>
-                      {new Date(x.created_at).toLocaleDateString()}
-                    </p>
-                    <p style={{ width: '20%' }}>
-                      <Checkbox
-                        defaultChecked
-                        tabIndex={-1}
-                        size="small"
-                      />
-                    </p>
-                  </div>
-                ))
-              }
+              {recents.subscribers?.map((x) => (
+                <div
+                  key={x.post_name}
+                  className="d-flex align-items-center"
+                  style={{ justifyContent: "space-between" }}
+                >
+                  <p style={{ width: "40%" }}>{x.email}</p>
+                  <p style={{ width: "40%" }}>
+                    {new Date(x.created_at).toLocaleDateString()}
+                  </p>
+                  <p style={{ width: "20%" }}>
+                    <Checkbox defaultChecked tabIndex={-1} size="small" />
+                  </p>
+                </div>
+              ))}
             </CardBody>
           </Card>
         </GridItem>
       </GridContainer>
-      <AddTodoDialog success={() => { getTodos(); setShowAddTodo(false) }} onClose={() => setShowAddTodo(false)} open={showAddTodo} />
-      <WeddingDetailDialog onClose={() => setShowWedding(false)} open={showWedding} wedding={currentWedding} />
+      <AddTodoDialog
+        success={() => {
+          getTodos();
+          setShowAddTodo(false);
+        }}
+        onClose={() => setShowAddTodo(false)}
+        open={showAddTodo}
+      />
+      <WeddingDetailDialog
+        onClose={() => setShowWedding(false)}
+        open={showWedding}
+        wedding={currentWedding}
+      />
     </div>
   );
 }

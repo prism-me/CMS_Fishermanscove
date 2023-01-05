@@ -366,7 +366,7 @@ export default function Dashboard() {
                 recents.allOffer?.filter((x) => x?.is_premium === 0 && x?.lang === "en")?.map(x => (
                   <div key={x.post_name} className="d-flex align-items-center" style={{ justifyContent: 'space-between' }}>
                     <p style={{ width: '10%' }}>
-                      <Avatar src={x.thumbnail} style={{ width: '30px', height: '30px' }} />
+                      <Avatar src={process.env.REACT_APP_IMAGE_BASE_URL + x.thumbnail} style={{ width: '30px', height: '30px' }} />
                     </p>
                     <p style={{ width: '30%' }}>
                       {x.post_name}
