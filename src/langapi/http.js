@@ -1,8 +1,7 @@
 import axios from "axios";
 import { store } from "store";
 
-// const apiURL = "https://fishermanscove-resort.com/APIs/public/api";
-const apiURL = "https://prismcloudhosting.com/FMCR_APIs/public/api";
+const apiURL = "https://fishermanscove-resort.com/APIs/public/api";
 
 const API = axios.create({
   baseURL: apiURL,
